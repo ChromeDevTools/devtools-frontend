@@ -57,7 +57,7 @@ describe('Recorder', function() {
 
         await inspectedPage.bringToFront();
         await devToolsPage.bringToFront();
-        await devToolsPage.page.waitForSelector('pierce/.settings');
+        await devToolsPage.waitFor('.settings');
         await inspectedPage.bringToFront();
         await inspectedPage.page.click('#test');
         await devToolsPage.bringToFront();
@@ -76,7 +76,7 @@ describe('Recorder', function() {
         await openRecorderAndStartRecording(devToolsPage, inspectedPage);
         await inspectedPage.bringToFront();
         await devToolsPage.bringToFront();
-        await devToolsPage.page.waitForSelector('pierce/.settings');
+        await devToolsPage.waitFor('.settings');
         await inspectedPage.bringToFront();
         const element = await inspectedPage.waitForSelector(
             'a[href="recorder2.html"]',
@@ -118,7 +118,7 @@ describe('Recorder', function() {
 
         await inspectedPage.bringToFront();
         await devToolsPage.bringToFront();
-        await devToolsPage.page.waitForSelector('pierce/.settings');
+        await devToolsPage.waitFor('.settings');
         await inspectedPage.bringToFront();
         await inspectedPage.page.click('#test');
         await devToolsPage.bringToFront();
@@ -146,10 +146,7 @@ describe('Recorder', function() {
           await devToolsPage.renderCoordinatorQueueEmpty();
 
           // Activate selector picker.
-          const picker = await devToolsPage.page.waitForSelector(
-              'pierce/.selector-picker',
-          );
-          await picker!.click();
+          await devToolsPage.click('.selector-picker');
 
           // Click element and wait for selector picking to stop.
           await inspectedPage.bringToFront();
@@ -169,7 +166,7 @@ describe('Recorder', function() {
           await openRecorderAndStartRecording(devToolsPage, inspectedPage);
 
           await devToolsPage.bringToFront();
-          await devToolsPage.page.waitForSelector('pierce/.settings');
+          await devToolsPage.waitFor('.settings');
 
           await inspectedPage.bringToFront();
           const element = await inspectedPage.waitForSelector(
@@ -205,7 +202,7 @@ describe('Recorder', function() {
         it('should select through the selector picker twice', async ({inspectedPage, devToolsPage}) => {
           await openRecorderAndStartRecording(devToolsPage, inspectedPage);
           await devToolsPage.bringToFront();
-          await devToolsPage.page.waitForSelector('pierce/.settings');
+          await devToolsPage.waitFor('.settings');
 
           await inspectedPage.bringToFront();
           const element = await inspectedPage.waitForSelector(
@@ -268,7 +265,7 @@ describe('Recorder', function() {
         it('should select through the selector picker during recording', async ({inspectedPage, devToolsPage}) => {
           await openRecorderAndStartRecording(devToolsPage, inspectedPage);
           await devToolsPage.bringToFront();
-          await devToolsPage.page.waitForSelector('pierce/.settings');
+          await devToolsPage.waitFor('.settings');
 
           await inspectedPage.bringToFront();
           const element = await inspectedPage.waitForSelector(
@@ -311,7 +308,7 @@ describe('Recorder', function() {
       it('should change network settings', async ({inspectedPage, devToolsPage}) => {
         await openRecorderAndStartRecording(devToolsPage, inspectedPage);
         await devToolsPage.bringToFront();
-        await devToolsPage.page.waitForSelector('pierce/.settings');
+        await devToolsPage.waitFor('.settings');
 
         await inspectedPage.bringToFront();
         await inspectedPage.page.click('#test');

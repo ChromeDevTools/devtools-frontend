@@ -61,3 +61,8 @@ Chrome DevTools is a privileged web app running in a sandboxed renderer process,
 ### DevToolsUIBindings::LoadNetworkResource
 * `DevToolsUIBindings::LoadNetworkResource` is a binding exposed to the Chrome DevTools web app. DevTools uses it to load resources such as source maps when loading through the CDP target is not possible.
 * `DevToolsUIBindings::LoadNetworkResource` does not enforce Local Network Access checks on the requests because the resource content is not exposed to the inspected page and loading local source maps is a valid use case. Requests to local network endpoints triggered through this binding when DevTools is open are intended behavior and outside of our threat model.
+
+### Recorder Extensions
+* Passing a recording to a Recorder extension does not grant new access to the sites mentioned in the recording via DevTools or Chrome. DevTools disables Recorder extensions when an extension has a `runtime_blocked_hosts` policy, but it does not track origin provenance for recordings.
+* Persisted converter preferences (such as the preferred copy format) can automatically pass recordings to a registered Recorder extension when viewing code or copying. DevTools does not require selecting the extension for each recording.
+* Recordings can contain URLs, selectors, keystrokes, and cleartext form values captured on or referencing origins an extension cannot inspect. Examples include `chrome://`, the Chrome Web Store, other `chrome-extension://` pages, and `file://` without file access. Passing these recordings to a Recorder extension is intended behavior and outside our threat model.

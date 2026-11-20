@@ -441,9 +441,11 @@ function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTempla
   // clang-format on
 }
 
-function renderTextEditor(input: ViewInput, output: ViewOutput): Lit.TemplateResult {
+function renderTextEditor(input: ViewInput, output: ViewOutput): Lit.LitTemplate {
   if (!input.editorState) {
-    throw new Error('Unexpected: trying to render the text editor without editorState');
+    // Code conversion runs asynchronously after opening Code view, so editorState
+    // can be null while conversion is pending.
+    return Lit.nothing;
   }
 
   // clang-format off
@@ -897,7 +899,11 @@ export class RecordingView extends UI.Widget.Widget {
       return;
     }
     this.#extensionConverters = converters;
-    void this.#convertToCode();
+    if (this.#showCodeView) {
+      void this.#convertToCode();
+    } else {
+      this.requestUpdate();
+    }
   }
   replayExtensions?: Extensions.ExtensionManager.Extension[];
   extensionDescriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;
@@ -924,7 +930,11 @@ export class RecordingView extends UI.Widget.Widget {
     }
     this.#recorderSettings = settings;
     this.#converterId = this.recorderSettings?.preferredCopyFormat ?? this.#builtInConverters[0]?.getId();
-    void this.#convertToCode();
+    if (this.#showCodeView) {
+      void this.#convertToCode();
+    } else {
+      this.requestUpdate();
+    }
   }
 
   #builtInConverters: readonly Converters.Converter.Converter[] = [];
@@ -937,7 +947,11 @@ export class RecordingView extends UI.Widget.Widget {
     }
     this.#builtInConverters = converters;
     this.#converterId = this.recorderSettings?.preferredCopyFormat ?? this.#builtInConverters[0]?.getId();
-    void this.#convertToCode();
+    if (this.#showCodeView) {
+      void this.#convertToCode();
+    } else {
+      this.requestUpdate();
+    }
   }
 
   #isTitleInvalid = false;
@@ -1259,7 +1273,7 @@ export class RecordingView extends UI.Widget.Widget {
   };
 
   #convertToCode = async(): Promise<void> => {
-    if (!this.recording) {
+    if (!this.recording || !this.#showCodeView) {
       return;
     }
     const converter =

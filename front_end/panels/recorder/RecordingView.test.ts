@@ -251,6 +251,9 @@ describeWithEnvironment('RecordingView', () => {
     component.extensionConverters = converters;
     await view.nextInput;
 
+    view.input.showCodeToggle();
+    await view.nextInput;
+
     view.input.onCodeFormatChange(converter.getId());
     const input = await view.nextInput;
     assert.strictEqual(input.editorState?.doc.toString(), `Export A:${JSON.stringify(userFlow)}`);
@@ -270,6 +273,28 @@ describeWithEnvironment('RecordingView', () => {
     component.extensionConverters = [converter];
     await view.nextInput;
     sinon.assert.callCount(stringifySpy, 2);
+  });
+
+  it('does not convert code with a preferred extension converter while code view is closed', async () => {
+    const converter = new Converters.ExtensionConverter.ExtensionConverter(
+        new TestExtension('Export A', 'chrome-extension://ext-a'),
+    );
+    const stringifySpy = sinon.spy(converter, 'stringify');
+    recorderSettingsMock.preferredCopyFormat = converter.getId();
+
+    const [view, component] = await createView();
+    component.extensionConverters = [converter];
+    component.builtInConverters = [...component.builtInConverters];
+    component.recorderSettings = undefined;
+    component.recorderSettings = recorderSettingsMock;
+    await view.nextInput;
+    await doubleRaf();
+    sinon.assert.notCalled(stringifySpy);
+
+    view.input.showCodeToggle();
+    const input = await view.nextInput;
+    sinon.assert.calledOnce(stringifySpy);
+    assert.strictEqual(input.editorState?.doc.toString(), `Export A:${JSON.stringify(userFlow)}`);
   });
 
   it('should select the step that starts a section when the section is clicked', async () => {

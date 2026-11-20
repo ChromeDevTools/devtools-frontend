@@ -7,9 +7,11 @@ import {assert} from 'chai';
 
 import {describe, it} from '../conductor/mocha-interface.js';
 import {
+  CONSOLE_MESSAGE_WRAPPER_SELECTOR,
   CONSOLE_TAB_SELECTOR,
   CONSOLE_TOOLTIP_SELECTOR,
   focusConsolePrompt,
+  typeIntoConsole,
 } from '../helpers/console-helpers.js';
 
 describe('The Console Tab', function() {
@@ -78,5 +80,94 @@ describe('The Console Tab', function() {
     });
 
     assert.deepEqual(evaluateResults, ['undefined', 'undefined', '2']);
+  });
+
+  it('associates a console result with its originating command', async ({devToolsPage, inspectedPage}) => {
+    await devToolsPage.click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt(devToolsPage);
+
+    await typeIntoConsole(devToolsPage, '1 + 1');
+
+    await devToolsPage.waitForFunction(async () => {
+      return await devToolsPage.evaluate(selector => {
+        return document.querySelectorAll(selector).length === 2;
+      }, CONSOLE_MESSAGE_WRAPPER_SELECTOR);
+    });
+
+    await inspectedPage.evaluate(() => {
+      // eslint-disable-next-line no-console
+      console.log('standalone');
+      Object.defineProperty(globalThis, 'logAndReturn', {
+        get() {
+          // Logs before Runtime.evaluate resolves so a log separates command and result.
+          // eslint-disable-next-line no-console
+          console.log('interleaved');
+          return 2 + 2;
+        },
+      });
+    });
+
+    await devToolsPage.waitForFunction(async () => {
+      return await devToolsPage.evaluate(selector => {
+        return document.querySelectorAll(selector).length === 3;
+      }, CONSOLE_MESSAGE_WRAPPER_SELECTOR);
+    });
+
+    await typeIntoConsole(devToolsPage, 'logAndReturn');
+
+    await devToolsPage.waitForFunction(async () => {
+      return await devToolsPage.evaluate(selector => {
+        return document.querySelectorAll(selector).length === 6;
+      }, CONSOLE_MESSAGE_WRAPPER_SELECTOR);
+    });
+
+    const renderedMessages = await devToolsPage.evaluate(selector => {
+      return Array.from(document.querySelectorAll(selector))
+          .map(wrapper => ({
+                 isAdjacentResult: wrapper.classList.contains('console-adjacent-user-command-result'),
+                 commandText: wrapper.querySelector('.console-user-command')?.textContent ?? null,
+                 resultText: wrapper.querySelector('.console-user-command-result')?.textContent ?? null,
+                 messageText: wrapper.querySelector('.console-message-text')?.textContent ?? null,
+               }));
+    }, CONSOLE_MESSAGE_WRAPPER_SELECTOR);
+
+    assert.deepEqual(renderedMessages, [
+      {
+        isAdjacentResult: false,
+        commandText: '1 + 1',
+        resultText: null,
+        messageText: null,
+      },
+      {
+        isAdjacentResult: true,
+        commandText: null,
+        resultText: '2',
+        messageText: '2',
+      },
+      {
+        isAdjacentResult: false,
+        commandText: null,
+        resultText: null,
+        messageText: 'standalone',
+      },
+      {
+        isAdjacentResult: false,
+        commandText: 'logAndReturn',
+        resultText: null,
+        messageText: null,
+      },
+      {
+        isAdjacentResult: false,
+        commandText: null,
+        resultText: null,
+        messageText: 'interleaved',
+      },
+      {
+        isAdjacentResult: false,
+        commandText: null,
+        resultText: '4',
+        messageText: '4',
+      },
+    ]);
   });
 });

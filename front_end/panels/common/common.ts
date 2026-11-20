@@ -15,3 +15,4 @@ export * as ExtensionIframe from './ExtensionView.js';
 export * as CommentThreadWidget from './CommentThreadWidget.js';
 export * as CommentsOverlayWidget from './CommentsOverlayWidget.js';
 export * as CommentsStatusBarPill from './CommentsStatusBarPill.js';
+export * as StateChangesStatusBarPills from './StateChangesStatusBarPills.js';

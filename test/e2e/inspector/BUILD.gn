@@ -8,6 +8,7 @@ node_ts_library("inspector") {
   sources = [
     "drawer.test.ts",
     "plus-button.test.ts",
+    "status-bar.test.ts",
   ]
   ts_deps = [
     "../conductor:implementation",

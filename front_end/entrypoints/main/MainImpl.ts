@@ -547,13 +547,9 @@ export class MainImpl {
         });
     this.#toolbarsPromise = inspectorView.createToolbars();
     this.#veStartPromise = this.#toolbarsPromise.then(() => this.#startVeLogging());
-    inspectorView.renderStatusBar(this.#universe.commentManager.isAgentAttached());
-    this.#universe.commentManager.addEventListener(
-        CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
-        event => {
-          inspectorView.renderStatusBar(event.data);
-        },
-    );
+    this.#renderStatusBar();
+    this.#universe.commentManager.addEventListener(CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+                                                   this.#renderStatusBar, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
 
     // Initialize elements for the live announcer functionality for a11y.
@@ -564,6 +560,12 @@ export class MainImpl {
     window.setTimeout(this.#initializeTarget.bind(this), 0);
     await this.#toolbarsPromise;
     MainImpl.timeEnd('Main._showAppUI');
+  }
+
+  #renderStatusBar(): void {
+    const visible = AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() ||
+        this.#universe.commentManager.isAgentAttached();
+    UI.InspectorView.InspectorView.instance().renderStatusBar(visible);
   }
 
   async #initializeTarget(): Promise<void> {

@@ -1,0 +1,39 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    display: flex;
+    /* Overrides `flex: none` of the status bar items, so that the pills take the free width. */
+    flex: auto;
+    gap: var(--sys-size-5);
+    min-width: 0;
+  }
+
+  /* In a narrow status bar, the pills that do not fit are cut off, and "Reset all" stays visible.
+   * `hidden` and not `clip`, so that a cut-off reset button scrolls into view when it gets the focus. */
+  .pills {
+    display: flex;
+    gap: var(--sys-size-5);
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .pill {
+    flex: none;
+    gap: var(--sys-size-2);
+    padding-block: 0;
+    padding-inline-end: var(--sys-size-2);
+  }
+
+  .reset-all {
+    flex: none;
+    align-self: center;
+    /* The button is higher than the pills. The negative margin stops it from making the status bar higher. */
+    margin-block: calc(-1 * var(--sys-size-3));
+    margin-inline-start: auto;
+  }
+}

@@ -1054,7 +1054,8 @@ function shouldShowLocaleInfobar(): boolean {
 
   // If the language setting is different than 'en-US', the user already
   // used the setting before, so don't show the toolbar.
-  const languageSettingValue = Common.Settings.Settings.instance().moduleSetting<string>('language').get();
+  const languageSettingValue =
+      Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.languageSettingDescriptor).get();
   if (languageSettingValue !== 'en-US') {
     return false;
   }
@@ -1072,7 +1073,8 @@ function createLocaleInfobarSpec(onDismiss: () => void): InfobarSpec {
   const closestSupportedLanguageInCurrentLocale =
       new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language || 'en') || 'English';
 
-  const languageSetting = Common.Settings.Settings.instance().moduleSetting<string>('language');
+  const languageSetting =
+      Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.languageSettingDescriptor);
   return {
     key: 'locale-mismatch',
     type: InfobarType.INFO,

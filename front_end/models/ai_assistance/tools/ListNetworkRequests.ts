@@ -197,7 +197,9 @@ export class ListNetworkRequestsTool implements
     if (requestsToShow.length === 0) {
       if (hasCrossOriginRequest) {
         return {
-          error: `No requests showing with origin ${establishedOrigin.siteId()}. Tell the user to start a new chat`,
+          error: `No requests showing with origin ${establishedOrigin.siteId()}. This conversation is locked to ${
+              establishedOrigin
+                  .siteId()} (for example from a selected cross-origin file in Sources or an earlier page). Ask the user to start a new chat and remove the cross-origin file from context (or select a resource from the current page first).`,
         };
       }
       return {

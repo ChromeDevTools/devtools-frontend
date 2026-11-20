@@ -508,7 +508,9 @@ requestId1;/foobar;200;0\xA0s;0.0\xA0kB`;
     };
 
     const response = await tool.handler({}, context);
-    assertIsError(response, 'No requests showing with origin https://example.com. Tell the user to start a new chat');
+    assertIsError(
+        response,
+        'No requests showing with origin https://example.com. This conversation is locked to https://example.com (for example from a selected cross-origin file in Sources or an earlier page). Ask the user to start a new chat and remove the cross-origin file from context (or select a resource from the current page first).');
     assert.notProperty(response, 'widgets');
   });
 

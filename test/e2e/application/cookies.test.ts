@@ -264,4 +264,71 @@ describe('The Application Tab', () => {
 
     await deleteCookies(browser);
   });
+
+  it('persists cookie selection and sidebar state on main frame reload',
+     async ({devToolsPage, inspectedPage, browser}) => {
+       expectError(
+           'Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
+       const domain = inspectedPage.domain();
+       const cookiesCategorySelector = '[aria-label="Cookies"].parent';
+       const selectedCookieDomainSelector = `${cookiesCategorySelector}.expanded:not(.selected) + ol > [aria-label="${
+           domain}"].selected[aria-selected="true"]`;
+
+       async function assertSidebarAndCookieView() {
+         await devToolsPage.waitForFunction(async () => {
+           const [localStorage, sessionStorage, database, selectedCookieDomain, frameTop, frameResource, cookieView] =
+               await Promise.all([
+                 devToolsPage.$(`[aria-label="Local storage"].parent + ol > [aria-label="${domain}"]`),
+                 devToolsPage.$(`[aria-label="Session storage"].parent + ol > [aria-label="${domain}"]`),
+                 devToolsPage.$('[aria-label="IndexedDB"].parent + ol > [aria-label="Database1"]'),
+                 devToolsPage.$(selectedCookieDomainSelector),
+                 devToolsPage.$('[aria-label="Resources Section"] ~ ol [aria-label="top"]'),
+                 devToolsPage.$('[aria-label="Resources Section"] ~ ol [aria-label="cookies.html"]'),
+                 devToolsPage.$('[jslog*="cookies-data"] .cookies-table devtools-data-grid'),
+               ]);
+           return Boolean(localStorage && sessionStorage && database && selectedCookieDomain && frameTop &&
+                          frameResource && cookieView);
+         });
+
+         const cookies = await getStorageItemsData(devToolsPage, ['name', 'value'], 4, true);
+         assert.deepEqual(cookies, [
+           {name: '__Host-foo3', value: 'bar'},
+           {name: 'foo', value: 'bar'},
+           {name: 'foo2', value: 'bar'},
+           {name: 'urlencoded', value: 'Hello%2BWorld!'},
+         ]);
+       }
+
+       try {
+         await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
+
+         await inspectedPage.evaluate(async () => {
+           await new Promise<void>((resolve, reject) => {
+             const request = indexedDB.open('Database1', 1);
+             request.onsuccess = () => {
+               request.result.close();
+               resolve();
+             };
+             request.onerror = () => reject(request.error);
+           });
+         });
+
+         await devToolsPage.bringToFront();
+         await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
+         await assertSidebarAndCookieView();
+
+         await inspectedPage.reload();
+         await assertSidebarAndCookieView();
+       } finally {
+         await inspectedPage.evaluate(async () => {
+           await new Promise<void>(resolve => {
+             const request = indexedDB.deleteDatabase('Database1');
+             request.onsuccess = () => resolve();
+             request.onerror = () => resolve();
+             request.onblocked = () => resolve();
+           });
+         });
+         await deleteCookies(browser);
+       }
+     });
 });

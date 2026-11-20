@@ -3,16 +3,19 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
+import {assertScreenshot, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelsCommon from '../common/common.js';
@@ -218,5 +221,170 @@ describe('DOMBreakpointsSidebarPane', () => {
     removeAllCallback();
 
     sinon.assert.calledOnce(removeAllStub);
+  });
+});
+
+function getDeepAriaDescriptions(root: Node): string[] {
+  const descriptions: string[] = [];
+  const collect = (node: Node): void => {
+    if (node instanceof Element) {
+      const description = node.getAttribute('aria-description');
+      if (description !== null) {
+        descriptions.push(description);
+      }
+      if (node.shadowRoot) {
+        collect(node.shadowRoot);
+      }
+    }
+    for (const child of node.childNodes) {
+      collect(child);
+    }
+  };
+  collect(root);
+  return descriptions;
+}
+
+describe('DOMBreakpointsSidebarPane accessibility', () => {
+  setupLocaleHooks();
+  setupRuntimeHooks();
+  setupSettingsHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+    setTestUniverseForWidgets(universe);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+  });
+
+  afterEach(() => {
+    universe.dispose();
+  });
+
+  it('renders enabled and disabled DOM breakpoints with no axe-core violations', async () => {
+    const setDOMBreakpointCalls: Protocol.DOMDebugger.SetDOMBreakpointRequest[] = [];
+    const removeDOMBreakpointCalls: Protocol.DOMDebugger.RemoveDOMBreakpointRequest[] = [];
+
+    const rootElementPayload: Protocol.DOM.Node = {
+      nodeId: 4 as Protocol.DOM.NodeId,
+      parentId: 3 as Protocol.DOM.NodeId,
+      backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'DIV',
+      localName: 'div',
+      nodeValue: '',
+      attributes: ['id', 'rootElement', 'style', 'color: red'],
+      childNodeCount: 1,
+      children: [
+        {
+          nodeId: 5 as Protocol.DOM.NodeId,
+          parentId: 4 as Protocol.DOM.NodeId,
+          backendNodeId: 5 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'DIV',
+          localName: 'div',
+          nodeValue: '',
+          attributes: ['id', 'elementToRemove'],
+          childNodeCount: 0,
+        },
+      ],
+    };
+    const hostElementPayload: Protocol.DOM.Node = {
+      nodeId: 6 as Protocol.DOM.NodeId,
+      parentId: 3 as Protocol.DOM.NodeId,
+      backendNodeId: 6 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'DIV',
+      localName: 'div',
+      nodeValue: '',
+      attributes: ['id', 'hostElement'],
+      childNodeCount: 0,
+    };
+    const documentPayload: Protocol.DOM.Node = {
+      nodeId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      localName: '',
+      nodeValue: '',
+      documentURL: 'https://example.com/dom-breakpoints.html',
+      childNodeCount: 1,
+      children: [
+        {
+          nodeId: 2 as Protocol.DOM.NodeId,
+          parentId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'HTML',
+          localName: 'html',
+          nodeValue: '',
+          childNodeCount: 1,
+          children: [
+            {
+              nodeId: 3 as Protocol.DOM.NodeId,
+              parentId: 2 as Protocol.DOM.NodeId,
+              backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+              nodeType: Node.ELEMENT_NODE,
+              nodeName: 'BODY',
+              localName: 'body',
+              nodeValue: '',
+              childNodeCount: 2,
+              children: [rootElementPayload, hostElementPayload],
+            },
+          ],
+        },
+      ],
+    };
+
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('DOM.getDocument', () => ({root: documentPayload}));
+    connection.setSuccessHandler('DOMDebugger.setDOMBreakpoint', params => {
+      setDOMBreakpointCalls.push(params);
+      return {};
+    });
+    connection.setSuccessHandler('DOMDebugger.removeDOMBreakpoint', params => {
+      removeDOMBreakpointCalls.push(params);
+      return {};
+    });
+
+    const target = universe.createTarget({connection});
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    const domDebuggerModel = target.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+    assert.exists(domModel);
+    assert.exists(domDebuggerModel);
+
+    const pane = new BrowserDebugger.DOMBreakpointsSidebarPane.DOMBreakpointsSidebarPane();
+    renderElementIntoDOM(pane, {includeCommonStyles: true, width: 300});
+
+    const domDocument = await domModel.requestDocument();
+    assert.exists(domDocument);
+    const bodyChildren = domDocument.body?.children() ?? [];
+    assert.lengthOf(bodyChildren, 2);
+    const [rootElement, hostElement] = bodyChildren;
+    assert.strictEqual(rootElement.getAttribute('id'), 'rootElement');
+    assert.strictEqual(hostElement.getAttribute('id'), 'hostElement');
+
+    domDebuggerModel.setDOMBreakpoint(rootElement, Protocol.DOMDebugger.DOMBreakpointType.SubtreeModified);
+    const hostBreakpoint =
+        domDebuggerModel.setDOMBreakpoint(hostElement, Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved);
+    domDebuggerModel.toggleDOMBreakpoint(hostBreakpoint, false);
+
+    await pane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.deepEqual(setDOMBreakpointCalls, [
+      {nodeId: 4 as Protocol.DOM.NodeId, type: Protocol.DOMDebugger.DOMBreakpointType.SubtreeModified},
+      {nodeId: 6 as Protocol.DOM.NodeId, type: Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved},
+    ]);
+    assert.deepEqual(removeDOMBreakpointCalls, [
+      {nodeId: 6 as Protocol.DOM.NodeId, type: Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved},
+    ]);
+
+    assert.strictEqual(pane.contentElement.deepTextContent(),
+                       'div#rootElementSubtree modifieddiv#hostElementNode removed');
+    assert.deepEqual(getDeepAriaDescriptions(pane.contentElement), ['checked', 'unchecked']);
+
+    const violations = await getAxeViolations(pane.contentElement);
+    assert.isEmpty(violations);
   });
 });

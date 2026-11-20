@@ -8,6 +8,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
@@ -70,9 +71,18 @@ describeWithEnvironment('DeviceModeToolbar', () => {
         lookupClosestDevToolsLocale: () => 'en-US',
       },
     });
+    const fakeSettings = new Map<string, Common.Settings.Setting<unknown>>();
+    const getOrCreateFakeSetting = <T>(name: string, defaultValue: T): Common.Settings.Setting<T> => {
+      let setting = fakeSettings.get(name);
+      if (!setting) {
+        setting = createFakeSetting(defaultValue) as Common.Settings.Setting<unknown>;
+        fakeSettings.set(name, setting);
+      }
+      return setting as Common.Settings.Setting<T>;
+    };
     sinon.stub(Common.Settings.Settings, 'instance').returns({
-      createSetting: <T>(_name: string, defaultValue: T) => createFakeSetting(defaultValue),
-      createLocalSetting: <T>(_name: string, defaultValue: T) => createFakeSetting(defaultValue),
+      createSetting: <T>(name: string, defaultValue: T) => getOrCreateFakeSetting(name, defaultValue),
+      createLocalSetting: <T>(name: string, defaultValue: T) => getOrCreateFakeSetting(name, defaultValue),
       resolve: <T>(descriptor: unknown) => {
         if ((descriptor as {name: string}).name === 'custom-network-conditions') {
           return createFakeSetting([] as T);
@@ -381,5 +391,31 @@ describeWithEnvironment('DeviceModeToolbar', () => {
     assert.include(labels, 'Foldables');
     assert.include(labels, 'Tablets & Desktops');
     assert.include(labels, 'Smart Displays');
+  });
+
+  it('keeps the zoom dropdown in sync when leaving a non-preset zoom', async () => {
+    const device =
+        EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard().find(d => d.title === 'Nest Hub Max');
+    assert.exists(device);
+    deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 0.78);
+    deviceModeModel.setAvailableSize(new Platform.Size(1000, 1000), new Platform.Size(1000, 1000));
+    toolbar.requestUpdate();
+    await toolbar.updateComplete;
+
+    const zoomSelect = toolbar.element.querySelector<HTMLSelectElement>('select[aria-label="Zoom"]');
+    assert.exists(zoomSelect);
+    assert.deepEqual(
+        [...zoomSelect.options].map(o => `${o.text}#${o.value}`),
+        ['Fit to window#0', '50%#0.5', '75%#0.75', '78%#0.78', '100%#1', '125%#1.25', '150%#1.5', '200%#2']);
+    assert.strictEqual(zoomSelect.value, '0.78');
+
+    zoomSelect.value = '1';
+    zoomSelect.dispatchEvent(new Event('change'));
+    toolbar.requestUpdate();
+    await toolbar.updateComplete;
+
+    assert.strictEqual(deviceModeModel.scaleSetting().get(), 1);
+    assert.strictEqual(zoomSelect.selectedOptions[0].text, '100%');
+    assert.strictEqual(zoomSelect.value, '1');
   });
 });

@@ -323,12 +323,16 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           </option>
           ${input.deviceModeOptions.standard.map(group => html`
             <optgroup label=${EmulationModel.EmulatedDevices.getCategoryTitle(group.category)}>
-              ${group.options.map(o => html`<option value=${o.title} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+              ${Directives.repeat(
+                  group.options, o => o.title,
+                  o => html`<option value=${o.title} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
             </optgroup>
           `)}
           ${input.deviceModeOptions.custom.length > 0 ? html`
             <optgroup label="Custom">
-              ${input.deviceModeOptions.custom.map(o => html`<option value=${o.title} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+              ${Directives.repeat(
+                  input.deviceModeOptions.custom, o => o.title,
+                  o => html`<option value=${o.title} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
             </optgroup>
           ` : ''}
           <option value="Edit" jslog=${VisualLogging.item(input.deviceModeOptions.edit.jslogContext).track({click: true})}>
@@ -349,7 +353,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               @change=${input.onScaleChange}
               .value=${String(input.scaleOptions.find(o => o.selected)?.value ?? '')}
               jslog=${VisualLogging.dropDown().track({change: true}).context('scale')}>
-        ${input.scaleOptions.map(o => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+        ${Directives.repeat(
+            input.scaleOptions, o => o.value,
+            o => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
       </select>
 
       <div class="device-mode-empty-toolbar-element"></div>
@@ -366,7 +372,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                     .value=${String(input.dprOptions.find(o => o.selected)?.value ?? '')}
                     jslog=${VisualLogging.dropDown().track({change: true}).context('device-pixel-ratio')}
                     ?disabled=${!input.isResponsive}>
-                ${input.dprOptions.map(o => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+                ${Directives.repeat(
+                    input.dprOptions, o => o.value,
+                    o => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
               </select>`,
           })}
         </div>` : ''}

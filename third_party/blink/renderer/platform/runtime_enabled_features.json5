@@ -2400,6 +2400,12 @@
       status: "stable",
     },
     {
+      // Switches descendants cursors to LayoutObject traversal for culled
+      // inlines with few descendants.
+      name: "CulledInlineDescendantsTraversal",
+      status: "stable",
+    },
+    {
       // Shipping in M148 (or backported earlier), can be removed in M150.
       name: "CustomElementsDisableFormattingFixups",
       status: "stable",
@@ -5735,6 +5741,13 @@
       status: "stable",
     },
     {
+      // Kill switch for https://crbug.com/575023846. Divides ResizeObserver's
+      // CSS-pixel sizes by the zoom in float instead of truncating the result
+      // to LayoutUnit (1/64px) precision.
+      name: "ResizeObserverUnroundedZoomAdjustedSizes",
+      status: "stable",
+    },
+    {
       name: "ResourceTimingInitiator",
       status: "experimental",
     },
@@ -5980,11 +5993,6 @@
       // https://github.com/w3c/window-management/issues/149
       name: "ScreenDetailedHdrHeadroom",
       status: "experimental",
-    },
-    {
-      // crbug.com/406917902
-      name: "ScriptBasedOnUnicodeBlock",
-      status: "stable",
     },
     // WebSpeech API with both speech recognition and synthesis functionality
     // is not fully enabled on all platforms.
@@ -7531,6 +7539,10 @@
     {
       name: "ViewTransitionScopedChildRestrictedElements",
       status: "test",
+    },
+    {
+      name: "ViewTransitionShadowRoots",
+      status: "experimental",
     },
     {
       // Kill switch. Doesn't generate the ::view-transition pseudo-element

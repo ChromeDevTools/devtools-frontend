@@ -22,7 +22,8 @@ describe('The Network Tab search', function() {
 
     if (ignoreCase !== undefined) {
       const matchCaseButton = await devToolsPage.waitFor('.match-case-button');
-      const matchCaseToggled = await matchCaseButton.evaluate(e => e.ariaPressed === 'true');
+      const matchCaseToggled = await matchCaseButton.evaluate(
+          e => e.shadowRoot?.querySelector('button')?.getAttribute('aria-pressed') === 'true');
       // The button is a toggle. `aria-pressed` is 'true' if it's active.
       // We want `ignoreCase` to be true when the button is NOT pressed.
       const shouldBeToggled = !ignoreCase;
@@ -33,7 +34,8 @@ describe('The Network Tab search', function() {
 
     if (isRegex !== undefined) {
       const regexButton = await devToolsPage.waitFor('.regex-button');
-      const regexToggled = await regexButton.evaluate(e => e.ariaPressed === 'true');
+      const regexToggled = await regexButton.evaluate(
+          e => e.shadowRoot?.querySelector('button')?.getAttribute('aria-pressed') === 'true');
       if (isRegex !== regexToggled) {
         await regexButton.click();
       }

@@ -2734,6 +2734,7 @@ describe('ExtensionServer', () => {
       'devtools://devtools/bundled/front_end/devtools_app.html',
       'devtools://devtools/anything',
       'chrome://extensions',
+      'chrome-distiller://example',
       'chrome-untrusted://extensions',
       'chrome-error://crash',
       'chrome-search://foo/bar',

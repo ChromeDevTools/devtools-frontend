@@ -832,6 +832,7 @@ describe('Parsed URL', () => {
     it('returns true for privileged browser and local schemes and blob URLs wrapping them', () => {
       const privilegedUrls = [
         urlString`chrome://settings`,
+        urlString`chrome-distiller://example`,
         urlString`chrome-error://crash`,
         urlString`chrome-extension://abcdefghijklmnop/page.html`,
         urlString`chrome-search://local-ntp/local-ntp.html`,

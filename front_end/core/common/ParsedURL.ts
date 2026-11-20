@@ -84,6 +84,7 @@ export function hasWebSafeScheme(url: Platform.DevToolsPath.UrlString|URL|string
  */
 const PRIVILEGED_SCHEMES = new Set([
   'chrome:',
+  'chrome-distiller:',
   'chrome-error:',
   'chrome-extension:',
   'chrome-search:',

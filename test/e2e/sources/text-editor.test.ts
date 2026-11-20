@@ -7,6 +7,8 @@ import type {ElementHandle} from 'puppeteer-core';
 
 import type * as TextEditor from '../../../front_end/ui/components/text_editor/text_editor.js';
 import {describe, it, setup} from '../conductor/mocha-interface.js';
+import {navigateToElementsTab} from '../helpers/elements-helpers.js';
+import {openSourceCodeEditorForFile, openSourcesPanel} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('text editor', () => {
@@ -32,6 +34,13 @@ describe('text editor', () => {
     await devToolsPage.click('aria/More tabs', {root: sources});
     await devToolsPage.click('aria/Snippets');
     await devToolsPage.click('aria/New snippet');
+  }
+
+  async function isEditorFocused(devToolsPage: DevToolsPage,
+                                 textEditor: ElementHandle<TextEditor.TextEditor.TextEditor>): Promise<boolean> {
+    const activeElement = await devToolsPage.activeElement();
+    return await activeElement.evaluate(
+        (el, editor) => el.classList.contains('cm-content') && el.getRootNode() === editor.shadowRoot, textEditor);
   }
 
   it('can insert and delete some text', async ({devToolsPage}) => {
@@ -87,5 +96,19 @@ describe('text editor', () => {
     await devToolsPage.pressKey('S', {
       control: true,
     });
+  });
+
+  it('has focus after re-selecting the Sources panel', async ({devToolsPage, inspectedPage}) => {
+    await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'click-breakpoint.js', 'click-breakpoint.html');
+    const textEditor = await devToolsPage.waitFor<TextEditor.TextEditor.TextEditor>('devtools-text-editor');
+    assert.isTrue(await isEditorFocused(devToolsPage, textEditor), 'Expected text editor to have focus initially');
+
+    await navigateToElementsTab(devToolsPage, {expectExistingPanel: true});
+    assert.isFalse(await isEditorFocused(devToolsPage, textEditor),
+                   'Expected text editor to lose focus on Elements panel');
+
+    await openSourcesPanel(devToolsPage);
+    assert.isTrue(await isEditorFocused(devToolsPage, textEditor),
+                  'Expected text editor to regain focus after re-selecting Sources panel');
   });
 });

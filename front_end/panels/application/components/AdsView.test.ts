@@ -3,32 +3,59 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import * as sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import {findMenuItemWithLabel, getMenuItemLabels} from '../../../testing/ContextMenuHelpers.js';
 import {raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../../testing/DOMHooks.js';
 import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {setUpEnvironment} from '../../../testing/OverridesHelpers.js';
+import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Components from '../../../ui/legacy/components/utils/utils.js';
-import type * as UI from '../../../ui/legacy/legacy.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as ApplicationComponents from './components.js';
 
 const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('AdsView', () => {
+  const NO_AD_METRICS: Protocol.Ads.AdMetrics = {
+    viewportAdDensityByArea: 0,
+    averageViewportAdDensityByArea: 0,
+    viewportAdCount: 0,
+    averageViewportAdCount: 0,
+    totalAdCpuTime: 0,
+    totalAdNetworkBytes: 0,
+    updateAdFrames: [],
+    removeAdFrames: [],
+  };
+
   let target: SDK.Target.Target;
   let connection: MockCDPConnection;
   let clock: sinon.SinonFakeTimers;
+  let getFrameStub: sinon.SinonStubbedMember<SDK.FrameManager.FrameManager['getFrame']>;
 
   let originalResizeObserver: typeof ResizeObserver;
+
+  // Creates the node of an element with the given ID, which its DOM model tracks.
+  function createTrackedNode(elementId: string): {
+    node: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>,
+    domModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>,
+  } {
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.getAttribute.withArgs('id').returns(elementId);
+    const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
+    domModel.nodeForId.returns(node);
+    node.domModel.returns(domModel);
+    return {node, domModel};
+  }
 
   beforeEach(() => {
     // Stub ResizeObserver to prevent errors in tests caused by the data grid's internal
@@ -68,7 +95,8 @@ describeWithEnvironment('AdsView', () => {
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
 
-    sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getFrame').callsFake((frameId: string) => {
+    getFrameStub = sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getFrame').callsFake((frameId: string) => {
+      const {node: ownerNode} = createTrackedNode(`ad-iframe-${frameId}`);
       return {
         id: frameId,
         resourceTreeModel: () => ({
@@ -76,11 +104,7 @@ describeWithEnvironment('AdsView', () => {
         }),
         getOwnerDeferredDOMNode: async () => {
           return {
-            resolvePromise: async () => {
-              return {
-                getAttribute: (attr: string) => attr === 'id' ? `ad-iframe-${frameId}` : null,
-              } as unknown as SDK.DOMModel.DOMNode;
-            },
+            resolvePromise: async () => ownerNode,
           } as unknown as SDK.DOMModel.DeferredDOMNode;
         },
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
@@ -366,65 +390,280 @@ describeWithEnvironment('AdsView', () => {
     panel.detach();
   });
 
-  it('reveals the frame when the element ID button is clicked', async () => {
-    let callCount = 0;
-    connection.setHandler('Ads.getAdMetrics', null);
-    connection.setSuccessHandler('Ads.getAdMetrics', () => {
-      callCount++;
-      if (callCount === 1) {
-        return {
-          metrics: {
-            viewportAdDensityByArea: 0,
-            averageViewportAdDensityByArea: 0,
-            viewportAdCount: 0,
-            averageViewportAdCount: 0,
-            totalAdCpuTime: 0,
-            totalAdNetworkBytes: 0,
-            updateAdFrames: [
-              {
-                frameId: 'frame-1' as Protocol.Page.FrameId,
-                initialOrigin: 'https://example.com',
-                cpuTime: 100,
-                networkBytes: 1024,
-              },
-            ],
-            removeAdFrames: [],
-          },
-        };
-      }
-      return {
-        metrics: {
-          viewportAdDensityByArea: 0,
-          averageViewportAdDensityByArea: 0,
-          viewportAdCount: 0,
-          averageViewportAdCount: 0,
-          totalAdCpuTime: 0,
-          totalAdNetworkBytes: 0,
-          updateAdFrames: [],
-          removeAdFrames: [],
-        },
+  describe('ad frame row', () => {
+    const FRAME_ID = 'frame-1' as Protocol.Page.FrameId;
+
+    let frame: sinon.SinonStubbedInstance<SDK.ResourceTreeModel.ResourceTreeFrame>;
+    let ownerNode: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
+    let ownerDomModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>;
+
+    function setOwnerNode(node: SDK.DOMModel.DOMNode|null): sinon.SinonStubbedInstance<SDK.DOMModel.DeferredDOMNode> {
+      const deferredNode = sinon.createStubInstance(SDK.DOMModel.DeferredDOMNode);
+      deferredNode.resolvePromise.resolves(node);
+      frame.getOwnerDeferredDOMNode.resolves(deferredNode);
+      return deferredNode;
+    }
+
+    beforeEach(() => {
+      ({node: ownerNode, domModel: ownerDomModel} = createTrackedNode('ad-iframe'));
+      frame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
+      setOwnerNode(ownerNode);
+      getFrameStub.withArgs(FRAME_ID).returns(frame);
+
+      const metrics: Protocol.Ads.AdMetrics = {
+        ...NO_AD_METRICS,
+        updateAdFrames: [{frameId: FRAME_ID, initialOrigin: 'https://example.com', cpuTime: 100, networkBytes: 1024}],
       };
+      connection.setHandler('Ads.getAdMetrics', null);
+      connection.setSuccessHandler('Ads.getAdMetrics', () => ({metrics}));
     });
 
-    const panel = new ApplicationComponents.AdsView.AdsView();
-    renderElementIntoDOM(panel);
+    async function showAdsView() {
+      const view = createViewFunctionStub(ApplicationComponents.AdsView.AdsView);
+      const adsView = new ApplicationComponents.AdsView.AdsView(view);
+      renderElementIntoDOM(adsView);
+      // The owner element is resolved asynchronously, once the first poll has reported the ad frame.
+      let input = await view.nextInput;
+      while (!input.adFrames.some(adFrame => adFrame.elementId)) {
+        input = await view.nextInput;
+      }
+      return {view, input};
+    }
 
-    // Wait for the initial poll and subsequent async element ID fetches to resolve
-    await panel.updateComplete;
-    await RenderCoordinator.done();
+    it('passes the owner element of an ad frame to the view', async () => {
+      const {input} = await showAdsView();
 
-    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+      assert.strictEqual(input.adFrames[0].elementId, 'ad-iframe');
+      assert.strictEqual(input.adFrames[0].ownerNode, ownerNode);
+    });
 
-    const linkButton = panel.contentElement.querySelector('.devtools-link') as HTMLButtonElement;
-    assert.isNotNull(linkButton);
+    it('passes no owner element to the view for an ad frame that has none', async () => {
+      frame.getOwnerDeferredDOMNode.resolves(null);
 
-    linkButton.click();
-    sinon.assert.calledOnce(revealStub);
+      const {input} = await showAdsView();
 
-    const revealable = revealStub.firstCall.args[0] as SDK.ResourceTreeModel.ResourceTreeFrame;
-    assert.strictEqual(revealable.id, 'frame-1');
+      assert.strictEqual(input.adFrames[0].elementId, '<unnamed>');
+      assert.isNull(input.adFrames[0].ownerNode);
+    });
 
-    panel.detach();
+    it('retries resolving the owner element of an ad frame when resolvePromise returns null', async () => {
+      const deferredNode = setOwnerNode(ownerNode);
+      deferredNode.resolvePromise.onFirstCall().resolves(null);
+
+      const view = createViewFunctionStub(ApplicationComponents.AdsView.AdsView);
+      const adsView = new ApplicationComponents.AdsView.AdsView(view);
+      renderElementIntoDOM(adsView);
+      await adsView.updateComplete;
+      await clock.tickAsync(0);
+
+      assert.strictEqual(view.input.adFrames[0].elementId, '');
+      assert.isNull(view.input.adFrames[0].ownerNode);
+
+      await clock.tickAsync(500);
+      let input = view.input;
+      while (!input.adFrames[0].elementId) {
+        input = await view.nextInput;
+      }
+
+      assert.strictEqual(input.adFrames[0].elementId, 'ad-iframe');
+      assert.strictEqual(input.adFrames[0].ownerNode, ownerNode);
+      sinon.assert.calledTwice(deferredNode.resolvePromise);
+    });
+
+    it('stops retrying to resolve the owner element of an ad frame after capped retries', async () => {
+      const deferredNode = setOwnerNode(null);
+
+      const view = createViewFunctionStub(ApplicationComponents.AdsView.AdsView);
+      const adsView = new ApplicationComponents.AdsView.AdsView(view);
+      renderElementIntoDOM(adsView);
+      await adsView.updateComplete;
+      await clock.tickAsync(0);
+
+      assert.strictEqual(view.input.adFrames[0].elementId, '');
+
+      // First two retries (polls at 500 ms and 1000 ms) keep waiting.
+      await clock.tickAsync(1000);
+      await adsView.updateComplete;
+      assert.strictEqual(view.input.adFrames[0].elementId, '');
+
+      // Third retry (poll at 1500 ms) hits the cap and falls back to <unnamed>.
+      await clock.tickAsync(500);
+      let input = view.input;
+      while (!input.adFrames[0].elementId) {
+        input = await view.nextInput;
+      }
+      assert.strictEqual(input.adFrames[0].elementId, '<unnamed>');
+      assert.isNull(input.adFrames[0].ownerNode);
+      sinon.assert.callCount(deferredNode.resolvePromise, 4);
+
+      // Subsequent polls make no further CDP calls for this frame.
+      await clock.tickAsync(1000);
+      sinon.assert.callCount(frame.getOwnerDeferredDOMNode, 4);
+      sinon.assert.callCount(deferredNode.resolvePromise, 4);
+    });
+
+    it('resolves the owner element of an ad frame again when the DOM model stops tracking its node', async () => {
+      const {view} = await showAdsView();
+      const {node: newOwnerNode} = createTrackedNode('ad-iframe');
+      setOwnerNode(newOwnerNode);
+
+      // The DOM model does this when the ad iframe navigates.
+      ownerDomModel.nodeForId.returns(null);
+      await clock.tickAsync(500);
+
+      let input = view.input;
+      while (input.adFrames[0].ownerNode === ownerNode) {
+        input = await view.nextInput;
+      }
+      assert.strictEqual(input.adFrames[0].ownerNode, newOwnerNode);
+    });
+
+    it('hides the node highlight when the mouse leaves a row or the ad iframes table', async () => {
+      const hideDOMNodeHighlight = sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+      const {input} = await showAdsView();
+
+      input.onAdFramesMouseLeave();
+
+      sinon.assert.calledOnce(hideDOMNodeHighlight);
+    });
+
+    it('shows the details of an ad frame from the context menu', async () => {
+      const {input} = await showAdsView();
+      const reveal = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+      const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('contextmenu'));
+
+      input.onAdFrameContextMenu(contextMenu, FRAME_ID);
+
+      assert.deepEqual(getMenuItemLabels(contextMenu.viewSection()), ['Show iframe details']);
+      const item = findMenuItemWithLabel(contextMenu.viewSection(), 'Show iframe details');
+      assert.exists(item);
+      contextMenu.invokeHandler(item.id());
+      sinon.assert.calledOnceWithExactly(reveal, frame, false);
+    });
+  });
+
+  describe('DEFAULT_VIEW', () => {
+    const FRAME_ID = 'frame-1' as Protocol.Page.FrameId;
+
+    let container: HTMLElement;
+
+    beforeEach(() => {
+      container = document.createElement('div');
+      renderElementIntoDOM(container);
+    });
+
+    // Renders an ad frame into `container`, and returns its row in the ad iframes table.
+    async function renderAdFrameRow(
+        ownerNode: SDK.DOMModel.DOMNode|null,
+        callbacks: Partial<ApplicationComponents.AdsView.ViewInput> = {}): Promise<Element> {
+      const input: ApplicationComponents.AdsView.ViewInput = {
+        metrics: NO_AD_METRICS,
+        adFrames: [{
+          frameId: FRAME_ID,
+          elementId: 'ad-iframe',
+          ownerNode,
+          initialOrigin: 'https://example.com',
+          cpuTime: '100\xa0ms',
+          rawCpuTime: 100,
+          networkBytes: '1.0\xa0kB',
+          rawNetworkBytes: 1024,
+        }],
+        adScripts: [],
+        target: null,
+        getLinkElement: () => document.createElement('span'),
+        onAdFramesMouseLeave: () => {},
+        onAdFrameContextMenu: () => {},
+        ...callbacks,
+      };
+      ApplicationComponents.AdsView.DEFAULT_VIEW(input, undefined, container);
+      // The data grids set up their columns asynchronously, in response to a
+      // mutation observer. Wait for that to settle before the test ends.
+      await raf();
+
+      const row = container.querySelector('.ad-frames-data-grid table tr:nth-child(2)');
+      assert.exists(row);
+      return row;
+    }
+
+    // The data grid shows a copy of each row. Returns the copy of the given
+    // row, which is the row that the user sees.
+    async function shownAdFrameRow(row: Element): Promise<Element> {
+      await RenderCoordinator.done();
+      const shownRow = row.closest('devtools-data-grid')?.shadowRoot?.querySelector('tr.data-grid-data-grid-node');
+      assert.exists(shownRow);
+      return shownRow;
+    }
+
+    async function shownElementIdLink(row: Element): Promise<HTMLButtonElement> {
+      const shownRow = await shownAdFrameRow(row);
+      const link = shownRow.querySelector('td devtools-widget')?.shadowRoot?.querySelector('button');
+      assert.exists(link);
+      return link;
+    }
+
+    it('links the Element ID of an ad frame to its owner element', async () => {
+      const ownerNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      const reveal = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+      const row = await renderAdFrameRow(ownerNode);
+
+      const link = await shownElementIdLink(row);
+      assert.strictEqual(link.textContent?.trim(), 'ad-iframe');
+      link.click();
+
+      sinon.assert.calledOnceWithExactly(reveal, ownerNode, false);
+      sinon.assert.calledOnce(ownerNode.scrollIntoView);
+    });
+
+    it('links the Element ID of an ad frame to its new owner element after that was resolved again', async () => {
+      const newOwnerNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      const reveal = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+      const row = await renderAdFrameRow(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      await shownElementIdLink(row);
+
+      await renderAdFrameRow(newOwnerNode);
+      (await shownElementIdLink(row)).click();
+
+      // The stubs of the two nodes are deeply equal, so compare by identity.
+      sinon.assert.calledOnceWithExactly(reveal, sinon.match.same(newOwnerNode), false);
+    });
+
+    it('shows the Element ID of an ad frame without an owner element as plain text', async () => {
+      const row = await renderAdFrameRow(null);
+
+      const cell = (await shownAdFrameRow(row)).querySelector('td');
+      assert.strictEqual(cell?.textContent, 'ad-iframe');
+      assert.notExists(cell?.querySelector('devtools-widget'));
+    });
+
+    it('forwards the mouse leaving the ad iframes table to onAdFramesMouseLeave', async () => {
+      const onAdFramesMouseLeave = sinon.spy();
+      const row = await renderAdFrameRow(null, {onAdFramesMouseLeave});
+      const dataGrid = row.closest('devtools-data-grid');
+      assert.exists(dataGrid);
+
+      dataGrid.dispatchEvent(new MouseEvent('mouseleave'));
+
+      sinon.assert.calledOnce(onAdFramesMouseLeave);
+    });
+
+    it('forwards the mouse leaving an ad frame row to onAdFramesMouseLeave', async () => {
+      const onAdFramesMouseLeave = sinon.spy();
+      const row = await renderAdFrameRow(null, {onAdFramesMouseLeave});
+
+      (await shownAdFrameRow(row)).dispatchEvent(new MouseEvent('mouseleave'));
+
+      sinon.assert.calledOnce(onAdFramesMouseLeave);
+    });
+
+    it('forwards the context menu of an ad frame row to onAdFrameContextMenu', async () => {
+      const onAdFrameContextMenu = sinon.spy();
+      const row = await renderAdFrameRow(null, {onAdFrameContextMenu});
+      const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('contextmenu'));
+
+      row.dispatchEvent(new CustomEvent('contextmenu', {detail: contextMenu}));
+
+      sinon.assert.calledOnceWithExactly(onAdFrameContextMenu, contextMenu, FRAME_ID);
+    });
   });
 
   it('renders ad scripts in data grid, dedupes by URL, and filters inline/anonymous/content scripts', async () => {

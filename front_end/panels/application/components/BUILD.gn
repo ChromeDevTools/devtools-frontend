@@ -48,6 +48,7 @@ devtools_ui_module("components") {
     "../../../core/sdk:bundle",
     "../../../core/text_utils:bundle",
     "../../../generated",
+    "../../../panels/common:bundle",
     "../../../panels/network/forward:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/expandable_list:bundle",

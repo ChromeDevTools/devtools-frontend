@@ -273,6 +273,11 @@
       status: "experimental",
     },
     {
+      // Kill switch for the linear walk in AXObject::UnignoredChildrenSlow().
+      name: "AccessibilityLinearUnignoredChildren",
+      status: "stable",
+    },
+    {
       // Use a minimum role of group on elements that are keyboard-focusable.
       // See https://w3c.github.io/html-aam/#minimum-role.
       name: "AccessibilityMinRoleTabbable",
@@ -533,7 +538,13 @@
       // Gates access to the thinking mode enhancement for "AIPromptAPI".
       // This feature alone does not expose any "AIPromptAPI" feature access.
       name: "AIPromptAPIThinkingMode",
-      status: "experimental",
+      status: {
+        "Win": "experimental",
+        "Mac": "experimental",
+        "Linux": "experimental",
+        "ChromeOS": "experimental",
+        "default": "",
+      },
     },
     {
       // Gates access to the tool use (function calling) enhancement for
@@ -820,6 +831,12 @@
     {
       name: "AudioVideoTracks",
       status: "experimental",
+    },
+    {
+      // Exposes WorkletPerformance on AudioWorkletGlobalScope.performance.
+      // https://chromestatus.com/feature/5108412173123584
+      name: "AudioWorkletPerformance",
+      status: "test",
     },
     {
       name: "AudioWorkletProcessorErrorEventType",
@@ -1782,6 +1799,14 @@
     {
       name: "CSSColorTypedOM",
       status: "experimental",
+    },
+    {
+      // Kill switch for the CHECK() for a clean tree in
+      // StyleResolver::ComputeValue().
+      // NOTE: turning this flag off will introduce use-after-free issues with
+      // potential security impact.
+      name: "CSSComputeValueCHECK",
+      status: "stable",
     },
     // https://drafts.csswg.org/css-values-5/#progress
     // container-progress()
@@ -2867,7 +2892,7 @@
       // See https://crbug.com/40943926 and
       // https://html.spec.whatwg.org/multipage/dnd.html#security-risks-in-the-drag-and-drop-model
       name: "DragThresholdRequiresMouseMovement",
-      status: "stable",
+      status: "test"
     },
     {
       // See: crrev.com/c/7874048
@@ -6189,6 +6214,15 @@
       status: "stable",
     },
     {
+      // Makes more minor tweaks to some edge cases for <selectedcontent>
+      // elements.
+      // https://github.com/whatwg/html/pull/13005
+      // Enabled in M160, can be removed in M163.
+      name: "SelectedcontentSpec3",
+      depends_on: ["SelectedcontentSpec2"],
+      status: "stable",
+    },
+    {
       // See https://crbug.com/40664519
       // Disabled due to UI freeze issues, see https://crbug.com/448833953.
       name: "SelectionAndFocusedVisiblePositionMatch",
@@ -6809,11 +6843,6 @@
       // https://issues.chromium.org/41302806
       name: "SVGEmbeddedAsReplacedElement",
       status: "experimental",
-    },
-    {
-      // Don't accept the empty string as a valid value in some cases.
-      name: "SvgEmptyAttributeStringParsingFix",
-      status: "stable",
     },
     {
       // getBBox() returns the empty rect for shapes that are not rendered,
@@ -8334,6 +8363,7 @@
       // the origin trial when the base::Feature is disabled.
       name: "WindowOpenSplitTab",
       origin_trial_feature_name: "WindowOpenSplitTab",
+      origin_trial_allows_third_party: true,
       status: "experimental",
       base_feature_status: "enabled",
       copied_from_base_feature_if: "overridden",

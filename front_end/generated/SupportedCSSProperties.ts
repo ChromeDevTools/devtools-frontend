@@ -3018,9 +3018,7 @@ export const generatedProperties: CSSProperty[] = [
   "keywords": [
    "normal"
   ],
-  "name": "font-language-override",
-  "runtime_flag": "FontLanguageOverride",
-  "runtime_flag_status": "stable"
+  "name": "font-language-override"
  },
  {
   "inherited": true,

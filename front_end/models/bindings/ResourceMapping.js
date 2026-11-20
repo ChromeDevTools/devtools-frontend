@@ -525,7 +525,10 @@ class Binding {
             }
             await Promise.all(updatePromises);
         }
-        this.#uiSourceCode.addRevision(text.value());
+        const updatedContent = text.value();
+        if (updatedContent !== content) {
+            this.#uiSourceCode.addRevision(updatedContent);
+        }
     }
     addResource(resource) {
         this.resources.add(resource);

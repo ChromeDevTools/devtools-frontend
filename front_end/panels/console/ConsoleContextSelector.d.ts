@@ -6,6 +6,7 @@ export declare class ConsoleContextSelector implements SDK.TargetManager.SDKMode
     private readonly dropDown;
     constructor();
     toolbarItem(): UI.Toolbar.ToolbarItem;
+    dispose(): void;
     highlightedItemChanged(_from: SDK.RuntimeModel.ExecutionContext | null, to: SDK.RuntimeModel.ExecutionContext | null, fromElement: Element | null, toElement: Element | null): void;
     titleFor(executionContext: SDK.RuntimeModel.ExecutionContext): string;
     private depthFor;

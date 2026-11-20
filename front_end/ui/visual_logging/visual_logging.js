@@ -1168,6 +1168,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "copy-selector",
   "copy-stack-trace",
   "copy-stacktrace",
+  "copy-step-as-extension",
   "copy-step-as-extension-0",
   "copy-step-as-extension-1",
   "copy-step-as-extension-2",

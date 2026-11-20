@@ -13,6 +13,7 @@
     "skipLibCheck": true
   },
   "files": [
+    "../../../../../../../front_end/panels/recorder/converters/ExtensionConverter.test.ts",
     "../../../../../../../front_end/panels/recorder/converters/LighthouseConverter.test.ts",
     "../../../../../../../front_end/panels/recorder/converters/PuppeteerConverter.test.ts",
     "../../../../../../../front_end/panels/recorder/converters/PuppeteerReplayConverter.test.ts",
@@ -30,6 +31,9 @@
     },
     {
       "path": "../models/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../testing/testing-tsconfig.ref.json"
     }
   ]
 }

@@ -46,6 +46,7 @@
   },
   "files": [
     "../../../../../../../front_end/panels/recorder/models/ConverterIds.ts",
+    "../../../../../../../front_end/panels/recorder/models/NavigationGuard.ts",
     "../../../../../../../front_end/panels/recorder/models/RecorderSettings.ts",
     "../../../../../../../front_end/panels/recorder/models/RecorderShortcutHelper.ts",
     "../../../../../../../front_end/panels/recorder/models/RecordingPlayer.ts",

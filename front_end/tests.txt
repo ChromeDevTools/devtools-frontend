@@ -80,6 +80,7 @@ core/sdk/DebuggerModel.test.js
 core/sdk/EmulationModel.test.js
 core/sdk/EnhancedTracesParser.test.js
 core/sdk/FrameManager.test.js
+core/sdk/IsolateManager.test.js
 core/sdk/NetworkManager.test.js
 core/sdk/NetworkRequest.test.js
 core/sdk/NetworkRequestAccess.test.js
@@ -393,6 +394,7 @@ entrypoints/node_app/app/NodeMain.test.js
 entrypoints/wasmparser_worker/wasmparser_worker.test.js
 models/ai-utils/BuiltInAi.test.js
 models/ai_assistance/DOMHelpers.test.js
+models/extensions/ExtensionAPI.test.js
 panels/accessibility/ARIAAttributesView.test.js
 panels/accessibility/AccessibilityAnnouncementRecordingListView.test.js
 panels/accessibility/AccessibilityAnnouncementRecordingView.test.js
@@ -644,10 +646,12 @@ panels/recorder/ReplaySection.test.js
 panels/recorder/StepEditor.test.js
 panels/recorder/StepView.test.js
 panels/recorder/injected.test.js
+panels/recorder/converters/ExtensionConverter.test.js
 panels/recorder/converters/LighthouseConverter.test.js
 panels/recorder/converters/PuppeteerConverter.test.js
 panels/recorder/converters/PuppeteerReplayConverter.test.js
 panels/recorder/injected/selectors/CSSSelector.test.js
+panels/recorder/models/NavigationGuard.test.js
 panels/recorder/models/RecorderSettings.test.js
 panels/recorder/models/RecorderShortcutHelper.test.js
 panels/recorder/models/RecordingPlayer.test.js

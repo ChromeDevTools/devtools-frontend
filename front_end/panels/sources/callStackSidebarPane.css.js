@@ -21,10 +21,10 @@ export default `/*
   padding: var(--sys-size-1);
 }
 
-.ignore-listed-message-label {
+.ignore-listed-checkbox {
   color: var(--sys-color-token-subtle);
-  align-items: center;
   display: flex;
+  max-width: 100%;
 }
 
 .show-more-message > .link {
@@ -82,10 +82,6 @@ export default `/*
 .call-frame-item:focus-visible,
 .call-frame-item.async-header:focus-visible .call-frame-item-title {
   background-color: var(--sys-color-tonal-container);
-}
-
-.ignore-listed-checkbox:focus-visible {
-  outline-width: unset;
 }
 
 .call-frame-item:not(.async-header):hover {

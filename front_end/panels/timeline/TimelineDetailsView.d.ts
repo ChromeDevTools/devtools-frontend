@@ -50,13 +50,13 @@ export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     private rangeDetailViews;
     private lazyPaintProfilerView?;
     private lazyLayersView?;
-    private preferredTabId?;
     private lazySelectorStatsView;
     static makeEventWidget(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): TimelineDetailsPane;
     constructor(delegate: Pick<TimelineModeViewDelegate, 'highlightEvent'>, summaryTabView?: SummaryTabView);
     performUpdate(): void;
     wasShown(): void;
     willHide(): void;
+    onDetach(): void;
     /**
      * This selects a given tabbedPane tab.
      * Additionally, if provided a node, we open that node and
@@ -81,7 +81,6 @@ export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     private appendTab;
     headerElement(): Element;
     hideHeader(): void;
-    setPreferredTab(tabId: string): void;
     /**
      * Recalculates and renders the timing breakdown for the active details tab.
      * Panning or zooming triggers rapid bounds updates, so we debounce this call

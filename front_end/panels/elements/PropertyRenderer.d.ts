@@ -1,6 +1,8 @@
+import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import type * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 export declare function precedingSpace(node: CodeMirror.SyntaxNode, ast: SDK.CSSPropertyParser.SyntaxTree, matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching): string;
@@ -76,6 +78,21 @@ export declare class TracingContext {
 export declare const CSSControlMap: MapConstructor;
 export type CSSControlMap = Map<string, HTMLElement[]>;
 /**
+ * Callbacks passed by a parent renderer to `Renderer.render` to observe values reported by its direct children.
+ * Callbacks are not forwarded automatically into nested `Renderer.render` calls.
+ */
+export interface RenderingCallbacks {
+    /**
+     * Called by a child color renderer during initial render and whenever the color changes. Receives a CSS color
+     * string when the child does not resolve to a `Common.Color.Color` (for example, `color-mix()`).
+     */
+    onColor?: (color: Common.Color.Color | string) => void;
+    /**
+     * Called by a child angle renderer whenever the angle changes.
+     */
+    onAngle?: (angle: InlineEditor.CSSAngleUtils.Angle) => void;
+}
+/**
  * Tracks the changes that renderers make to the text of the value of a declaration, e.g. because the user picked a
  * color, and puts the text of the value together from them. It wraps a `ComputedText` over the authored text of the
  * declaration, in which a change takes the place of the match that it replaces.
@@ -122,9 +139,10 @@ export declare class RenderingContext {
     readonly tracing?: TracingContext | undefined;
     readonly signal?: AbortSignal | undefined;
     readonly edits?: ValueUpdateTracking | undefined;
+    readonly callbacks: RenderingCallbacks;
     constructor(ast: SDK.CSSPropertyParser.SyntaxTree, property: SDK.CSSProperty.CSSProperty | null, renderers: Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching, cssControls?: CSSControlMap | undefined, options?: {
         readonly?: boolean;
-    }, tracing?: TracingContext | undefined, signal?: AbortSignal | undefined, edits?: ValueUpdateTracking | undefined);
+    }, tracing?: TracingContext | undefined, signal?: AbortSignal | undefined, edits?: ValueUpdateTracking | undefined, callbacks?: RenderingCallbacks);
     recordEdit(match: SDK.CSSPropertyParser.Match, value: string | (() => string)): void;
     addControl(cssType: string, control: HTMLElement): void;
     getComputedLonghandName(node: CodeMirror.SyntaxNode): string | null;
@@ -134,8 +152,8 @@ export declare class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     #private;
     constructor(ast: SDK.CSSPropertyParser.SyntaxTree, property: SDK.CSSProperty.CSSProperty | null, renderers: Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching, cssControls: CSSControlMap, options: {
         readonly?: boolean;
-    }, tracing: TracingContext | undefined, signal: AbortSignal | undefined, edits: ValueUpdateTracking | undefined);
-    static render(nodeOrNodes: CodeMirror.SyntaxNode | CodeMirror.SyntaxNode[], context: RenderingContext): {
+    }, tracing: TracingContext | undefined, signal: AbortSignal | undefined, edits: ValueUpdateTracking | undefined, callbacks: RenderingCallbacks | undefined);
+    static render(nodeOrNodes: CodeMirror.SyntaxNode | CodeMirror.SyntaxNode[], context: RenderingContext, callbacks?: RenderingCallbacks): {
         nodes: LitTemplate;
         cssControls: CSSControlMap;
     };

@@ -14727,7 +14727,7 @@ var EditableContent = class extends UI11.Widget.Widget {
   }
 };
 var RenderingContext = class {
-  constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal, edits) {
+  constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal, edits, callbacks = {}) {
     this.ast = ast;
     this.property = property;
     this.renderers = renderers;
@@ -14737,6 +14737,7 @@ var RenderingContext = class {
     this.tracing = tracing;
     this.signal = signal;
     this.edits = edits;
+    this.callbacks = callbacks;
   }
   ast;
   property;
@@ -14747,6 +14748,7 @@ var RenderingContext = class {
   tracing;
   signal;
   edits;
+  callbacks;
   // Records that a renderer changed the text of `match` to `value`, e.g. because the user picked a color, so that the
   // change becomes part of the text of the property. A function is called every time the text of the property is put
   // together. Does nothing if the context doesn't track changes, e.g. for value traces.
@@ -14792,7 +14794,7 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
   #matchedResult;
   #output = [];
   #context;
-  constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal, edits) {
+  constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal, edits, callbacks) {
     super(ast);
     this.#matchedResult = matchedResult;
     this.#context = new RenderingContext(
@@ -14804,12 +14806,15 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
       options,
       tracing,
       signal,
-      edits
+      edits,
+      callbacks
     );
   }
-  static render(nodeOrNodes, context) {
+  // Renders `nodeOrNodes` and passes `callbacks` to the renderers of the matches in them. The callbacks of `context`
+  // are not forwarded automatically; see `RenderingCallbacks`.
+  static render(nodeOrNodes, context, callbacks) {
     if (!Array.isArray(nodeOrNodes)) {
-      return this.render([nodeOrNodes], context);
+      return this.render([nodeOrNodes], context, callbacks);
     }
     const cssControls = new CSSControlMap();
     const renderers = nodeOrNodes.map((node) => this.walkExcludingSuccessors(
@@ -14821,7 +14826,8 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
       context.options,
       context.tracing,
       context.signal,
-      context.edits
+      context.edits,
+      callbacks
     ));
     const nodes = renderers.reduce((nodes2, renderer) => {
       if (renderer !== renderers[0]) {

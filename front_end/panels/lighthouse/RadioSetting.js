@@ -1,77 +1,111 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, render } from '../../ui/lit/lit.js';
 const { ifDefined } = Directives;
-export class RadioSetting {
-    setting;
-    options;
-    element;
-    radioElements;
-    ignoreChangeEvents;
-    selectedIndex;
-    constructor(options, setting, description) {
-        this.setting = setting;
-        this.options = options;
-        this.element = document.createElement('div');
-        UI.ARIAUtils.setDescription(this.element, description);
-        UI.ARIAUtils.markAsRadioGroup(this.element);
-        this.radioElements = [];
-        // clang-format off
-        render(html `
-        ${this.options.map(option => {
-            const tooltip = option.tooltip?.() || description;
-            return html `
-            <label class="lighthouse-radio">
-              <input
-                type="radio"
-                value=${option.value}
-                name=${setting.name}
-                @change=${this.valueChanged.bind(this)}
-                title=${ifDefined(description ? tooltip : undefined)}
-                ${Directives.ref(el => {
-                this.radioElements.push(el);
-            })}
-              />
-              <span
-                class="lighthouse-radio-text"
-               title=${ifDefined(description ? tooltip : undefined)}
-                >${option.label()}</span
-              >
-            </label>
-          `;
-        })}
-      `, this.element);
-        // clang-format on
-        this.ignoreChangeEvents = false;
-        this.selectedIndex = -1;
-        setting.addChangeListener(this.settingChanged, this);
-        this.settingChanged();
+export const DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `
+      ${input.options.map(option => {
+        const tooltip = option.tooltip?.() || input.description || undefined;
+        return html `
+          <label class="lighthouse-radio">
+            <input
+              type="radio"
+              value=${option.value}
+              name=${input.name}
+              .checked=${option.value === input.value}
+              @change=${(event) => {
+            if (event.target.checked) {
+                input.onChange(option.value);
+            }
+        }}
+              title=${ifDefined(tooltip)}
+            />
+            <span
+              class="lighthouse-radio-text"
+              title=${ifDefined(tooltip)}
+            >${option.label()}</span>
+          </label>
+        `;
+    })}
+    `, target, {
+        container: {
+            attributes: {
+                role: 'radiogroup',
+                'aria-label': input.label,
+                'aria-description': input.description,
+            },
+        },
+    });
+    // clang-format on
+};
+export class RadioSetting extends UI.Widget.Widget {
+    #view;
+    #options = [];
+    #setting;
+    #description = '';
+    #label;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
     }
-    updateUI() {
-        this.ignoreChangeEvents = true;
-        if (this.radioElements[this.selectedIndex]) {
-            this.radioElements[this.selectedIndex].checked = true;
-        }
-        this.ignoreChangeEvents = false;
-    }
-    settingChanged() {
-        const value = this.setting.get();
-        this.selectedIndex = this.options.findIndex(option => option.value === value);
-        this.updateUI();
-    }
-    valueChanged(_event) {
-        if (this.ignoreChangeEvents) {
+    set options(options) {
+        if (this.#options === options) {
             return;
         }
-        const selectedRadio = this.radioElements.find(radio => radio.checked);
-        if (!selectedRadio) {
+        this.#options = options;
+        this.requestUpdate();
+    }
+    set setting(setting) {
+        if (this.#setting === setting) {
             return;
         }
-        this.setting.set(selectedRadio.value);
+        if (this.isShowing()) {
+            this.#setting?.removeChangeListener(this.requestUpdate, this);
+            setting?.addChangeListener(this.requestUpdate, this);
+        }
+        this.#setting = setting;
+        this.requestUpdate();
+    }
+    set description(description) {
+        if (this.#description === description) {
+            return;
+        }
+        this.#description = description;
+        this.requestUpdate();
+    }
+    set label(label) {
+        if (this.#label === label) {
+            return;
+        }
+        this.#label = label;
+        this.requestUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        this.#setting?.addChangeListener(this.requestUpdate, this);
+        this.requestUpdate();
+    }
+    willHide() {
+        super.willHide();
+        this.#setting?.removeChangeListener(this.requestUpdate, this);
+    }
+    performUpdate() {
+        const setting = this.#setting;
+        if (!setting) {
+            return;
+        }
+        const input = {
+            options: this.#options,
+            name: setting.name,
+            value: setting.get(),
+            description: this.#description,
+            label: this.#label,
+            onChange: (value) => setting.set(value),
+        };
+        this.#view(input, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=RadioSetting.js.map

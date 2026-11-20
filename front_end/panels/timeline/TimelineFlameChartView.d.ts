@@ -99,6 +99,7 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     private onEntryHovered;
     highlightEvent(event: Trace.Types.Events.Event | null): void;
     willHide(): void;
+    onDetach(): void;
     wasShown(): void;
     updateCountersGraphToggle(showMemoryGraph: boolean): void;
     zoomEvent(event: Trace.Types.Events.Event): void;

@@ -277,6 +277,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         return extensionServerInstance;
     }
+    static removeInstance() {
+        extensionServerInstance?.dispose();
+        extensionServerInstance = null;
+    }
     initializeExtensions() {
         // Defer initialization until DevTools is fully loaded.
         if (this.inspectedTabId !== null) {

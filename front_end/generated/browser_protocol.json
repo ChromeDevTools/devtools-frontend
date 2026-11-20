@@ -28907,7 +28907,7 @@
                         },
                         {
                             "name": "subtype",
-                            "description": "Provides additional details for specific target types. For example, for\nthe type of \"page\", this may be set to \"prerender\".",
+                            "description": "Provides additional details for specific target types. For example, for\nthe type of \"page\", this may be set to \"prerender\", and for \"tab\", this\nmay be set to \"unloaded\". An unloaded tab has a history entry, but no\ndocument for it: for example, after the tab was discarded, after\nsession restore without load, or after the renderer crashed. The tab\nstays unloaded until a new document commits. A new tab that has not\nnavigated is not unloaded. Target.targetInfoChanged reports changes of\nthis value for tabs.",
                             "experimental": true,
                             "optional": true,
                             "type": "string"

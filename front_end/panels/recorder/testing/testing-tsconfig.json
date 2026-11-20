@@ -57,6 +57,9 @@
       "path": "../../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../extensions/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../models/bundle-tsconfig.ref.json"
     }
   ]

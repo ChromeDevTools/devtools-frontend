@@ -8844,9 +8844,7 @@ var statusBar_css_default = `/* Copyright 2026 The Chromium Authors
 
   .status-bar {
     display: flex;
-    padding: var(--sys-size-4) var(--sys-size-5);
-    justify-content: space-between;
-    align-items: center;
+    padding-inline: var(--sys-size-5);
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     background: var(--sys-color-cdt-base-container);
   }
@@ -8856,6 +8854,23 @@ var statusBar_css_default = `/* Copyright 2026 The Chromium Authors
    * docs/ui_engineering.md "Styling"); content in a shadow root is not detected. */
   .status-bar:not(:has(> :not(.hidden) > :not(style))) {
     display: none;
+  }
+
+  /* The items have the vertical padding of the bar, so that a separator has the full height of the bar.
+   * The content of the items stretches, so that the pills of all items have the same height. */
+  .status-bar > * {
+    display: flex;
+    flex: none;
+    padding-block: var(--sys-size-4);
+  }
+
+  /* Separate the visible items that render something. */
+  .status-bar > :not(.hidden):has(> :not(style)) {
+    & ~ & {
+      margin-inline-start: var(--sys-size-5);
+      padding-inline-start: var(--sys-size-5);
+      border-inline-start: var(--sys-size-1) solid var(--sys-color-divider);
+    }
   }
 }
 
@@ -16358,6 +16373,7 @@ devtools-toolbar {
   justify-content: center;
   font: inherit;
   font-size: var(--sys-typescale-body4-size);
+  white-space: nowrap;
   gap: var(--sys-size-3);
   padding: var(--sys-size-1) var(--sys-size-3) var(--sys-size-1) var(--sys-size-4);
   border-radius: var(--sys-shape-corner-extra-small);
@@ -16365,6 +16381,10 @@ devtools-toolbar {
   box-sizing: border-box;
   background: transparent;
   color: inherit;
+  cursor: default;
+}
+
+button.devtools-pill {
   cursor: pointer;
 
   &:hover:not(:disabled, [aria-disabled="true"]) {
@@ -17387,6 +17407,7 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     return this.#checkboxElement.checked;
   }
   set checked(checked) {
+    this.#checkboxElement.checked = Boolean(checked);
     this.toggleAttribute("checked", Boolean(checked));
   }
   get small() {
@@ -17402,7 +17423,8 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     return this.#checkboxElement.disabled;
   }
   set indeterminate(indeterminate) {
-    this.toggleAttribute("indeterminate", indeterminate);
+    this.#checkboxElement.indeterminate = Boolean(indeterminate);
+    this.toggleAttribute("indeterminate", Boolean(indeterminate));
   }
   get indeterminate() {
     return this.#checkboxElement.indeterminate;

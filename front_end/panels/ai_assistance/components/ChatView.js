@@ -61,7 +61,7 @@ const DEFAULT_VIEW = (input, output, target) => {
             message,
             isLoading: input.isLoading && index === input.messages.length - 1,
             isReadOnly: input.isReadOnly,
-            canShowFeedbackForm: input.canShowFeedbackForm,
+            canShowFreeFormFeedback: input.canShowFreeFormFeedback,
             markdownRenderer: input.markdownRenderer,
             isLastMessage: index === input.messages.length - 1,
             isFirstMessage: index === 0,

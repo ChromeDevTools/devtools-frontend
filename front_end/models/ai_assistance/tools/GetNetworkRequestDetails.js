@@ -13,12 +13,12 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 /**
  * A tool that retrieves detailed information about a specific network request.
- * The details include request/response headers, status code, timings, and the response body.
+ * The details include request/response headers, status code, timings, the response body, and the request initiator chain.
  */
 export class GetNetworkRequestDetailsTool {
     name = "getNetworkRequestDetails" /* ToolName.GET_NETWORK_REQUEST_DETAILS */;
     permissionPrompt = "never" /* PermissionPrompt.NEVER */;
-    description = 'Retrieves the full headers, timing, status, and body details of a specific network request by ID.';
+    description = 'Retrieves the full headers, timing, status, body, and initiator chain details of a specific network request by ID.';
     #networkLog;
     constructor(networkLog) {
         this.#networkLog = networkLog;

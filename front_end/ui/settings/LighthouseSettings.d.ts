@@ -5,3 +5,7 @@ export declare const catBestPracticesSettingDescriptor: Common.Settings.SettingD
 export declare const catSeoSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const catAgenticBrowsingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const deviceTypeSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const modeSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const throttlingSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const clearStorageSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const enableSamplingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

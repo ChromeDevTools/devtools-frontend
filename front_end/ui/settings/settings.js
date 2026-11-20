@@ -322,7 +322,11 @@ __export(LighthouseSettings_exports, {
   catBestPracticesSettingDescriptor: () => catBestPracticesSettingDescriptor,
   catPerfSettingDescriptor: () => catPerfSettingDescriptor,
   catSeoSettingDescriptor: () => catSeoSettingDescriptor,
-  deviceTypeSettingDescriptor: () => deviceTypeSettingDescriptor
+  clearStorageSettingDescriptor: () => clearStorageSettingDescriptor,
+  deviceTypeSettingDescriptor: () => deviceTypeSettingDescriptor,
+  enableSamplingSettingDescriptor: () => enableSamplingSettingDescriptor,
+  modeSettingDescriptor: () => modeSettingDescriptor,
+  throttlingSettingDescriptor: () => throttlingSettingDescriptor
 });
 import * as Common6 from "../../core/common/common.js";
 var catPerfSettingDescriptor = {
@@ -359,6 +363,30 @@ var deviceTypeSettingDescriptor = {
   name: "lighthouse.device-type",
   type: Common6.Settings.SettingType.ENUM,
   defaultValue: "mobile",
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var modeSettingDescriptor = {
+  name: "lighthouse.mode",
+  type: Common6.Settings.SettingType.ENUM,
+  defaultValue: "navigation",
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var throttlingSettingDescriptor = {
+  name: "lighthouse.throttling",
+  type: Common6.Settings.SettingType.ENUM,
+  defaultValue: "simulate",
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var clearStorageSettingDescriptor = {
+  name: "lighthouse.clear-storage",
+  type: Common6.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var enableSamplingSettingDescriptor = {
+  name: "lighthouse.enable-sampling",
+  type: Common6.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
   storageType: Common6.Settings.SettingStorageType.SYNCED
 };
 

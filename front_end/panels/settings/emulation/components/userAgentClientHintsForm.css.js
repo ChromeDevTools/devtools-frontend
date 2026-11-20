@@ -69,13 +69,6 @@ export default `/*
     gap: var(--sys-size-4) 10px;
   }
 
-  .form-factor-checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: var(--sys-size-4);
-    white-space: nowrap;
-  }
-
   hr.section-separator {
     grid-column: 1 / 5; /* Ensures the separator spans all columns */
     border: none;
@@ -84,10 +77,6 @@ export default `/*
 
   .half-row {
     grid-column: span 2;
-  }
-
-  .mobile-checkbox-container {
-    display: flex;
   }
 
   .device-model-input {

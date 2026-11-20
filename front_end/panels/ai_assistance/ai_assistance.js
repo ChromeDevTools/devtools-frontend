@@ -3265,7 +3265,7 @@ var ChatMessage = class extends UI2.Widget.Widget {
   isLoading = false;
   isReadOnly = false;
   prompt = "";
-  canShowFeedbackForm = false;
+  canShowFreeFormFeedback = false;
   isLastMessage = false;
   isFirstMessage = false;
   markdownRenderer;
@@ -3312,7 +3312,7 @@ var ChatMessage = class extends UI2.Widget.Widget {
         message,
         isLoading: this.isLoading,
         isReadOnly: this.isReadOnly,
-        canShowFeedbackForm: this.canShowFeedbackForm,
+        canShowFreeFormFeedback: this.canShowFreeFormFeedback,
         markdownRenderer: this.markdownRenderer,
         isLastMessage: this.isLastMessage,
         isFirstMessage: this.isFirstMessage,
@@ -3403,7 +3403,7 @@ var ChatMessage = class extends UI2.Widget.Widget {
       return;
     }
     this.#currentRating = rating;
-    this.#isShowingFeedbackForm = this.canShowFeedbackForm;
+    this.#isShowingFeedbackForm = this.canShowFreeFormFeedback;
     if (this.message.entity === "model" /* MODEL */ && this.message.rpcId) {
       this.onFeedbackSubmit(this.message.rpcId, rating);
     }
@@ -8340,7 +8340,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       message,
       isLoading: input.isLoading && index === input.messages.length - 1,
       isReadOnly: input.isReadOnly,
-      canShowFeedbackForm: input.canShowFeedbackForm,
+      canShowFreeFormFeedback: input.canShowFreeFormFeedback,
       markdownRenderer: input.markdownRenderer,
       isLastMessage: index === input.messages.length - 1,
       isFirstMessage: index === 0,
@@ -9856,7 +9856,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
           conversationType: this.#conversation.type,
           isReadOnly: this.#conversation.isReadOnly ?? false,
           inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
-          canShowFeedbackForm: this.#serverSideLoggingEnabled,
+          // TODO(b/587704208): Re-enable the written feedback form once supported.
+          canShowFreeFormFeedback: false,
           multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() && this.#conversation.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING,
           isTextInputDisabled: this.#isTextInputDisabled(),
           emptyStateSuggestions,

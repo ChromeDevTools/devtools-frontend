@@ -554,7 +554,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     conversationType: this.#conversation.type,
                     isReadOnly: this.#conversation.isReadOnly ?? false,
                     inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
-                    canShowFeedbackForm: this.#serverSideLoggingEnabled,
+                    // TODO(b/587704208): Re-enable the written feedback form once supported.
+                    canShowFreeFormFeedback: false,
                     multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
                         this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
                     isTextInputDisabled: this.#isTextInputDisabled(),

@@ -20,6 +20,8 @@ export declare class TimelineFlameChartDataProvider extends Common.ObjectWrapper
     private entryIndexToTitle;
     private lastSelection;
     constructor();
+    connectImageCache(): void;
+    disconnectImageCache(): void;
     handleTrackConfigurationChange(groups: readonly PerfUI.FlameChart.Group[], indexesInVisualOrder: number[]): void;
     setPersistedGroupConfigSetting(setting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[] | null>): void;
     hasTrackConfigurationMode(): boolean;

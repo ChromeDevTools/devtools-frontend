@@ -136,9 +136,12 @@ export class StartView extends UI.Widget.Widget {
             labelEl.append(link);
         }
         parentElement.appendChild(labelEl);
-        const control = new RadioSetting(runtimeSetting.options, runtimeSetting.setting, runtimeSetting.description());
-        parentElement.appendChild(control.element);
-        UI.ARIAUtils.setLabel(control.element, label);
+        const control = new RadioSetting();
+        control.options = runtimeSetting.options;
+        control.setting = runtimeSetting.setting;
+        control.description = runtimeSetting.description();
+        control.label = label;
+        control.show(parentElement);
     }
     populateRuntimeSettingAsToolbarCheckbox(settingName, toolbar) {
         const runtimeSetting = getRuntimeSettings().find(item => item.setting.name === settingName);

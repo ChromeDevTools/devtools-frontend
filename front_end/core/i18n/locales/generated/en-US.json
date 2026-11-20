@@ -9591,7 +9591,7 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Simulated throttling simulates a slower page load based on data from an initial unthrottled load. DevTools throttling actually slows down the page."
+    "message": "Simulated throttling models a slower network and CPU from an unthrottled load. DevTools throttling slows down network and CPU in real time using Lighthouse presets (ignoring Network and Performance panel settings)."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Simulated throttling (default)"
@@ -16520,6 +16520,12 @@
   "panels/timeline/components/Utils.ts | fs": {
     "message": "{PH1}[s]()"
   },
+  "panels/timeline/CountersGraph.ts | counterCurrentValue": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/timeline/CountersGraph.ts | counterRange": {
+    "message": "{PH1} [{PH2} – {PH3}]"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Documents"
   },
@@ -16537,9 +16543,6 @@
   },
   "panels/timeline/CountersGraph.ts | noEventsFound": {
     "message": "No memory usage data found within selected events"
-  },
-  "panels/timeline/CountersGraph.ts | ss": {
-    "message": "[{PH1} – {PH2}]"
   },
   "panels/timeline/EventsTimelineTreeView.ts | all": {
     "message": "All"

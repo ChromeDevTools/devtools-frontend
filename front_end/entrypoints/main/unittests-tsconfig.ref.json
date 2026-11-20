@@ -41,6 +41,9 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
+      "path": "../../panels/common/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {

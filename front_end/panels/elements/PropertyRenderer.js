@@ -579,7 +579,8 @@ export class RenderingContext {
     tracing;
     signal;
     edits;
-    constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal, edits) {
+    callbacks;
+    constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal, edits, callbacks = {}) {
         this.ast = ast;
         this.property = property;
         this.renderers = renderers;
@@ -589,6 +590,7 @@ export class RenderingContext {
         this.tracing = tracing;
         this.signal = signal;
         this.edits = edits;
+        this.callbacks = callbacks;
     }
     // Records that a renderer changed the text of `match` to `value`, e.g. because the user picked a color, so that the
     // change becomes part of the text of the property. A function is called every time the text of the property is put
@@ -636,17 +638,19 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     #matchedResult;
     #output = [];
     #context;
-    constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal, edits) {
+    constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal, edits, callbacks) {
         super(ast);
         this.#matchedResult = matchedResult;
-        this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal, edits);
+        this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal, edits, callbacks);
     }
-    static render(nodeOrNodes, context) {
+    // Renders `nodeOrNodes` and passes `callbacks` to the renderers of the matches in them. The callbacks of `context`
+    // are not forwarded automatically; see `RenderingCallbacks`.
+    static render(nodeOrNodes, context, callbacks) {
         if (!Array.isArray(nodeOrNodes)) {
-            return this.render([nodeOrNodes], context);
+            return this.render([nodeOrNodes], context, callbacks);
         }
         const cssControls = new CSSControlMap();
-        const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal, context.edits));
+        const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal, context.edits, callbacks));
         const nodes = renderers.reduce((nodes, renderer) => {
             if (renderer !== renderers[0]) {
                 const spacing = precedingSpace(renderer.ast.tree, context.ast, context.matchedResult);

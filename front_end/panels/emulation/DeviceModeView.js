@@ -91,7 +91,7 @@ function resizerRef(resizer, onConnect) {
         }
     };
 }
-export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
+export const DEFAULT_VIEW = (input, output, target) => {
     const sizes = [320, 375, 425, 768, 1024, 1440, 2560];
     const titles = [
         i18nString(UIStrings.mobileS),
@@ -119,7 +119,10 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
               <div class="device-mode-preset-bar"
                    style="width: ${size * input.scale}px;"
                    jslog=${VisualLogging.action().track({ click: true }).context(`device-mode-preset-${size}px`)}
-                   @click=${(e) => input.onApplyPresetSize(size, e)}>
+                   @click=${(e) => {
+            input.onApplyPresetSize(size);
+            e.consume();
+        }}>
                 <span>${i18nString(UIStrings.presetSize, { PH1: titles[idx], PH2: size })}</span>
               </div>
             </div>
@@ -129,8 +132,8 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
       <div class="device-mode-media-container">
         ${input.showMediaInspector ? widget(MediaQueryInspector, {
             scale: input.scale,
-            getWidthCallback: () => input.model.appliedDeviceSize().width,
-            setWidthCallback: input.model.setWidth.bind(input.model),
+            getWidthCallback: input.getAppliedDeviceWidth,
+            setWidthCallback: input.onSetWidth,
         }) : nothing}
       </div>
       <div class="device-mode-content-area">
@@ -190,7 +193,7 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
             scale: input.scale,
             horizontal: true,
         })}
-              @device-mode-ruler-marker-selected=${(e) => input.model.setWidthAndScaleToFit(e.detail)}>
+              @device-mode-ruler-marker-selected=${(e) => input.onWidthMarkerSelected(e.detail)}>
           </devtools-widget>
           <devtools-widget class="device-mode-ruler-left device-mode-ruler"
               style=${styleMap({ left: `${input.cachedCssScreenRect?.left ?? 0}px`, top: `${input.cachedCssScreenRect?.top ?? 0}px` })}
@@ -198,7 +201,7 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
             scale: input.scale,
             horizontal: false,
         })}
-              @device-mode-ruler-marker-selected=${(e) => input.model.setHeightAndScaleToFit(e.detail)}>
+              @device-mode-ruler-marker-selected=${(e) => input.onHeightMarkerSelected(e.detail)}>
           </devtools-widget>
         ` : nothing}
       </div>
@@ -210,7 +213,19 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
         },
     });
     // clang-format on
+    output.measureContentArea = () => {
+        const contentArea = target.querySelector('.device-mode-content-area');
+        if (!contentArea) {
+            return null;
+        }
+        return {
+            rect: contentArea.getBoundingClientRect(),
+            handleWidth: target.querySelector('.device-mode-right-resizer')?.offsetWidth || 20,
+            handleHeight: target.querySelector('.device-mode-bottom-resizer')?.offsetHeight || 20,
+        };
+    };
 };
+export { DEFAULT_VIEW as DEFAULT_DEVICE_MODE_VIEW };
 export class DeviceModeView extends UI.Widget.VBox {
     wrapperInstance;
     model;
@@ -236,7 +251,8 @@ export class DeviceModeView extends UI.Widget.VBox {
     #toggleDeviceModeAction;
     #showDeviceModeSetting;
     #view;
-    constructor(element, view = DEFAULT_DEVICE_MODE_VIEW) {
+    #viewOutput = {};
+    constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
         this.setMinimumSize(150, 150);
@@ -277,24 +293,20 @@ export class DeviceModeView extends UI.Widget.VBox {
         const input = {
             model: this.model,
             showDeviceMode: this.#showDeviceModeSetting.get(),
-            showMediaInspectorSetting: this.showMediaInspectorSetting,
-            showRulersSetting: this.showRulersSetting,
             resizable: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive,
             showRulers: this.showRulersSetting.get() && this.model.type() !== EmulationModel.DeviceModeModel.Type.None,
             showMediaInspector: this.showMediaInspectorSetting.get() && this.model.type() !== EmulationModel.DeviceModeModel.Type.None,
             scale: this.model.scale(),
             cachedCssScreenRect: this.cachedCssScreenRect,
             cachedCssVisiblePageRect: this.cachedCssVisiblePageRect,
-            onApplyPresetSize: (width, e) => {
+            getAppliedDeviceWidth: () => this.model.appliedDeviceSize().width,
+            onSetWidth: (width) => this.model.setWidth(width),
+            onApplyPresetSize: (width) => {
                 this.model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
                 this.model.setWidthAndScaleToFit(width);
-                e.consume();
             },
-            bottomRightResizer: this.bottomRightResizer,
-            bottomLeftResizer: this.bottomLeftResizer,
-            rightResizer: this.rightResizer,
-            leftResizer: this.leftResizer,
-            bottomResizer: this.bottomResizer,
+            onWidthMarkerSelected: (width) => this.model.setWidthAndScaleToFit(width),
+            onHeightMarkerSelected: (height) => this.model.setHeightAndScaleToFit(height),
             bottomRightResizerRef: this.bottomRightResizerRef,
             bottomLeftResizerRef: this.bottomLeftResizerRef,
             rightResizerRef: this.rightResizerRef,
@@ -302,7 +314,7 @@ export class DeviceModeView extends UI.Widget.VBox {
             bottomResizerRef: this.bottomResizerRef,
             onDoubleclickBottomResizer: () => this.model.setHeight(0),
         };
-        this.#view(input, undefined, this.contentElement);
+        this.#view(input, this.#viewOutput, this.contentElement);
     }
     static #setNonEmulatedAvailableSize() {
         const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
@@ -435,14 +447,12 @@ export class DeviceModeView extends UI.Widget.VBox {
         });
     }
     contentAreaResized() {
-        const contentArea = this.contentElement.querySelector('.device-mode-content-area');
-        if (!contentArea) {
+        const measurements = this.#viewOutput.measureContentArea?.();
+        if (!measurements) {
             return;
         }
-        const rect = contentArea.getBoundingClientRect();
+        const { rect, handleWidth, handleHeight } = measurements;
         const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
-        const handleWidth = this.contentElement.querySelector('.device-mode-right-resizer')?.offsetWidth || 20;
-        const handleHeight = this.contentElement.querySelector('.device-mode-bottom-resizer')?.offsetHeight || 20;
         const availableSize = new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
         const preferredSize = new Geometry.Size(Math.max((rect.width - 2 * handleWidth) * zoomFactor, 1), Math.max((rect.height - handleHeight) * zoomFactor, 1));
         this.model.setAvailableSize(availableSize, preferredSize);
@@ -477,7 +487,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
 }
 export const DEFAULT_RULER_VIEW = (input, output, target) => {
-    const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
+    const zoomFactor = input.zoomFactor;
     const size = input.horizontal ? target.offsetWidth : target.offsetHeight;
     const dipSize = input.scale > 0 ? size * zoomFactor / input.scale : 0;
     const count = Math.ceil(dipSize / 5);
@@ -536,7 +546,7 @@ export const DEFAULT_RULER_VIEW = (input, output, target) => {
 };
 export var RulerEvents;
 (function (RulerEvents) {
-    RulerEvents["MARKER_SELECTED"] = "MarkerSelected";
+    RulerEvents["MARKER_SELECTED"] = "device-mode-ruler-marker-selected";
 })(RulerEvents || (RulerEvents = {}));
 const RulerBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
 export class Ruler extends RulerBase {
@@ -576,7 +586,7 @@ export class Ruler extends RulerBase {
         this.requestUpdate();
     }
     #onMarkerClick = (size) => {
-        this.dispatchEventToListeners("MarkerSelected" /* RulerEvents.MARKER_SELECTED */, size);
+        this.dispatchEventToListeners("device-mode-ruler-marker-selected" /* RulerEvents.MARKER_SELECTED */, size);
     };
     performUpdate() {
         if (!this.isShowing()) {
@@ -585,6 +595,7 @@ export class Ruler extends RulerBase {
         const viewInput = {
             horizontal: this.#horizontal,
             scale: this.#scale,
+            zoomFactor: UI.ZoomManager.ZoomManager.instance().zoomFactor(),
             onMarkerClick: this.#onMarkerClick,
         };
         this.#view(viewInput, undefined, this.contentElement);

@@ -8245,7 +8245,7 @@ var lockedString6 = i18n13.i18n.lockedString;
 var GetNetworkRequestDetailsTool = class {
   name = "getNetworkRequestDetails" /* GET_NETWORK_REQUEST_DETAILS */;
   permissionPrompt = "never" /* NEVER */;
-  description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
+  description = "Retrieves the full headers, timing, status, body, and initiator chain details of a specific network request by ID.";
   #networkLog;
   constructor(networkLog) {
     this.#networkLog = networkLog;
@@ -8325,7 +8325,6 @@ __export(FileFormatter_exports, {
   FileFormatter: () => FileFormatter
 });
 import * as Bindings from "../bindings/bindings.js";
-import * as Logs4 from "../logs/logs.js";
 var MAX_FILE_SIZE = 5e3;
 var FileFormatter = class _FileFormatter {
   static formatSourceMapDetails(selectedFile, debuggerWorkspaceBinding) {
@@ -8362,42 +8361,34 @@ var FileFormatter = class _FileFormatter {
   }
   #file;
   #debuggerWorkspaceBinding;
-  #networkLog;
   constructor(file, debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-  ), networkLog = Logs4.NetworkLog.NetworkLog.instance()) {
+  )) {
     this.#file = file;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    this.#networkLog = networkLog;
   }
   formatFile(options = {}) {
     const sourceMapDetails = _FileFormatter.formatSourceMapDetails(this.#file, this.#debuggerWorkspaceBinding);
-    const lines = [
+    return [
       `File name: ${this.#file.displayName()}`,
       `URL: ${this.#file.url()}`,
-      sourceMapDetails
-    ];
-    const resource = Bindings.ResourceUtils.resourceForURL(this.#file.url());
-    if (resource?.request) {
-      lines.push(`Request initiator chain:
-${formatRequestInitiatorChain(resource.request, this.#networkLog)}`);
-    }
-    lines.push(`File content:
-${this.#formatFileContent(options.offset ?? 0)}`);
-    return lines.filter((line) => line.trim() !== "").join("\n");
+      sourceMapDetails,
+      this.#formatFileContent(options.offset ?? 0)
+    ].filter(Boolean).join("\n");
   }
   /**
-   * Returns at most `MAX_FILE_SIZE` characters starting at `offset`. If the
-   * content continues past that, a notice after the code block gives the
-   * offset where the next part starts, so the model can read the rest instead
-   * of re-requesting the same part.
+   * Formats the file content section with at most `MAX_FILE_SIZE` characters
+   * starting at `offset`. Non-zero offsets label the header with the character
+   * range, and truncated parts append a notice with the next part's offset.
    */
   #formatFileContent(offset) {
     const contentData = this.#file.workingCopyContentData();
     const content = contentData.isTextContent ? contentData.text : "<binary data>";
     const end = Math.min(offset + MAX_FILE_SIZE, content.length);
-    const codeBlock = `\`\`\`
+    const header = offset > 0 ? `File content (characters ${offset}-${end} of ${content.length}):` : "File content:";
+    const codeBlock = `${header}
+\`\`\`
 ${content.slice(offset, end)}
 \`\`\``;
     if (end === content.length) {
@@ -9445,7 +9436,7 @@ import * as Host20 from "../../core/host/host.js";
 import * as i18n35 from "../../core/i18n/i18n.js";
 import * as Platform7 from "../../core/platform/platform.js";
 import * as SDK16 from "../../core/sdk/sdk.js";
-import * as Logs5 from "../logs/logs.js";
+import * as Logs4 from "../logs/logs.js";
 var UIStringsNotTranslate10 = {
   listingNetworkRequests: "Listing network requests"
 };
@@ -9548,7 +9539,7 @@ var ListNetworkRequestsTool = class {
       return originResult;
     }
     const establishedOrigin = originResult.origin;
-    const networkLog = this.#networkLog ?? Logs5.NetworkLog.NetworkLog.instance();
+    const networkLog = this.#networkLog ?? Logs4.NetworkLog.NetworkLog.instance();
     let hasCrossOriginRequest = false;
     const requestsToShow = [];
     for (const request of networkLog.requests()) {
@@ -9783,6 +9774,9 @@ import * as AiUtils4 from "../ai-utils/ai-utils.js";
 var { debugLog: debugLog2, isDebugMode } = AiUtils4.Debug;
 var MAX_SUGGESTION_LENGTH = 200;
 var SUGGEST_FOLLOW_UPS_FUNCTION_NAME = "suggestFollowUps";
+var SUGGEST_FOLLOW_UPS_RECORDED_RESULT = "Suggestions recorded.";
+var SUGGEST_FOLLOW_UPS_MISSING_TEXT_RESULT = "Suggestions recorded, but your response text was empty. Provide your final Markdown answer to the user now.";
+var SUGGEST_FOLLOW_UPS_PREMATURE_RESULT = "Ignored: call suggestFollowUps only in the final response after all other tool calls complete.";
 var ResponseType = /* @__PURE__ */ ((ResponseType2) => {
   ResponseType2["CONTEXT"] = "context";
   ResponseType2["TITLE"] = "title";
@@ -10141,6 +10135,7 @@ var AiAgent = class {
     Host23.userMetrics.freestylerQueryLength(enhancedQuery.length);
     const query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
     const runEntries = [];
+    let latestSuggestions;
     let request = this.#buildRequest(query, Host23.AidaClient.Role.USER, [...this.#history, ...runEntries]);
     const clientFeatureName = Host23.AidaClient.getClientFeatureName(this.clientFeature);
     debugLog2(`[AiAgent] Starting conversation with client ${clientFeatureName}, userTier ${this.userTier}`);
@@ -10182,12 +10177,18 @@ var AiAgent = class {
         break;
       }
       runEntries.push(request.current_message);
-      const hasOtherFunctionCalls = Boolean(functionCalls?.some((call) => call.name !== SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
-      if (!functionCalls || !hasOtherFunctionCalls) {
-        yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId, runEntries);
+      const hasTextResponse = Boolean(textResponse.trim());
+      const onlySuggestFollowUps = Boolean(functionCalls?.every((call) => call.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
+      if (onlySuggestFollowUps && functionCalls) {
+        for (const call of functionCalls) {
+          latestSuggestions = sanitizeSuggestionsList(call.args?.suggestions) ?? latestSuggestions;
+        }
+      }
+      if (!functionCalls || onlySuggestFollowUps && hasTextResponse) {
+        yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId, runEntries, latestSuggestions);
         break;
       }
-      if (textResponse) {
+      if (hasTextResponse) {
         const parsedResponse = this.parseTextResponse(textResponse);
         yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId);
       }
@@ -10223,13 +10224,14 @@ var AiAgent = class {
    * Handles the final model response of a run when no further tool calls need
    * to execute.
    *
-   * - If `textResponse` is empty, yields an `UNKNOWN` error.
-   * - Otherwise, records the answer as a `MODEL` turn in `#history` (excluding
-   *   `suggestFollowUps`) and yields a completed `ANSWER` with follow-up
-   *   suggestions.
+   * - If `textResponse` is empty or whitespace-only, yields an `UNKNOWN` error
+   *   without committing `runEntries`.
+   * - Otherwise, records the answer (and any `suggestFollowUps` calls verbatim
+   *   with matching synthetic `functionResponse` parts) in `#history` and yields
+   *   a completed `ANSWER` with follow-up suggestions.
    */
-  async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId, runEntries) {
-    if (!textResponse) {
+  async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId, runEntries, latestSuggestions) {
+    if (!textResponse.trim()) {
       debugLog2(
         "[AiAgent] Model returned an empty text response without tool calls:",
         { step: stepIndex + 1, rpcId, functionCalls }
@@ -10237,18 +10239,29 @@ var AiAgent = class {
       yield this.#createErrorResponse("unknown" /* UNKNOWN */);
       return;
     }
-    const lastSuggestCall = functionCalls?.findLast((call) => call.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
-    const followUpSuggestions = sanitizeSuggestionsList(lastSuggestCall?.args?.suggestions);
     const parsedResponse = this.parseTextResponse(textResponse);
     debugLog2(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
+    const modelParts = [{ text: parsedResponse.answer }];
+    if (functionCalls) {
+      modelParts.push(...functionCalls.map((functionCall) => ({ functionCall })));
+    }
     runEntries.push({
-      parts: [{
-        text: parsedResponse.answer
-      }],
+      parts: modelParts,
       role: Host23.AidaClient.Role.MODEL
     });
+    if (functionCalls) {
+      runEntries.push({
+        parts: functionCalls.map((functionCall) => ({
+          functionResponse: {
+            name: functionCall.name,
+            response: { result: SUGGEST_FOLLOW_UPS_RECORDED_RESULT }
+          }
+        })),
+        role: Host23.AidaClient.Role.ROLE_UNSPECIFIED
+      });
+    }
     this.#commitRun(runEntries);
-    const suggestions = followUpSuggestions ?? parsedResponse.suggestions;
+    const suggestions = latestSuggestions ?? parsedResponse.suggestions;
     yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId, suggestions);
   }
   /**
@@ -10267,20 +10280,24 @@ var AiAgent = class {
   }
   /**
    * Runs every function call in one model response, one after another, in the
-   * order the model returned them.
+   * order the model returned them. `suggestFollowUps` calls do not run a
+   * handler or yield UI events; instead, they receive a synthetic
+   * `functionResponse` that rejects premature calls (when other tools are
+   * present) or asks for the missing Markdown answer.
    *
-   * The model's text and all calls are stored in history as one MODEL turn.
-   * Every `functionCall` in history gets a matching `functionResponse`: in the
-   * returned `functionResponses`, or, after a context change, in history
+   * Non-empty `textResponse` and all calls are stored in history as one `MODEL`
+   * turn. Every `functionCall` in history gets a matching `functionResponse`:
+   * in the returned `functionResponses`, or, after a context change, in history
    * directly. When the run stops, uncommitted `runEntries` are discarded.
    */
   async *#runFunctionCalls(functionCalls, textResponse, options, runEntries) {
-    const modelParts = textResponse ? [{ text: textResponse }] : [];
+    const modelParts = textResponse.trim() ? [{ text: textResponse }] : [];
     modelParts.push(...functionCalls.map((functionCall) => ({ functionCall })));
     runEntries.push({
       parts: modelParts,
       role: Host23.AidaClient.Role.MODEL
     });
+    const onlySuggestFollowUps = functionCalls.every((call) => call.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
     const functionResponses = [];
     try {
       for (const [index, functionCall] of functionCalls.entries()) {
@@ -10289,7 +10306,7 @@ var AiAgent = class {
             functionResponse: {
               name: functionCall.name,
               response: {
-                result: "Ignored: call suggestFollowUps only in the final response after all other tool calls complete."
+                result: onlySuggestFollowUps ? SUGGEST_FOLLOW_UPS_MISSING_TEXT_RESULT : SUGGEST_FOLLOW_UPS_PREMATURE_RESULT
               }
             }
           });
@@ -12244,7 +12261,7 @@ import * as Host30 from "../../core/host/host.js";
 import * as i18n53 from "../../core/i18n/i18n.js";
 import * as Root7 from "../../core/root/root.js";
 import * as AiUtils6 from "../ai-utils/ai-utils.js";
-import * as Logs6 from "../logs/logs.js";
+import * as Logs5 from "../logs/logs.js";
 import * as NetworkTimeCalculator3 from "../network_time_calculator/network_time_calculator.js";
 import * as Workspace5 from "../workspace/workspace.js";
 
@@ -12780,7 +12797,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   #workspace;
   constructor(opts) {
     super(opts);
-    this.#networkLog = opts.networkLog ?? Logs6.NetworkLog.NetworkLog.instance();
+    this.#networkLog = opts.networkLog ?? Logs5.NetworkLog.NetworkLog.instance();
     this.#workspace = opts.workspace ?? Workspace5.Workspace.WorkspaceImpl.instance();
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;
     this.#lighthouseRecording = opts.lighthouseRecording;
@@ -13423,7 +13440,7 @@ import * as SDK30 from "../../core/sdk/sdk.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as Tracing3 from "../../services/tracing/tracing.js";
 import * as AiUtils7 from "../ai-utils/ai-utils.js";
-import * as Logs7 from "../logs/logs.js";
+import * as Logs6 from "../logs/logs.js";
 import * as Trace9 from "../trace/trace.js";
 var { debugLog: debugLog5 } = AiUtils7.Debug;
 var UIStringsNotTranslated = {
@@ -13566,7 +13583,7 @@ var PerformanceAgent = class extends AiAgent {
   constructor(opts) {
     super(opts);
     this.#tracker = opts.tracker ?? Tracing3.FreshRecording.Tracker.instance();
-    this.#networkLog = opts.networkLog ?? Logs7.NetworkLog.NetworkLog.instance();
+    this.#networkLog = opts.networkLog ?? Logs6.NetworkLog.NetworkLog.instance();
   }
   #formatter = null;
   #lastEventForEnhancedQuery;
@@ -15215,12 +15232,12 @@ var skill = {
 // gen/front_end/models/ai_assistance/skills/network.skill.js
 var skill2 = {
   "name": "network",
-  "description": "Analyzing network traffic, network requests, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.",
+  "description": "Analyzing network traffic, network requests, request initiator chains, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.",
   "allowedTools": [
     "listNetworkRequests",
     "getNetworkRequestDetails"
   ],
-  "instructions": "# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to list recorded requests initiated by the active origin as `id;url;status;duration;size` rows, where same-origin URLs omit the `origin` prefix and long query or `data:` URLs end with `...<truncated>`.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (queueing, connection stalled, request sent, waiting for server response, content download, and total duration), status text, and response body.\n   - If `# Selected network request` was provided in this conversation, it already contains this full output for its `Request ID`; do not call `getNetworkRequestDetails` for that same `id` unless its status was `pending`.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Internal IDs**: `Request ID` and `id` values are internal DevTools lookup keys (distinct from HTTP `X-Request-Id` headers); refer to requests by URL in your response and never output raw `Request ID` values as text.\n* **Origin Lock**: Only requests initiated by the conversation's established origin can be inspected.\n* **Recording**: DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). If `listNetworkRequests` reports that no requests have been recorded, ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
+  "instructions": "# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to list recorded requests initiated by the active origin as `id;url;status;duration;size` rows, where same-origin URLs omit the `origin` prefix and long query or `data:` URLs end with `...<truncated>`.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (queueing, connection stalled, request sent, waiting for server response, content download, and total duration), status text, response body, and request initiator chain.\n   - If `# Selected network request` was provided in this conversation, it already contains this full output for its `Request ID`; do not call `getNetworkRequestDetails` for that same `id` unless its status was `pending`.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Internal IDs**: `Request ID` and `id` values are internal DevTools lookup keys (distinct from HTTP `X-Request-Id` headers); refer to requests by URL in your response and never output raw `Request ID` values as text.\n* **Origin Lock**: Only requests initiated by the conversation's established origin can be inspected.\n* **Recording**: DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). If `listNetworkRequests` reports that no requests have been recorded, ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
 };
 
 // gen/front_end/models/ai_assistance/skills/performance.skill.js
@@ -15338,7 +15355,8 @@ Your role is to help web developers debug, analyze, and optimize web application
   - **Applied Live Changes**: Detail the changes you applied to the live page (including the modified CSS properties or HTML attributes), note that these live changes are temporary and will reset on page reload, and ask the user to verify the result before updating their source code. Do NOT use "**Suggestion(s)**" or "**Suggested fix**" headings when you have already modified the live page.
 
 # Follow-up Suggestions
-* At the end of your response, call the \`suggestFollowUps\` function to provide 1 to 3 relevant, concise follow-up queries or actions for the user.
+* In the same message as your final Markdown answer, call the \`suggestFollowUps\` function to provide 1 to 3 relevant, concise follow-up queries or actions for the user.
+* \`suggestFollowUps\` ends your turn immediately without another step. Never call \`suggestFollowUps\` with an empty text response or alongside other tool calls.
 * Do not write follow-up suggestions as text in your response.
 
 # Constraints
@@ -15538,7 +15556,7 @@ ${skillsManifest}`,
       }
     });
     this.declareFunction(SUGGEST_FOLLOW_UPS_FUNCTION_NAME, {
-      description: "Provides suggested follow-up queries or actions for the user at the end of the response.",
+      description: "Provides suggested follow-up queries or actions for the user. Ends the turn immediately: call this only in the same message as your final non-empty Markdown response, never alone with empty text or alongside other tool calls.",
       parameters: {
         type: Host36.AidaClient.ParametersTypes.OBJECT,
         description: "Parameters for follow-up suggestions",

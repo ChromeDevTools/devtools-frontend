@@ -138,9 +138,6 @@
       "path": "../../ui/components/highlighting/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/input/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../ui/components/issue_counter/bundle-tsconfig.ref.json"
     },
     {

@@ -636,8 +636,11 @@ export var IssueCreated;
     IssueCreated[IssueCreated["GenericIssue::ManualTextPolicyControlledFeatureInfo"] = 116] = "GenericIssue::ManualTextPolicyControlledFeatureInfo";
     IssueCreated[IssueCreated["GenericIssue::GeolocationPromptWithoutUserGesture"] = 117] = "GenericIssue::GeolocationPromptWithoutUserGesture";
     IssueCreated[IssueCreated["CorsIssue::InvalidLocalNetworkAccess"] = 118] = "CorsIssue::InvalidLocalNetworkAccess";
+    IssueCreated[IssueCreated["ElementAccessibilityIssue::AnchorMenuDescendant"] = 119] = "ElementAccessibilityIssue::AnchorMenuDescendant";
+    IssueCreated[IssueCreated["ElementAccessibilityIssue::InteractiveContentMenuDescendant"] = 120] = "ElementAccessibilityIssue::InteractiveContentMenuDescendant";
+    IssueCreated[IssueCreated["ElementAccessibilityIssue::TextMenuDescendant"] = 121] = "ElementAccessibilityIssue::TextMenuDescendant";
     /* eslint-enable @typescript-eslint/naming-convention */
-    IssueCreated[IssueCreated["MAX_VALUE"] = 119] = "MAX_VALUE";
+    IssueCreated[IssueCreated["MAX_VALUE"] = 122] = "MAX_VALUE";
 })(IssueCreated || (IssueCreated = {}));
 export var DeveloperResourceLoaded;
 (function (DeveloperResourceLoaded) {

@@ -3217,9 +3217,9 @@ var UIStrings = {
    */
   devtoolsThrottling: "DevTools throttling (advanced)",
   /**
-   * @description Tooltip text that appears when hovering over the 'Simulated Throttling' checkbox in the settings toolbar of the Lighthouse panel.
+   * @description Tooltip text that appears when hovering over the 'Throttling method' dropdown in the settings toolbar of the Lighthouse panel.
    */
-  simulateASlowerPageLoadBasedOn: "Simulated throttling simulates a slower page load based on data from an initial unthrottled load. DevTools throttling actually slows down the page.",
+  simulateASlowerPageLoadBasedOn: "Simulated throttling models a slower network and CPU from an unthrottled load. DevTools throttling slows down network and CPU in real time using Lighthouse presets (ignoring Network and Performance panel settings).",
   /**
    * @description Text of checkbox to reset storage features prior to running audits in Lighthouse.
    */
@@ -3312,6 +3312,7 @@ var LighthouseRun = class {
    */
   async setupEmulationAndProtocolConnection() {
     const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+    const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
     this.emulationStateBefore = {
       emulation: {
         type: emulationModel.type(),
@@ -3321,7 +3322,8 @@ var LighthouseRun = class {
         device: emulationModel.device(),
         mode: emulationModel.mode()
       },
-      network: { conditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions() }
+      network: { conditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions() },
+      cpuThrottlingRate: cpuThrottlingManager.cpuThrottlingRate()
     };
     emulationModel.toolbarControlsEnabledSetting().set(false);
     if ("formFactor" in this.flags && this.flags.formFactor === "desktop") {
@@ -3336,6 +3338,7 @@ var LighthouseRun = class {
         }
       }
     }
+    cpuThrottlingManager.setCPUThrottlingRate(1);
     await this.protocolService.attach(this.inspectedURL);
   }
   async restoreEmulationAndProtocolConnection() {
@@ -3352,6 +3355,9 @@ var LighthouseRun = class {
       emulationModel.emulate(type, device, mode2, scale);
       SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
         this.emulationStateBefore.network.conditions
+      );
+      SDK.CPUThrottlingManager.CPUThrottlingManager.instance().setCPUThrottlingRate(
+        this.emulationStateBefore.cpuThrottlingRate
       );
       delete this.emulationStateBefore;
     }
@@ -3746,7 +3752,7 @@ function getRuntimeSettings() {
         ]
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.mode"),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.modeSettingDescriptor),
         title: i18nLazyString(UIStrings.lighthouseMode),
         description: i18nLazyString(UIStrings.runLighthouseInMode),
         setFlags: (flags, value) => {
@@ -3773,10 +3779,10 @@ function getRuntimeSettings() {
       },
       {
         // This setting is disabled, but we keep it around to show in the UI.
-        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.throttling"),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.throttlingSettingDescriptor),
         title: i18nLazyString(UIStrings.throttlingMethod),
         // We will disable this when we have a Lantern trace viewer within DevTools.
-        learnMore: "https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling",
+        learnMore: "https://github.com/GoogleChrome/lighthouse/blob/main/docs/throttling.md#devtools-lighthouse-panel-throttling",
         description: i18nLazyString(UIStrings.simulateASlowerPageLoadBasedOn),
         setFlags: (flags, value) => {
           if (typeof value === "string") {
@@ -3791,7 +3797,7 @@ function getRuntimeSettings() {
         ]
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.clear-storage"),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.clearStorageSettingDescriptor),
         title: i18nLazyString(UIStrings.clearStorage),
         description: i18nLazyString(UIStrings.resetStorageLocalstorage),
         setFlags: (flags, value) => {
@@ -3799,7 +3805,7 @@ function getRuntimeSettings() {
         }
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.enable-sampling"),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.enableSamplingSettingDescriptor),
         title: i18nLazyString(UIStrings.enableSampling),
         description: i18nLazyString(UIStrings.enableJavaScriptSampling),
         setFlags: (flags, value) => {
@@ -4909,80 +4915,116 @@ var lighthouseStartView_css_default = `/*
 // ../../front_end/panels/lighthouse/RadioSetting.ts
 var RadioSetting_exports = {};
 __export(RadioSetting_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RadioSetting: () => RadioSetting
 });
 import * as UI4 from "../../ui/legacy/legacy.js";
 import { Directives, html as html2, render as render2 } from "../../ui/lit/lit.js";
 var { ifDefined } = Directives;
-var RadioSetting = class {
-  setting;
-  options;
-  element;
-  radioElements;
-  ignoreChangeEvents;
-  selectedIndex;
-  constructor(options, setting, description) {
-    this.setting = setting;
-    this.options = options;
-    this.element = document.createElement("div");
-    UI4.ARIAUtils.setDescription(this.element, description);
-    UI4.ARIAUtils.markAsRadioGroup(this.element);
-    this.radioElements = [];
-    render2(
-      html2`
-        ${this.options.map((option) => {
-        const tooltip = option.tooltip?.() || description;
-        return html2`
-            <label class="lighthouse-radio">
-              <input
-                type="radio"
-                value=${option.value}
-                name=${setting.name}
-                @change=${this.valueChanged.bind(this)}
-                title=${ifDefined(description ? tooltip : void 0)}
-                ${Directives.ref(
-          (el) => {
-            this.radioElements.push(el);
-          }
-        )}
-              />
-              <span
-                class="lighthouse-radio-text"
-               title=${ifDefined(description ? tooltip : void 0)}
-                >${option.label()}</span
-              >
-            </label>
-          `;
-      })}
-      `,
-      this.element
-    );
-    this.ignoreChangeEvents = false;
-    this.selectedIndex = -1;
-    setting.addChangeListener(this.settingChanged, this);
-    this.settingChanged();
-  }
-  updateUI() {
-    this.ignoreChangeEvents = true;
-    if (this.radioElements[this.selectedIndex]) {
-      this.radioElements[this.selectedIndex].checked = true;
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render2(
+    html2`
+      ${input.options.map((option) => {
+      const tooltip = option.tooltip?.() || input.description || void 0;
+      return html2`
+          <label class="lighthouse-radio">
+            <input
+              type="radio"
+              value=${option.value}
+              name=${input.name}
+              .checked=${option.value === input.value}
+              @change=${(event) => {
+        if (event.target.checked) {
+          input.onChange(option.value);
+        }
+      }}
+              title=${ifDefined(tooltip)}
+            />
+            <span
+              class="lighthouse-radio-text"
+              title=${ifDefined(tooltip)}
+            >${option.label()}</span>
+          </label>
+        `;
+    })}
+    `,
+    target,
+    {
+      container: {
+        attributes: {
+          role: "radiogroup",
+          "aria-label": input.label,
+          "aria-description": input.description
+        }
+      }
     }
-    this.ignoreChangeEvents = false;
+  );
+};
+var RadioSetting = class extends UI4.Widget.Widget {
+  #view;
+  #options = [];
+  #setting;
+  #description = "";
+  #label;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element);
+    this.#view = view;
   }
-  settingChanged() {
-    const value = this.setting.get();
-    this.selectedIndex = this.options.findIndex((option) => option.value === value);
-    this.updateUI();
-  }
-  valueChanged(_event) {
-    if (this.ignoreChangeEvents) {
+  set options(options) {
+    if (this.#options === options) {
       return;
     }
-    const selectedRadio = this.radioElements.find((radio) => radio.checked);
-    if (!selectedRadio) {
+    this.#options = options;
+    this.requestUpdate();
+  }
+  set setting(setting) {
+    if (this.#setting === setting) {
       return;
     }
-    this.setting.set(selectedRadio.value);
+    if (this.isShowing()) {
+      this.#setting?.removeChangeListener(this.requestUpdate, this);
+      setting?.addChangeListener(this.requestUpdate, this);
+    }
+    this.#setting = setting;
+    this.requestUpdate();
+  }
+  set description(description) {
+    if (this.#description === description) {
+      return;
+    }
+    this.#description = description;
+    this.requestUpdate();
+  }
+  set label(label) {
+    if (this.#label === label) {
+      return;
+    }
+    this.#label = label;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.#setting?.addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    this.#setting?.removeChangeListener(this.requestUpdate, this);
+  }
+  performUpdate() {
+    const setting = this.#setting;
+    if (!setting) {
+      return;
+    }
+    const input = {
+      options: this.#options,
+      name: setting.name,
+      value: setting.get(),
+      description: this.#description,
+      label: this.#label,
+      onChange: (value) => setting.set(value)
+    };
+    this.#view(input, void 0, this.contentElement);
   }
 };
 
@@ -5113,13 +5155,12 @@ var StartView = class extends UI5.Widget.Widget {
       labelEl.append(link);
     }
     parentElement.appendChild(labelEl);
-    const control = new RadioSetting(
-      runtimeSetting.options,
-      runtimeSetting.setting,
-      runtimeSetting.description()
-    );
-    parentElement.appendChild(control.element);
-    UI5.ARIAUtils.setLabel(control.element, label);
+    const control = new RadioSetting();
+    control.options = runtimeSetting.options;
+    control.setting = runtimeSetting.setting;
+    control.description = runtimeSetting.description();
+    control.label = label;
+    control.show(parentElement);
   }
   populateRuntimeSettingAsToolbarCheckbox(settingName, toolbar2) {
     const runtimeSetting = getRuntimeSettings().find((item2) => item2.setting.name === settingName);
@@ -5295,7 +5336,7 @@ var StartView = class extends UI5.Widget.Widget {
 // ../../front_end/panels/lighthouse/LighthouseStatusView.ts
 var LighthouseStatusView_exports = {};
 __export(LighthouseStatusView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   StatusPhases: () => StatusPhases,
   StatusView: () => StatusView,
   fastFactRotationInterval: () => fastFactRotationInterval,
@@ -5569,7 +5610,7 @@ var UIStrings4 = {
 var str_4 = i18n8.i18n.registerUIStrings("panels/lighthouse/LighthouseStatusView.ts", UIStrings4);
 var i18nString4 = i18n8.i18n.getLocalizedString.bind(void 0, str_4);
 var i18nLazyString2 = i18n8.i18n.getLazilyComputedLocalizedString.bind(void 0, str_4);
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   const {
     statusHeader,
     statusText,
@@ -5673,7 +5714,7 @@ var StatusView = class {
       this.dialog.setSizeBehavior(UI6.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
       this.dialog.setMaxContentSize(new Geometry.Size(500, 400));
     }
-    DEFAULT_VIEW2(
+    DEFAULT_VIEW3(
       {
         statusHeader: this.statusHeader,
         statusText: this.statusText,

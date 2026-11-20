@@ -22,27 +22,41 @@ const UIStringsNotTranslate = {
 };
 const lockedString = i18n.i18n.lockedString;
 const { widget } = UI.Widget;
+function isHttpOrHttps(maybeUrl) {
+    try {
+        const url = new URL(maybeUrl);
+        return url.protocol === 'https:' || url.protocol === 'http:';
+    }
+    catch {
+        return false;
+    }
+}
 export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
-    if (input.aidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */) {
+    // `AiCodeCompletionDisclaimer` bundles a loading spinner and requires both tooltip IDs; Sources omits both.
+    const { disclaimerTooltipId, spinnerTooltipId, citations } = input;
+    const hasDisclaimer = !!(disclaimerTooltipId && spinnerTooltipId);
+    const hasCitations = !!(citations && citations.size > 0);
+    if (input.aidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */ ||
+        (!hasDisclaimer && !hasCitations)) {
         render(nothing, target);
         return;
     }
     const toolbarClasses = Directives.classMap({
         'ai-code-completion-summary-toolbar': true,
-        'has-disclaimer': Boolean(input.disclaimerTooltipId),
-        'has-recitation-notice': Boolean(input.citations && input.citations.size > 0),
+        'has-disclaimer': hasDisclaimer,
+        'has-recitation-notice': hasCitations,
         'has-top-border': input.hasTopBorder,
     });
     // clang-format off
-    const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ?
+    const disclaimer = hasDisclaimer ?
         html `<devtools-widget
             ${widget(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer, {
-            disclaimerTooltipId: input.disclaimerTooltipId,
-            spinnerTooltipId: input.spinnerTooltipId,
+            disclaimerTooltipId,
+            spinnerTooltipId,
             loading: input.loading,
             disclaimerTextVariant: input.disclaimerTextVariant,
         })} class="disclaimer-widget"></devtools-widget>` : nothing;
-    const recitationNotice = input.citations && input.citations.size > 0 ?
+    const recitationNotice = hasCitations ?
         html `<div class="ai-code-completion-recitation-notice">
                 ${lockedString(UIStringsNotTranslate.generatedCodeMayBeSubjectToALicense)}
                 <span class="link"
@@ -50,14 +64,14 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
                     aria-details=${input.citationsTooltipId}
                     aria-describedby=${input.citationsTooltipId}
                     tabIndex="0">
-                  ${lockedString(UIStringsNotTranslate.viewSources)}&nbsp;${lockedString('(' + input.citations.size + ')')}
+                  ${lockedString(UIStringsNotTranslate.viewSources)}&nbsp;${lockedString('(' + citations.size + ')')}
                 </span>
                 <devtools-tooltip
                     id=${input.citationsTooltipId}
                     variant="rich"
                     jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
-                    ${Directives.repeat(input.citations, citation => html `<devtools-link
+                    ${Directives.repeat(citations, citation => html `<devtools-link
                         tabIndex="0"
                         href=${citation}
                         jslogcontext="ai-code-completion-citations.citation-link">${citation}</devtools-link>`)}</div></devtools-tooltip>
@@ -107,7 +121,11 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
         this.requestUpdate();
     }
     updateCitations(citations) {
-        citations.forEach(citation => this.#citations.add(citation));
+        for (const citation of citations) {
+            if (isHttpOrHttps(citation)) {
+                this.#citations.add(citation);
+            }
+        }
         this.requestUpdate();
     }
     clearCitations() {

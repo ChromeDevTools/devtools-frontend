@@ -70,6 +70,7 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
         forceNew: boolean | null;
         framesWidget?: ExtensionFramesWidget;
     }): ExtensionServer;
+    static removeInstance(): void;
     initializeExtensions(): void;
     hasExtensions(): boolean;
     notifySearchAction(panelId: string, action: string, searchString?: string): void;

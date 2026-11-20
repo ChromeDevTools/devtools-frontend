@@ -1,5 +1,4 @@
 import * as Bindings from '../../bindings/bindings.js';
-import * as Logs from '../../logs/logs.js';
 import type * as Workspace from '../../workspace/workspace.js';
 export interface FormatFileOptions {
     /**
@@ -16,6 +15,6 @@ export interface FormatFileOptions {
 export declare class FileFormatter {
     #private;
     static formatSourceMapDetails(selectedFile: Workspace.UISourceCode.UISourceCode, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): string;
-    constructor(file: Workspace.UISourceCode.UISourceCode, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, networkLog?: Logs.NetworkLog.NetworkLog);
+    constructor(file: Workspace.UISourceCode.UISourceCode, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     formatFile(options?: FormatFileOptions): string;
 }

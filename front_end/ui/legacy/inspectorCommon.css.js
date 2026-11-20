@@ -1200,6 +1200,7 @@ devtools-toolbar {
   justify-content: center;
   font: inherit;
   font-size: var(--sys-typescale-body4-size);
+  white-space: nowrap;
   gap: var(--sys-size-3);
   padding: var(--sys-size-1) var(--sys-size-3) var(--sys-size-1) var(--sys-size-4);
   border-radius: var(--sys-shape-corner-extra-small);
@@ -1207,6 +1208,10 @@ devtools-toolbar {
   box-sizing: border-box;
   background: transparent;
   color: inherit;
+  cursor: default;
+}
+
+button.devtools-pill {
   cursor: pointer;
 
   &:hover:not(:disabled, [aria-disabled="true"]) {

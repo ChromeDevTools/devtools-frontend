@@ -14,7 +14,7 @@ import "../../../../ui/kit/kit.js";
 import * as i18n from "../../../../core/i18n/i18n.js";
 import * as Trace from "../../../../models/trace/trace.js";
 import * as ThemeSupport from "../../../../ui/legacy/theme_support/theme_support.js";
-import { html, render } from "../../../../ui/lit/lit.js";
+import { Directives, html, render } from "../../../../ui/lit/lit.js";
 import * as VisualLogging from "../../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/overlays/components/entriesLinkOverlay.css.js
@@ -90,12 +90,6 @@ var EntriesLinkOverlay = class extends HTMLElement {
   #fromEntryDimensions;
   #coordinateTo;
   #toEntryDimensions = null;
-  #connectorLineContainer = null;
-  #connector = null;
-  #entryFromWrapper = null;
-  #entryToWrapper = null;
-  #entryFromCirleConnector = null;
-  #entryToCircleConnector = null;
   #entryFromVisible = true;
   #entryToVisible = true;
   #canvasRect = null;
@@ -109,19 +103,12 @@ var EntriesLinkOverlay = class extends HTMLElement {
   #linkState;
   constructor(initialFromEntryCoordinateAndDimensions, linkCreationNotStartedState) {
     super();
-    this.#render();
     this.#coordinateFrom = { x: initialFromEntryCoordinateAndDimensions.x, y: initialFromEntryCoordinateAndDimensions.y };
     this.#fromEntryDimensions = {
       width: initialFromEntryCoordinateAndDimensions.width,
       height: initialFromEntryCoordinateAndDimensions.height
     };
     this.#coordinateTo = { x: initialFromEntryCoordinateAndDimensions.x, y: initialFromEntryCoordinateAndDimensions.y };
-    this.#connectorLineContainer = this.#shadow.querySelector(".connectorContainer") ?? null;
-    this.#connector = this.#connectorLineContainer?.querySelector("line") ?? null;
-    this.#entryFromWrapper = this.#shadow.querySelector(".from-highlight-wrapper") ?? null;
-    this.#entryToWrapper = this.#shadow.querySelector(".to-highlight-wrapper") ?? null;
-    this.#entryFromCirleConnector = this.#connectorLineContainer?.querySelector(".entryFromConnector") ?? null;
-    this.#entryToCircleConnector = this.#connectorLineContainer?.querySelector(".entryToConnector") ?? null;
     this.#linkState = linkCreationNotStartedState;
     this.#render();
   }
@@ -136,31 +123,31 @@ var EntriesLinkOverlay = class extends HTMLElement {
     this.#render();
   }
   entryFromWrapper() {
-    return this.#entryFromWrapper;
+    return this.#shadow.querySelector(".from-highlight-wrapper");
   }
   entryToWrapper() {
-    return this.#entryToWrapper;
+    return this.#shadow.querySelector(".to-highlight-wrapper");
   }
   /**
    * If one entry that is linked is in a collapsed track, we show the outlines
    * but hide only the arrow.
    */
   set hideArrow(shouldHide) {
-    this.#arrowHidden = shouldHide;
-    if (this.#connector) {
-      this.#connector.style.display = shouldHide ? "none" : "block";
+    if (this.#arrowHidden === shouldHide) {
+      return;
     }
+    this.#arrowHidden = shouldHide;
+    this.#render();
   }
   set fromEntryCoordinateAndDimensions(fromEntryParams) {
     this.#coordinateFrom = { x: fromEntryParams.x, y: fromEntryParams.y };
     this.#fromEntryDimensions = { width: fromEntryParams.length, height: fromEntryParams.height };
-    this.#updateCreateLinkBox();
-    this.#redrawAllEntriesLinkParts();
+    this.#render();
   }
   set entriesVisibility(entriesVisibility) {
     this.#entryFromVisible = entriesVisibility.fromEntryVisibility;
     this.#entryToVisible = entriesVisibility.toEntryVisibility;
-    this.#redrawAllEntriesLinkParts();
+    this.#render();
   }
   // The arrow might be pointing either to an entry or an empty space.
   // If the dimensions are not passed, it is pointing at an empty space.
@@ -171,8 +158,7 @@ var EntriesLinkOverlay = class extends HTMLElement {
     } else {
       this.#toEntryDimensions = null;
     }
-    this.#updateCreateLinkBox();
-    this.#redrawAllEntriesLinkParts();
+    this.#render();
   }
   set fromEntryIsSource(x) {
     if (x === this.#fromEntryIsSource) {
@@ -187,89 +173,6 @@ var EntriesLinkOverlay = class extends HTMLElement {
     }
     this.#toEntryIsSource = x;
     this.#render();
-  }
-  /*
-    Redraw all parts of the EntriesLink overlay
-     _________
-    |__entry__|o\      <-- 'from 'entry wrapper and the circle connector next to it
-                 \
-                  \    <-- Arrow Connector
-                   \   ________________
-                    ➘ o|_____entry______|  <-- 'to' entry wrapper and the circle connector next to it
-  */
-  #redrawAllEntriesLinkParts() {
-    if (!this.#connector || !this.#entryFromWrapper || !this.#entryToWrapper || !this.#entryFromCirleConnector || !this.#entryToCircleConnector) {
-      console.error("one of the required Entries Link elements is missing.");
-      return;
-    }
-    if (this.#linkState === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
-      this.#entryFromCirleConnector.setAttribute("visibility", "hidden");
-      this.#entryToCircleConnector.setAttribute("visibility", "hidden");
-      this.#connector.style.display = "none";
-      return;
-    }
-    this.#setEntriesWrappersVisibility();
-    this.#setConnectorCirclesVisibility();
-    this.#setArrowConnectorStyle();
-    this.#positionConnectorLineAndCircles();
-    this.#render();
-  }
-  // Only draw the entry wrapper if that entry is visible
-  #setEntriesWrappersVisibility() {
-    if (!this.#entryFromWrapper || !this.#entryToWrapper) {
-      return;
-    }
-    this.#entryFromWrapper.style.visibility = this.#entryFromVisible ? "visible" : "hidden";
-    this.#entryToWrapper.style.visibility = this.#entryToVisible ? "visible" : "hidden";
-  }
-  // Draw the entry connector circles:
-  //  - The entry the arrow is connecting to is the connection source
-  //  - That entry currently is visible
-  //  - There is enough space for the connector circle
-  #setConnectorCirclesVisibility() {
-    if (!this.#toEntryDimensions || !this.#entryFromCirleConnector || !this.#entryToCircleConnector) {
-      return;
-    }
-    const minWidthToDrawConnectorCircles = 8;
-    const drawFromEntryConnectorCircle = this.#entryFromVisible && !this.#arrowHidden && this.#fromEntryIsSource && this.#fromEntryDimensions.width >= minWidthToDrawConnectorCircles;
-    const drawToEntryConnectorCircle = !this.#arrowHidden && this.#entryToVisible && this.#toEntryIsSource && this.#toEntryDimensions?.width >= minWidthToDrawConnectorCircles && !this.#arrowHidden;
-    this.#entryFromCirleConnector.setAttribute("visibility", drawFromEntryConnectorCircle ? "visible" : "hidden");
-    this.#entryToCircleConnector.setAttribute("visibility", drawToEntryConnectorCircle ? "visible" : "hidden");
-  }
-  #setArrowConnectorStyle() {
-    if (!this.#connector) {
-      return;
-    }
-    this.#connector.style.display = this.#entryFromVisible || this.#entryToVisible ? "block" : "none";
-    this.#connector.setAttribute("stroke-width", "2");
-    const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue("--color-text-primary");
-    if (!this.#toEntryDimensions || this.#entryFromVisible && this.#entryToVisible) {
-      this.#connector.setAttribute("stroke", arrowColor);
-      return;
-    }
-    if (this.#entryFromVisible && !this.#entryToVisible) {
-      this.#connector.setAttribute("stroke", "url(#fromVisibleLineGradient)");
-    } else if (this.#entryToVisible && !this.#entryFromVisible) {
-      this.#connector.setAttribute("stroke", "url(#toVisibleLineGradient)");
-    }
-  }
-  #positionConnectorLineAndCircles() {
-    if (!this.#connector || !this.#entryFromCirleConnector || !this.#entryToCircleConnector) {
-      return;
-    }
-    const halfFromEntryHeight = this.#fromEntryDimensions.height / 2;
-    const fromX = this.#coordinateFrom.x + this.#fromEntryDimensions.width;
-    const fromY = this.#coordinateFrom.y + halfFromEntryHeight;
-    this.#connector.setAttribute("x1", fromX.toString());
-    this.#connector.setAttribute("y1", fromY.toString());
-    this.#entryFromCirleConnector.setAttribute("cx", fromX.toString());
-    this.#entryFromCirleConnector.setAttribute("cy", fromY.toString());
-    const toX = this.#coordinateTo.x;
-    const toY = this.#toEntryDimensions ? this.#coordinateTo.y + (this.#toEntryDimensions?.height ?? 0) / 2 : this.#coordinateTo.y;
-    this.#connector.setAttribute("x2", toX.toString());
-    this.#connector.setAttribute("y2", toY.toString());
-    this.#entryToCircleConnector.setAttribute("cx", toX.toString());
-    this.#entryToCircleConnector.setAttribute("cy", toY.toString());
   }
   /*
    * Calculates the gradient stop percentage when only one entry is visible.
@@ -291,36 +194,52 @@ var EntriesLinkOverlay = class extends HTMLElement {
     const visibleLineFromTotalPercentage = fadedLineLength * 100 / lineLength;
     return visibleLineFromTotalPercentage < 100 ? visibleLineFromTotalPercentage : 100;
   }
-  #updateCreateLinkBox() {
-    const createLinkBox = this.#shadow.querySelector(".create-link-box");
-    const createLinkIcon = createLinkBox?.querySelector(".create-link-icon") ?? null;
-    if (!createLinkBox || !createLinkIcon) {
-      console.error("creating element is missing.");
-      return;
-    }
-    if (this.#linkState !== Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
-      createLinkIcon.style.display = "none";
-      return;
-    }
-    createLinkIcon.style.left = `${this.#coordinateFrom.x + this.#fromEntryDimensions.width}px`;
-    createLinkIcon.style.top = `${this.#coordinateFrom.y}px`;
-  }
   #startCreatingConnection() {
     this.#linkState = Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT;
+    this.#render();
     this.dispatchEvent(new EntryLinkStartCreating());
   }
   /*
-  The entries link overlay is an arrow connecting 2 entries.
-  The Entries are drawn by Flamechart and this Overlay is only drawing the arrow between them.
-   _________
-  |__entry__|\
-              \
-               \          <-- arrow connecting the sides of entries drawn by this overlay
-                \   ________________
-                 ➘ |_____entry______|
-  */
+      The entries link overlay is an arrow connecting 2 entries.
+      The Entries are drawn by Flamechart and this Overlay is only drawing the arrow between them.
+  
+      |__entry__|o\      <-- 'from' entry wrapper and the circle connector next to it
+                    \    <-- Arrow Connector
+                      ➘ o|_____entry______|  <-- 'to' entry wrapper and the circle connector next to it
+    */
   #render() {
     const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue("--color-text-primary");
+    const isCreationNotStarted = this.#linkState === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED;
+    const fromX = this.#coordinateFrom.x + this.#fromEntryDimensions.width;
+    const fromY = this.#coordinateFrom.y + this.#fromEntryDimensions.height / 2;
+    const toX = this.#coordinateTo.x;
+    const toY = this.#toEntryDimensions ? this.#coordinateTo.y + this.#toEntryDimensions.height / 2 : this.#coordinateTo.y;
+    const drawFromEntryConnectorCircle = !isCreationNotStarted && this.#toEntryDimensions !== null && this.#entryFromVisible && !this.#arrowHidden && this.#fromEntryIsSource && this.#fromEntryDimensions.width >= MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES;
+    const drawToEntryConnectorCircle = !isCreationNotStarted && this.#toEntryDimensions !== null && this.#entryToVisible && !this.#arrowHidden && this.#toEntryIsSource && this.#toEntryDimensions.width >= MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES;
+    const showConnectorLine = !isCreationNotStarted && !this.#arrowHidden && (this.#entryFromVisible || this.#entryToVisible);
+    let connectorStroke = arrowColor;
+    if (this.#toEntryDimensions && !(this.#entryFromVisible && this.#entryToVisible)) {
+      if (this.#entryFromVisible && !this.#entryToVisible) {
+        connectorStroke = "url(#fromVisibleLineGradient)";
+      } else if (this.#entryToVisible && !this.#entryFromVisible) {
+        connectorStroke = "url(#toVisibleLineGradient)";
+      }
+    }
+    const fromHighlightClasses = Directives.classMap({
+      "entry-wrapper": true,
+      "from-highlight-wrapper": true,
+      "entry-is-not-source": !this.#fromEntryIsSource
+    });
+    const toHighlightClasses = Directives.classMap({
+      "entry-wrapper": true,
+      "to-highlight-wrapper": true,
+      "entry-is-not-source": !this.#toEntryIsSource
+    });
+    const createLinkIconStyles = Directives.styleMap({
+      display: isCreationNotStarted ? void 0 : "none",
+      left: isCreationNotStarted ? `${fromX}px` : void 0,
+      top: isCreationNotStarted ? `${this.#coordinateFrom.y}px` : void 0
+    });
     render(
       html`
           <style>${entriesLinkOverlay_css_default}</style>
@@ -365,20 +284,28 @@ var EntriesLinkOverlay = class extends HTMLElement {
             </defs>
             <line
               marker-end="url(#arrow)"
+              stroke=${connectorStroke}
+              stroke-width="2"
               stroke-dasharray=${!this.#fromEntryIsSource || !this.#toEntryIsSource ? DASHED_STROKE_AMOUNT : "none"}
               visibility=${!this.#entryFromVisible && !this.#entryToVisible ? "hidden" : "visible"}
+              style=${Directives.styleMap({ display: showConnectorLine ? "block" : "none" })}
+              x1=${fromX}
+              y1=${fromY}
+              x2=${toX}
+              y2=${toY}
               />
-            <circle class="entryFromConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} />
-            <circle class="entryToConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} />
+            <circle class="entryFromConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} cx=${fromX} cy=${fromY} visibility=${drawFromEntryConnectorCircle ? "visible" : "hidden"} />
+            <circle class="entryToConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} cx=${toX} cy=${toY} visibility=${drawToEntryConnectorCircle ? "visible" : "hidden"} />
           </svg>
-          <div class="entry-wrapper from-highlight-wrapper ${this.#fromEntryIsSource ? "" : "entry-is-not-source"}"></div>
-          <div class="entry-wrapper to-highlight-wrapper ${this.#toEntryIsSource ? "" : "entry-is-not-source"}"></div>
-          <div class="create-link-box ${this.#linkState ? "visible" : "hidden"}">
+          <div class=${fromHighlightClasses} style=${Directives.styleMap({ visibility: this.#entryFromVisible ? "visible" : "hidden" })}></div>
+          <div class=${toHighlightClasses} style=${Directives.styleMap({ visibility: this.#entryToVisible && this.#toEntryDimensions !== null ? "visible" : "hidden" })}></div>
+          <div class="create-link-box" ?hidden=${!isCreationNotStarted}>
             <devtools-icon
-              class='create-link-icon'
+              class="create-link-icon"
+              style=${createLinkIconStyles}
               jslog=${VisualLogging.action("timeline.annotations.create-entry-link").track({ click: true })}
               @click=${this.#startCreatingConnection}
-              name='arrow-right-circle'>
+              name="arrow-right-circle">
             </devtools-icon>
           </div>
         `,
@@ -389,6 +316,7 @@ var EntriesLinkOverlay = class extends HTMLElement {
 };
 var CONNECTOR_CIRCLE_RADIUS = 2;
 var CONNECTOR_CIRCLE_STROKE_WIDTH = 1;
+var MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES = 8;
 var DASHED_STROKE_AMOUNT = 4;
 customElements.define("devtools-entries-link-overlay", EntriesLinkOverlay);
 
@@ -602,7 +530,7 @@ var entryLabelOverlay_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./entryLabelOverlay.css")} */`;
 
 // ../../front_end/panels/timeline/overlays/components/EntryLabelOverlay.ts
-var { html: html2, Directives: Directives2 } = Lit;
+var { html: html2, Directives: Directives3 } = Lit;
 var UIStrings2 = {
   /**
    * @description Accessible label for the entry label overlay in the Performance panel.
@@ -733,7 +661,7 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
   #connectorLineContainer = null;
   #label;
   #shouldDrawBelowEntry;
-  #richTooltip = Directives2.createRef();
+  #richTooltip = Directives3.createRef();
   #noLogging;
   /**
    * Required to generate a label with AI.
@@ -1055,7 +983,7 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
     return html2`<devtools-tooltip
     variant="rich"
     id="info-tooltip"
-    ${Directives2.ref(this.#richTooltip)}>
+    ${Directives3.ref(this.#richTooltip)}>
       <div class="info-tooltip-container">
         ${opts.textContent} ${opts.includeSettingsButton ? html2`
           <button
@@ -1243,7 +1171,7 @@ __export(TimeRangeOverlay_exports, {
 import * as i18n5 from "../../../../core/i18n/i18n.js";
 import * as Platform2 from "../../../../core/platform/platform.js";
 import * as UI2 from "../../../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html3, render as render3 } from "../../../../ui/lit/lit.js";
+import { Directives as Directives4, html as html3, render as render3 } from "../../../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/overlays/components/timeRangeOverlay.css.js
@@ -1411,7 +1339,7 @@ var DEFAULT_VIEW = (input, output, target) => {
           class="range-container"
           role="region"
           aria-label=${i18nString3(UIStrings3.timeRange)}
-          ${Directives3.ref((el) => {
+          ${Directives4.ref((el) => {
       rangeContainer = el instanceof HTMLElement ? el : void 0;
     })}
         >
@@ -1424,9 +1352,9 @@ var DEFAULT_VIEW = (input, output, target) => {
            @input=${(event) => input.onLabelInput(event.target instanceof HTMLElement ? event.target.textContent ?? "" : "")}
            contenteditable=${input.isLabelEditable ? "plaintext-only" : false}
            aria-label=${input.label}
-           .textContent=${Directives3.live(input.label)}
+           .textContent=${Directives4.live(input.label)}
            jslog=${VisualLogging3.textField("timeline.annotations.time-range-label-input").track({ keydown: true, click: true })}
-           ${Directives3.ref((el) => {
+           ${Directives4.ref((el) => {
       if (el instanceof HTMLElement) {
         output.focusLabel = () => el.focus();
       }
@@ -1434,7 +1362,7 @@ var DEFAULT_VIEW = (input, output, target) => {
           ></span>
           <span
             class="duration"
-            ${Directives3.ref((el) => {
+            ${Directives4.ref((el) => {
       durationBox = el instanceof HTMLElement ? el : void 0;
     })}
           >${input.durationText}</span>
@@ -1595,7 +1523,7 @@ __export(TimespanBreakdownOverlay_exports, {
 });
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as UI3 from "../../../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html4, nothing as nothing2, render as render4 } from "../../../../ui/lit/lit.js";
+import { Directives as Directives5, html as html4, nothing as nothing2, render as render4 } from "../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/overlays/components/timespanBreakdownOverlay.css.js
 var timespanBreakdownOverlay_css_default = `/*
@@ -1742,7 +1670,7 @@ var timespanBreakdownOverlay_css_default = `/*
 
 // ../../front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.ts
 var renderSection = (section, position) => {
-  const style = Directives4.styleMap(
+  const style = Directives5.styleMap(
     { left: position ? `${position.left}px` : void 0, width: position ? `${position.width}px` : void 0 }
   );
   const durationText = section.showDuration ? i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range) : "";
@@ -1757,7 +1685,7 @@ var renderSection = (section, position) => {
       </div>`;
 };
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  const style = Directives4.styleMap({
+  const style = Directives5.styleMap({
     left: input.left !== null ? `${input.left}px` : void 0,
     width: input.width !== null ? `${input.width}px` : void 0,
     top: input.top !== null ? `${input.top}px` : void 0,

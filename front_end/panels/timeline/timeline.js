@@ -2236,11 +2236,18 @@ var UIStrings8 = {
    */
   gpuMemory: "GPU memory",
   /**
-   * @description Range text content in the counters graph of the Performance panel.
-   * @example {2} PH1
-   * @example {10} PH2
+   * @description Label for a counter checkbox with its min-max value range in the Performance panel.
+   * @example {JS heap} PH1
+   * @example {704 kB} PH2
+   * @example {5.5 MB} PH3
    */
-  ss: "[{PH1}\xA0\u2013\xA0{PH2}]",
+  counterRange: "{PH1} [{PH2}\xA0\u2013\xA0{PH3}]",
+  /**
+   * @description Current value text for a counter at the hovered timestamp in the Performance panel.
+   * @example {JS heap} PH1
+   * @example {1.5 MB} PH2
+   */
+  counterCurrentValue: "{PH1}: {PH2}",
   /**
    * @description Message displayed when no memory usage data is found in the counters graph of the Performance panel.
    */
@@ -2500,8 +2507,8 @@ var Counter = class {
   x;
   minimumIndex;
   maximumIndex;
-  maxTime;
-  minTime;
+  #maxTime;
+  #minTime;
   limitValue;
   constructor() {
     this.times = [];
@@ -2509,8 +2516,8 @@ var Counter = class {
     this.x = [];
     this.minimumIndex = 0;
     this.maximumIndex = 0;
-    this.maxTime = 0;
-    this.minTime = 0;
+    this.#maxTime = 0;
+    this.#minTime = 0;
   }
   appendSample(time, value) {
     if (this.values.length && this.values[this.values.length - 1] === value) {
@@ -2561,17 +2568,17 @@ var Counter = class {
       0,
       this.times.length - 1
     );
-    this.minTime = start;
-    this.maxTime = end;
+    this.#minTime = start;
+    this.#maxTime = end;
   }
   calculateXValues(width) {
     if (!this.values.length) {
       return;
     }
-    const xFactor = width / (this.maxTime - this.minTime);
+    const xFactor = width / (this.#maxTime - this.#minTime);
     this.x = new Array(this.values.length);
     for (let i = this.minimumIndex + 1; i <= this.maximumIndex; i++) {
-      this.x[i] = xFactor * (this.times[i] - this.minTime);
+      this.x[i] = xFactor * (this.times[i] - this.#minTime);
     }
   }
 };
@@ -2632,9 +2639,37 @@ var CounterUI = class {
   setRange(minValue, maxValue) {
     const min = this.formatter(minValue);
     const max = this.formatter(maxValue);
-    const rangeText = i18nString8(UIStrings8.ss, { PH1: min, PH2: max });
-    const newLabelText = `${this.counterName} ${rangeText}`;
-    this.#updateFilterLabel(newLabelText);
+    this.#updateFilterLabel(i18nString8(UIStrings8.counterRange, { PH1: this.counterName, PH2: min, PH3: max }));
+  }
+  calculateYValues(canvasHeight) {
+    const height = canvasHeight - 2 * this.verticalPadding;
+    if (height <= 0) {
+      this.graphYValues = [];
+      return null;
+    }
+    const counter = this.counter;
+    const values = counter.values;
+    if (!values.length) {
+      return null;
+    }
+    const { min: minValue, max: maxValue } = counter.calculateBounds();
+    this.setRange(minValue, maxValue);
+    if (!this.visible()) {
+      return null;
+    }
+    const originY = this.verticalPadding;
+    const yValues = this.graphYValues;
+    const yFactor = maxValue - minValue ? height / (maxValue - minValue) : 1;
+    let value = values[counter.minimumIndex];
+    let i = counter.minimumIndex;
+    for (; i <= counter.maximumIndex; i++) {
+      if (typeof values[i] !== "undefined") {
+        value = values[i];
+      }
+      yValues[i] = Math.round(originY + height - (value - minValue) * yFactor);
+    }
+    yValues.length = i;
+    return { minValue, yFactor };
   }
   toggleCounterGraph() {
     this.value.classList.toggle("hidden", !this.filter.checked());
@@ -2655,7 +2690,7 @@ var CounterUI = class {
     }
     const index = this.recordIndexAt(x);
     const value = this.formatter(this.counter.values[index]);
-    this.value.textContent = `${this.counterName}: ${value}`;
+    this.value.textContent = i18nString8(UIStrings8.counterCurrentValue, { PH1: this.counterName, PH2: value });
     const y = this.graphYValues[index] / window.devicePixelRatio;
     this.marker.style.left = x + "px";
     this.marker.style.top = y + "px";
@@ -2670,50 +2705,30 @@ var CounterUI = class {
     if (!ctx) {
       throw new Error("Unable to get canvas context");
     }
+    const scale = this.calculateYValues(canvas.height);
+    const counter = this.counter;
+    const yValues = this.graphYValues;
+    if (!scale || !yValues.length) {
+      return;
+    }
     const width = canvas.width;
     const height = canvas.height - 2 * this.verticalPadding;
-    if (height <= 0) {
-      this.graphYValues = [];
-      return;
-    }
     const originY = this.verticalPadding;
-    const counter = this.counter;
-    const values = counter.values;
-    if (!values.length) {
-      return;
-    }
-    const bounds = counter.calculateBounds();
-    const minValue = bounds.min;
-    const maxValue = bounds.max;
-    this.setRange(minValue, maxValue);
-    if (!this.visible()) {
-      return;
-    }
-    const yValues = this.graphYValues;
-    const maxYRange = maxValue - minValue;
-    const yFactor = maxYRange ? height / maxYRange : 1;
+    const { minValue, yFactor } = scale;
     ctx.save();
     ctx.lineWidth = window.devicePixelRatio;
     if (ctx.lineWidth % 2) {
       ctx.translate(0.5, 0.5);
     }
     ctx.beginPath();
-    let value = values[counter.minimumIndex];
-    let currentY = Math.round(originY + height - (value - minValue) * yFactor);
+    let currentY = yValues[counter.minimumIndex];
     ctx.moveTo(0, currentY);
-    let i = counter.minimumIndex;
-    for (; i <= counter.maximumIndex; i++) {
+    for (let i = counter.minimumIndex; i <= counter.maximumIndex; i++) {
       const x = Math.round(counter.x[i]);
       ctx.lineTo(x, currentY);
-      const currentValue = values[i];
-      if (typeof currentValue !== "undefined") {
-        value = currentValue;
-      }
-      currentY = Math.round(originY + height - (value - minValue) * yFactor);
+      currentY = yValues[i];
       ctx.lineTo(x, currentY);
-      yValues[i] = currentY;
     }
-    yValues.length = i;
     ctx.lineTo(width, currentY);
     ctx.strokeStyle = this.graphColor;
     ctx.stroke();
@@ -2734,28 +2749,22 @@ var CounterUI = class {
   }
 };
 var Calculator = class {
-  #minimumBoundary;
-  #maximumBoundary;
-  workingArea;
-  #zeroTime;
-  constructor() {
-    this.#minimumBoundary = 0;
-    this.#maximumBoundary = 0;
-    this.workingArea = 0;
-    this.#zeroTime = 0;
-  }
+  #minimumBoundary = 0;
+  #maximumBoundary = 0;
+  #workingArea = 0;
+  #zeroTime = 0;
   setZeroTime(time) {
     this.#zeroTime = time;
   }
   computePosition(time) {
-    return (time - this.#minimumBoundary) / this.boundarySpan() * this.workingArea;
+    return (time - this.#minimumBoundary) / this.boundarySpan() * this.#workingArea;
   }
   setWindow(minimumBoundary, maximumBoundary) {
     this.#minimumBoundary = minimumBoundary;
     this.#maximumBoundary = maximumBoundary;
   }
   setDisplayWidth(clientWidth) {
-    this.workingArea = clientWidth;
+    this.#workingArea = clientWidth;
   }
   formatValue(value, precision) {
     return i18n15.TimeUtilities.preciseMillisToString(value - this.zeroTime(), precision);
@@ -2964,8 +2973,8 @@ var TimelineCommentController = class {
     this.#commentManager = commentManager;
   }
   /**
-   * Sets the active trace and updates the COMMENT_PIN overlays to match its
-   * threads.
+   * Sets the active trace, or clears it when `null`, and updates the
+   * COMMENT_PIN overlays to match its threads.
    */
   setParsedTrace(parsedTrace) {
     this.#parsedTrace = parsedTrace;
@@ -3026,7 +3035,7 @@ var TimelineCommentController = class {
     return null;
   }
   /**
-   * Returns an identifier for the active trace, or null if no trace is active.
+   * Returns an identifier for `parsedTrace`.
    *
    * The identifier is derived from the trace bounds, which are fixed for a
    * recording: they do not change when the trace is zoomed or breadcrumbs are
@@ -3034,11 +3043,8 @@ var TimelineCommentController = class {
    * therefore survive switching between traces in the history dropdown, and
    * threads from one recording should not show on another.
    */
-  #traceId() {
-    if (!this.#parsedTrace) {
-      return null;
-    }
-    const { min, max } = this.#parsedTrace.data.Meta.traceBounds;
+  #traceId(parsedTrace) {
+    const { min, max } = parsedTrace.data.Meta.traceBounds;
     return `trace-${min}-${max}`;
   }
   #dataProviderFor(chartLocation) {
@@ -3091,13 +3097,15 @@ var TimelineCommentController = class {
     return -1;
   }
   #syncCommentOverlays() {
-    const existingOverlays = this.#delegate.overlays.overlaysOfType("COMMENT_PIN");
-    const currentTraceId = this.#traceId();
     const parsedTrace = this.#parsedTrace;
-    if (!currentTraceId || !parsedTrace) {
+    if (!parsedTrace) {
+      this.#delegate.overlays.removeOverlaysOfType("COMMENT_PIN");
+      this.#onOverlaysUpdated();
       return;
     }
-    let mutationsMade = false;
+    const existingOverlays = this.#delegate.overlays.overlaysOfType("COMMENT_PIN");
+    const currentTraceId = this.#traceId(parsedTrace);
+    let overlaysAdded = false;
     const validThreadIds = /* @__PURE__ */ new Set();
     for (const thread of this.#commentManager.getCommentThreads()) {
       if (thread.isGeneratedComment || !thread.anchor.timeline) {
@@ -3119,15 +3127,14 @@ var TimelineCommentController = class {
         entry: event,
         commentThreadId: thread.id
       });
-      mutationsMade = true;
+      overlaysAdded = true;
     }
     for (const overlay of existingOverlays) {
       if (!validThreadIds.has(overlay.commentThreadId)) {
         this.#delegate.overlays.remove(overlay);
-        mutationsMade = true;
       }
     }
-    if (mutationsMade) {
+    if (overlaysAdded) {
       void this.#delegate.overlays.update();
     } else {
       this.#onOverlaysUpdated();
@@ -3180,7 +3187,8 @@ var TimelineCommentController = class {
    * lookup, visual logging path and event serialization.
    */
   #resolveTimelineAnchor(element, options) {
-    if (!options) {
+    const parsedTrace = this.#parsedTrace;
+    if (!options || !parsedTrace) {
       return null;
     }
     const entry = this.#resolveEntryAtCoordinates(element, options.clientX, options.clientY);
@@ -3193,10 +3201,6 @@ var TimelineCommentController = class {
         anchorElement: entry.canvas,
         highlightRect: entry.highlightRect
       };
-    }
-    const traceId = this.#traceId();
-    if (!traceId) {
-      return null;
     }
     const { flameChart, dataProvider, chartLocation, canvas, entryIndex, event, highlightRect } = entry;
     const traceEventKey = this.#delegate.eventsSerializer.keyForEvent(event) ?? `${SYNTHETIC_KEY_PREFIX}${chartLocation}-${entryIndex}`;
@@ -3212,28 +3216,18 @@ var TimelineCommentController = class {
         vePath: VisualLogging.getVePath(element),
         textSignature: entryName,
         timeline: {
-          traceId,
+          traceId: this.#traceId(parsedTrace),
           traceEventKey,
           entryName,
           startTimeMicro,
           durationMicro,
           chartLocation
         },
-        agentContext: this.#agentContextFor(entry)
+        agentContext: agentContextForEntry(event, this.#trackNameFor(entry), parsedTrace)
       },
       anchorElement: canvas,
       highlightRect
     };
-  }
-  /**
-   * Returns the lines that describe the entry to the AI agent, or undefined
-   * if no trace is active.
-   */
-  #agentContextFor(entry) {
-    if (!this.#parsedTrace) {
-      return void 0;
-    }
-    return agentContextForEntry(entry.event, this.#trackNameFor(entry), this.#parsedTrace);
   }
   /**
    * Returns the name of the track that contains the entry. Groups are stored
@@ -18570,6 +18564,27 @@ var Tab = /* @__PURE__ */ ((Tab2) => {
   Tab2["SelectorStats"] = "selector-stats";
   return Tab2;
 })(Tab || {});
+function isTab(tabId) {
+  return Object.values(Tab).includes(tabId);
+}
+function isRangeTab(tab) {
+  return tab === "bottom-up" /* BottomUp */ || tab === "call-tree" /* CallTree */ || tab === "event-log" /* EventLog */;
+}
+function revealNodeInBottomUpTree(bottomUp, node, groupBySetting) {
+  if (groupBySetting) {
+    bottomUp.setGroupBySetting(groupBySetting);
+    bottomUp.refreshTree();
+  }
+  if (!node) {
+    return;
+  }
+  const gridNode = node.isGroupNode() ? bottomUp.dataGrid.rootNode().children.find((child) => child instanceof GridNode && child.profileNode.id === node.id) ?? null : bottomUp.gridNodeForEvent(node.event);
+  if (!gridNode) {
+    return;
+  }
+  bottomUp.selectProfileNode(gridNode.profileNode, true);
+  gridNode.expand();
+}
 var SummaryContentDirective = class extends Directive.Directive {
   #summary;
   render(_summary, renderContent) {
@@ -18643,8 +18658,15 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
   #selectedEvents = null;
   lazyPaintProfilerView;
   lazyLayersView;
-  preferredTabId;
+  #headerHidden = false;
+  #tabHistory = ["details" /* Details */];
+  #preferredTab = "details" /* Details */;
+  #treeViewModel = { selectedEvents: null, parsedTrace: null, entityMapper: null };
+  #renderedTreeViewModel = null;
+  #rangeSelections = /* @__PURE__ */ new Map();
+  #renderedRangeSelections = /* @__PURE__ */ new Map();
   #selection = null;
+  #hasPendingWindowUpdate = false;
   #debouncedUpdateContentsFromWindow = Common15.Debouncer.debounce(() => this.updateContentsFromWindow(), 100);
   lazySelectorStatsView;
   #parsedTrace = null;
@@ -18682,7 +18704,6 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     );
     this.defaultDetailsWidget = new SummaryTabWidget();
     this.appendTab("details" /* Details */, i18nString23(UIStrings23.summary), this.defaultDetailsWidget);
-    this.setPreferredTab("details" /* Details */);
     this.rangeDetailViews = /* @__PURE__ */ new Map();
     const bottomUpView = new BottomUpTimelineTreeView();
     this.appendTab("bottom-up" /* BottomUp */, i18nString23(UIStrings23.bottomup), bottomUpView);
@@ -18703,6 +18724,11 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
       });
     });
     this.tabbedPane.addEventListener(UI16.TabbedPane.Events.TabSelected, this.tabSelected, this);
+    this.tabbedPane.addEventListener(UI16.TabbedPane.Events.TabClosed, (event) => {
+      if (isTab(event.data.tabId)) {
+        this.#onTabClosed(event.data.tabId);
+      }
+    });
     this.lazySelectorStatsView = null;
     this.requestUpdate();
   }
@@ -18717,6 +18743,25 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
       void 0,
       this.defaultDetailsWidget.contentElement
     );
+    const modelChanged = this.#renderedTreeViewModel !== this.#treeViewModel;
+    this.#renderedTreeViewModel = this.#treeViewModel;
+    for (const [tabId, view] of this.rangeDetailViews.entries()) {
+      if (modelChanged) {
+        view.model = this.#treeViewModel;
+      }
+      if (isTab(tabId) && isRangeTab(tabId)) {
+        const activeSel = this.#rangeSelections.get(tabId);
+        if (activeSel && this.#renderedRangeSelections.get(tabId) !== activeSel) {
+          this.#renderedRangeSelections.set(tabId, activeSel);
+          view.activeSelection = activeSel;
+        }
+      }
+    }
+    this.tabbedPane.headerElement().classList.toggle("hidden", this.#headerHidden);
+    const targetTab = this.#selectedTab();
+    if (this.tabbedPane.hasTab(targetTab) && this.tabbedPane.selectedTabId !== targetTab) {
+      this.tabbedPane.selectTab(targetTab);
+    }
   }
   #onTreeRowHovered = (node, events) => {
     this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, { node, events });
@@ -18732,7 +18777,8 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     TraceBounds13.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
     const micro = TraceBounds13.TraceBounds.BoundsManager.instance().state()?.micro;
     const prev = this.#boundsStateWhenHidden;
-    if (prev && micro && (prev.entireTraceBounds !== micro.entireTraceBounds || prev.minimapTraceBounds !== micro.minimapTraceBounds || prev.timelineTraceWindow !== micro.timelineTraceWindow)) {
+    const boundsChanged = Boolean(prev && micro && (prev.entireTraceBounds !== micro.entireTraceBounds || prev.minimapTraceBounds !== micro.minimapTraceBounds || prev.timelineTraceWindow !== micro.timelineTraceWindow));
+    if (boundsChanged || this.#hasPendingWindowUpdate) {
       if (this.#selection) {
         void this.setSelection(this.#selection);
       } else {
@@ -18743,9 +18789,14 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
   }
   willHide() {
     TraceBounds13.TraceBounds.removeListener(this.#onTraceBoundsChangeBound);
+    this.#debouncedUpdateContentsFromWindow.cancel();
     const micro = TraceBounds13.TraceBounds.BoundsManager.instance().state()?.micro;
     this.#boundsStateWhenHidden = micro ? { ...micro } : void 0;
     super.willHide();
+  }
+  onDetach() {
+    this.#debouncedUpdateContentsFromWindow.cancel();
+    super.onDetach();
   }
   /**
    * This selects a given tabbedPane tab.
@@ -18753,7 +18804,18 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
    * if a groupBySetting is included, we groupBy.
    */
   selectTab(tabName, node, groupBySetting) {
-    this.tabbedPane.selectTab(tabName, true, true);
+    if (!this.#isTabAvailable(tabName)) {
+      return;
+    }
+    this.#onTabSelected(
+      tabName,
+      /* isUserGesture */
+      true
+    );
+    void this.#revealSelectedTab(tabName, node, groupBySetting);
+  }
+  async #revealSelectedTab(tabName, node, groupBySetting) {
+    await this.updateComplete;
     this.tabbedPane.focusSelectedTabHeader();
     switch (tabName) {
       case "call-tree" /* CallTree */:
@@ -18768,23 +18830,9 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
         break;
       }
       case "bottom-up" /* BottomUp */: {
-        if (!(this.tabbedPane.visibleView instanceof BottomUpTimelineTreeView)) {
-          return;
+        if (this.tabbedPane.visibleView instanceof BottomUpTimelineTreeView) {
+          revealNodeInBottomUpTree(this.tabbedPane.visibleView, node, groupBySetting);
         }
-        const bottomUp = this.tabbedPane.visibleView;
-        if (groupBySetting) {
-          bottomUp.setGroupBySetting(groupBySetting);
-          bottomUp.refreshTree();
-        }
-        if (!node) {
-          return;
-        }
-        const gridNode = node.isGroupNode() ? bottomUp.dataGrid.rootNode().children.find((child) => child instanceof GridNode && child.profileNode.id === node.id) ?? null : bottomUp.gridNodeForEvent(node.event);
-        if (!gridNode) {
-          return;
-        }
-        bottomUp.selectProfileNode(gridNode.profileNode, true);
-        gridNode.expand();
         break;
       }
       default: {
@@ -18843,13 +18891,14 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     this.#summary.parsedTrace = this.#parsedTrace;
     this.#summary.entityMapper = this.#entityMapper;
     this.tabbedPane.closeTabs(["paint-profiler" /* PaintProfiler */, "layer-viewer" /* LayerViewer */], false);
-    for (const view of this.rangeDetailViews.values()) {
-      view.model = {
-        selectedEvents: data.selectedEvents,
-        parsedTrace: data.parsedTrace,
-        entityMapper: this.#entityMapper
-      };
-    }
+    this.#rangeSelections.clear();
+    this.#renderedRangeSelections.clear();
+    this.#treeViewModel = {
+      selectedEvents: data.selectedEvents,
+      parsedTrace: data.parsedTrace,
+      entityMapper: this.#entityMapper
+    };
+    this.requestUpdate();
     if (!this.#parsedTrace || !this.#selectedEvents || !TraceBounds13.TraceBounds.BoundsManager.instance().state()) {
       void this.updateSummaryPane();
     }
@@ -18868,7 +18917,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
         this.tabbedPane.closeTab(allTabs[i]);
       }
     }
-    if (this.tabbedPane.selectedTabId !== "details" /* Details */) {
+    if (this.#selectedTab() !== "details" /* Details */) {
       this.#summaryNeedsUpdate = true;
       return;
     }
@@ -18886,25 +18935,27 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
       return;
     }
     const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
-    const view = this.rangeDetailViews.get(this.tabbedPane.selectedTabId || "");
-    if (view) {
-      view.activeSelection = this.#selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max);
+    const selectedTab = this.#selectedTab();
+    if (isRangeTab(selectedTab)) {
+      const activeSel = this.#selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max);
+      this.#rangeSelections.set(selectedTab, activeSel);
+      this.requestUpdate();
     }
   }
   appendTab(id, tabTitle, view, isCloseable) {
     this.tabbedPane.appendTab(id, tabTitle, view, void 0, void 0, isCloseable);
-    if (this.preferredTabId !== this.tabbedPane.selectedTabId) {
-      this.tabbedPane.selectTab(id);
+    this.#onTabAppended(id);
+    if (this.tabbedPane.selectedTabId !== this.#selectedTab()) {
+      this.tabbedPane.selectTab(this.#selectedTab());
     }
   }
   headerElement() {
     return this.tabbedPane.headerElement();
   }
   hideHeader() {
+    this.#headerHidden = true;
     this.tabbedPane.headerElement().classList.add("hidden");
-  }
-  setPreferredTab(tabId) {
-    this.preferredTabId = tabId;
+    this.requestUpdate();
   }
   /**
    * Recalculates and renders the timing breakdown for the active details tab.
@@ -18915,16 +18966,21 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
    */
   scheduleUpdateContentsFromWindow(forceImmediateUpdate = false) {
     if (!this.#parsedTrace) {
+      this.#hasPendingWindowUpdate = false;
       void this.updateSummaryPane();
       return;
     }
     if (forceImmediateUpdate) {
+      this.#debouncedUpdateContentsFromWindow.cancel();
+      this.#hasPendingWindowUpdate = false;
       this.updateContentsFromWindow();
       return;
     }
+    this.#hasPendingWindowUpdate = true;
     this.#debouncedUpdateContentsFromWindow();
   }
   updateContentsFromWindow() {
+    this.#hasPendingWindowUpdate = false;
     const traceBoundsState = TraceBounds13.TraceBounds.BoundsManager.instance().state();
     if (!traceBoundsState) {
       return;
@@ -18972,28 +19028,74 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     }
     if (selectionIsEvent(selection)) {
       this.#debouncedUpdateContentsFromWindow.cancel();
+      this.#hasPendingWindowUpdate = false;
       if (Trace31.Types.Events.isLegacyTimelineFrame(selection.event)) {
         this.#addLayerTreeForSelectedFrame(selection.event);
       }
       await this.#setSelectionForTraceEvent(selection.event);
     } else if (selectionIsRange(selection)) {
+      this.#debouncedUpdateContentsFromWindow.cancel();
+      this.#hasPendingWindowUpdate = false;
       const timings = Trace31.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(selection.bounds);
       await this.updateSelectedRangeStats(timings.min, timings.max);
     }
     this.updateContents();
   }
   tabSelected(event) {
-    if (event.data.tabId === "details" /* Details */ && this.#summaryNeedsUpdate) {
+    if (isTab(event.data.tabId)) {
+      this.#onTabSelected(event.data.tabId, Boolean(event.data.isUserGesture));
+    }
+  }
+  #selectedTab() {
+    if (this.#headerHidden) {
+      return "details" /* Details */;
+    }
+    return this.#tabHistory.find((tab) => this.#isTabAvailable(tab)) ?? "details" /* Details */;
+  }
+  #isTabAvailable(tab) {
+    switch (tab) {
+      case "details" /* Details */:
+      case "bottom-up" /* BottomUp */:
+      case "call-tree" /* CallTree */:
+      case "event-log" /* EventLog */:
+        return true;
+      case "paint-profiler" /* PaintProfiler */:
+      case "layer-viewer" /* LayerViewer */:
+      case "selector-stats" /* SelectorStats */:
+        return this.tabbedPane.hasTab(tab);
+      default:
+        Platform14.assertNever(tab, `Unknown Tab: ${tab}. Add new case to switch.`);
+    }
+  }
+  #recordSelectedTab(tab) {
+    this.#tabHistory = [tab, ...this.#tabHistory.filter((previousTab) => previousTab !== tab)];
+  }
+  #onTabAppended(tab) {
+    if (this.#preferredTab === tab) {
+      this.#recordSelectedTab(tab);
+    }
+  }
+  #onTabSelected = (tab, isUserGesture) => {
+    const previousTab = this.#selectedTab();
+    this.#recordSelectedTab(tab);
+    let needsUpdate = previousTab !== tab;
+    if (tab === "details" /* Details */ && this.#summaryNeedsUpdate) {
       this.#summaryNeedsUpdate = false;
       this.#commitSummary();
+      needsUpdate = true;
+    }
+    if (isUserGesture) {
+      this.#preferredTab = tab;
+      this.updateContents();
+    }
+    if (needsUpdate) {
       this.requestUpdate();
     }
-    if (!event.data.isUserGesture) {
-      return;
-    }
-    this.setPreferredTab(event.data.tabId);
-    this.updateContents();
-  }
+  };
+  #onTabClosed = (tab) => {
+    this.#tabHistory = this.#tabHistory.filter((previousTab) => previousTab !== tab);
+    this.requestUpdate();
+  };
   layersView() {
     if (this.lazyLayersView) {
       return this.lazyLayersView;
@@ -20133,10 +20235,7 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
   #selectedGroupName = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #overlaysUpdateScheduled = false;
-  #debouncedUpdateSearchResults = Common16.Debouncer.debounce(
-    () => this.updateSearchResults(false, false),
-    100
-  );
+  #debouncedUpdateSearchResults = Common16.Debouncer.debounce(() => this.updateSearchResults(false, false), 100);
   #overlaysContainer = document.createElement("div");
   #overlays;
   // Tracks the in-progress time range annotation when the user alt/option clicks + drags, or when the user uses the keyboard
@@ -20186,6 +20285,10 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
    */
   #networkPersistedGroupConfigSetting;
   #mainPersistedGroupConfigSetting;
+  #listenersAttached = false;
+  #boundOnMainDataChanged = () => {
+    this.mainFlameChart.scheduleUpdate();
+  };
   constructor(delegate, commentManager) {
     super({ jslog: `${VisualLogging12.section("timeline.flame-chart-view")}` });
     this.registerRequiredCSS(timelineFlameChartView_css_default);
@@ -20212,10 +20315,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     );
     this.mainDataProvider = new TimelineFlameChartDataProvider();
     this.mainDataProvider.setPersistedGroupConfigSetting(this.#mainPersistedGroupConfigSetting);
-    this.mainDataProvider.addEventListener(
-      "DataChanged" /* DATA_CHANGED */,
-      () => this.mainFlameChart.scheduleUpdate()
-    );
     this.mainDataProvider.addEventListener(
       "FlameChartItemHovered" /* FLAME_CHART_ITEM_HOVERED */,
       (e) => this.detailsView.revealEventInTreeView(e.data)
@@ -20406,7 +20505,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       "timeline-tree-group-by",
       AggregatedTimelineTreeView.GroupBy.None
     );
-    this.groupBySetting.addChangeListener(this.refreshMainFlameChart, this);
     this.refreshMainFlameChart();
     this.#commentController = new TimelineCommentController(
       {
@@ -20419,7 +20517,33 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       },
       commentManager
     );
+  }
+  #attachListeners() {
+    if (this.#listenersAttached) {
+      return;
+    }
+    this.#listenersAttached = true;
+    this.mainDataProvider.addEventListener(
+      "DataChanged" /* DATA_CHANGED */,
+      this.#boundOnMainDataChanged
+    );
+    this.mainDataProvider.connectImageCache();
+    this.groupBySetting.addChangeListener(this.refreshMainFlameChart, this);
     TraceBounds15.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+  }
+  #detachListeners() {
+    if (!this.#listenersAttached) {
+      return;
+    }
+    this.#listenersAttached = false;
+    this.#debouncedUpdateSearchResults.cancel();
+    this.mainDataProvider.removeEventListener(
+      "DataChanged" /* DATA_CHANGED */,
+      this.#boundOnMainDataChanged
+    );
+    this.mainDataProvider.disconnectImageCache();
+    this.groupBySetting.removeChangeListener(this.refreshMainFlameChart, this);
+    TraceBounds15.TraceBounds.removeListener(this.#onTraceBoundsChangeBound);
   }
   containingElement() {
     return this.element;
@@ -21174,14 +21298,24 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     this.#networkPersistedGroupConfigSetting.removeChangeListener(this.resizeToPreferredHeights, this);
     Workspace5.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#boundRefreshAfterIgnoreList);
     this.#commentController.willHide();
+    this.#detachListeners();
+  }
+  onDetach() {
+    this.#detachListeners();
+    super.onDetach();
   }
   wasShown() {
     super.wasShown();
+    this.#attachListeners();
     this.#networkPersistedGroupConfigSetting.addChangeListener(this.resizeToPreferredHeights, this);
     Workspace5.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#boundRefreshAfterIgnoreList);
     this.#commentController.wasShown();
     if (this.needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
+    }
+    if (this.#parsedTrace && TraceBounds15.TraceBounds.BoundsManager.instance().state()) {
+      this.setupWindowTimes();
+      this.updateSearchResults(false, false);
     }
     this.#updateFlameCharts();
   }
@@ -21744,6 +21878,10 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
    */
   #initiatorsCache = /* @__PURE__ */ new Map();
   #persistedGroupConfigSetting = null;
+  #imageCacheConnected = false;
+  #boundOnScreenshotLoaded = () => {
+    this.dispatchEventToListeners("DataChanged" /* DATA_CHANGED */);
+  };
   constructor() {
     super();
     this.reset();
@@ -21765,15 +21903,25 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
         header.backgroundColor = ThemeSupport23.ThemeSupport.instance().getComputedValue("--sys-color-cdt-base-container");
       }
     });
-    Utils7.ImageCache.emitter.addEventListener(
-      "screenshot-loaded",
-      () => this.dispatchEventToListeners("DataChanged" /* DATA_CHANGED */)
-    );
     Common17.Settings.Settings.instance().resolve(Workspace6.IgnoreListManager.skipStackFramesPatternSettingDescriptor).addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common17.Settings.Settings.instance().resolve(Workspace6.IgnoreListManager.skipContentScriptsSettingDescriptor).addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common17.Settings.Settings.instance().resolve(Workspace6.IgnoreListManager.automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor).addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common17.Settings.Settings.instance().resolve(Workspace6.IgnoreListManager.enableIgnoreListingSettingDescriptor).addChangeListener(this.#onIgnoreListChanged.bind(this));
     Common17.Settings.Settings.instance().resolve(Workspace6.IgnoreListManager.skipAnonymousScriptsSettingDescriptor).addChangeListener(this.#onIgnoreListChanged.bind(this));
+  }
+  connectImageCache() {
+    if (this.#imageCacheConnected) {
+      return;
+    }
+    this.#imageCacheConnected = true;
+    Utils7.ImageCache.emitter.addEventListener("screenshot-loaded", this.#boundOnScreenshotLoaded);
+  }
+  disconnectImageCache() {
+    if (!this.#imageCacheConnected) {
+      return;
+    }
+    this.#imageCacheConnected = false;
+    Utils7.ImageCache.emitter.removeEventListener("screenshot-loaded", this.#boundOnScreenshotLoaded);
   }
   handleTrackConfigurationChange(groups, indexesInVisualOrder) {
     if (!this.#persistedGroupConfigSetting) {

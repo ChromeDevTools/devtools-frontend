@@ -1,9 +1,10 @@
+export interface CopyResult {
+    plainText?: string;
+}
 export declare class ConsoleViewport {
     #private;
     element: HTMLElement;
-    private topGapElement;
     private topGapElementActive;
-    private bottomGapElement;
     private bottomGapElementActive;
     private provider;
     private virtualSelectedIndex;

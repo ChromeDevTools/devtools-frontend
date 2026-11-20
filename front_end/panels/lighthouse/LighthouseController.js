@@ -146,9 +146,9 @@ const UIStrings = {
      */
     devtoolsThrottling: 'DevTools throttling (advanced)',
     /**
-     * @description Tooltip text that appears when hovering over the 'Simulated Throttling' checkbox in the settings toolbar of the Lighthouse panel.
+     * @description Tooltip text that appears when hovering over the 'Throttling method' dropdown in the settings toolbar of the Lighthouse panel.
      */
-    simulateASlowerPageLoadBasedOn: 'Simulated throttling simulates a slower page load based on data from an initial unthrottled load. DevTools throttling actually slows down the page.',
+    simulateASlowerPageLoadBasedOn: 'Simulated throttling models a slower network and CPU from an unthrottled load. DevTools throttling slows down network and CPU in real time using Lighthouse presets (ignoring Network and Performance panel settings).',
     /**
      * @description Text of checkbox to reset storage features prior to running audits in Lighthouse.
      */
@@ -239,6 +239,7 @@ class LighthouseRun {
      */
     async setupEmulationAndProtocolConnection() {
         const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+        const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
         this.emulationStateBefore = {
             emulation: {
                 type: emulationModel.type(),
@@ -249,6 +250,7 @@ class LighthouseRun {
                 mode: emulationModel.mode(),
             },
             network: { conditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions() },
+            cpuThrottlingRate: cpuThrottlingManager.cpuThrottlingRate(),
         };
         emulationModel.toolbarControlsEnabledSetting().set(false);
         if ('formFactor' in this.flags && this.flags.formFactor === 'desktop') {
@@ -267,6 +269,8 @@ class LighthouseRun {
                 }
             }
         }
+        // Reset DevTools CPU throttling so Lighthouse's simulated mode collects an unthrottled baseline instead of double-throttling.
+        cpuThrottlingManager.setCPUThrottlingRate(1);
         await this.protocolService.attach(this.inspectedURL);
     }
     async restoreEmulationAndProtocolConnection() {
@@ -287,6 +291,7 @@ class LighthouseRun {
             }
             emulationModel.emulate(type, device, mode, scale);
             SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(this.emulationStateBefore.network.conditions);
+            SDK.CPUThrottlingManager.CPUThrottlingManager.instance().setCPUThrottlingRate(this.emulationStateBefore.cpuThrottlingRate);
             delete this.emulationStateBefore;
         }
         Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance().update(true);
@@ -687,7 +692,7 @@ export function getRuntimeSettings() {
                 ],
             },
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.mode'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.modeSettingDescriptor),
                 title: i18nLazyString(UIStrings.lighthouseMode),
                 description: i18nLazyString(UIStrings.runLighthouseInMode),
                 setFlags: (flags, value) => {
@@ -714,10 +719,10 @@ export function getRuntimeSettings() {
             },
             {
                 // This setting is disabled, but we keep it around to show in the UI.
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.throttling'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.throttlingSettingDescriptor),
                 title: i18nLazyString(UIStrings.throttlingMethod),
                 // We will disable this when we have a Lantern trace viewer within DevTools.
-                learnMore: 'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling',
+                learnMore: 'https://github.com/GoogleChrome/lighthouse/blob/main/docs/throttling.md#devtools-lighthouse-panel-throttling',
                 description: i18nLazyString(UIStrings.simulateASlowerPageLoadBasedOn),
                 setFlags: (flags, value) => {
                     if (typeof value === 'string') {
@@ -733,7 +738,7 @@ export function getRuntimeSettings() {
                 ],
             },
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.clear-storage'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.clearStorageSettingDescriptor),
                 title: i18nLazyString(UIStrings.clearStorage),
                 description: i18nLazyString(UIStrings.resetStorageLocalstorage),
                 setFlags: (flags, value) => {
@@ -741,7 +746,7 @@ export function getRuntimeSettings() {
                 },
             },
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.enable-sampling'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.enableSamplingSettingDescriptor),
                 title: i18nLazyString(UIStrings.enableSampling),
                 description: i18nLazyString(UIStrings.enableJavaScriptSampling),
                 setFlags: (flags, value) => {

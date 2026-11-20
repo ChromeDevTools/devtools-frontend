@@ -10,6 +10,9 @@ import { dispatchAiAssistanceDoneEvent } from '../DOMHelpers.js';
 const { debugLog, isDebugMode } = AiUtils.Debug;
 const MAX_SUGGESTION_LENGTH = 200;
 export const SUGGEST_FOLLOW_UPS_FUNCTION_NAME = 'suggestFollowUps';
+const SUGGEST_FOLLOW_UPS_RECORDED_RESULT = 'Suggestions recorded.';
+const SUGGEST_FOLLOW_UPS_MISSING_TEXT_RESULT = 'Suggestions recorded, but your response text was empty. Provide your final Markdown answer to the user now.';
+const SUGGEST_FOLLOW_UPS_PREMATURE_RESULT = 'Ignored: call suggestFollowUps only in the final response after all other tool calls complete.';
 /**
  * The types of event in the response stream that `AiConversation#run()`
  * yields to the AI assistance panel. The same events, minus a few, are saved
@@ -64,16 +67,25 @@ export const SUGGEST_FOLLOW_UPS_FUNCTION_NAME = 'suggestFollowUps';
  *
  * ## Model history for function calls
  *
- * This is the history sent to the model, separate from the saved history
- * below. `AiAgent#runFunctionCalls()` stores the model's explanation text and
- * every function call in a response as one `MODEL` turn. The next request
- * carries one `functionResponse` per call, in the same order. A denied call
- * gets a response that says it did not run. After a context change, each call
- * that did not run gets a "Not executed" response. In the final response,
- * `suggestFollowUps` is not recorded in the history. When called prematurely
- * alongside other tools, its suggestions are ignored and it receives a
- * `functionResponse` instructing the model to call `suggestFollowUps` only in
- * the final response.
+ * Model history is sent to the model, separate from the saved history below.
+ * `AiAgent` records non-empty text and `functionCall` parts in one `MODEL`
+ * turn, followed by matching `ROLE_UNSPECIFIED` `functionResponse` parts in
+ * order:
+ * - Standard tools: `AiAgent#runFunctionCalls()` executes each handler and
+ *   records its result or error.
+ * - Denied calls: When approval is rejected, `AiAgent#callFunction()` returns
+ *   a response stating that the call did not run.
+ * - Context changes: `AiAgent#contextChangeResponses()` gives the switching
+ *   call its description and each remaining call a `"Not executed"` response.
+ * - `suggestFollowUps` with final text: `AiAgent#handleFinalResponse()`
+ *   records the answer and all `suggestFollowUps` calls verbatim, plus
+ *   matching synthetic `"Suggestions recorded."` responses.
+ * - `suggestFollowUps` alone with empty text: `AiAgent#run()` retains valid
+ *   suggestions for the run, and `AiAgent#runFunctionCalls()` requests the
+ *   final Markdown answer.
+ * - `suggestFollowUps` alongside other tools: `AiAgent#run()` discards the
+ *   premature suggestions, and `AiAgent#runFunctionCalls()` instructs the
+ *   model to call `suggestFollowUps` only in the final response.
  *
  * ## Saved history
  *
@@ -477,6 +489,7 @@ export class AiAgent {
         Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
         const query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
         const runEntries = [];
+        let latestSuggestions;
         // Request is built here to capture history up to this point.
         let request = this.#buildRequest(query, Host.AidaClient.Role.USER, [...this.#history, ...runEntries]);
         const clientFeatureName = Host.AidaClient.getClientFeatureName(this.clientFeature);
@@ -522,14 +535,26 @@ export class AiAgent {
                 break;
             }
             runEntries.push(request.current_message);
-            // If the model calls other tools alongside suggestFollowUps, the investigation is still in progress,
-            // so premature suggestions are discarded until the concluding turn.
-            const hasOtherFunctionCalls = Boolean(functionCalls?.some(call => call.name !== SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
-            if (!functionCalls || !hasOtherFunctionCalls) {
-                yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId, runEntries);
+            const hasTextResponse = Boolean(textResponse.trim());
+            // `FunctionCalls` is non-empty when defined, so `functionCalls?.every(...)` is true
+            // only when the model called `suggestFollowUps` without any other tools.
+            const onlySuggestFollowUps = Boolean(functionCalls?.every(call => call.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
+            // Save valid suggestions now so they survive into the next step if `textResponse` is
+            // empty and `#runFunctionCalls()` has to request the final Markdown answer. Calls made
+            // alongside other tools are premature and ignored here.
+            if (onlySuggestFollowUps && functionCalls) {
+                for (const call of functionCalls) {
+                    latestSuggestions = sanitizeSuggestionsList(call.args?.suggestions) ?? latestSuggestions;
+                }
+            }
+            // Finish the run when no tools were called, or when `suggestFollowUps` arrived with
+            // the final text answer. Standalone empty-text `suggestFollowUps` falls through to
+            // `#runFunctionCalls()` to prompt the model for text.
+            if (!functionCalls || (onlySuggestFollowUps && hasTextResponse)) {
+                yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId, runEntries, latestSuggestions);
                 break;
             }
-            if (textResponse) {
+            if (hasTextResponse) {
                 const parsedResponse = this.parseTextResponse(textResponse);
                 yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId);
             }
@@ -564,31 +589,45 @@ export class AiAgent {
      * Handles the final model response of a run when no further tool calls need
      * to execute.
      *
-     * - If `textResponse` is empty, yields an `UNKNOWN` error.
-     * - Otherwise, records the answer as a `MODEL` turn in `#history` (excluding
-     *   `suggestFollowUps`) and yields a completed `ANSWER` with follow-up
-     *   suggestions.
+     * - If `textResponse` is empty or whitespace-only, yields an `UNKNOWN` error
+     *   without committing `runEntries`.
+     * - Otherwise, records the answer (and any `suggestFollowUps` calls verbatim
+     *   with matching synthetic `functionResponse` parts) in `#history` and yields
+     *   a completed `ANSWER` with follow-up suggestions.
      */
-    async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId, runEntries) {
-        if (!textResponse) {
+    async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId, runEntries, latestSuggestions) {
+        if (!textResponse.trim()) {
             debugLog('[AiAgent] Model returned an empty text response without tool calls:', { step: stepIndex + 1, rpcId, functionCalls });
             yield this.#createErrorResponse("unknown" /* ErrorType.UNKNOWN */);
             return;
         }
-        const lastSuggestCall = functionCalls?.findLast(call => call.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
-        const followUpSuggestions = sanitizeSuggestionsList(lastSuggestCall?.args?.suggestions);
         const parsedResponse = this.parseTextResponse(textResponse);
         debugLog(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
+        const modelParts = [{ text: parsedResponse.answer }];
+        if (functionCalls) {
+            modelParts.push(...functionCalls.map(functionCall => ({ functionCall })));
+        }
         runEntries.push({
-            parts: [{
-                    text: parsedResponse.answer,
-                }],
+            parts: modelParts,
             role: Host.AidaClient.Role.MODEL,
         });
+        if (functionCalls) {
+            // Pair every `functionCall` with a synthetic `functionResponse` so `historical_contexts`
+            // stays valid before the next `USER` turn and retains `[text, suggestFollowUps]` examples.
+            runEntries.push({
+                parts: functionCalls.map(functionCall => ({
+                    functionResponse: {
+                        name: functionCall.name,
+                        response: { result: SUGGEST_FOLLOW_UPS_RECORDED_RESULT },
+                    },
+                })),
+                role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+            });
+        }
         this.#commitRun(runEntries);
         // The `parsedResponse.suggestions` fallback for text-parsed `SUGGESTIONS:`
         // remains only while V1 agents (`StylingAgent`, `PerformanceAgent`) exist.
-        const suggestions = followUpSuggestions ?? parsedResponse.suggestions;
+        const suggestions = latestSuggestions ?? parsedResponse.suggestions;
         yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId, suggestions);
     }
     /**
@@ -607,30 +646,37 @@ export class AiAgent {
     }
     /**
      * Runs every function call in one model response, one after another, in the
-     * order the model returned them.
+     * order the model returned them. `suggestFollowUps` calls do not run a
+     * handler or yield UI events; instead, they receive a synthetic
+     * `functionResponse` that rejects premature calls (when other tools are
+     * present) or asks for the missing Markdown answer.
      *
-     * The model's text and all calls are stored in history as one MODEL turn.
-     * Every `functionCall` in history gets a matching `functionResponse`: in the
-     * returned `functionResponses`, or, after a context change, in history
+     * Non-empty `textResponse` and all calls are stored in history as one `MODEL`
+     * turn. Every `functionCall` in history gets a matching `functionResponse`:
+     * in the returned `functionResponses`, or, after a context change, in history
      * directly. When the run stops, uncommitted `runEntries` are discarded.
      */
     async *#runFunctionCalls(functionCalls, textResponse, options, runEntries) {
         // Each call keeps its own `thoughtSignature`, if it has one.
-        const modelParts = textResponse ? [{ text: textResponse }] : [];
+        const modelParts = textResponse.trim() ? [{ text: textResponse }] : [];
         modelParts.push(...functionCalls.map(functionCall => ({ functionCall })));
         runEntries.push({
             parts: modelParts,
             role: Host.AidaClient.Role.MODEL,
         });
+        const onlySuggestFollowUps = functionCalls.every(call => call.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
         const functionResponses = [];
         try {
             for (const [index, functionCall] of functionCalls.entries()) {
                 if (functionCall.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME) {
+                    // Reaching `#runFunctionCalls()` with `onlySuggestFollowUps` means `textResponse` was empty;
+                    // otherwise other tools are present and `suggestFollowUps` was called prematurely.
                     functionResponses.push({
                         functionResponse: {
                             name: functionCall.name,
                             response: {
-                                result: 'Ignored: call suggestFollowUps only in the final response after all other tool calls complete.',
+                                result: onlySuggestFollowUps ? SUGGEST_FOLLOW_UPS_MISSING_TEXT_RESULT :
+                                    SUGGEST_FOLLOW_UPS_PREMATURE_RESULT,
                             },
                         },
                     });

@@ -14,9 +14,7 @@ export default `/* Copyright 2026 The Chromium Authors
 
   .status-bar {
     display: flex;
-    padding: var(--sys-size-4) var(--sys-size-5);
-    justify-content: space-between;
-    align-items: center;
+    padding-inline: var(--sys-size-5);
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     background: var(--sys-color-cdt-base-container);
   }
@@ -26,6 +24,23 @@ export default `/* Copyright 2026 The Chromium Authors
    * docs/ui_engineering.md "Styling"); content in a shadow root is not detected. */
   .status-bar:not(:has(> :not(.hidden) > :not(style))) {
     display: none;
+  }
+
+  /* The items have the vertical padding of the bar, so that a separator has the full height of the bar.
+   * The content of the items stretches, so that the pills of all items have the same height. */
+  .status-bar > * {
+    display: flex;
+    flex: none;
+    padding-block: var(--sys-size-4);
+  }
+
+  /* Separate the visible items that render something. */
+  .status-bar > :not(.hidden):has(> :not(style)) {
+    & ~ & {
+      margin-inline-start: var(--sys-size-5);
+      padding-inline-start: var(--sys-size-5);
+      border-inline-start: var(--sys-size-1) solid var(--sys-color-divider);
+    }
   }
 }
 

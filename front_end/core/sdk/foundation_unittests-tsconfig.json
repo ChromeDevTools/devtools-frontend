@@ -72,6 +72,7 @@
     "../../../../../../front_end/core/sdk/EmulationModel.test.ts",
     "../../../../../../front_end/core/sdk/EnhancedTracesParser.test.ts",
     "../../../../../../front_end/core/sdk/FrameManager.test.ts",
+    "../../../../../../front_end/core/sdk/IsolateManager.test.ts",
     "../../../../../../front_end/core/sdk/NetworkManager.test.ts",
     "../../../../../../front_end/core/sdk/NetworkRequest.test.ts",
     "../../../../../../front_end/core/sdk/NetworkRequestAccess.test.ts",

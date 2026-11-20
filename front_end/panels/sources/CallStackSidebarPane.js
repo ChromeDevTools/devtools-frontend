@@ -34,7 +34,6 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -167,22 +166,21 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     `;
     };
     render(html `
-    <style>${Input.checkboxStyles}</style>
     <style>${callStackSidebarPaneStyles}</style>
     <div
       class="ignore-listed-message"
       ?hidden=${!input.showIgnoreListMessage}>
-      <label class="ignore-listed-message-label">
-        <input type="checkbox" tabindex="0" class="ignore-listed-checkbox"
-            .checked=${input.showIgnoreListedChecked}
-            jslog=${VisualLogging.toggle('show-ignore-listed-frames').track({ change: true })}
-            @change=${(e) => {
-        if (e.target instanceof HTMLInputElement) {
+      <devtools-checkbox
+          class="ignore-listed-checkbox"
+          .checked=${input.showIgnoreListedChecked}
+          jslog=${VisualLogging.toggle('show-ignore-listed-frames').track({ change: true })}
+          @change=${(e) => {
+        if (e.target instanceof UI.UIUtils.CheckboxLabel) {
             input.onIgnoreListCheckboxChange(e.target.checked);
         }
-    }} />
+    }}>
         ${i18nString(UIStrings.showIgnorelistedFrames)}
-      </label>
+      </devtools-checkbox>
     </div>
     <div
       class="gray-info-message"

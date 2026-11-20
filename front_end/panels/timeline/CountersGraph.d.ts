@@ -36,13 +36,12 @@ export declare class CountersGraph extends UI.Widget.VBox {
     private clear;
 }
 export declare class Counter {
+    #private;
     times: number[];
     values: number[];
     x: number[];
     minimumIndex: number;
     maximumIndex: number;
-    private maxTime;
-    private minTime;
     limitValue?: number;
     constructor();
     appendSample(time: number, value: number): void;
@@ -72,6 +71,10 @@ export declare class CounterUI {
     constructor(countersPane: CountersGraph, title: Common.UIString.LocalizedString, setting: Common.Settings.Setting<boolean>, graphColor: string, counter: Counter, formatter: (arg0: number) => string);
     reset(): void;
     setRange(minValue: number, maxValue: number): void;
+    calculateYValues(canvasHeight: number): {
+        minValue: number;
+        yFactor: number;
+    } | null;
     private toggleCounterGraph;
     recordIndexAt(x: number): number;
     updateCurrentValue(x: number): void;
@@ -79,10 +82,8 @@ export declare class CounterUI {
     drawGraph(canvas: HTMLCanvasElement): void;
     visible(): boolean;
 }
-export declare class Calculator implements Calculator {
+export declare class Calculator {
     #private;
-    private workingArea;
-    constructor();
     setZeroTime(time: number): void;
     computePosition(time: number): number;
     setWindow(minimumBoundary: number, maximumBoundary: number): void;

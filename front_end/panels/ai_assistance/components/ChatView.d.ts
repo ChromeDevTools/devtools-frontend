@@ -35,7 +35,7 @@ export interface Props {
     messages: Message[];
     context: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
     isContextSelected: boolean;
-    canShowFeedbackForm: boolean;
+    canShowFreeFormFeedback: boolean;
     isLoading: boolean;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
     isReadOnly: boolean;

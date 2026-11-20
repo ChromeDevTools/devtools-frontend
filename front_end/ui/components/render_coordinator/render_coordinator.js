@@ -117,6 +117,23 @@ function enqueueHandler(action, label, callback) {
   scheduleWork();
   return workItem.promise;
 }
+async function raceWithDeadlockTimeout(items, errorMessage) {
+  if (items.length === 0) {
+    return;
+  }
+  const { promise: timeoutPromise, resolve: resolveTimeout, reject: rejectTimeout } = Promise.withResolvers();
+  const clearDeadlockTimeout = window.clearTimeout;
+  const timeoutId = window.setTimeout(() => rejectTimeout(new Error(errorMessage)), DEADLOCK_TIMEOUT);
+  try {
+    await Promise.race([
+      Promise.all(items.map((item) => item.promise)),
+      timeoutPromise
+    ]);
+  } finally {
+    clearDeadlockTimeout.call(window, timeoutId);
+    resolveTimeout();
+  }
+}
 function scheduleWork() {
   if (scheduledWorkId !== 0) {
     return;
@@ -139,15 +156,7 @@ function scheduleWork() {
       reader.trigger();
     }
     try {
-      await Promise.race([
-        Promise.all(readers.map((r) => r.promise)),
-        new Promise((_, reject) => {
-          window.setTimeout(
-            () => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
-            DEADLOCK_TIMEOUT
-          );
-        })
-      ]);
+      await raceWithDeadlockTimeout(readers, `Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`);
     } catch (err) {
       rejectAll(readers, err);
     }
@@ -156,15 +165,7 @@ function scheduleWork() {
       writer.trigger();
     }
     try {
-      await Promise.race([
-        Promise.all(writers.map((w) => w.promise)),
-        new Promise((_, reject) => {
-          window.setTimeout(
-            () => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
-            DEADLOCK_TIMEOUT
-          );
-        })
-      ]);
+      await raceWithDeadlockTimeout(writers, `Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`);
     } catch (err) {
       rejectAll(writers, err);
     }

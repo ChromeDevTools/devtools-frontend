@@ -38,4 +38,28 @@ export const deviceTypeSettingDescriptor = {
     defaultValue: 'mobile',
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const modeSettingDescriptor = {
+    name: 'lighthouse.mode',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: 'navigation',
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const throttlingSettingDescriptor = {
+    name: 'lighthouse.throttling',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: 'simulate',
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const clearStorageSettingDescriptor = {
+    name: 'lighthouse.clear-storage',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const enableSamplingSettingDescriptor = {
+    name: 'lighthouse.enable-sampling',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=LighthouseSettings.js.map

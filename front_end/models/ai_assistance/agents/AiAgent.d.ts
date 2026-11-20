@@ -64,16 +64,25 @@ export declare const SUGGEST_FOLLOW_UPS_FUNCTION_NAME = "suggestFollowUps";
  *
  * ## Model history for function calls
  *
- * This is the history sent to the model, separate from the saved history
- * below. `AiAgent#runFunctionCalls()` stores the model's explanation text and
- * every function call in a response as one `MODEL` turn. The next request
- * carries one `functionResponse` per call, in the same order. A denied call
- * gets a response that says it did not run. After a context change, each call
- * that did not run gets a "Not executed" response. In the final response,
- * `suggestFollowUps` is not recorded in the history. When called prematurely
- * alongside other tools, its suggestions are ignored and it receives a
- * `functionResponse` instructing the model to call `suggestFollowUps` only in
- * the final response.
+ * Model history is sent to the model, separate from the saved history below.
+ * `AiAgent` records non-empty text and `functionCall` parts in one `MODEL`
+ * turn, followed by matching `ROLE_UNSPECIFIED` `functionResponse` parts in
+ * order:
+ * - Standard tools: `AiAgent#runFunctionCalls()` executes each handler and
+ *   records its result or error.
+ * - Denied calls: When approval is rejected, `AiAgent#callFunction()` returns
+ *   a response stating that the call did not run.
+ * - Context changes: `AiAgent#contextChangeResponses()` gives the switching
+ *   call its description and each remaining call a `"Not executed"` response.
+ * - `suggestFollowUps` with final text: `AiAgent#handleFinalResponse()`
+ *   records the answer and all `suggestFollowUps` calls verbatim, plus
+ *   matching synthetic `"Suggestions recorded."` responses.
+ * - `suggestFollowUps` alone with empty text: `AiAgent#run()` retains valid
+ *   suggestions for the run, and `AiAgent#runFunctionCalls()` requests the
+ *   final Markdown answer.
+ * - `suggestFollowUps` alongside other tools: `AiAgent#run()` discards the
+ *   premature suggestions, and `AiAgent#runFunctionCalls()` instructs the
+ *   model to call `suggestFollowUps` only in the final response.
  *
  * ## Saved history
  *

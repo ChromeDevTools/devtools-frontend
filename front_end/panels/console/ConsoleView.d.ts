@@ -217,6 +217,7 @@ export declare class ConsoleViewFilter {
     shouldBeVisible(viewMessage: ConsoleViewMessage): boolean;
     clear(): void;
     reset(): void;
+    dispose(): void;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string): boolean;

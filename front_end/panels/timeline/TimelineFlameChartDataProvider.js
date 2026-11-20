@@ -109,6 +109,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
      */
     #initiatorsCache = new Map();
     #persistedGroupConfigSetting = null;
+    #imageCacheConnected = false;
+    #boundOnScreenshotLoaded = () => {
+        this.dispatchEventToListeners("DataChanged" /* Events.DATA_CHANGED */);
+    };
     constructor() {
         super();
         this.reset();
@@ -131,7 +135,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
                     ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
             }
         });
-        Utils.ImageCache.emitter.addEventListener('screenshot-loaded', () => this.dispatchEventToListeners("DataChanged" /* Events.DATA_CHANGED */));
         Common.Settings.Settings.instance()
             .resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor)
             .addChangeListener(this.#onIgnoreListChanged.bind(this));
@@ -147,6 +150,20 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         Common.Settings.Settings.instance()
             .resolve(Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)
             .addChangeListener(this.#onIgnoreListChanged.bind(this));
+    }
+    connectImageCache() {
+        if (this.#imageCacheConnected) {
+            return;
+        }
+        this.#imageCacheConnected = true;
+        Utils.ImageCache.emitter.addEventListener('screenshot-loaded', this.#boundOnScreenshotLoaded);
+    }
+    disconnectImageCache() {
+        if (!this.#imageCacheConnected) {
+            return;
+        }
+        this.#imageCacheConnected = false;
+        Utils.ImageCache.emitter.removeEventListener('screenshot-loaded', this.#boundOnScreenshotLoaded);
     }
     handleTrackConfigurationChange(groups, indexesInVisualOrder) {
         if (!this.#persistedGroupConfigSetting) {

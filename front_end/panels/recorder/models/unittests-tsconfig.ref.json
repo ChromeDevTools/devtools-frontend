@@ -13,6 +13,7 @@
     "skipLibCheck": true
   },
   "files": [
+    "../../../../../../../front_end/panels/recorder/models/NavigationGuard.test.ts",
     "../../../../../../../front_end/panels/recorder/models/RecorderSettings.test.ts",
     "../../../../../../../front_end/panels/recorder/models/RecorderShortcutHelper.test.ts",
     "../../../../../../../front_end/panels/recorder/models/RecordingPlayer.test.ts",

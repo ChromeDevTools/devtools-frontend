@@ -129,18 +129,18 @@ function renderLabel(expression, atLeft, leftAlign) {
     // clang-format on
 }
 export class MediaQueryInspector extends UI.Widget.Widget {
-    view;
+    #view;
     mediaThrottler = new Common.Throttler.Throttler(0);
     #targetManager = SDK.TargetManager.TargetManager.instance();
     #zoomManager = UI.ZoomManager.ZoomManager.instance();
     #getWidthCallback;
     #setWidthCallback;
     #scale;
-    cssModel;
-    cachedQueryModels;
+    #cssModel;
+    #cachedQueryModels;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: 'pure' });
-        this.view = view;
+        this.#view = view;
         this.#scale = 1;
     }
     get getWidthCallback() {
@@ -162,21 +162,21 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         if (cssModel.target() !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
             return;
         }
-        this.cssModel = cssModel;
-        this.cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.scheduleMediaQueriesUpdate, this);
-        this.cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.scheduleMediaQueriesUpdate, this);
-        this.cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.scheduleMediaQueriesUpdate, this);
-        this.cssModel.addEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.scheduleMediaQueriesUpdate, this);
+        this.#cssModel = cssModel;
+        this.#cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.#scheduleMediaQueriesUpdate, this);
+        this.#cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.#scheduleMediaQueriesUpdate, this);
+        this.#cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.#scheduleMediaQueriesUpdate, this);
+        this.#cssModel.addEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.#scheduleMediaQueriesUpdate, this);
     }
     modelRemoved(cssModel) {
-        if (cssModel !== this.cssModel) {
+        if (cssModel !== this.#cssModel) {
             return;
         }
-        this.cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.scheduleMediaQueriesUpdate, this);
-        this.cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.scheduleMediaQueriesUpdate, this);
-        this.cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.scheduleMediaQueriesUpdate, this);
-        this.cssModel.removeEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.scheduleMediaQueriesUpdate, this);
-        delete this.cssModel;
+        this.#cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.#scheduleMediaQueriesUpdate, this);
+        this.#cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.#scheduleMediaQueriesUpdate, this);
+        this.#cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.#scheduleMediaQueriesUpdate, this);
+        this.#cssModel.removeEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.#scheduleMediaQueriesUpdate, this);
+        this.#cssModel = undefined;
     }
     get scale() {
         return this.#scale;
@@ -188,7 +188,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         this.#scale = scale;
         this.requestUpdate();
     }
-    onMediaQueryClicked(model) {
+    #onMediaQueryClicked(model) {
         const modelMaxWidth = model.maxWidthExpression();
         const modelMinWidth = model.minWidthExpression();
         if (model.section() === 0 /* Section.MAX */) {
@@ -207,8 +207,8 @@ export class MediaQueryInspector extends UI.Widget.Widget {
             this.setWidthCallback?.(modelMaxWidth ? modelMaxWidth.computedLength() || 0 : 0);
         }
     }
-    onContextMenu(event, locations) {
-        if (!this.cssModel?.isEnabled()) {
+    #onContextMenu(event, locations) {
+        if (!this.#cssModel?.isEnabled()) {
             return;
         }
         const uiLocations = new Map();
@@ -227,26 +227,26 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         const subMenuItem = contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.revealInSourceCode), undefined, 'reveal-in-source-list');
         for (let i = 0; i < contextMenuItems.length; ++i) {
             const title = contextMenuItems[i];
-            subMenuItem.defaultSection().appendItem(title, this.revealSourceLocation.bind(this, uiLocations.get(title)), { jslogContext: 'reveal-in-source' });
+            subMenuItem.defaultSection().appendItem(title, this.#revealSourceLocation.bind(this, uiLocations.get(title)), { jslogContext: 'reveal-in-source' });
         }
         void contextMenu.show();
     }
-    revealSourceLocation(location) {
+    #revealSourceLocation(location) {
         void Common.Revealer.reveal(location);
     }
-    scheduleMediaQueriesUpdate() {
+    #scheduleMediaQueriesUpdate() {
         if (!this.isShowing()) {
             return;
         }
-        void this.mediaThrottler.schedule(this.refetchMediaQueries.bind(this));
+        void this.mediaThrottler.schedule(this.#refetchMediaQueries.bind(this));
     }
-    refetchMediaQueries() {
-        if (!this.isShowing() || !this.cssModel) {
+    #refetchMediaQueries() {
+        if (!this.isShowing() || !this.#cssModel) {
             return Promise.resolve();
         }
-        return this.cssModel.getMediaQueries().then(this.rebuildMediaQueries.bind(this));
+        return this.#cssModel.getMediaQueries().then(this.#rebuildMediaQueries.bind(this));
     }
-    squashAdjacentEqual(models) {
+    #squashAdjacentEqual(models) {
         const filtered = [];
         for (let i = 0; i < models.length; ++i) {
             const last = filtered[filtered.length - 1];
@@ -256,7 +256,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         }
         return filtered;
     }
-    rebuildMediaQueries(cssMedias) {
+    #rebuildMediaQueries(cssMedias) {
         let queryModels = [];
         for (let i = 0; i < cssMedias.length; ++i) {
             const cssMedia = cssMedias[i];
@@ -272,27 +272,27 @@ export class MediaQueryInspector extends UI.Widget.Widget {
             }
         }
         queryModels.sort(compareModels);
-        queryModels = this.squashAdjacentEqual(queryModels);
-        let allEqual = this.cachedQueryModels && this.cachedQueryModels.length === queryModels.length;
+        queryModels = this.#squashAdjacentEqual(queryModels);
+        let allEqual = this.#cachedQueryModels && this.#cachedQueryModels.length === queryModels.length;
         for (let i = 0; allEqual && i < queryModels.length; ++i) {
-            allEqual = allEqual && this.cachedQueryModels?.[i].equals(queryModels[i]);
+            allEqual = allEqual && this.#cachedQueryModels?.[i].equals(queryModels[i]);
         }
         if (allEqual) {
             return;
         }
-        this.cachedQueryModels = queryModels;
+        this.#cachedQueryModels = queryModels;
         this.requestUpdate();
         function compareModels(model1, model2) {
             return model1.compareTo(model2);
         }
     }
-    buildMediaQueryMarkers() {
-        if (!this.cachedQueryModels) {
+    #buildMediaQueryMarkers() {
+        if (!this.#cachedQueryModels) {
             return [];
         }
         const markers = [];
         let lastMarker = null;
-        for (const model of this.cachedQueryModels) {
+        for (const model of this.#cachedQueryModels) {
             if (lastMarker?.model.dimensionsEqual(model)) {
                 lastMarker.active = lastMarker.active || model.active();
             }
@@ -311,14 +311,14 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         }
         return markers;
     }
-    zoomFactor() {
+    #zoomFactor() {
         return UI.ZoomManager.ZoomManager.instance().zoomFactor() / this.#scale;
     }
     wasShown() {
         super.wasShown();
         this.#targetManager.observeModels(SDK.CSSModel.CSSModel, this);
         this.#zoomManager.addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.requestUpdate, this);
-        this.scheduleMediaQueriesUpdate();
+        this.#scheduleMediaQueriesUpdate();
         // TODO(crbug.com/407750803): Revisit once DeviceModeView is migrated.
         this.performUpdate(); // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
     }
@@ -326,8 +326,8 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         super.willHide();
         this.#targetManager.unobserveModels(SDK.CSSModel.CSSModel, this);
         // `unobserveModels()` doesn't call `modelRemoved()`, so stop listening to the CSS model explicitly.
-        if (this.cssModel) {
-            this.modelRemoved(this.cssModel);
+        if (this.#cssModel) {
+            this.modelRemoved(this.#cssModel);
         }
         this.#zoomManager.removeEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.requestUpdate, this);
     }
@@ -335,12 +335,12 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         if (!this.isShowing() || !this.getWidthCallback || !this.setWidthCallback) {
             return;
         }
-        const markers = Map.groupBy(this.buildMediaQueryMarkers(), marker => marker.model.section());
-        this.view({
-            zoomFactor: this.zoomFactor(),
+        const markers = Map.groupBy(this.#buildMediaQueryMarkers(), marker => marker.model.section());
+        this.#view({
+            zoomFactor: this.#zoomFactor(),
             markers,
-            onMediaQueryClicked: this.onMediaQueryClicked.bind(this),
-            onContextMenu: this.onContextMenu.bind(this),
+            onMediaQueryClicked: this.#onMediaQueryClicked.bind(this),
+            onContextMenu: this.#onContextMenu.bind(this),
         }, undefined, this.contentElement);
     }
 }
@@ -351,14 +351,14 @@ export var Section;
     Section[Section["MIN"] = 2] = "MIN";
 })(Section || (Section = {}));
 export class MediaQueryUIModel {
-    cssMedia;
+    #cssMedia;
     #minWidthExpression;
     #maxWidthExpression;
     #active;
     #section;
     #rawLocation;
     constructor(cssMedia, minWidthExpression, maxWidthExpression, active) {
-        this.cssMedia = cssMedia;
+        this.#cssMedia = cssMedia;
         this.#minWidthExpression = minWidthExpression;
         this.#maxWidthExpression = maxWidthExpression;
         this.#active = active;
@@ -466,11 +466,11 @@ export class MediaQueryUIModel {
         return this.#section;
     }
     mediaText() {
-        return this.cssMedia.text || '';
+        return this.#cssMedia.text || '';
     }
     rawLocation() {
         if (!this.#rawLocation) {
-            this.#rawLocation = this.cssMedia.rawLocation();
+            this.#rawLocation = this.#cssMedia.rawLocation();
         }
         return this.#rawLocation;
     }

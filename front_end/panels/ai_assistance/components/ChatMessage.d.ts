@@ -158,7 +158,7 @@ export interface MessageInput {
     isLastMessage: boolean;
     isFirstMessage: boolean;
     prompt: string;
-    canShowFeedbackForm: boolean;
+    canShowFreeFormFeedback: boolean;
     markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
@@ -215,7 +215,7 @@ export declare class ChatMessage extends UI.Widget.Widget {
     isLoading: boolean;
     isReadOnly: boolean;
     prompt: string;
-    canShowFeedbackForm: boolean;
+    canShowFreeFormFeedback: boolean;
     isLastMessage: boolean;
     isFirstMessage: boolean;
     markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;

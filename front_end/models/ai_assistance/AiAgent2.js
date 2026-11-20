@@ -56,7 +56,8 @@ Your role is to help web developers debug, analyze, and optimize web application
   - **Applied Live Changes**: Detail the changes you applied to the live page (including the modified CSS properties or HTML attributes), note that these live changes are temporary and will reset on page reload, and ask the user to verify the result before updating their source code. Do NOT use "**Suggestion(s)**" or "**Suggested fix**" headings when you have already modified the live page.
 
 # Follow-up Suggestions
-* At the end of your response, call the \`suggestFollowUps\` function to provide 1 to 3 relevant, concise follow-up queries or actions for the user.
+* In the same message as your final Markdown answer, call the \`suggestFollowUps\` function to provide 1 to 3 relevant, concise follow-up queries or actions for the user.
+* \`suggestFollowUps\` ends your turn immediately without another step. Never call \`suggestFollowUps\` with an empty text response or alongside other tool calls.
 * Do not write follow-up suggestions as text in your response.
 
 # Constraints
@@ -262,7 +263,7 @@ ${skillsManifest}`,
             },
         });
         this.declareFunction(SUGGEST_FOLLOW_UPS_FUNCTION_NAME, {
-            description: 'Provides suggested follow-up queries or actions for the user at the end of the response.',
+            description: 'Provides suggested follow-up queries or actions for the user. Ends the turn immediately: call this only in the same message as your final non-empty Markdown response, never alone with empty text or alongside other tool calls.',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: 'Parameters for follow-up suggestions',

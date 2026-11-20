@@ -1066,6 +1066,9 @@ export class CheckboxLabel extends HTMLElement {
         return this.#checkboxElement.checked;
     }
     set checked(checked) {
+        // The attribute does not change when the user toggles the checkbox. So the
+        // attribute can already have the new value when the checkbox does not.
+        this.#checkboxElement.checked = Boolean(checked);
         // Coerce explicitly: `toggleAttribute(name, undefined)` toggles the
         // attribute instead of removing it, which would flip the state when a
         // Lit `.checked=${...}` binding receives `undefined`.
@@ -1084,7 +1087,10 @@ export class CheckboxLabel extends HTMLElement {
         return this.#checkboxElement.disabled;
     }
     set indeterminate(indeterminate) {
-        this.toggleAttribute('indeterminate', indeterminate);
+        // The attribute does not change when the user clicks the checkbox. So the
+        // attribute can already have the new value when the checkbox does not.
+        this.#checkboxElement.indeterminate = Boolean(indeterminate);
+        this.toggleAttribute('indeterminate', Boolean(indeterminate));
     }
     get indeterminate() {
         return this.#checkboxElement.indeterminate;

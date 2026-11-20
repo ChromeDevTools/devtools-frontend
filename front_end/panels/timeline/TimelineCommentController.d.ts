@@ -37,10 +37,10 @@ export declare class TimelineCommentController {
     #private;
     constructor(delegate: TimelineCommentControllerDelegate, commentManager: CommentManager.CommentManager.CommentManager);
     /**
-     * Sets the active trace and updates the COMMENT_PIN overlays to match its
-     * threads.
+     * Sets the active trace, or clears it when `null`, and updates the
+     * COMMENT_PIN overlays to match its threads.
      */
-    setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): void;
+    setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace | null): void;
     /**
      * Starts listening for thread, overlay and flame chart data changes,
      * registers the anchor resolver and shows pins for existing threads.

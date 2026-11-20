@@ -2,6 +2,7 @@ core/sdk/CSSModel.test.api.js
 core/sdk/DOMModel.test.api.js
 core/sdk/DebuggerModel.test.api.js
 core/sdk/HeapProfilerModel.test.api.js
+core/sdk/NetworkRequest.test.api.js
 core/sdk/RemoteObject.test.api.js
 core/sdk/TargetManager.test.api.js
 entrypoints/heap_snapshot_worker/HeapSnapshot.test.api.js
@@ -9,3 +10,5 @@ foundation/Universe.test.api.js
 models/persistence/NetworkPersistenceManager.test.api.js
 models/source_map_scopes/NamesResolver.test.api.js
 models/source_map_scopes/ScopeChainResolver.test.api.js
+models/workspace/WorkspaceImpl.test.api.js
+panels/recorder/models/NavigationGuard.test.api.js

@@ -6,7 +6,7 @@ export interface GetNetworkRequestDetailsArgs extends ToolArgs {
 }
 /**
  * A tool that retrieves detailed information about a specific network request.
- * The details include request/response headers, status code, timings, and the response body.
+ * The details include request/response headers, status code, timings, the response body, and the request initiator chain.
  */
 export declare class GetNetworkRequestDetailsTool implements DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability & OriginLockCapability> {
     #private;

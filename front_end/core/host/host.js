@@ -1722,7 +1722,10 @@ var IssueCreated = /* @__PURE__ */ ((IssueCreated3) => {
   IssueCreated3[IssueCreated3["GenericIssue::ManualTextPolicyControlledFeatureInfo"] = 116] = "GenericIssue::ManualTextPolicyControlledFeatureInfo";
   IssueCreated3[IssueCreated3["GenericIssue::GeolocationPromptWithoutUserGesture"] = 117] = "GenericIssue::GeolocationPromptWithoutUserGesture";
   IssueCreated3[IssueCreated3["CorsIssue::InvalidLocalNetworkAccess"] = 118] = "CorsIssue::InvalidLocalNetworkAccess";
-  IssueCreated3[IssueCreated3["MAX_VALUE"] = 119] = "MAX_VALUE";
+  IssueCreated3[IssueCreated3["ElementAccessibilityIssue::AnchorMenuDescendant"] = 119] = "ElementAccessibilityIssue::AnchorMenuDescendant";
+  IssueCreated3[IssueCreated3["ElementAccessibilityIssue::InteractiveContentMenuDescendant"] = 120] = "ElementAccessibilityIssue::InteractiveContentMenuDescendant";
+  IssueCreated3[IssueCreated3["ElementAccessibilityIssue::TextMenuDescendant"] = 121] = "ElementAccessibilityIssue::TextMenuDescendant";
+  IssueCreated3[IssueCreated3["MAX_VALUE"] = 122] = "MAX_VALUE";
   return IssueCreated3;
 })(IssueCreated || {});
 var DeveloperResourceLoaded = /* @__PURE__ */ ((DeveloperResourceLoaded3) => {

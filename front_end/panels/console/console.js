@@ -141,6 +141,49 @@ var ConsoleContextSelector = class {
   toolbarItem() {
     return this.#toolbarItem;
   }
+  dispose() {
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+      SDK.RuntimeModel.RuntimeModel,
+      SDK.RuntimeModel.Events.ExecutionContextCreated,
+      this.onExecutionContextCreated,
+      this
+    );
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+      SDK.RuntimeModel.RuntimeModel,
+      SDK.RuntimeModel.Events.ExecutionContextChanged,
+      this.onExecutionContextChanged,
+      this
+    );
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+      SDK.RuntimeModel.RuntimeModel,
+      SDK.RuntimeModel.Events.ExecutionContextDestroyed,
+      this.onExecutionContextDestroyed,
+      this
+    );
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+      SDK.ResourceTreeModel.ResourceTreeModel,
+      SDK.ResourceTreeModel.Events.FrameNavigated,
+      this.frameNavigated,
+      this
+    );
+    UI.Context.Context.instance().removeFlavorChangeListener(
+      SDK.RuntimeModel.ExecutionContext,
+      this.executionContextChangedExternally,
+      this
+    );
+    UI.Context.Context.instance().removeFlavorChangeListener(
+      StackTrace.StackTrace.DebuggableFrameFlavor,
+      this.callFrameSelectedInUI,
+      this
+    );
+    SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.RuntimeModel.RuntimeModel, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+      SDK.DebuggerModel.DebuggerModel,
+      SDK.DebuggerModel.Events.CallFrameSelected,
+      this.callFrameSelectedInModel,
+      this
+    );
+  }
   highlightedItemChanged(_from, to, fromElement, toElement) {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     if (to?.frameId) {
@@ -8635,14 +8678,15 @@ __export(ConsoleViewport_exports, {
   ConsoleViewport: () => ConsoleViewport
 });
 import * as Platform4 from "../../core/platform/platform.js";
+import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html7, render as render7 } from "../../ui/lit/lit.js";
+var { ref: ref3, repeat: repeat2, styleMap } = Directives3;
+var EXPANDED_CONTENT_HEIGHT = "10000000px";
 var ConsoleViewport = class {
   element;
-  topGapElement;
   topGapElementActive;
-  #contentElement;
-  bottomGapElement;
   bottomGapElementActive;
   provider;
   virtualSelectedIndex;
@@ -8660,31 +8704,20 @@ var ConsoleViewport = class {
   selectionIsBackward;
   lastSelectedElement;
   cachedProviderElements;
+  #gaps = /* @__PURE__ */ new Map();
+  #contentElementRef;
+  #topGapHeight = 0;
+  #bottomGapHeight = 0;
+  #expandContent = false;
+  #contentTabIndex = -1;
+  #rendering = false;
+  #renderRequested = false;
   constructor(provider) {
     this.element = document.createElement("div");
-    this.element.style.overflow = "auto";
-    this.topGapElement = this.element.createChild("div");
-    this.topGapElement.style.height = "0px";
-    this.topGapElement.style.color = "transparent";
     this.topGapElementActive = false;
-    this.#contentElement = this.element.createChild("div");
-    this.bottomGapElement = this.element.createChild("div");
-    this.bottomGapElement.style.height = "0px";
-    this.bottomGapElement.style.color = "transparent";
     this.bottomGapElementActive = false;
-    this.topGapElement.textContent = "\uFEFF";
-    this.bottomGapElement.textContent = "\uFEFF";
-    UI8.ARIAUtils.setHidden(this.topGapElement, true);
-    UI8.ARIAUtils.setHidden(this.bottomGapElement, true);
     this.provider = provider;
-    this.element.addEventListener("scroll", this.onScroll.bind(this), false);
-    this.element.addEventListener("copy", this.onCopy.bind(this), false);
-    this.element.addEventListener("dragstart", this.onDragStart.bind(this), false);
-    this.#contentElement.addEventListener("focusin", this.onFocusIn.bind(this), false);
-    this.#contentElement.addEventListener("focusout", this.onFocusOut.bind(this), false);
-    this.#contentElement.addEventListener("keydown", this.onKeyDown.bind(this), false);
     this.virtualSelectedIndex = -1;
-    this.#contentElement.tabIndex = -1;
     this.firstActiveIndex = -1;
     this.lastActiveIndex = -1;
     this.renderedItems = [];
@@ -8697,6 +8730,89 @@ var ConsoleViewport = class {
     this.observerConfig = { childList: true, subtree: true };
     this.#stickToBottom = false;
     this.selectionIsBackward = false;
+    this.#render();
+  }
+  #render() {
+    if (this.#rendering) {
+      this.#renderRequested = true;
+      return;
+    }
+    this.#rendering = true;
+    try {
+      do {
+        this.#renderRequested = false;
+        const setGap = (gap, element) => {
+          if (element instanceof HTMLElement) {
+            this.#gaps.set(gap, element);
+          } else {
+            this.#gaps.delete(gap);
+          }
+        };
+        const onCopy = (event) => {
+          const result = this.onCopy();
+          if (!result) {
+            return;
+          }
+          event.preventDefault();
+          if (result.plainText !== void 0) {
+            event.clipboardData?.setData("text/plain", result.plainText);
+          }
+        };
+        const onDragStart = (event) => {
+          const text = this.onDragStart();
+          const { dataTransfer } = event;
+          if (text && dataTransfer) {
+            dataTransfer.clearData();
+            dataTransfer.setData("text/plain", text);
+            dataTransfer.effectAllowed = "copy";
+          }
+        };
+        const onKeyDown = (event) => {
+          if (this.onKeyDown(event.key, event.shiftKey)) {
+            event.consume(true);
+          }
+        };
+        render7(
+          html7`
+          <div style=${styleMap({ height: `${this.#topGapHeight}px`, color: "transparent" })} aria-hidden="true"
+               ${ref3((e) => setGap("top", e))}>&#xFEFF;</div>
+          <div tabindex=${this.#contentTabIndex}
+               style=${styleMap({ height: this.#expandContent ? EXPANDED_CONTENT_HEIGHT : void 0 })}
+               @focusin=${(event) => this.onFocusIn(
+            event.target,
+            event.relatedTarget
+          )}
+               @focusout=${(event) => this.onFocusOut(event.relatedTarget)}
+               @keydown=${onKeyDown}
+               ${ref3((e) => {
+            this.#contentElementRef = e instanceof HTMLElement ? e : void 0;
+          })}>
+            ${repeat2(this.renderedItems, (item2) => item2, (item2) => item2.element())}
+          </div>
+          <div style=${styleMap({ height: `${this.#bottomGapHeight}px`, color: "transparent" })} aria-hidden="true"
+               ${ref3((e) => setGap("bottom", e))}>&#xFEFF;</div>`,
+          this.element,
+          {
+            container: {
+              attributes: { style: "overflow: auto" },
+              listeners: { scroll: () => this.onScroll(), copy: onCopy, dragstart: onDragStart }
+            }
+          }
+        );
+      } while (this.#renderRequested);
+    } finally {
+      this.#rendering = false;
+    }
+  }
+  get #contentElement() {
+    assertNotNullOrUndefined(this.#contentElementRef);
+    return this.#contentElementRef;
+  }
+  #setContentTabIndex(tabIndex) {
+    if (this.#contentTabIndex !== tabIndex) {
+      this.#contentTabIndex = tabIndex;
+      this.#render();
+    }
   }
   stickToBottom() {
     return this.#stickToBottom;
@@ -8717,28 +8833,27 @@ var ConsoleViewport = class {
     this.element.ownerDocument.execCommand("copy");
     this.muteCopyHandler = false;
   }
-  onCopy(event) {
+  onCopy() {
     if (this.muteCopyHandler) {
-      return;
+      return null;
     }
     const text = this.selectedText();
     if (!text) {
-      return;
+      return null;
     }
-    event.preventDefault();
     if (this.selectionContainsTable()) {
       this.copyWithStyles();
-    } else if (event.clipboardData) {
-      event.clipboardData.setData("text/plain", text);
+      return {};
     }
+    return { plainText: text };
   }
-  onFocusIn(event) {
-    const renderedIndex = this.renderedItems.findIndex((item2) => item2.element().isSelfOrAncestor(event.target));
+  onFocusIn(target, relatedTarget) {
+    const renderedIndex = this.renderedItems.findIndex((item2) => item2.element().isSelfOrAncestor(target));
     if (renderedIndex !== -1) {
       this.virtualSelectedIndex = this.firstActiveIndex + renderedIndex;
     }
     let focusLastChild = false;
-    if (this.virtualSelectedIndex === -1 && this.isOutsideViewport(event.relatedTarget) && event.target === this.#contentElement && this.itemCount) {
+    if (this.virtualSelectedIndex === -1 && this.isOutsideViewport(relatedTarget) && target === this.#contentElement && this.itemCount) {
       focusLastChild = true;
       this.virtualSelectedIndex = this.itemCount - 1;
       this.refresh();
@@ -8746,8 +8861,8 @@ var ConsoleViewport = class {
     }
     this.updateFocusedItem(focusLastChild);
   }
-  onFocusOut(event) {
-    if (this.isOutsideViewport(event.relatedTarget)) {
+  onFocusOut(relatedTarget) {
+    if (this.isOutsideViewport(relatedTarget)) {
       this.virtualSelectedIndex = -1;
     }
     this.updateFocusedItem();
@@ -8755,37 +8870,28 @@ var ConsoleViewport = class {
   isOutsideViewport(element) {
     return element !== null && !element.isSelfOrDescendant(this.#contentElement);
   }
-  onDragStart(event) {
-    const text = this.selectedText();
-    if (!text) {
+  onDragStart() {
+    return this.selectedText() || null;
+  }
+  onKeyDown(key, shiftKey) {
+    if (UI8.UIUtils.isEditing() || !this.itemCount || shiftKey) {
       return false;
     }
-    if (event.dataTransfer) {
-      event.dataTransfer.clearData();
-      event.dataTransfer.setData("text/plain", text);
-      event.dataTransfer.effectAllowed = "copy";
-    }
-    return true;
-  }
-  onKeyDown(event) {
-    if (UI8.UIUtils.isEditing() || !this.itemCount || event.shiftKey) {
-      return;
-    }
     let isArrowUp = false;
-    switch (event.key) {
+    switch (key) {
       case "ArrowUp":
         if (this.virtualSelectedIndex > 0) {
           isArrowUp = true;
           this.virtualSelectedIndex--;
         } else {
-          return;
+          return false;
         }
         break;
       case "ArrowDown":
         if (this.virtualSelectedIndex < this.itemCount - 1) {
           this.virtualSelectedIndex++;
         } else {
-          return;
+          return false;
         }
         break;
       case "Home":
@@ -8795,11 +8901,11 @@ var ConsoleViewport = class {
         this.virtualSelectedIndex = this.itemCount - 1;
         break;
       default:
-        return;
+        return false;
     }
-    event.consume(true);
     this.scrollItemIntoView(this.virtualSelectedIndex);
     this.updateFocusedItem(isArrowUp);
+    return true;
   }
   updateFocusedItem(focusLastChild) {
     const selectedElement = this.renderedElementAt(this.virtualSelectedIndex);
@@ -8822,9 +8928,9 @@ var ConsoleViewport = class {
       }
     }
     if (this.itemCount && !this.#contentElement.hasFocus()) {
-      this.#contentElement.tabIndex = 0;
+      this.#setContentTabIndex(0);
     } else {
-      this.#contentElement.tabIndex = -1;
+      this.#setContentTabIndex(-1);
     }
     this.lastSelectedElement = selectedElement;
   }
@@ -8916,8 +9022,10 @@ var ConsoleViewport = class {
         hasVisibleSelection = true;
       }
     }
-    const topOverlap = range.intersectsNode(this.topGapElement) && this.topGapElementActive;
-    const bottomOverlap = range.intersectsNode(this.bottomGapElement) && this.bottomGapElementActive;
+    const topGap = this.#gaps.get("top");
+    const bottomGap = this.#gaps.get("bottom");
+    const topOverlap = Boolean(topGap && range.intersectsNode(topGap)) && this.topGapElementActive;
+    const bottomOverlap = Boolean(bottomGap && range.intersectsNode(bottomGap)) && this.bottomGapElementActive;
     if (!topOverlap && !bottomOverlap && !hasVisibleSelection) {
       this.headSelection = null;
       this.anchorSelection = null;
@@ -8966,8 +9074,9 @@ var ConsoleViewport = class {
       if (this.firstActiveIndex <= selection2.item && selection2.item <= this.lastActiveIndex) {
         return { element: selection2.node, offset: selection2.offset };
       }
-      const element = selection2.item < this.firstActiveIndex ? this.topGapElement : this.bottomGapElement;
-      return { element, offset: isSelectionBackwards ? 1 : 0 };
+      const gapElement = this.#gaps.get(selection2.item < this.firstActiveIndex ? "top" : "bottom");
+      assertNotNullOrUndefined(gapElement);
+      return { element: gapElement, offset: isSelectionBackwards ? gapElement.childNodes.length : 0 };
     };
     const { element: anchorElement, offset: anchorOffset } = clampSelection(this.anchorSelection, Boolean(this.selectionIsBackward));
     const { element: headElement, offset: headOffset } = clampSelection(this.headSelection, !this.selectionIsBackward);
@@ -9003,11 +9112,11 @@ var ConsoleViewport = class {
         this.renderedItems[i].willHide();
       }
       this.renderedItems = [];
-      this.#contentElement.removeChildren();
-      this.topGapElement.style.height = "0px";
-      this.bottomGapElement.style.height = "0px";
+      this.#topGapHeight = 0;
+      this.#bottomGapHeight = 0;
       this.firstActiveIndex = -1;
       this.lastActiveIndex = -1;
+      this.#render();
       this.updateFocusedItem();
       return;
     }
@@ -9035,14 +9144,15 @@ var ConsoleViewport = class {
     const topGapHeight = this.cumulativeHeights[this.firstActiveIndex - 1] || 0;
     const bottomGapHeight = this.cumulativeHeights[this.cumulativeHeights.length - 1] - this.cumulativeHeights[this.lastActiveIndex];
     function prepare() {
-      this.topGapElement.style.height = topGapHeight + "px";
-      this.bottomGapElement.style.height = bottomGapHeight + "px";
+      this.#topGapHeight = topGapHeight;
+      this.#bottomGapHeight = bottomGapHeight;
       this.topGapElementActive = Boolean(topGapHeight);
       this.bottomGapElementActive = Boolean(bottomGapHeight);
-      this.#contentElement.style.setProperty("height", "10000000px");
+      this.#expandContent = true;
     }
     this.partialViewportUpdate(prepare.bind(this));
-    this.#contentElement.style.removeProperty("height");
+    this.#expandContent = false;
+    this.#render();
     if (shouldRestoreSelection) {
       this.restoreSelection(selection);
     }
@@ -9067,26 +9177,19 @@ var ConsoleViewport = class {
     let hadFocus = false;
     for (let i = 0; i < willBeHidden.length; ++i) {
       hadFocus = hadFocus || willBeHidden[i].element().hasFocus();
-      willBeHidden[i].element().remove();
     }
     const wasShown = [];
-    let anchor = this.#contentElement.firstChild;
     for (const viewportElement of itemsToRender) {
-      const element = viewportElement.element();
-      if (element !== anchor) {
-        const shouldCallWasShown = !element.parentElement;
-        if (shouldCallWasShown) {
-          wasShown.push(viewportElement);
-        }
-        this.#contentElement.insertBefore(element, anchor);
-      } else {
-        anchor = anchor.nextSibling;
+      const shouldCallWasShown = !viewportElement.element().parentElement;
+      if (shouldCallWasShown) {
+        wasShown.push(viewportElement);
       }
     }
+    this.renderedItems = Array.from(itemsToRender);
+    this.#render();
     for (let i = 0; i < wasShown.length; ++i) {
       wasShown[i].wasShown();
     }
-    this.renderedItems = Array.from(itemsToRender);
     if (hadFocus) {
       this.#contentElement.focus();
     }
@@ -9180,7 +9283,7 @@ var ConsoleViewport = class {
     }
     return chars + offset;
   }
-  onScroll(_event) {
+  onScroll() {
     this.refresh();
   }
   firstVisibleIndex() {
@@ -9293,7 +9396,7 @@ import * as Dialogs3 from "../../ui/components/dialogs/dialogs.js";
 import * as TextEditor2 from "../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI5 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html9, nothing as nothing8, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html10, nothing as nothing8, render as render10 } from "../../ui/lit/lit.js";
 import * as Settings10 from "../../ui/settings/settings.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
@@ -9306,7 +9409,7 @@ __export(ConsolePanel_exports, {
   WrapperView: () => WrapperView
 });
 import * as UI10 from "../../ui/legacy/legacy.js";
-import { html as html8, render as render8 } from "../../ui/lit/lit.js";
+import { html as html9, render as render9 } from "../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/console/ConsoleView.ts
@@ -9338,7 +9441,7 @@ import * as IssueCounter2 from "../../ui/components/issue_counter/issue_counter.
 import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
-import { html as html7, nothing as nothing7, render as render7 } from "../../ui/lit/lit.js";
+import { html as html8, nothing as nothing7, render as render8 } from "../../ui/lit/lit.js";
 import * as Settings8 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import { AiCodeCompletionSummaryToolbar } from "../common/common.js";
@@ -9609,7 +9712,7 @@ var SPINNER_TOOLTIP_ID = "console-ai-code-completion-spinner-tooltip";
 var CITATIONS_TOOLTIP_ID = "console-ai-code-completion-citations-tooltip";
 var { bindToSetting } = UI9.UIUtils;
 function renderSettingsPane(input) {
-  return html7`<div
+  return html8`<div
       class="console-settings-pane"
       ?hidden=${!input.showSettingsPane}
       role="group"
@@ -9662,10 +9765,10 @@ function renderSettingsPane(input) {
   </div>`;
 }
 var SETTINGS_PANE_VIEW = (input, _output, target) => {
-  render7(renderSettingsPane(input), target);
+  render8(renderSettingsPane(input), target);
 };
 var PROGRESS_VIEW = (progressInput, _output, target) => {
-  render7(progressInput ? html7`
+  render8(progressInput ? html8`
     <devtools-progress
         .title=${progressInput.title}
         .worked=${progressInput.worked}
@@ -9736,7 +9839,15 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   requestResolver = new Logs3.RequestResolver.RequestResolver(Logs3.NetworkLog.NetworkLog.instance());
   issueResolver = new IssuesManager.IssueResolver.IssueResolver(IssuesManager.IssuesManager.IssuesManager.instance());
   #isDetached = false;
+  #disposed = false;
+  #needsRefilterOnShow = false;
+  #refilterMessages;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
+  #onUpdateMessageListSettingChanged = () => this.updateMessageList();
+  #onShowSettingsPaneChanged = () => this.requestUpdate();
+  #onSinkMessageAdded = ({ data: message }) => {
+    this.addSinkMessage(message);
+  };
   #collapseAllButton;
   #allCollapsed = false;
   aiCodeCompletionConfig;
@@ -9818,9 +9929,9 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     );
     this.progressToolbarItem = new UI9.Toolbar.ToolbarItem(document.createElement("div"));
     this.groupSimilarSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
-    this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
+    this.groupSimilarSetting.addChangeListener(this.#onUpdateMessageListSettingChanged);
     this.showCorsErrorsSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor);
-    this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
+    this.showCorsErrorsSetting.addChangeListener(this.#onUpdateMessageListSettingChanged);
     const toolbar2 = this.consoleToolbarContainer.createChild("devtools-toolbar", "console-main-toolbar");
     toolbar2.setAttribute("jslog", `${VisualLogging5.toolbar()}`);
     toolbar2.role = "presentation";
@@ -9879,7 +9990,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     this.#userActivationEvalSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.consoleUserActivationEvalSettingDescriptor);
     this.#settingsPaneContainer.style.display = "contents";
     this.contentsElement.appendChild(this.#settingsPaneContainer);
-    this.showSettingsPaneSetting.addChangeListener(() => this.requestUpdate());
+    this.showSettingsPaneSetting.addChangeListener(this.#onShowSettingsPaneChanged);
     this.pinPane = new ConsolePinPane(() => this.prompt.focus());
     this.pinPane.element.classList.add("console-view-pinpane");
     this.pinPane.element.classList.remove("flex-auto");
@@ -9910,9 +10021,18 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     this.registerShortcuts();
     this.messagesElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), false);
     const throttler = new Common6.Throttler.Throttler(100);
-    const refilterMessages = () => throttler.schedule(async () => this.onFilterChanged());
+    this.#refilterMessages = () => throttler.schedule(async () => {
+      if (this.#disposed) {
+        return;
+      }
+      if (this.#isDetached) {
+        this.#needsRefilterOnShow = true;
+        return;
+      }
+      this.onFilterChanged();
+    });
     this.linkifier = new Components5.Linkifier.Linkifier(UI9.UIUtils.MaxLengthForDisplayedURLsInConsole);
-    this.linkifier.addEventListener(Components5.Linkifier.Events.LIVE_LOCATION_UPDATED, refilterMessages);
+    this.linkifier.addEventListener(Components5.Linkifier.Events.LIVE_LOCATION_UPDATED, this.#refilterMessages);
     this.consoleMessages = [];
     this.consoleGroupStarts = [];
     this.aiCodeCompletionConfig = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable() ? {
@@ -10153,8 +10273,15 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     }
   }
   onFilterChanged() {
+    if (this.#disposed) {
+      return;
+    }
     this.filter.currentFilter.levelsMask = this.isSidebarOpen ? ConsoleFilter.allLevelsFilterValue() : this.filter.messageLevelFiltersSetting.get();
     this.cancelBuildHiddenCache();
+    if (this.#isDetached) {
+      this.#needsRefilterOnShow = true;
+      return;
+    }
     if (this.immediatelyFilterMessagesForTest) {
       for (const viewMessage of this.consoleMessages) {
         this.computeShouldMessageBeVisible(viewMessage);
@@ -10191,9 +10318,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   }
   registerWithMessageSink() {
     Common6.Console.Console.instance().messages().forEach(this.addSinkMessage, this);
-    Common6.Console.Console.instance().addEventListener(Common6.Console.Events.MESSAGE_ADDED, ({ data: message }) => {
-      this.addSinkMessage(message);
-    }, this);
+    Common6.Console.Console.instance().addEventListener(Common6.Console.Events.MESSAGE_ADDED, this.#onSinkMessageAdded);
   }
   addSinkMessage(message) {
     let level = Log.LogEntryLevel.Verbose;
@@ -10231,6 +10356,27 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     this.hidePromptSuggestBox();
   }
   dispose() {
+    this.#disposed = true;
+    this.#needsRefilterOnShow = false;
+    this.cancelBuildHiddenCache();
+    this.linkifier.removeEventListener(Components5.Linkifier.Events.LIVE_LOCATION_UPDATED, this.#refilterMessages);
+    this.linkifier.dispose();
+    this.filter.dispose();
+    this.consoleContextSelector.dispose();
+    this.groupSimilarSetting.removeChangeListener(this.#onUpdateMessageListSettingChanged);
+    this.showCorsErrorsSetting.removeChangeListener(this.#onUpdateMessageListSettingChanged);
+    this.showSettingsPaneSetting.removeChangeListener(this.#onShowSettingsPaneChanged);
+    this.consoleHistoryAutocompleteSetting.removeChangeListener(this.consoleHistoryAutocompleteChanged, this);
+    this.timestampsSetting.removeChangeListener(this.consoleTimestampsSettingChanged, this);
+    Common6.Console.Console.instance().removeEventListener(
+      Common6.Console.Events.MESSAGE_ADDED,
+      this.#onSinkMessageAdded
+    );
+    UI9.Context.Context.instance().removeFlavorChangeListener(
+      SDK7.RuntimeModel.ExecutionContext,
+      this.executionContextChanged,
+      this
+    );
     SDK7.TargetManager.TargetManager.instance().removeModelListener(
       SDK7.ConsoleModel.ConsoleModel,
       SDK7.ConsoleModel.Events.ConsoleCleared,
@@ -10272,6 +10418,10 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       );
     }
     this.#isDetached = false;
+    if (this.#needsRefilterOnShow) {
+      this.#needsRefilterOnShow = false;
+      this.onFilterChanged();
+    }
     this.updateIssuesToolbarItem();
     this.viewport.refresh();
   }
@@ -10336,6 +10486,10 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   }
   onDetach() {
     this.#isDetached = true;
+    if (this.buildHiddenCacheTimeout) {
+      this.cancelBuildHiddenCache();
+      this.#needsRefilterOnShow = true;
+    }
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     issuesManager.removeEventListener(
       IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
@@ -10769,6 +10923,9 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     return false;
   }
   buildHiddenCache(startIndex, viewMessages) {
+    if (this.#disposed) {
+      return;
+    }
     const startTime = Date.now();
     let i;
     for (i = startIndex; i < viewMessages.length; ++i) {
@@ -10778,6 +10935,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       }
     }
     if (i === viewMessages.length) {
+      delete this.buildHiddenCacheTimeout;
       this.updateMessageList();
       return;
     }
@@ -11168,9 +11326,9 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     this.filterByExecutionContextSetting = Common6.Settings.Settings.instance().resolve(
       Settings8.ConsoleSettings.selectedContextFilterEnabledSettingDescriptor
     );
-    this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
-    this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
-    this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));
+    this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged, this);
+    this.networkMessagesSetting.addChangeListener(this.onFilterChanged, this);
+    this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged, this);
     UI9.Context.Context.instance().addFlavorChangeListener(
       SDK7.RuntimeModel.ExecutionContext,
       this.onFilterChanged,
@@ -11209,7 +11367,7 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     this.levelMenuButtonInfo = new UI9.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
     this.levelMenuButtonInfo.setVisible(false);
     this.updateLevelMenuButtonText();
-    this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText.bind(this));
+    this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText, this);
   }
   onMessageAdded(message) {
     if (message.type === SDK7.ConsoleModel.FrontendMessageType.Command || message.type === SDK7.ConsoleModel.FrontendMessageType.Result || message.isGroupMessage()) {
@@ -11341,6 +11499,17 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     this.textFilterUI.setValue("");
     this.onFilterChanged();
   }
+  dispose() {
+    this.messageLevelFiltersSetting.removeChangeListener(this.onFilterChanged, this);
+    this.messageLevelFiltersSetting.removeChangeListener(this.updateLevelMenuButtonText, this);
+    this.networkMessagesSetting.removeChangeListener(this.onFilterChanged, this);
+    this.filterByExecutionContextSetting.removeChangeListener(this.onFilterChanged, this);
+    UI9.Context.Context.instance().removeFlavorChangeListener(
+      SDK7.RuntimeModel.ExecutionContext,
+      this.onFilterChanged,
+      this
+    );
+  }
 };
 var ActionDelegate = class {
   handleAction(_context, actionId) {
@@ -11383,7 +11552,7 @@ var consoleMessageToViewMessage = /* @__PURE__ */ new WeakMap();
 // ../../front_end/panels/console/ConsolePanel.ts
 var { widget: widget4 } = UI10.Widget;
 var DEFAULT_VIEW6 = (input, _output, target) => {
-  render8(html8`
+  render9(html9`
     ${widget4(UI10.Widget.WrapperWidget, {
     widget: input.showConsoleView ? ConsoleView.instance() : null
   })}
@@ -11567,7 +11736,7 @@ var consolePrompt_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./consolePrompt.css")} */`;
 
 // ../../front_end/panels/console/ConsolePrompt.ts
-var { classMap, ref: ref3 } = Directives3;
+var { classMap, ref: ref4 } = Directives4;
 var { Direction } = TextEditor2.TextEditorHistory;
 var UIStrings6 = {
   /**
@@ -11593,7 +11762,7 @@ var ConsolePromptBase = Common7.ObjectWrapper.eventMixin(
   UI11.Widget.Widget
 );
 var DEFAULT_VIEW7 = (input, output, target) => {
-  render9(html9`
+  render10(html10`
     <style>${consolePrompt_css_default}</style>
     <div class="console-prompt-editor-container">
       <devtools-text-editor
@@ -11603,7 +11772,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       event.stopPropagation();
     }
   }}
-        ${ref3((e) => {
+        ${ref4((e) => {
     output.editor = e instanceof TextEditor2.TextEditor.TextEditor ? e : void 0;
   })}
       ></devtools-text-editor>
@@ -11611,7 +11780,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     <div
       class=${classMap({ "console-eager-preview": true, hidden: !input.eagerEvalEnabled })}
       @click=${input.onBelowEditorClick}
-      ${ref3((e) => {
+      ${ref4((e) => {
     output.getBelowEditorHeight = e instanceof HTMLElement ? () => e.offsetHeight : void 0;
   })}
     >

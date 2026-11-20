@@ -8,10 +8,12 @@ import type * as puppeteer from 'puppeteer-core';
 import {describe, it} from '../conductor/mocha-interface.js';
 import {
   addBreakpointForLine,
+  checkBreakpointDidNotActivate,
   getLineNumberElement,
   isBreakpointSet,
   isEqualOrAbbreviation,
   openSourceCodeEditorForFile,
+  reloadPageAndWaitForSourceFile,
   retrieveCodeMirrorEditorContent,
 } from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
@@ -100,6 +102,29 @@ describe('The Breakpoints Sidebar', () => {
       const expectedCodeSnippets = expectedLocations.map(line => sourceContent[line - 1]);
 
       assert.deepEqual(actualCodeSnippets, expectedCodeSnippets);
+    });
+
+    it('does not activate breakpoints after reload when deactivated', async ({devToolsPage, inspectedPage}) => {
+      await openSourceCodeEditorForFile(devToolsPage, inspectedPage, fileName, 'click-breakpoint.html');
+      await addBreakpointForLine(devToolsPage, 4);
+      await checkFileGroupName(fileName, devToolsPage);
+      await checkLineNumber(BREAKPOINT_ITEM_SELECTOR, 4, devToolsPage);
+      await devToolsPage.waitFor(`${BREAKPOINT_VIEW_COMPONENT} details.active`);
+
+      await devToolsPage.click('[aria-label="Deactivate breakpoints"]');
+      await devToolsPage.waitFor('[aria-label="Activate breakpoints"]');
+      await devToolsPage.waitForNone(`${BREAKPOINT_VIEW_COMPONENT} details.active`);
+
+      await reloadPageAndWaitForSourceFile(devToolsPage, inspectedPage, fileName);
+      await checkFileGroupName(fileName, devToolsPage);
+      await checkLineNumber(BREAKPOINT_ITEM_SELECTOR, 4, devToolsPage);
+      await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, 4));
+      await devToolsPage.waitFor('[aria-label="Activate breakpoints"]');
+      await devToolsPage.waitForNone('[aria-label="Deactivate breakpoints"]');
+      await devToolsPage.waitForNone(`${BREAKPOINT_VIEW_COMPONENT} details.active`);
+
+      assert.strictEqual(await inspectedPage.evaluate('f2()'), 0);
+      await checkBreakpointDidNotActivate(devToolsPage);
     });
   });
 

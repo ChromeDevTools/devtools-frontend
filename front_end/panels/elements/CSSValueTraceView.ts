@@ -167,12 +167,11 @@ export class CSSValueTraceView extends UI.Widget.VBox {
           property,
           rendererMap,
           matchedResult,
-          /* cssControls */ undefined,
           /* options */ {},
           tracing,
           signal,
       );
-      substitutions.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+      substitutions.push(Renderer.render(matchedResult.ast.tree, context));
     }
 
     // 2nd: Apply evaluations for calc, min, max, etc.
@@ -183,12 +182,11 @@ export class CSSValueTraceView extends UI.Widget.VBox {
           property,
           rendererMap,
           matchedResult,
-          /* cssControls */ undefined,
           /* options */ {},
           tracing,
           signal,
       );
-      evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+      evaluations.push(Renderer.render(matchedResult.ast.tree, context));
       asyncCallbackResults.push(tracing.runAsyncEvaluations());
     }
 
@@ -215,12 +213,11 @@ export class CSSValueTraceView extends UI.Widget.VBox {
           property,
           rendererMap,
           matchedResult,
-          /* cssControls */ undefined,
           /* options */ {},
           autofocusTracing,
           signal,
       );
-      this.#evaluations[0] = Renderer.render(matchedResult.ast.tree, context).nodes;
+      this.#evaluations[0] = Renderer.render(matchedResult.ast.tree, context);
       await autofocusTracing.runAsyncEvaluations();
     }
 
@@ -230,12 +227,11 @@ export class CSSValueTraceView extends UI.Widget.VBox {
           property,
           rendererMap,
           matchedResult,
-          undefined,
           {},
           undefined,
           signal,
       );
-      this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+      this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context));
     }
 
     this.#pendingFocus = focus;

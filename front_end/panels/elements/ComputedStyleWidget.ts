@@ -110,11 +110,9 @@ function renderPropertyContents(node: SDK.DOMModel.DOMNode, cache: Map<string, {
   }
   const name = Renderer.renderNameElement(propertyName);
   name.slot = 'name';
-  const value = Renderer
-                    .renderValueElement(
-                        {name: propertyName, value: propertyValue}, matchProperty(propertyName, propertyValue),
-                        [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()])
-                    .valueElement;
+  const value = Renderer.renderValueElement({name: propertyName, value: propertyValue},
+                                            matchProperty(propertyName, propertyValue),
+                                            [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
   value.slot = 'value';
   cache.set(cacheKey, {name, value});
   return {name, value};
@@ -155,9 +153,9 @@ const createTraceElement =
      linkifier: Components.Linkifier.Linkifier): ElementsComponents.ComputedStyleTrace.ComputedStyleTrace => {
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
-      const {valueElement} = Renderer.renderValueElement(
-          property, matchProperty(property.name, property.value),
-          [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
+      const valueElement =
+          Renderer.renderValueElement(property, matchProperty(property.name, property.value),
+                                      [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);
 

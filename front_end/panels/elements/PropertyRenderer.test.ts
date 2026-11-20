@@ -38,13 +38,13 @@ describeWithEnvironment('PropertyRenderer', () => {
     it('parses text', () => {
       // Prevent normalization to get an accurate representation of the parser result.
       sinon.stub(Element.prototype, 'normalize');
-      assert.deepEqual(textFragments(renderValueElement('--p', 'var(--v)').valueElement), ['var', '(', '--v', ')']);
+      assert.deepEqual(textFragments(renderValueElement('--p', 'var(--v)')), ['var', '(', '--v', ')']);
 
-      assert.deepEqual(textFragments(renderValueElement('--p', '/* comments are text */ 1px solid 4').valueElement),
+      assert.deepEqual(textFragments(renderValueElement('--p', '/* comments are text */ 1px solid 4')),
                        ['/* comments are text */', ' ', '1px', ' ', 'solid', ' ', '4']);
       assert.deepEqual(
-          textFragments(renderValueElement('--p', '2px var(--double, var(--fallback, black)) #32a1ce rgb(124 125 21 0)')
-                            .valueElement),
+          textFragments(
+              renderValueElement('--p', '2px var(--double, var(--fallback, black)) #32a1ce rgb(124 125 21 0)')),
           [
             '2px', ' ', 'var',     '(', '--double', ',', ' ',   'var', '(',   '--fallback', ',',  ' ', 'black', ')',
             ')',   ' ', '#32a1ce', ' ', 'rgb',      '(', '124', ' ',   '125', ' ',          '21', ' ', '0',     ')',
@@ -59,7 +59,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const ast = new SDK.CSSPropertyParser.SyntaxTree(property, rule, tree);
       const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, []);
       const context = new Elements.PropertyRenderer.RenderingContext(ast, null, new Map(), matchedResult);
-      assert.deepEqual(textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''), rule,
+      assert.deepEqual(textFragments(Elements.PropertyRenderer.Renderer.render(tree, context)).join(''), rule,
                        Printer.walk(ast).get());
     });
 
@@ -73,7 +73,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const renderer = new Elements.PropertyRenderer.BinOpRenderer();
       const context = new Elements.PropertyRenderer.RenderingContext(
           ast, null, new Map([[renderer.matchType, renderer]]), matchedResult);
-      assert.deepEqual(textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''),
+      assert.deepEqual(textFragments(Elements.PropertyRenderer.Renderer.render(tree, context)).join(''),
                        '*{--property: calc((50 - (0 * 4)) * 1vmin);}', Printer.walk(ast).get());
     });
 
@@ -85,21 +85,21 @@ describeWithEnvironment('PropertyRenderer', () => {
       const ast = new SDK.CSSPropertyParser.SyntaxTree(property, rule, tree);
       const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, []);
       const context = new Elements.PropertyRenderer.RenderingContext(ast, null, new Map(), matchedResult);
-      assert.deepEqual(textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''), property,
+      assert.deepEqual(textFragments(Elements.PropertyRenderer.Renderer.render(tree, context)).join(''), property,
                        Printer.walk(ast).get());
     });
 
     it('renders trailing comments', () => {
       const property = '/* color: red */ blue /* color: red */';
-      assert.strictEqual(textFragments(renderValueElement('--p', property).valueElement).join(''), property);
+      assert.strictEqual(textFragments(renderValueElement('--p', property)).join(''), property);
 
       const withoutSpaces = '/* color: red */blue/* color: red */';
-      assert.strictEqual(textFragments(renderValueElement('--p', withoutSpaces).valueElement).join(''), withoutSpaces);
+      assert.strictEqual(textFragments(renderValueElement('--p', withoutSpaces)).join(''), withoutSpaces);
     });
 
     it('renders malformed comments', () => {
       const property = 'red /* foo: bar';
-      assert.strictEqual(textFragments(renderValueElement('--p', property).valueElement).join(''), property);
+      assert.strictEqual(textFragments(renderValueElement('--p', property)).join(''), property);
     });
 
     it('computes preceding space from the AST', () => {
@@ -179,9 +179,8 @@ describeWithEnvironment('PropertyRenderer', () => {
             matchType: SDK.CSSPropertyParserMatchers.ColorMatch,
             render(match, context) {
               outerCallbacks = context.callbacks;
-              return Elements.PropertyRenderer.Renderer
-                  .render(SDK.CSSPropertyParser.ASTUtils.children(match.node), context)
-                  .nodes;
+              return Elements.PropertyRenderer.Renderer.render(SDK.CSSPropertyParser.ASTUtils.children(match.node),
+                                                               context);
             },
           },
         ],
@@ -222,7 +221,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const matchedResult = SDK.CSSPropertyParser.matchDeclaration(name, value, matchers);
       assert.exists(matchedResult);
 
-      const {valueElement} =
+      const valueElement =
           Elements.PropertyRenderer.Renderer.renderValueElement({name, value}, matchedResult, [renderer]);
 
       const link = valueElement.querySelector('.devtools-link');
@@ -246,7 +245,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const matchedResult = SDK.CSSPropertyParser.matchDeclaration(name, value, matchers);
       assert.exists(matchedResult);
 
-      const {valueElement} =
+      const valueElement =
           Elements.PropertyRenderer.Renderer.renderValueElement({name, value}, matchedResult, [renderer]);
 
       const link = valueElement.querySelector('.devtools-link');
@@ -270,7 +269,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const matchedResult = SDK.CSSPropertyParser.matchDeclaration(name, value, matchers);
       assert.exists(matchedResult);
 
-      const {valueElement} =
+      const valueElement =
           Elements.PropertyRenderer.Renderer.renderValueElement({name, value}, matchedResult, [renderer]);
 
       const links = Array.from(valueElement.querySelectorAll('.devtools-link')) as Array<HTMLElement&{href?: string}>;
@@ -292,7 +291,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const matchedResult = SDK.CSSPropertyParser.matchDeclaration(name, value, matchers);
       assert.exists(matchedResult);
 
-      const {valueElement} =
+      const valueElement =
           Elements.PropertyRenderer.Renderer.renderValueElement({name, value}, matchedResult, [renderer]);
 
       const span = valueElement.querySelector('span');
@@ -530,7 +529,7 @@ describe('TracingContext', () => {
     const lastNode = innerMatchedResult.ast.tree.lastChild;  // c3
     assert.exists(lastNode);
     const renderingContext = new Elements.PropertyRenderer.RenderingContext(
-        innerMatchedResult.ast, null, new Map(), innerMatchedResult, undefined, undefined, childTracingContext);
+        innerMatchedResult.ast, null, new Map(), innerMatchedResult, undefined, childTracingContext);
 
     const longhands = SDK.CSSMetadata.cssMetadata().getLonghands(matchedResult.ast.propertyName ?? '');
     assert.exists(longhands);

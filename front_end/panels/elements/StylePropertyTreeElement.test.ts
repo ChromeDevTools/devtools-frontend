@@ -378,7 +378,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         const context =
             new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), false);
         assert.isTrue(context.nextEvaluation());
-        const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
+        const valueElement = Elements.PropertyRenderer.Renderer.renderValueElement(
             property, matchedResult,
             Elements.StylePropertyTreeElement.getPropertyRenderers(
                 property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map(), null),
@@ -417,7 +417,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         const context =
             new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), false);
         assert.isTrue(context.nextEvaluation());
-        const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
+        const valueElement = Elements.PropertyRenderer.Renderer.renderValueElement(
             property, matchedResult,
             Elements.StylePropertyTreeElement.getPropertyRenderers(
                 property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map(), null),
@@ -460,20 +460,20 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         const step1 =
             Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
         assert.isTrue(await context.runAsyncEvaluations());
-        assert.strictEqual(step1.valueElement.innerText,
+        assert.strictEqual(step1.innerText,
                            'color-mix(in srgb, color-mix(in srgb, #800080, light-dark(red, blue)), yellow)');
 
         assert.isTrue(context.nextEvaluation());
         const step2 =
             Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
         assert.isTrue(await context.runAsyncEvaluations());
-        assert.strictEqual(step2.valueElement.innerText, 'color-mix(in srgb, #008080, yellow)');
+        assert.strictEqual(step2.innerText, 'color-mix(in srgb, #008080, yellow)');
 
         assert.isTrue(context.nextEvaluation());
         const step3 =
             Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
         assert.isTrue(await context.runAsyncEvaluations());
-        assert.strictEqual(step3.valueElement.innerText, '#808000');
+        assert.strictEqual(step3.innerText, '#808000');
 
         assert.isFalse(context.nextEvaluation());
         await Promise.all(colorSchemeSpy.returnValues);
@@ -497,19 +497,19 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         assert.isTrue(context.nextSubstitution());
         const substituted =
             Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
-        assert.exists(substituted.valueElement.querySelector('devtools-color-mix-swatch'));
+        assert.exists(substituted.querySelector('devtools-color-mix-swatch'));
         assert.isFalse(context.nextSubstitution());
 
         assert.isTrue(context.nextEvaluation());
         const evaluated =
             Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
-        const colorSwatch = evaluated.valueElement.querySelector('devtools-color-swatch');
+        const colorSwatch = evaluated.querySelector('devtools-color-swatch');
         assert.exists(colorSwatch);
         const setColorCall = spyCall(colorSwatch, 'setColor');
 
         assert.isTrue(await context.runAsyncEvaluations());
         assert.strictEqual((await setColorCall).args[0].asString(), '#800080');
-        assert.strictEqual(evaluated.valueElement.innerText, '#800080');
+        assert.strictEqual(evaluated.innerText, '#800080');
       });
 
       it('supports tracing across attr() substitutions', async () => {
@@ -539,19 +539,19 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         assert.isTrue(context.nextSubstitution());
         const substituted =
             Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
-        assert.exists(substituted.valueElement.querySelector('devtools-color-mix-swatch'));
+        assert.exists(substituted.querySelector('devtools-color-mix-swatch'));
         assert.isFalse(context.nextSubstitution());
 
         assert.isTrue(context.nextEvaluation());
         const evaluated =
             Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
-        const colorSwatch = evaluated.valueElement.querySelector('devtools-color-swatch');
+        const colorSwatch = evaluated.querySelector('devtools-color-swatch');
         assert.exists(colorSwatch);
         const setColorCall = spyCall(colorSwatch, 'setColor');
 
         assert.isTrue(await context.runAsyncEvaluations());
         assert.strictEqual((await setColorCall).args[0].asString(), '#800080');
-        assert.strictEqual(evaluated.valueElement.innerText, '#800080');
+        assert.strictEqual(evaluated.innerText, '#800080');
       });
 
       it('shows a value tracing tooltip on the var function', async () => {
@@ -1181,7 +1181,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
 
       const varSwatch = renderValueSpy.returnValues
-                            .map(fragment => Array.from(fragment.valueElement.querySelectorAll('devtools-link-swatch')))
+                            .map(valueElement => Array.from(valueElement.querySelectorAll('devtools-link-swatch')))
                             .flat()[0];
       assert.exists(varSwatch);
       const revealPropertySpy = sinon.spy(stylesSidebarPane, 'revealProperty');
@@ -1228,7 +1228,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
 
       const varSwatch = renderValueSpy.returnValues
-                            .map(fragment => Array.from(fragment.valueElement.querySelectorAll('devtools-link-swatch')))
+                            .map(valueElement => Array.from(valueElement.querySelectorAll('devtools-link-swatch')))
                             .flat()[0];
       assert.exists(varSwatch);
       const jumpToPropertySpy = sinon.spy(stylesSidebarPane, 'jumpToProperty');
@@ -2085,10 +2085,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
                             }
                           })
                           .filter(b => !!b);
-        return {
-          nodes: html`${nodes}`,
-          cssControls: new Map(),
-        };
+        return html`${nodes}`;
       });
       const model = new Elements.StylePropertyTreeElement.ShadowModel(
           SDK.CSSPropertyParserMatchers.ShadowType.BOX_SHADOW, properties, renderingContext);

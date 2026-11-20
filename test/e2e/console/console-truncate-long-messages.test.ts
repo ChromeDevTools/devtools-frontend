@@ -2,10 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {describe, it} from '../conductor/mocha-interface.js';
 import {
   checkCommandResultFunction,
+  CONSOLE_ALL_MESSAGES_SELECTOR,
+  getCurrentConsoleMessages,
+  Level,
   navigateToConsoleTab,
+  waitForConsoleMessagesToBeNonEmpty,
 } from '../helpers/console-helpers.js';
 
 // offset is 1 because Console.log returns undefined after logging, so we want
@@ -61,5 +67,45 @@ describe('The Console Tab', function() {
 
     await checkCommandResult(devToolsPage, `console.log(["a".repeat(${overMaxLength})])`,
                              `['${'a'.repeat(50)}…${'a'.repeat(49)}']`, 'Console unable to truncate an array');
+  });
+
+  it('trims long URLs', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('empty.html');
+    await navigateToConsoleTab(devToolsPage);
+
+    const longUrl =
+        'http://example.com/2---------3---------4---------5---------6---------7---------8---------9---------0---------1---------2---------3---------4---------5---------6---------7---------8---------9---------0';
+    const trimmedUrl =
+        'http://example.com/2---------3---------4---------5---------6---------7-----…---3---------4---------5---------6---------7---------8---------9---------0';
+
+    await inspectedPage.evaluate(url => {
+      // eslint-disable-next-line no-console
+      console.log('The URL is: %s', url);
+      // eslint-disable-next-line no-console
+      console.log(url);
+    }, longUrl);
+
+    const messages = await getCurrentConsoleMessages(devToolsPage, false, Level.All,
+                                                     () => waitForConsoleMessagesToBeNonEmpty(devToolsPage, 2));
+    assert.deepEqual(messages, [
+      `The URL is: ${trimmedUrl}`,
+      trimmedUrl,
+    ]);
+
+    const links = await devToolsPage.$$(`${CONSOLE_ALL_MESSAGES_SELECTOR} .devtools-link`);
+    assert.lengthOf(links, 2);
+    for (const link of links) {
+      const linkDetails =
+          await link.evaluate(el => ({
+                                text: el.textContent,
+                                ellipsis: el.querySelector('.devtools-link-ellipsis')?.textContent ?? null,
+                                href: 'href' in el ? el.href : undefined,
+                              }));
+      assert.deepEqual(linkDetails, {
+        text: trimmedUrl,
+        ellipsis: '…',
+        href: longUrl,
+      });
+    }
   });
 });

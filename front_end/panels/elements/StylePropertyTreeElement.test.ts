@@ -393,6 +393,167 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         assert.strictEqual(valueElement.innerText, '#808080');
       });
 
+      it('does not show color mix swatch when color-mix is used with multi-color arguments', () => {
+        for (const value of ['color-mix(in srgb, red blue, green)', 'color-mix(in srgb, red, green blue)']) {
+          const stylePropertyTreeElement = getTreeElement('color', value);
+          stylePropertyTreeElement.updateTitle();
+
+          assert.exists(stylePropertyTreeElement.valueElement);
+          assert.isNull(stylePropertyTreeElement.valueElement.querySelector('devtools-color-mix-swatch'));
+          assert.lengthOf(stylePropertyTreeElement.valueElement.querySelectorAll('devtools-color-swatch'), 3);
+        }
+      });
+
+      it('supports evaluation during tracing with a light-dark argument', async () => {
+        const colorSchemeSpy =
+            sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+        const property = addProperty('color', 'color-mix(in srgb, light-dark(red, blue), green)');
+        connection.setHandler('CSS.resolveValues', null);
+        connection.setSuccessHandler('CSS.resolveValues',
+                                     (request: Protocol.CSS.ResolveValuesRequest) =>
+                                         ({results: request.values.map(v => v === property.value ? 'purple' : v)}));
+        const matchedResult = property.parseValue(matchedStyles, new Map());
+
+        const context =
+            new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), false);
+        assert.isTrue(context.nextEvaluation());
+        const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
+            property, matchedResult,
+            Elements.StylePropertyTreeElement.getPropertyRenderers(
+                property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map(), null),
+            context);
+
+        const colorSwatch = valueElement.querySelector('devtools-color-swatch');
+        assert.exists(colorSwatch);
+        const setColorCall = spyCall(colorSwatch, 'setColor');
+
+        assert.isTrue(await context.runAsyncEvaluations());
+        await Promise.all(colorSchemeSpy.returnValues);
+        assert.strictEqual((await setColorCall).args[0].asString(), '#800080');
+        assert.strictEqual(valueElement.innerText, '#800080');
+      });
+
+      it('preserves intermediate trace steps for nested color-mix with a light-dark argument', async () => {
+        const colorSchemeSpy =
+            sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+        const innerMix = 'color-mix(in srgb, red, blue)';
+        const middleMix = `color-mix(in srgb, ${innerMix}, light-dark(red, blue))`;
+        const outerMix = `color-mix(in srgb, ${middleMix}, yellow)`;
+        const property = addProperty('color', outerMix);
+        const resolvedValues = new Map([
+          [innerMix, 'purple'],
+          [middleMix, 'teal'],
+          [outerMix, 'olive'],
+        ]);
+        connection.setHandler('CSS.resolveValues', null);
+        connection.setSuccessHandler('CSS.resolveValues',
+                                     (request: Protocol.CSS.ResolveValuesRequest) =>
+                                         ({results: request.values.map(v => resolvedValues.get(v) ?? v)}));
+        const matchedResult = property.parseValue(matchedStyles, new Map());
+        const renderers = Elements.StylePropertyTreeElement.getPropertyRenderers(
+            property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map(), null);
+
+        const context =
+            new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), false);
+
+        assert.isTrue(context.nextEvaluation());
+        const step1 =
+            Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
+        assert.isTrue(await context.runAsyncEvaluations());
+        assert.strictEqual(step1.valueElement.innerText,
+                           'color-mix(in srgb, color-mix(in srgb, #800080, light-dark(red, blue)), yellow)');
+
+        assert.isTrue(context.nextEvaluation());
+        const step2 =
+            Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
+        assert.isTrue(await context.runAsyncEvaluations());
+        assert.strictEqual(step2.valueElement.innerText, 'color-mix(in srgb, #008080, yellow)');
+
+        assert.isTrue(context.nextEvaluation());
+        const step3 =
+            Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
+        assert.isTrue(await context.runAsyncEvaluations());
+        assert.strictEqual(step3.valueElement.innerText, '#808000');
+
+        assert.isFalse(context.nextEvaluation());
+        await Promise.all(colorSchemeSpy.returnValues);
+      });
+
+      it('supports tracing across var() substitutions', async () => {
+        mockVariableMap['--a'] = addProperty('--a', 'red');
+        const property = addProperty('color', 'color-mix(in srgb, var(--a), var(--missing, blue))');
+        connection.setHandler('CSS.resolveValues', null);
+        connection.setSuccessHandler(
+            'CSS.resolveValues',
+            (request: Protocol.CSS.ResolveValuesRequest) =>
+                ({results: request.values.map(v => v === 'color-mix(in srgb, red, blue)' ? 'purple' : v)}));
+        const matchedResult = property.parseValue(matchedStyles, new Map());
+        assert.exists(matchedResult);
+        const renderers = Elements.StylePropertyTreeElement.getPropertyRenderers(
+            property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map(), null);
+
+        const context = new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(),
+                                                                     false, 0, matchedResult);
+        assert.isTrue(context.nextSubstitution());
+        const substituted =
+            Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
+        assert.exists(substituted.valueElement.querySelector('devtools-color-mix-swatch'));
+        assert.isFalse(context.nextSubstitution());
+
+        assert.isTrue(context.nextEvaluation());
+        const evaluated =
+            Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
+        const colorSwatch = evaluated.valueElement.querySelector('devtools-color-swatch');
+        assert.exists(colorSwatch);
+        const setColorCall = spyCall(colorSwatch, 'setColor');
+
+        assert.isTrue(await context.runAsyncEvaluations());
+        assert.strictEqual((await setColorCall).args[0].asString(), '#800080');
+        assert.strictEqual(evaluated.valueElement.innerText, '#800080');
+      });
+
+      it('supports tracing across attr() substitutions', async () => {
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        node.getAttribute.callsFake(name => name === 'data-color' ? 'red' : undefined);
+        const attrMatchedStyles = await getMatchedStylesWithBlankRule({cssModel, connection, node});
+        const style = attrMatchedStyles.nodeStyles()[0];
+        const property = new SDK.CSSProperty.CSSProperty(
+            style, style.pastLastSourcePropertyIndex(), 'color',
+            'color-mix(in srgb, attr(data-color type(<color>)), attr(data-missing type(<color>), blue))', true, false,
+            true, false, '', undefined, []);
+        style.allProperties().push(property);
+
+        connection.setHandler('CSS.resolveValues', null);
+        connection.setSuccessHandler(
+            'CSS.resolveValues',
+            (request: Protocol.CSS.ResolveValuesRequest) =>
+                ({results: request.values.map(v => v === 'color-mix(in srgb, red, blue)' ? 'purple' : v)}));
+        const matchedResult = property.parseValue(attrMatchedStyles, new Map());
+        assert.exists(matchedResult);
+        const renderers = Elements.StylePropertyTreeElement.getPropertyRenderers(
+            property.name, style, stylesSidebarPane, attrMatchedStyles, null, new Map(), null);
+
+        const context = new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(),
+                                                                     false, 0, matchedResult);
+        assert.isTrue(context.nextSubstitution());
+        const substituted =
+            Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
+        assert.exists(substituted.valueElement.querySelector('devtools-color-mix-swatch'));
+        assert.isFalse(context.nextSubstitution());
+
+        assert.isTrue(context.nextEvaluation());
+        const evaluated =
+            Elements.PropertyRenderer.Renderer.renderValueElement(property, matchedResult, renderers, context);
+        const colorSwatch = evaluated.valueElement.querySelector('devtools-color-swatch');
+        assert.exists(colorSwatch);
+        const setColorCall = spyCall(colorSwatch, 'setColor');
+
+        assert.isTrue(await context.runAsyncEvaluations());
+        assert.strictEqual((await setColorCall).args[0].asString(), '#800080');
+        assert.strictEqual(evaluated.valueElement.innerText, '#800080');
+      });
+
       it('shows a value tracing tooltip on the var function', async () => {
         const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, yellow, green)');
         stylePropertyTreeElement.updateTitle();
@@ -1323,6 +1484,74 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'if(style(--b: 3): red)');
       stylePropertyTreeElement.updateTitle();
       assert.notExists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
+    });
+  });
+
+  describe('AttributeRenderer', () => {
+    async function getAttrTreeElement(value: string, attributes: Record<string, string> = {}) {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+      node.getAttribute.callsFake(name => attributes[name]);
+      const attrMatchedStyles = await getMatchedStylesWithBlankRule({cssModel, connection, node});
+      const style = attrMatchedStyles.nodeStyles()[0];
+      const property = new SDK.CSSProperty.CSSProperty(style, style.pastLastSourcePropertyIndex(), 'color', value, true,
+                                                       false, true, false, '', undefined, []);
+      style.allProperties().push(property);
+      const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+          new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), attrMatchedStyles, property.ownerStyle,
+          0, null, null, null);
+      return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+        stylesContainer: stylesSidebarPane,
+        section,
+        matchedStyles: attrMatchedStyles,
+        property,
+        isShorthand: false,
+        inherited: false,
+        overloaded: false,
+        newProperty: true,
+      });
+    }
+
+    it('connects nested color swatches when the fallback is taken', async () => {
+      const stylePropertyTreeElement = await getAttrTreeElement('attr(data-missing type(<color>), red)');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+
+      const linkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch');
+      assert.exists(linkSwatch);
+      const attrSwatch = linkSwatch.parentElement;
+      assert.exists(attrSwatch);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+
+      const outerColorSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-color-swatch');
+      assert.exists(outerColorSwatch);
+      const innerColorSwatch = attrSwatch.querySelector('devtools-color-swatch');
+      assert.exists(innerColorSwatch);
+      assert.notStrictEqual(outerColorSwatch, innerColorSwatch);
+      const color = new Common.Color.Lab(1, 0, 0, null, undefined);
+      innerColorSwatch.setColor(color);
+      assert.strictEqual(outerColorSwatch.color, color);
+    });
+
+    it('only connects nested color swatches if the fallback is actually taken', async () => {
+      const stylePropertyTreeElement =
+          await getAttrTreeElement('attr(data-color type(<color>), red)', {'data-color': 'blue'});
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+
+      const linkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch');
+      assert.exists(linkSwatch);
+      const attrSwatch = linkSwatch.parentElement;
+      assert.exists(attrSwatch);
+
+      const outerColorSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-color-swatch');
+      assert.exists(outerColorSwatch);
+      const innerColorSwatch = attrSwatch.querySelector('devtools-color-swatch');
+      assert.exists(innerColorSwatch);
+      assert.notStrictEqual(outerColorSwatch, innerColorSwatch);
+      const color = new Common.Color.Lab(1, 0, 0, null, undefined);
+      innerColorSwatch.setColor(color);
+      assert.strictEqual(outerColorSwatch.color?.asString(), 'blue');
     });
   });
 

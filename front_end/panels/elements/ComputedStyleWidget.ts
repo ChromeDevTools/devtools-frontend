@@ -49,7 +49,7 @@ import * as ElementsComponents from './components/components.js';
 import computedStyleWidgetStyles from './computedStyleWidget.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
-import {Renderer, rendererBase, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
+import {Renderer, rendererBase, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 
 const {bindToSetting} = UI.UIUtils;
@@ -190,7 +190,7 @@ const createTraceElement =
 // clang-format off
 class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch): LitTemplate {
     const color = Common.Color.parse(match.text);
     if (!color) {
       return html`${match.text}`;
@@ -199,7 +199,6 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
     swatch.setReadonly(true);
     swatch.renderColor(color);
-    context.addControl('color', swatch);
     return html`${swatch}<span>${match.text}</span>`;
   }
 

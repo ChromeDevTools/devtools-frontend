@@ -509,9 +509,11 @@ export type CSSControlMap = Map<string, HTMLElement[]>;
 export interface RenderingCallbacks {
   /**
    * Called by a child color renderer during initial render and whenever the color changes. Receives a CSS color
-   * string when the child does not resolve to a `Common.Color.Color` (for example, `color-mix()`).
+   * string when the child does not resolve to a `Common.Color.Color` (for example, `color-mix()`), or `null` when
+   * the color is not yet resolved during initial render (for example, `light-dark()`). `origin` identifies the
+   * child match reporting the color.
    */
-  onColor?: (color: Common.Color.Color|string) => void;
+  onColor?: (color: Common.Color.Color|string|null, origin: SDK.CSSPropertyParser.Match) => void;
   /**
    * Called by a child angle renderer whenever the angle changes.
    */
@@ -889,8 +891,8 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   static renderValueNodes(property: SDK.CSSProperty.CSSProperty|{name: string, value: string},
                           matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
                           renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext,
-                          signal?: AbortSignal,
-                          edits?: ValueUpdateTracking): {nodes: LitTemplate, cssControls: CSSControlMap} {
+                          signal?: AbortSignal, edits?: ValueUpdateTracking,
+                          callbacks?: RenderingCallbacks): {nodes: LitTemplate, cssControls: CSSControlMap} {
     if (!matchedResult) {
       return {nodes: html`${property.value}`, cssControls: new Map()};
     }
@@ -903,7 +905,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     const context =
         new RenderingContext(matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null,
                              rendererMap, matchedResult, undefined, {}, tracing, signal, edits);
-    return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
+    return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context, callbacks);
   }
 }
 

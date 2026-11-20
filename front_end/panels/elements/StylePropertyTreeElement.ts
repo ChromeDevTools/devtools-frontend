@@ -44,7 +44,6 @@ import {CSSValueTraceView} from './CSSValueTraceView.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
   BinOpRenderer,
-  type CSSControlMap,
   EditableContent,
   type MatchRenderer,
   Renderer,
@@ -248,7 +247,7 @@ export class EnvFunctionRenderer extends EnvFunctionRendererBase {
         if (match.varNameIsValid) {
           return html`${match.value}`;
         }
-        return Renderer.render(fallbackNodes, substitution.renderingContext(context)).nodes;
+        return Renderer.render(fallbackNodes, substitution.renderingContext(context), context.callbacks).nodes;
       }
     }
 
@@ -427,21 +426,27 @@ export class VariableRenderer extends VariableRendererBase {
     const substitution = context.tracing?.substitution({match, context});
     if (substitution) {
       if (declaration?.declaration) {
-        const {nodes, cssControls} = Renderer.renderValueNodes(
+        const {nodes} = Renderer.renderValueNodes(
             {name: declaration.name, value: declaration.value ?? ''},
             substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles),
             getPropertyRenderers(declaration.name, declaration.style, this.#stylesContainer, this.#matchedStyles, null,
                                  this.#computedStyles, this.#computedStyleExtraFields),
-            substitution);
-        cssControls.forEach((value, key) => value.forEach(control => context.addControl(key, control)));
+            substitution, undefined, undefined, context.callbacks);
         return nodes;
       }
       if (!declaration && match.fallback) {
-        return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
+        return Renderer.render(match.fallback, substitution.renderingContext(context), context.callbacks).nodes;
       }
     }
 
-    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
+    let colorSwatch: InlineEditor.ColorSwatch.ColorSwatch|null = null;
+    const onColor = fromFallback ? (newColor: Common.Color.Color|string|null) : void => {
+      // A fallback that only has text, i.e. a color-mix(), does not change the color of this swatch.
+      if (colorSwatch && newColor && typeof newColor !== 'string') {
+        colorSwatch.setColor(newColor);
+      }
+    }: undefined;
+    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context, {onColor}) : undefined;
 
     const varCall = this.#propertyData ?
         getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields,
@@ -476,17 +481,8 @@ export class VariableRenderer extends VariableRendererBase {
             return varSwatch;
           }
 
-          const colorSwatch =
+          colorSwatch =
               new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
-          context.addControl('color', colorSwatch);
-
-          if (fromFallback) {
-            renderedFallback?.cssControls.get('color')?.forEach(
-                innerSwatch =>
-                    innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-                      colorSwatch.setColor(ev.data.color);
-                    }));
-          }
 
           return this.#propertyData?.editable() ?
               html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
@@ -586,7 +582,7 @@ export class AttributeRenderer extends AttributeRendererBase {
       // anyway, even when a fallback is specified.
       if (fromFallback) {
         if (match.fallback) {
-          return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
+          return Renderer.render(match.fallback, substitution.renderingContext(context), context.callbacks).nodes;
         }
       } else if (match.substitutionText !== null) {
         const matching = SDK.CSSPropertyParser.matchDeclaration(
@@ -597,12 +593,19 @@ export class AttributeRenderer extends AttributeRendererBase {
                 {name: '--property', value: match.substitutionText}, matching,
                 getPropertyRenderers('--property', match.style, this.#stylesContainer, this.#matchedStyles, null,
                                      this.#computedStyles, this.#computedStyleExtraFields),
-                substitution)
+                substitution, undefined, undefined, context.callbacks)
             .nodes;
       }
     }
 
-    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
+    let colorSwatch: InlineEditor.ColorSwatch.ColorSwatch|null = null;
+    const onColor = fromFallback ? (newColor: Common.Color.Color|string|null) : void => {
+      // A fallback that only has text, i.e. a color-mix(), does not change the color of this swatch.
+      if (colorSwatch && newColor && typeof newColor !== 'string') {
+        colorSwatch.setColor(newColor);
+      }
+    }: undefined;
+    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context, {onColor}) : undefined;
 
     const attrCall = this.#propertyData ?
         getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields,
@@ -635,16 +638,7 @@ export class AttributeRenderer extends AttributeRendererBase {
       return varSwatch;
     }
 
-    const colorSwatch =
-        new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
-    context.addControl('color', colorSwatch);
-
-    if (fromFallback) {
-      renderedFallback?.cssControls.get('color')?.forEach(
-          innerSwatch => innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-            colorSwatch.setColor(ev.data.color);
-          }));
-    }
+    colorSwatch = new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
 
     return this.#propertyData?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
@@ -698,6 +692,10 @@ export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBa
         variant=rich
         jslogContext=elements.relative-color-channel>${value.toFixed(3)}</devtools-tooltip>`;
   }
+}
+
+function colorToText(color: Common.Color.Color|string): string {
+  return typeof color === 'string' ? color : (color.getAuthoredText() ?? color.asString());
 }
 
 const ColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMatch> =
@@ -785,7 +783,6 @@ export class ColorRenderer extends ColorRendererBase {
             new ColorRenderer(this.#stylesContainer, null)
                 .renderColorSwatch(displayColor.isGamutClipped() ? color : (displayColor.nickname() ?? displayColor),
                                    match, context);
-        context.addControl('color', swatch);
         return {template: html`${swatch}<span>${displayColor.asString()}</span>`};
       });
       if (evaluation) {
@@ -794,7 +791,6 @@ export class ColorRenderer extends ColorRendererBase {
     }
 
     colorSwatch = this.renderColorSwatch(color, match, context);
-    context.addControl('color', colorSwatch);
     return this.#propertyData?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${valueChild}</devtools-widget>` :
         html`${colorSwatch}${valueChild}`;
@@ -847,6 +843,13 @@ export class ColorRenderer extends ColorRendererBase {
       }
     }
 
+    const {onColor} = context.callbacks;
+    if (onColor) {
+      onColor(color ?? null, match);
+      swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
+                              ev => onColor(ev.data.color, match));
+    }
+
     return swatch;
   }
 
@@ -886,8 +889,16 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): LitTemplate {
-    const {nodes: light, cssControls: lightControls} = Renderer.render(match.light, context);
-    const {nodes: dark, cssControls: darkControls} = Renderer.render(match.dark, context);
+    let colorSwatch: InlineEditor.ColorSwatch.ColorSwatch|null = null;
+    let activeColor: CodeMirror.SyntaxNode[]|null = null;
+    const onBranchColor = (branch: CodeMirror.SyntaxNode[]) => (newColor: Common.Color.Color|string|null): void => {
+      // A branch that only has text, i.e. a color-mix(), does not change the color of this swatch.
+      if (colorSwatch && activeColor === branch && newColor && typeof newColor !== 'string') {
+        colorSwatch.setColor(newColor);
+      }
+    };
+    const {nodes: light} = Renderer.render(match.light, context, {onColor: onBranchColor(match.light)});
+    const {nodes: dark} = Renderer.render(match.dark, context, {onColor: onBranchColor(match.dark)});
     const content = this.#renderContent(match, light, dark);
 
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
@@ -902,11 +913,11 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
 
     // Pass an undefined color here to insert a placeholder swatch that will be filled in from the async
     // applyColorScheme below.
-    const colorSwatch =
+    colorSwatch =
         new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(undefined, match, context);
-    context.addControl('color', colorSwatch);
-    const styledContent =
-        until(this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls), content);
+    const styledContent = until(this.applyColorScheme(match, context, colorSwatch, light, dark, active => {
+      activeColor = active;
+    }), content);
 
     return this.#propertyData?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${styledContent}</devtools-widget>` :
@@ -915,15 +926,13 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
 
   async applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext,
                          colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: LitTemplate, dark: LitTemplate,
-                         lightControls: CSSControlMap, darkControls: CSSControlMap): Promise<LitTemplate> {
+                         onActiveColor: (activeColor: CodeMirror.SyntaxNode[]) => void): Promise<LitTemplate> {
     const activeColor = await this.#activeColor(match);
     if (context.signal?.aborted || !activeColor) {
       return this.#renderContent(match, light, dark);
     }
 
-    const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get('color');
-    activeColorSwatches?.forEach(swatch => swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
-                                                                   ev => colorSwatch.setColor(ev.data.color)));
+    onActiveColor(activeColor);
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
     const color = colorText && Common.Color.parse(colorText);
     if (color) {
@@ -989,24 +998,6 @@ export class ColorMixRenderer extends ColorMixRendererBase {
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): LitTemplate {
-    const hookUpColorArg = (node: Node, onChange: (newColorText: string) => void): boolean => {
-      if (node instanceof InlineEditor.ColorMixSwatch.ColorMixSwatch ||
-          node instanceof InlineEditor.ColorSwatch.ColorSwatch) {
-        if (node instanceof InlineEditor.ColorSwatch.ColorSwatch) {
-          node.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
-                                ev => onChange(ev.data.color.getAuthoredText() ?? ev.data.color.asString()));
-        } else {
-          node.addEventListener(InlineEditor.ColorMixSwatch.ColorMixChangedEvent.eventName,
-                                ev => onChange(ev.data.text));
-        }
-        const color = node.getText();
-        if (color) {
-          onChange(color);
-          return true;
-        }
-      }
-      return false;
-    };
 
     const childTracingContexts = context.tracing?.evaluation(
         match.space.length ? [match.color1, match.color2, match.space] : [match.color1, match.color2],
@@ -1015,8 +1006,29 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     const color2RenderingContext = childTracingContexts?.at(1)?.renderingContext(context) ?? context;
     const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
 
-    const color1 = Renderer.render(match.color1, color1RenderingContext);
-    const color2 = Renderer.render(match.color2, color2RenderingContext);
+    let firstColor: string|null = null;
+    let secondColor: string|null = null;
+    const firstOrigins = new Set<SDK.CSSPropertyParser.Match>();
+    const secondOrigins = new Set<SDK.CSSPropertyParser.Match>();
+    let mixSwatch: InlineEditor.ColorMixSwatch.ColorMixSwatch|null = null;
+    const color1 = Renderer.render(match.color1, color1RenderingContext, {
+      onColor: (color, origin) => {
+        firstOrigins.add(origin);
+        firstColor = color ? colorToText(color) : null;
+        if (firstColor) {
+          mixSwatch?.setFirstColor(firstColor);
+        }
+      },
+    });
+    const color2 = Renderer.render(match.color2, color2RenderingContext, {
+      onColor: (color, origin) => {
+        secondOrigins.add(origin);
+        secondColor = color ? colorToText(color) : null;
+        if (secondColor) {
+          mixSwatch?.setSecondColor(secondColor);
+        }
+      },
+    });
     const contentChild = html`<span>${
         this.#propertyData ? getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles,
                                                this.#computedStyleExtraFields, context, this.#stylesContainer,
@@ -1026,11 +1038,9 @@ export class ColorMixRenderer extends ColorMixRendererBase {
         match.space.length ? html`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` :
                              ''}${color1.nodes}, ${color2.nodes})</span>`;
 
-    const color1Controls = color1.cssControls.get('color') ?? [];
-    const color2Controls = color2.cssControls.get('color') ?? [];
-
-    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || color1Controls.length !== 1 ||
-        color2Controls.length !== 1) {
+    // Each argument needs exactly one color, which its renderer reported during the render above.
+    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || firstOrigins.size !== 1 ||
+        secondOrigins.size !== 1) {
       return contentChild;
     }
 
@@ -1044,7 +1054,6 @@ export class ColorMixRenderer extends ColorMixRendererBase {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const initialColor = Common.Color.parse('#000') as Common.Color.Color;
         const swatch = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, match, context);
-        context.addControl('color', swatch);
         const asyncEvalCallback = async(): Promise<LitTemplate|null> => {
           const results = await this.#stylesContainer.cssModel()?.resolveValues(undefined, nodeId, colorMixText);
           if (context.signal?.aborted) {
@@ -1070,15 +1079,23 @@ export class ColorMixRenderer extends ColorMixRendererBase {
       }
     }
 
-    const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
-    if (!hookUpColorArg(color1Controls[0], text => swatch.setFirstColor(text)) ||
-        !hookUpColorArg(color2Controls[0], text => swatch.setSecondColor(text))) {
+    if (!firstColor || !secondColor) {
+      context.callbacks.onColor?.(null, match);
       return contentChild;
     }
+    const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
+    mixSwatch = swatch;
+    swatch.setFirstColor(firstColor);
+    swatch.setSecondColor(secondColor);
     swatch.tabIndex = -1;
     swatch.setColorMixText(colorMixText);
     UI.ARIAUtils.setLabel(swatch, colorMixText);
-    context.addControl('color', swatch);
+    const {onColor} = context.callbacks;
+    if (onColor) {
+      onColor(swatch.getText(), match);
+      swatch.addEventListener(InlineEditor.ColorMixSwatch.ColorMixChangedEvent.eventName,
+                              ev => onColor(ev.data.text, match));
+    }
 
     if (context.tracing) {
       return html`${swatch}${contentChild}`;
@@ -1139,7 +1156,6 @@ export class ContrastColorRenderer extends ContrastColorRendererBase {
 
     const colorSwatch =
         new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
-    context.addControl('color', colorSwatch);
 
     return this.#propertyData?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` :

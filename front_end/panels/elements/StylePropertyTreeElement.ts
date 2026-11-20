@@ -3142,7 +3142,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement impleme
         }
       };
       this.listItemElement.appendChild(tooltip);
-    } else if (Common.Settings.Settings.instance()
+    } else if (!this.property.name.startsWith('--') &&
+               Common.Settings.Settings.instance()
                    .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
                    .get()) {
       const tooltipId = getTooltipId(this.tooltipIdFactory, 'property-doc', this.property, this.getLonghand()?.name);

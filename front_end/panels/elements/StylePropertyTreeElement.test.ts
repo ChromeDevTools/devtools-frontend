@@ -3191,6 +3191,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
   });
 
   it('does not show a variable tooltip on custom property names in function rules', async () => {
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+        .set(true);
     const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'red', '--foo');
     stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
     stylePropertyTreeElement.updateTitle();

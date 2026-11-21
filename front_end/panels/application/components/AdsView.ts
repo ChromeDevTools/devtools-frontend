@@ -103,6 +103,10 @@ const UIStrings = {
    */
   network: 'Network',
   /**
+   * @description Column header for the number of frames nested under each ad iframe (at any depth) in the ad iframes table in the ads view of the Application panel.
+   */
+  subframes: 'Subframes',
+  /**
    * @description Accessible name for the ad iframes table in the ads view of the Application panel.
    */
   adIframes: 'Ad iframes',
@@ -189,6 +193,10 @@ interface AdFrameNodeData {
   rawNetworkBytes: number;
   cpuTime: string;
   rawCpuTime: number;
+  /**
+   * The number of frames nested under the ad iframe at any depth.
+   */
+  subframeCount: number;
 }
 
 interface AdScriptNodeData {
@@ -380,6 +388,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               <th id="initialOrigin" weight="2" sortable>${i18nString(UIStrings.initialOrigin)}</th>
               <th id="cpuTime" weight="1" sortable type="numeric">${i18nString(UIStrings.cpu)}</th>
               <th id="networkBytes" weight="1" sortable type="numeric">${i18nString(UIStrings.network)}</th>
+              <th id="subframeCount" weight="1" sortable type="numeric">${i18nString(UIStrings.subframes)}</th>
             </tr>
             ${repeat(input.adFrames, frame => frame.frameId, frame => html`
               <tr
@@ -389,6 +398,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 <td title=${frame.initialOrigin}>${frame.initialOrigin}</td>
                 <td title=${frame.cpuTime} data-value=${frame.rawCpuTime}>${frame.cpuTime}</td>
                 <td title=${frame.networkBytes} data-value=${frame.rawNetworkBytes}>${frame.networkBytes}</td>
+                <td title=${frame.subframeCount}>${frame.subframeCount}</td>
               </tr>
             `)}
           </table>
@@ -710,6 +720,25 @@ export class AdsView extends UI.Widget.Widget {
     return undefined;
   }
 
+  // Returns the number of frames nested under each ad frame at any depth,
+  // derived from the frame tree that DevTools already tracks. A frame only
+  // knows its children within its own target, so this walks up from every
+  // frame instead: `parentFrame()` also crosses target boundaries (OOPIFs).
+  #computeSubframeCounts(): Map<Protocol.Page.FrameId, number> {
+    const subframeCounts = new Map<Protocol.Page.FrameId, number>();
+    if (this.#adFrames.size === 0) {
+      return subframeCounts;
+    }
+    for (const frame of SDK.FrameManager.FrameManager.instance().getAllFrames()) {
+      for (let ancestor = frame.parentFrame(); ancestor; ancestor = ancestor.parentFrame()) {
+        if (this.#adFrames.has(ancestor.id)) {
+          subframeCounts.set(ancestor.id, (subframeCounts.get(ancestor.id) ?? 0) + 1);
+        }
+      }
+    }
+    return subframeCounts;
+  }
+
   // Offers the same "Show iframe details" item as the context menu of an
   // <iframe> node in the Elements panel.
   #populateAdFrameContextMenu(contextMenu: UI.ContextMenu.ContextMenu, frameId: Protocol.Page.FrameId): void {
@@ -760,6 +789,7 @@ export class AdsView extends UI.Widget.Widget {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
 
+    const subframeCounts = this.#computeSubframeCounts();
     const adFramesArray: AdFrameNodeData[] = [];
     for (const [frameId, frame] of this.#adFrames) {
       // The table displays the resolved ID, or an <unnamed> placeholder if the
@@ -777,6 +807,7 @@ export class AdsView extends UI.Widget.Widget {
         rawCpuTime: frame.cpuTime ?? -1,
         networkBytes: formatNetwork(frame.networkBytes),
         rawNetworkBytes: frame.networkBytes ?? -1,
+        subframeCount: subframeCounts.get(frameId) ?? 0,
       });
     }
 

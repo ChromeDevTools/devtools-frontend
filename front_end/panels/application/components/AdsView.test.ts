@@ -16,6 +16,7 @@ import {cleanTestDOM} from '../../../testing/DOMHooks.js';
 import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {setUpEnvironment} from '../../../testing/OverridesHelpers.js';
+import {getInitializedResourceTreeModel, MAIN_FRAME_ID} from '../../../testing/ResourceTreeHelpers.js';
 import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Components from '../../../ui/legacy/components/utils/utils.js';
@@ -427,7 +428,7 @@ describeWithEnvironment('AdsView', () => {
       while (!input.adFrames.some(adFrame => adFrame.elementId)) {
         input = await view.nextInput;
       }
-      return {view, input};
+      return {adsView, view, input};
     }
 
     it('passes the owner element of an ad frame to the view', async () => {
@@ -518,6 +519,31 @@ describeWithEnvironment('AdsView', () => {
       assert.strictEqual(input.adFrames[0].ownerNode, newOwnerNode);
     });
 
+    it('passes the number of frames nested under an ad frame to the view', async () => {
+      const CHILD_ID = 'child' as Protocol.Page.FrameId;
+      const OOPIF_ID = 'oopif' as Protocol.Page.FrameId;
+      const model = await getInitializedResourceTreeModel(target);
+      model.frameAttached(MAIN_FRAME_ID, null);
+      model.frameAttached(FRAME_ID, MAIN_FRAME_ID);
+      model.frameAttached('sibling' as Protocol.Page.FrameId, MAIN_FRAME_ID);
+      model.frameAttached(CHILD_ID, FRAME_ID);
+      // An out-of-process iframe is the main frame of its own target.
+      const oopifModel = await getInitializedResourceTreeModel(createTarget({parentTarget: target}));
+      oopifModel.frameAttached(OOPIF_ID, CHILD_ID);
+      oopifModel.frameAttached('oopif-child' as Protocol.Page.FrameId, OOPIF_ID);
+
+      const {adsView, view, input} = await showAdsView();
+
+      assert.strictEqual(input.adFrames[0].subframeCount, 3);
+
+      // The next poll picks up changes to the frame tree.
+      oopifModel.frameDetached(OOPIF_ID, false);
+      await clock.tickAsync(500);
+      await adsView.updateComplete;
+
+      assert.strictEqual(view.input.adFrames[0].subframeCount, 1);
+    });
+
     it('hides the node highlight when the mouse leaves a row or the ad iframes table', async () => {
       const hideDOMNodeHighlight = sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
       const {input} = await showAdsView();
@@ -567,6 +593,7 @@ describeWithEnvironment('AdsView', () => {
           rawCpuTime: 100,
           networkBytes: '1.0\xa0kB',
           rawNetworkBytes: 1024,
+          subframeCount: 3,
         }],
         adScripts: [],
         target: null,
@@ -633,6 +660,13 @@ describeWithEnvironment('AdsView', () => {
       const cell = (await shownAdFrameRow(row)).querySelector('td');
       assert.strictEqual(cell?.textContent, 'ad-iframe');
       assert.notExists(cell?.querySelector('devtools-widget'));
+    });
+
+    it('shows the subframe count of an ad frame', async () => {
+      const row = await renderAdFrameRow(null);
+
+      const cell = (await shownAdFrameRow(row)).querySelector('td.subframeCount-column');
+      assert.strictEqual(cell?.textContent, '3');
     });
 
     it('forwards the mouse leaving the ad iframes table to onAdFramesMouseLeave', async () => {

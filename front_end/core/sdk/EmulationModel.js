@@ -145,7 +145,8 @@ export class EmulationModel extends SDKModel {
         }
         const visionDeficiencySetting = settings.resolve(emulatedVisionDeficiencySettingDescriptor);
         this.#settingListeners.push(visionDeficiencySetting.addChangeListener(() => this.#emulateVisionDeficiency(visionDeficiencySetting.get())));
-        if (visionDeficiencySetting.get()) {
+        if (visionDeficiencySetting.get() &&
+            visionDeficiencySetting.get() !== "none" /* Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType.None */) {
             void this.#emulateVisionDeficiency(visionDeficiencySetting.get());
         }
         const osTextScaleSetting = settings.resolve(emulatedOSTextScaleSettingDescriptor);

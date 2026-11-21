@@ -7,7 +7,7 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
-import { type CSSControlMap, type MatchRenderer, type RendererBase, RenderingContext } from './PropertyRenderer.js';
+import { type MatchRenderer, type RendererBase, RenderingContext } from './PropertyRenderer.js';
 import type { ActiveAiSuggestionProperty, StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylesContainer } from './StylesContainer.js';
 interface StylePropertyTreeElementParams {
@@ -82,10 +82,6 @@ export declare class AttributeRenderer extends AttributeRendererBase {
     constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): LitTemplate;
 }
-declare const LinearGradientRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LinearGradientMatch>;
-export declare class LinearGradientRenderer extends LinearGradientRendererBase {
-    render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch, context: RenderingContext): LitTemplate;
-}
 declare const RelativeColorChannelRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch>;
 export declare class RelativeColorChannelRenderer extends RelativeColorChannelRendererBase {
     #private;
@@ -104,7 +100,7 @@ export declare class LightDarkColorRenderer extends LightDarkColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): LitTemplate;
-    applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: LitTemplate, dark: LitTemplate, lightControls: CSSControlMap, darkControls: CSSControlMap): Promise<LitTemplate>;
+    applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: LitTemplate, dark: LitTemplate, onActiveColor: (activeColor: CodeMirror.SyntaxNode[]) => void): Promise<LitTemplate>;
 }
 declare const ColorMixRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMixMatch>;
 export declare class ColorMixRenderer extends ColorMixRendererBase {

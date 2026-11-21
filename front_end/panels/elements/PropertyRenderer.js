@@ -309,7 +309,7 @@ export class TracingContext {
         return this.#longhandOffset;
     }
     renderingContext(context) {
-        return new RenderingContext(context.ast, context.property, context.renderers, context.matchedResult, context.cssControls, context.options, this);
+        return new RenderingContext(context.ast, context.property, context.renderers, context.matchedResult, context.options, this);
     }
     nextSubstitution() {
         if (!this.#hasMoreSubstitutions) {
@@ -432,7 +432,6 @@ export class TracingContext {
         return results.some(result => result !== false);
     }
 }
-export const CSSControlMap = Map;
 /**
  * Records that the text of `original` was modified to `value`, e.g. because the user changed it in an editor. In a
  * `ComputedText`, a ValueEdit stands in for `original`: it takes over the range of `original` and substitutes `value`
@@ -574,18 +573,16 @@ export class RenderingContext {
     property;
     renderers;
     matchedResult;
-    cssControls;
     options;
     tracing;
     signal;
     edits;
     callbacks;
-    constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal, edits, callbacks = {}) {
+    constructor(ast, property, renderers, matchedResult, options = {}, tracing, signal, edits, callbacks = {}) {
         this.ast = ast;
         this.property = property;
         this.renderers = renderers;
         this.matchedResult = matchedResult;
-        this.cssControls = cssControls;
         this.options = options;
         this.tracing = tracing;
         this.signal = signal;
@@ -597,17 +594,6 @@ export class RenderingContext {
     // together. Does nothing if the context doesn't track changes, e.g. for value traces.
     recordEdit(match, value) {
         this.edits?.recordEdit(match, value);
-    }
-    addControl(cssType, control) {
-        if (this.cssControls) {
-            const controls = this.cssControls.get(cssType);
-            if (!controls) {
-                this.cssControls.set(cssType, [control]);
-            }
-            else {
-                controls.push(control);
-            }
-        }
     }
     getComputedLonghandName(node) {
         if (!this.matchedResult.ast.propertyName) {
@@ -638,10 +624,10 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     #matchedResult;
     #output = [];
     #context;
-    constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal, edits, callbacks) {
+    constructor(ast, property, renderers, matchedResult, options, tracing, signal, edits, callbacks) {
         super(ast);
         this.#matchedResult = matchedResult;
-        this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal, edits, callbacks);
+        this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, options, tracing, signal, edits, callbacks);
     }
     // Renders `nodeOrNodes` and passes `callbacks` to the renderers of the matches in them. The callbacks of `context`
     // are not forwarded automatically; see `RenderingCallbacks`.
@@ -649,8 +635,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         if (!Array.isArray(nodeOrNodes)) {
             return this.render([nodeOrNodes], context, callbacks);
         }
-        const cssControls = new CSSControlMap();
-        const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal, context.edits, callbacks));
+        const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, context.options, context.tracing, context.signal, context.edits, callbacks));
         const nodes = renderers.reduce((nodes, renderer) => {
             if (renderer !== renderers[0]) {
                 const spacing = precedingSpace(renderer.ast.tree, context.ast, context.matchedResult);
@@ -661,7 +646,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
             nodes.push(...renderer.#output);
             return nodes;
         }, []);
-        return { nodes: html `${nodes}`, cssControls };
+        return html `${nodes}`;
     }
     renderedMatchForTest(_nodes, _match) {
     }
@@ -722,19 +707,19 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     // The renderers record the changes they make to the text of the value in `edits`, if given, see
     // `RenderingContext.recordEdit`.
     static renderValueElement(property, matchedResult, renderers, tracing, signal, edits) {
-        const { template, cssControls } = this.valueTemplate(property, matchedResult, renderers, tracing, signal, edits);
+        const template = this.valueTemplate(property, matchedResult, renderers, tracing, signal, edits);
         const fragment = document.createDocumentFragment();
         render(template, fragment);
         const valueElement = fragment.firstElementChild;
         // Detach from the render fragment so callers get a standalone element.
         valueElement.remove();
         valueElement.normalize();
-        return { valueElement, cssControls };
+        return valueElement;
     }
     static valueTemplate(property, matchedResult, renderers, tracing, signal, edits) {
-        const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
+        const nodes = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
         // clang-format off
-        const template = html `<span
+        return html `<span
       jslog=${VisualLogging.value().track({
             change: true,
             keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
@@ -744,18 +729,17 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
       tabindex="-1"
     >${nodes}</span>`;
         // clang-format on
-        return { template, cssControls };
     }
-    static renderValueNodes(property, matchedResult, renderers, tracing, signal, edits) {
+    static renderValueNodes(property, matchedResult, renderers, tracing, signal, edits, callbacks) {
         if (!matchedResult) {
-            return { nodes: html `${property.value}`, cssControls: new Map() };
+            return html `${property.value}`;
         }
         const rendererMap = new Map();
         for (const renderer of renderers) {
             rendererMap.set(renderer.matchType, renderer);
         }
-        const context = new RenderingContext(matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, undefined, {}, tracing, signal, edits);
-        return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
+        const context = new RenderingContext(matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, {}, tracing, signal, edits);
+        return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context, callbacks);
     }
 }
 const URLRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.URLMatch);
@@ -805,7 +789,7 @@ export class BinOpRenderer extends BinOpRendererBase {
     // clang-format on
     render(match, context) {
         const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node)
-            .map(child => html `<span>${Renderer.render(child, context).nodes}</span>`);
+            .map(child => html `<span>${Renderer.render(child, context)}</span>`);
         return html `${lhs} ${binop} ${rhs}`;
     }
 }

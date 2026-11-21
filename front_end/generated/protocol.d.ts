@@ -1437,10 +1437,13 @@ export declare namespace Audits {
         NonPhrasingContentOptionChild = "NonPhrasingContentOptionChild",
         InteractiveContentOptionChild = "InteractiveContentOptionChild",
         InteractiveContentLegendChild = "InteractiveContentLegendChild",
-        InteractiveContentSummaryDescendant = "InteractiveContentSummaryDescendant"
+        InteractiveContentSummaryDescendant = "InteractiveContentSummaryDescendant",
+        AnchorMenuDescendant = "AnchorMenuDescendant",
+        InteractiveContentMenuDescendant = "InteractiveContentMenuDescendant",
+        TextMenuDescendant = "TextMenuDescendant"
     }
     /**
-     * This issue warns about errors in the select or summary element content model.
+     * This issue warns about errors in the select, summary, or menu element content model.
      */
     interface ElementAccessibilityIssueDetails {
         nodeId: DOM.BackendNodeId;
@@ -11355,7 +11358,8 @@ export declare namespace Network {
         PreProvisionedKeyNotFound = "PreProvisionedKeyNotFound",
         AttestationCertificationError = "AttestationCertificationError",
         AttestationSigningError = "AttestationSigningError",
-        FederatedRegistrationRedirected = "FederatedRegistrationRedirected"
+        FederatedRegistrationRedirected = "FederatedRegistrationRedirected",
+        CrossSiteRefreshSessionConfig = "CrossSiteRefreshSessionConfig"
     }
     /**
      * Details about a failed device bound session network request.

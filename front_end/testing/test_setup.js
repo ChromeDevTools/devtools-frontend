@@ -18,6 +18,7 @@ import { createFakeSetting, resetHostConfig } from './EnvironmentHelpers.js';
 import { hasPendingTestTeardowns, runTestTeardowns, setRootTeardownRunnerRegistered } from './TestTeardown.js';
 import { TraceLoader } from './TraceLoader.js';
 import { checkForPendingActivity, flushPendingActivity, startTrackingAsyncActivity, stopTrackingAsyncActivity, } from './TrackAsyncOperations.js';
+import { checkForUnexpectedConsoleLogs, startTrackingConsoleLogs, stopTrackingConsoleLogs } from './TrackConsoleLogs.js';
 async function setupTestFont() {
     document.documentElement.classList.add('platform-screenshot-test');
     Host.Platform.setFontFamilyForTests('ahem');
@@ -45,6 +46,7 @@ beforeEach(async function () {
     // Clear out any Sinon stubs or spies between individual tests.
     sinon.restore();
     stopTrackingAsyncActivity();
+    stopTrackingConsoleLogs();
     if (hasPendingTestTeardowns()) {
         const title = this.currentTest?.fullTitle();
         console.error(`Leftover test teardowns before "${title}"; registerTestTeardown() must only be called while a test is running`);
@@ -71,6 +73,7 @@ beforeEach(async function () {
     const setting = createFakeSetting('ui-theme', 'default');
     ThemeSupport.ThemeSupport.instance({ forceNew: true, setting });
     startTrackingAsyncActivity();
+    startTrackingConsoleLogs();
 });
 afterEach(async function () {
     const title = this.currentTest?.fullTitle();
@@ -103,6 +106,10 @@ afterEach(async function () {
     // the order in the root beforeEach.
     await run(() => sinon.restore());
     await run(() => stopTrackingAsyncActivity());
+    if (this.currentTest?.state === 'passed') {
+        await run(() => checkForUnexpectedConsoleLogs(title));
+    }
+    await run(() => stopTrackingConsoleLogs());
     if (errors.length === 0) {
         return;
     }

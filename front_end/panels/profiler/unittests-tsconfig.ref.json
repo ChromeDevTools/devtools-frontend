@@ -46,6 +46,9 @@
       "path": "../../models/cpu_profile/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/heap_snapshot/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {

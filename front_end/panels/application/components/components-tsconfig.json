@@ -88,6 +88,9 @@
       "path": "../../../generated/generated-tsconfig.ref.json"
     },
     {
+      "path": "../../common/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../network/forward/bundle-tsconfig.ref.json"
     },
     {

@@ -521,6 +521,9 @@ export var Audits;
         ElementAccessibilityIssueReason["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
         ElementAccessibilityIssueReason["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
         ElementAccessibilityIssueReason["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+        ElementAccessibilityIssueReason["AnchorMenuDescendant"] = "AnchorMenuDescendant";
+        ElementAccessibilityIssueReason["InteractiveContentMenuDescendant"] = "InteractiveContentMenuDescendant";
+        ElementAccessibilityIssueReason["TextMenuDescendant"] = "TextMenuDescendant";
     })(ElementAccessibilityIssueReason = Audits.ElementAccessibilityIssueReason || (Audits.ElementAccessibilityIssueReason = {}));
     let StyleSheetLoadingIssueReason;
     (function (StyleSheetLoadingIssueReason) {
@@ -1865,6 +1868,7 @@ export var Network;
         DeviceBoundSessionFetchResult["AttestationCertificationError"] = "AttestationCertificationError";
         DeviceBoundSessionFetchResult["AttestationSigningError"] = "AttestationSigningError";
         DeviceBoundSessionFetchResult["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
+        DeviceBoundSessionFetchResult["CrossSiteRefreshSessionConfig"] = "CrossSiteRefreshSessionConfig";
     })(DeviceBoundSessionFetchResult = Network.DeviceBoundSessionFetchResult || (Network.DeviceBoundSessionFetchResult = {}));
     let RefreshEventDetailsRefreshResult;
     (function (RefreshEventDetailsRefreshResult) {

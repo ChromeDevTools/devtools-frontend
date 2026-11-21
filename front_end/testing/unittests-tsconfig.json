@@ -46,6 +46,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../front_end/testing/ConsoleHelpers.test.ts",
     "../../../../../front_end/testing/MockCDPConnection.test.ts",
     "../../../../../front_end/testing/MockScopeChain.test.ts",
     "../../../../../front_end/testing/MutationHelpers.test.ts",

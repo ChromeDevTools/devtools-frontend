@@ -107,17 +107,15 @@ export class CSSValueTraceView extends UI.Widget.VBox {
                 tracing.enableAutofocusOnFirstMatch();
             }
             const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, 
-            /* cssControls */ undefined, 
             /* options */ {}, tracing, signal);
-            substitutions.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+            substitutions.push(Renderer.render(matchedResult.ast.tree, context));
         }
         // 2nd: Apply evaluations for calc, min, max, etc.
         const asyncCallbackResults = [];
         while (tracing.nextEvaluation()) {
             const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, 
-            /* cssControls */ undefined, 
             /* options */ {}, tracing, signal);
-            evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+            evaluations.push(Renderer.render(matchedResult.ast.tree, context));
             asyncCallbackResults.push(tracing.runAsyncEvaluations());
         }
         this.#substitutions = substitutions;
@@ -137,14 +135,13 @@ export class CSSValueTraceView extends UI.Widget.VBox {
             }
             autofocusTracing.enableAutofocusOnFirstMatch();
             const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, 
-            /* cssControls */ undefined, 
             /* options */ {}, autofocusTracing, signal);
-            this.#evaluations[0] = Renderer.render(matchedResult.ast.tree, context).nodes;
+            this.#evaluations[0] = Renderer.render(matchedResult.ast.tree, context);
             await autofocusTracing.runAsyncEvaluations();
         }
         if (this.#substitutions.length === 0 && this.#evaluations.length === 0) {
-            const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, undefined, {}, undefined, signal);
-            this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+            const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, {}, undefined, signal);
+            this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context));
         }
         this.#pendingFocus = focus;
         this.requestUpdate();

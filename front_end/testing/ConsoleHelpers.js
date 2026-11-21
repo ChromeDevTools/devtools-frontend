@@ -7,6 +7,7 @@ import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Console from '../panels/console/console.js';
 import * as Components from '../ui/legacy/components/utils/utils.js';
+export { checkForUnexpectedConsoleLogs, createConsoleLogTracker, expectConsoleLogs, startTrackingConsoleLogs, stopTrackingConsoleLogs, } from './TrackConsoleLogs.js';
 export function createConsoleViewMessageWithStubDeps(rawMessage) {
     const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
     const requestResolver = sinon.createStubInstance(Logs.RequestResolver.RequestResolver);

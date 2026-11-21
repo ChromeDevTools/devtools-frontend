@@ -3845,6 +3845,9 @@
   "panels/application/components/AdsView.ts | settings": {
     "message": "Settings"
   },
+  "panels/application/components/AdsView.ts | showIframeDetails": {
+    "message": "Show iframe details"
+  },
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "Total CPU usage by ads"
   },
@@ -6889,6 +6892,30 @@
   },
   "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
     "message": "Linked to source map: {PH1}"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | cacheDisabled": {
+    "message": "Cache disabled"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | cpuThrottling": {
+    "message": "CPU ({PH1}×)"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | enableCache": {
+    "message": "Enable cache"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | enableJavaScript": {
+    "message": "Enable JavaScript"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | javaScriptDisabled": {
+    "message": "JavaScript disabled"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | morePills": {
+    "message": "More changed settings"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | resetAll": {
+    "message": "Reset all"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | stopCpuThrottling": {
+    "message": "Stop CPU throttling"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Open Console to view {PH1}"

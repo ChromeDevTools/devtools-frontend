@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { assert } from 'chai';
-import { after, before, describe } from 'mocha';
+import { describe } from 'mocha';
 import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
@@ -27,6 +27,7 @@ import { beforeEachWithTeardown } from './TestTeardown.js';
 let UI;
 export { createTarget, waitForTarget } from './TargetHelpers.js';
 export { beforeEachWithTeardown, registerTestTeardown } from './TestTeardown.js';
+export { expectConsoleLogs } from './TrackConsoleLogs.js';
 export function registerActions(actions) {
     for (const action of actions) {
         UI.ActionRegistration.maybeRemoveActionExtension(action.actionId);
@@ -151,46 +152,6 @@ export function setupActionRegistry() {
         if (UI) {
             UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
             UI.ActionRegistry.ActionRegistry.removeInstance();
-        }
-    });
-}
-/** This needs to be invoked within a describe block, rather than within an it() block. **/
-export function expectConsoleLogs(expectedLogs) {
-    const { error, warn, log } = console;
-    before(() => {
-        if (expectedLogs.log) {
-            // eslint-disable-next-line no-console
-            console.log = (...data) => {
-                if (!expectedLogs.log?.includes(data.join(' '))) {
-                    log(...data);
-                }
-            };
-        }
-        if (expectedLogs.warn) {
-            console.warn = (...data) => {
-                if (!expectedLogs.warn?.includes(data.join(' '))) {
-                    warn(...data);
-                }
-            };
-        }
-        if (expectedLogs.error) {
-            console.error = (...data) => {
-                if (!expectedLogs.error?.includes(data.join(' '))) {
-                    error(...data);
-                }
-            };
-        }
-    });
-    after(() => {
-        if (expectedLogs.log) {
-            // eslint-disable-next-line no-console
-            console.log = log;
-        }
-        if (expectedLogs.warn) {
-            console.warn = warn;
-        }
-        if (expectedLogs.error) {
-            console.error = error;
         }
     });
 }

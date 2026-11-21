@@ -543,6 +543,9 @@ var Audits;
     ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
     ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
     ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+    ElementAccessibilityIssueReason2["AnchorMenuDescendant"] = "AnchorMenuDescendant";
+    ElementAccessibilityIssueReason2["InteractiveContentMenuDescendant"] = "InteractiveContentMenuDescendant";
+    ElementAccessibilityIssueReason2["TextMenuDescendant"] = "TextMenuDescendant";
   })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
   let StyleSheetLoadingIssueReason;
   ((StyleSheetLoadingIssueReason2) => {
@@ -1650,6 +1653,7 @@ var Network;
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
     DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
+    DeviceBoundSessionFetchResult2["CrossSiteRefreshSessionConfig"] = "CrossSiteRefreshSessionConfig";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -8932,7 +8936,8 @@ var generatedProperties = [
     ],
     "keywords": [
       "none",
-      "auto"
+      "auto",
+      "match-element"
     ],
     "name": "view-transition-name"
   },
@@ -27854,7 +27859,7 @@ var EmulationModel = class extends SDKModel {
     this.#settingListeners.push(
       visionDeficiencySetting.addChangeListener(() => this.#emulateVisionDeficiency(visionDeficiencySetting.get()))
     );
-    if (visionDeficiencySetting.get()) {
+    if (visionDeficiencySetting.get() && visionDeficiencySetting.get() !== Emulation.SetEmulatedVisionDeficiencyRequestType.None) {
       void this.#emulateVisionDeficiency(visionDeficiencySetting.get());
     }
     const osTextScaleSetting = settings.resolve(emulatedOSTextScaleSettingDescriptor);

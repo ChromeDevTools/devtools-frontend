@@ -1308,19 +1308,19 @@ var { widget: widget2, widgetRef } = UI5.Widget;
 var DEFAULT_VIEW4 = (input, output, target) => {
   render5(html5`
     <devtools-toolbar ?hidden=${input.toolbarItems.length === 0}>
-      ${repeat(input.toolbarItems, (item2) => item2.id, (item2) => html5`
+      ${repeat(input.toolbarItems, (item3) => item3.id, (item3) => html5`
         <devtools-button
           class="toolbar-button toolbar-item"
-          style=${styleMap({ backgroundImage: item2.iconURL ? `url(${item2.iconURL})` : void 0 })}
-          title=${item2.tooltip}
-          ?disabled=${item2.disabled}
+          style=${styleMap({ backgroundImage: item3.iconURL ? `url(${item3.iconURL})` : void 0 })}
+          title=${item3.tooltip}
+          ?disabled=${item3.disabled}
           .data=${{
     variant: Buttons3.Button.Variant.TEXT,
     reducedFocusRing: true,
-    title: item2.tooltip,
-    disabled: item2.disabled
+    title: item3.tooltip,
+    disabled: item3.disabled
   }}
-          @click=${item2.onClick}
+          @click=${item3.onClick}
         ></devtools-button>
       `)}
     </devtools-toolbar>
@@ -1364,7 +1364,7 @@ var ExtensionPanel = class extends UI5.Panel.Panel {
         id: this.#id,
         pageURL: this.#pageURL,
         searchProvider: this,
-        toolbarItems: this.#toolbarItems.map((item2) => item2.data())
+        toolbarItems: this.#toolbarItems.map((item3) => item3.data())
       },
       output,
       this.element
@@ -1373,9 +1373,9 @@ var ExtensionPanel = class extends UI5.Panel.Panel {
       this.#searchableView = output.searchableView;
     }
   }
-  addToolbarItem(item2) {
-    item2.setOnUpdate(() => this.requestUpdate());
-    this.#toolbarItems.push(item2);
+  addToolbarItem(item3) {
+    item3.setOnUpdate(() => this.requestUpdate());
+    this.#toolbarItems.push(item3);
     this.requestUpdate();
   }
   onSearchCanceled() {
@@ -1540,18 +1540,18 @@ var ExtensionSidebarPane = class extends UI5.View.SimpleView {
       return;
     }
     objectPropertiesView.detachChildWidgets();
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-    section.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+    const section2 = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section2.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
       readOnly: true,
       propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
     });
-    section.objectTree.expanded = true;
+    section2.objectTree.expanded = true;
     if (title) {
       const span = document.createElement("span");
       span.textContent = title;
-      section.title = span;
+      section2.title = span;
     }
-    section.show(objectPropertiesView.element);
+    section2.show(objectPropertiesView.element);
     callback();
   }
 };
@@ -4763,36 +4763,36 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
     getPopupItems(input),
     // Keyed by thread so that the popup DOM (and focus) is kept when a
     // hover preview becomes the open thread.
-    (item2) => item2.thread.id,
-    (item2) => {
+    (item3) => item3.thread.id,
+    (item3) => {
       const popupLeft = Math.min(
-        Math.max(POPUP_MARGIN, item2.position.left),
+        Math.max(POPUP_MARGIN, item3.position.left),
         Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN)
       );
-      const topOffset = item2.anchoredToPin ? item2.position.top + PIN_HEIGHT : item2.position.top - POPUP_MARGIN;
-      const maxTop = target.clientHeight - (item2.anchoredToPin ? POPUP_HEIGHT : POPUP_MARGIN);
+      const topOffset = item3.anchoredToPin ? item3.position.top + PIN_HEIGHT : item3.position.top - POPUP_MARGIN;
+      const maxTop = target.clientHeight - (item3.anchoredToPin ? POPUP_HEIGHT : POPUP_MARGIN);
       const popupTop = Math.min(Math.max(POPUP_MARGIN, topOffset), Math.max(POPUP_MARGIN, maxTop));
       return html10`
             <div
               class="comment-popup-widget"
               style=${styleMap2({
-        transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)${item2.anchoredToPin ? "" : " translateY(-100%)"}`
+        transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)${item3.anchoredToPin ? "" : " translateY(-100%)"}`
       })}
-              @mouseenter=${item2.isHoverPreview ? input.onPopupMouseEnter : nothing5}
-              @mouseleave=${item2.isHoverPreview ? input.onPopupMouseLeave : nothing5}
-              @mousedown=${item2.isHoverPreview ? input.onPopupInteract : nothing5}
-              @focusin=${item2.isHoverPreview ? input.onPopupInteract : nothing5}>
+              @mouseenter=${item3.isHoverPreview ? input.onPopupMouseEnter : nothing5}
+              @mouseleave=${item3.isHoverPreview ? input.onPopupMouseLeave : nothing5}
+              @mousedown=${item3.isHoverPreview ? input.onPopupInteract : nothing5}
+              @focusin=${item3.isHoverPreview ? input.onPopupInteract : nothing5}>
               ${UI9.Widget.widget(CommentThreadWidget, {
-        title: item2.title,
-        comments: [...item2.thread.comments],
-        status: item2.thread.status,
-        transmitted: item2.thread.transmitted,
-        onAddComment: item2.actions.onAddComment,
-        onDeleteQueuedComment: item2.actions.onDeleteQueuedComment,
-        onQueueComment: item2.actions.onQueueComment,
-        onSaveEdit: item2.actions.onSaveEdit,
-        onStartEdit: item2.actions.onStartEdit,
-        elementRemoved: item2.thread.isOrphaned
+        title: item3.title,
+        comments: [...item3.thread.comments],
+        status: item3.thread.status,
+        transmitted: item3.thread.transmitted,
+        onAddComment: item3.actions.onAddComment,
+        onDeleteQueuedComment: item3.actions.onDeleteQueuedComment,
+        onQueueComment: item3.actions.onQueueComment,
+        onSaveEdit: item3.actions.onSaveEdit,
+        onStartEdit: item3.actions.onStartEdit,
+        elementRemoved: item3.thread.isOrphaned
       })}
             </div>
           `;
@@ -5523,6 +5523,310 @@ var CommentsStatusBarPill = class extends UI10.Widget.Widget {
     void UI10.ViewManager.ViewManager.instance().showView("comments");
   };
 };
+
+// ../../front_end/panels/common/StateChangesStatusBarPills.ts
+var StateChangesStatusBarPills_exports = {};
+__export(StateChangesStatusBarPills_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  StateChangesStatusBarPills: () => StateChangesStatusBarPills
+});
+import * as i18n21 from "../../core/i18n/i18n.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as DevToolsState from "../../models/devtools_state/devtools_state.js";
+import * as Buttons5 from "../../ui/components/buttons/buttons.js";
+import * as UI11 from "../../ui/legacy/legacy.js";
+import { Directives as Directives6, html as html12, nothing as nothing7, render as render11 } from "../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/common/stateChangesStatusBarPills.css.js
+var stateChangesStatusBarPills_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    position: relative;
+    display: flex;
+    /* Overrides \\'flex: none\\' of the status bar items, so that the pills take the free width. */
+    flex: auto;
+    gap: var(--sys-size-5);
+    min-width: 0;
+  }
+
+  /* In a narrow status bar, the pills that do not fit are cut off, and "Reset all" stays visible.
+   * \\'hidden\\' and not \\'clip\\', so that a cut-off reset button scrolls into view when it gets the focus. */
+  .pills {
+    display: flex;
+    gap: var(--sys-size-5);
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .pill {
+    flex: none;
+    gap: var(--sys-size-2);
+    padding-block: 0;
+    padding-inline-end: var(--sys-size-2);
+  }
+
+  .more-pills,
+  .reset-all {
+    flex: none;
+    align-self: center;
+    /* The button is higher than the pills. The negative margin stops it from making the status bar higher. */
+    margin-block: calc(-1 * var(--sys-size-3));
+  }
+
+  .collapsed {
+    position: absolute;
+    inset-inline-start: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .reset-all {
+    margin-inline-start: auto;
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./stateChangesStatusBarPills.css")} */`;
+
+// ../../front_end/panels/common/StateChangesStatusBarPills.ts
+var UIStrings9 = {
+  /**
+   * @description Text of a pill in the status bar at the bottom of DevTools. The pill tells the user
+   * that the CPU of the inspected page is throttled. The placeholder is the slowdown factor of the CPU.
+   * @example {4} PH1
+   */
+  cpuThrottling: "CPU ({PH1}\xD7)",
+  /**
+   * @description Tooltip and accessible name of the button in the CPU throttling pill in the status bar at
+   * the bottom of DevTools. Clicking the button turns off CPU throttling on the inspected page.
+   */
+  stopCpuThrottling: "Stop CPU throttling",
+  /**
+   * @description Text of a pill in the status bar at the bottom of DevTools. The pill tells the user
+   * that the browser cache is disabled while DevTools is open.
+   */
+  cacheDisabled: "Cache disabled",
+  /**
+   * @description Tooltip and accessible name of the button in the disabled-cache pill in the status bar at
+   * the bottom of DevTools. Clicking the button turns the browser cache back on.
+   */
+  enableCache: "Enable cache",
+  /**
+   * @description Text of a pill in the status bar at the bottom of DevTools. The pill tells the user
+   * that JavaScript is disabled on the inspected page.
+   */
+  javaScriptDisabled: "JavaScript disabled",
+  /**
+   * @description Tooltip and accessible name of the button in the disabled-JavaScript pill in the status
+   * bar at the bottom of DevTools. Clicking the button turns JavaScript back on for the inspected page.
+   */
+  enableJavaScript: "Enable JavaScript",
+  /**
+   * @description Tooltip and accessible name of the button in the status bar at the bottom of DevTools.
+   * The button opens a menu with the changed settings pills that do not fit.
+   */
+  morePills: "More changed settings",
+  /**
+   * @description Text and tooltip of a button in the status bar at the bottom of DevTools. The button
+   * changes all settings that have a pill in the status bar back to their default values.
+   */
+  resetAll: "Reset all"
+};
+var str_9 = i18n21.i18n.registerUIStrings("panels/common/StateChangesStatusBarPills.ts", UIStrings9);
+var i18nString9 = i18n21.i18n.getLocalizedString.bind(void 0, str_9);
+var { classMap: classMap4, ref: ref3, repeat: repeat4 } = Directives6;
+var cpuThrottlingRateFormatter = i18n21.NumberFormatter.defineFormatter({ maximumFractionDigits: 1 });
+function showOverflowMenu(event, overflowPills) {
+  const target = event.currentTarget;
+  const rect = target.getBoundingClientRect();
+  const menu = new UI11.ContextMenu.ContextMenu(event, { x: rect.left, y: rect.bottom });
+  for (const pill of overflowPills) {
+    menu.defaultSection().appendItem(pill.resetTitle, pill.onReset, {
+      jslogContext: "reset"
+    });
+  }
+  void menu.show();
+}
+var DEFAULT_VIEW10 = (input, output, target) => {
+  const overflowPills = input.pills.slice(input.visiblePillCount);
+  const focusableElements = [];
+  const handlePillReset = (pill, index) => {
+    const currElement = focusableElements[index];
+    const nextElement = focusableElements[index + 1];
+    if (currElement?.hasFocus() && nextElement instanceof HTMLElement) {
+      nextElement.focus();
+    }
+    pill.onReset();
+  };
+  output.containerWidth = () => target.clientWidth;
+  output.containerColumnGap = () => parseFloat(getComputedStyle(target).columnGap) || 0;
+  output.pillWidths = [];
+  render11(html12`
+    <style>${stateChangesStatusBarPills_css_default}</style>
+    ${input.pills.length === 0 ? nothing7 : html12`
+      <div class="pills" ${ref3((element) => {
+    output.pillsColumnGap = element ? () => parseFloat(getComputedStyle(element).columnGap) || 0 : void 0;
+  })}>${repeat4(input.pills, (pill) => pill.id, (pill, index) => html12`
+        <span
+          ${ref3((element) => {
+    if (element instanceof HTMLElement && output.pillWidths) {
+      output.pillWidths[index] = () => element.offsetWidth;
+    }
+  })}
+          class=${classMap4({ "devtools-pill": true, pill: true, collapsed: index >= input.visiblePillCount })}
+          jslog=${VisualLogging5.item(pill.id)}>
+          ${pill.title}
+          <devtools-button
+            .iconName=${"cross"}
+            .variant=${Buttons5.Button.Variant.ICON}
+            .size=${Buttons5.Button.Size.MICRO}
+            .title=${pill.resetTitle}
+            .accessibleLabel=${pill.resetTitle}
+            .jslogContext=${"reset"}
+            ${ref3((element) => {
+    if (index < input.visiblePillCount) {
+      focusableElements[index] = element;
+    }
+  })}
+            @click=${() => handlePillReset(pill, index)}></devtools-button>
+        </span>`)}</div>
+      <devtools-button
+        ${ref3((element) => {
+    output.moreButtonWidth = element instanceof HTMLElement ? () => element.offsetWidth : void 0;
+    if (overflowPills.length > 0) {
+      focusableElements[input.visiblePillCount] = element;
+    }
+  })}
+        class=${classMap4({ "more-pills": true, collapsed: overflowPills.length === 0 })}
+        .iconName=${"chevron-double-right"}
+        .variant=${Buttons5.Button.Variant.ICON}
+        .size=${Buttons5.Button.Size.SMALL}
+        .title=${i18nString9(UIStrings9.morePills)}
+        .accessibleLabel=${i18nString9(UIStrings9.morePills)}
+        .jslogContext=${"more"}
+        @click=${(event) => showOverflowMenu(event, overflowPills)}></devtools-button>
+      <devtools-button
+        ${ref3((element) => {
+    output.resetAllButtonWidth = element instanceof HTMLElement ? () => element.offsetWidth : void 0;
+    focusableElements[input.visiblePillCount] = element;
+  })}
+        class="reset-all"
+        .variant=${Buttons5.Button.Variant.TEXT}
+        .title=${i18nString9(UIStrings9.resetAll)}
+        .jslogContext=${"state-reset-all"}
+        @click=${input.onResetAll}>${i18nString9(UIStrings9.resetAll)}</devtools-button>
+    `}
+  `, target, { container: { attributes: { jslog: `${VisualLogging5.section("state-changes")}` } } });
+};
+function pillTitle(state) {
+  switch (state.kind) {
+    case DevToolsState.State.StateKind.CPU_THROTTLING:
+      return i18nString9(UIStrings9.cpuThrottling, { PH1: cpuThrottlingRateFormatter.format(Number(state.value)) });
+    case DevToolsState.State.StateKind.CACHE_DISABLED:
+      return i18nString9(UIStrings9.cacheDisabled);
+    case DevToolsState.State.StateKind.JAVASCRIPT_DISABLED:
+      return i18nString9(UIStrings9.javaScriptDisabled);
+    default:
+      Platform5.assertNever(state.kind, "Unknown state");
+  }
+}
+function pillResetTitle(state) {
+  switch (state.kind) {
+    case DevToolsState.State.StateKind.CPU_THROTTLING:
+      return i18nString9(UIStrings9.stopCpuThrottling);
+    case DevToolsState.State.StateKind.CACHE_DISABLED:
+      return i18nString9(UIStrings9.enableCache);
+    case DevToolsState.State.StateKind.JAVASCRIPT_DISABLED:
+      return i18nString9(UIStrings9.enableJavaScript);
+    default:
+      Platform5.assertNever(state.kind, "Unknown state");
+  }
+}
+function toPill(state, onReset) {
+  return { id: state.kind, title: pillTitle(state), resetTitle: pillResetTitle(state), onReset };
+}
+function countFittingPills(pillWidths, maxWidth, gap) {
+  let usedWidth = 0;
+  for (let i = 0; i < pillWidths.length; i++) {
+    usedWidth += pillWidths[i]() + (i > 0 ? gap : 0);
+    if (usedWidth > maxWidth) {
+      return i;
+    }
+  }
+  return pillWidths.length;
+}
+var StateChangesStatusBarPills = class extends UI11.Widget.Widget {
+  static INJECT = [DevToolsState.StateManager.StateManager];
+  #view;
+  #viewOutput = {};
+  #stateManager;
+  #resizeObserver = new ResizeObserver(() => {
+    if (this.#updateVisiblePillCount()) {
+      this.requestUpdate();
+    }
+  });
+  #visiblePillCount = Infinity;
+  constructor(element, [stateManager], view = DEFAULT_VIEW10) {
+    super(element);
+    this.#view = view;
+    this.#stateManager = stateManager;
+  }
+  wasShown() {
+    super.wasShown();
+    this.#stateManager.addEventListener(DevToolsState.State.Events.STATE_CHANGED, this.requestUpdate, this);
+    this.#resizeObserver.observe(this.contentElement);
+    this.requestUpdate();
+  }
+  willHide() {
+    this.#resizeObserver.disconnect();
+    this.#stateManager.removeEventListener(DevToolsState.State.Events.STATE_CHANGED, this.requestUpdate, this);
+    super.willHide();
+  }
+  performUpdate() {
+    const pills = this.#stateManager.nonDefaultStates().map((state) => toPill(state, () => this.#stateManager.reset(state.kind)));
+    const onResetAll = () => {
+      for (const pill of pills) {
+        pill.onReset();
+      }
+    };
+    const renderView = () => {
+      const visiblePillCount = Math.min(this.#visiblePillCount, pills.length);
+      this.#view({ pills, visiblePillCount, onResetAll }, this.#viewOutput, this.contentElement);
+    };
+    renderView();
+    if (this.#updateVisiblePillCount()) {
+      renderView();
+    }
+  }
+  #updateVisiblePillCount() {
+    const pillWidths = this.#viewOutput.pillWidths;
+    if (!pillWidths?.length) {
+      this.#visiblePillCount = Infinity;
+      return false;
+    }
+    const containerWidth = this.#viewOutput.containerWidth?.();
+    const moreButtonWidth = this.#viewOutput.moreButtonWidth?.();
+    const resetAllButtonWidth = this.#viewOutput.resetAllButtonWidth?.();
+    if (!containerWidth || !moreButtonWidth || !resetAllButtonWidth) {
+      return false;
+    }
+    const containerColumnGap = this.#viewOutput.containerColumnGap?.() ?? 0;
+    const pillsColumnGap = this.#viewOutput.pillsColumnGap?.() ?? 0;
+    const maxWidth = containerWidth - resetAllButtonWidth - containerColumnGap;
+    let nextCount = countFittingPills(pillWidths, maxWidth, pillsColumnGap);
+    if (nextCount < pillWidths.length) {
+      nextCount = countFittingPills(pillWidths, maxWidth - moreButtonWidth - containerColumnGap, pillsColumnGap);
+    }
+    const displayedCount = Math.min(this.#visiblePillCount, pillWidths.length);
+    this.#visiblePillCount = nextCount < pillWidths.length ? nextCount : Infinity;
+    return nextCount !== displayedCount;
+  }
+};
 export {
   AiCodeCompletionSummaryToolbar_exports as AiCodeCompletionSummaryToolbar,
   BadgeNotification,
@@ -5536,6 +5840,7 @@ export {
   ExtensionServer_exports as ExtensionServer,
   ExtensionView_exports as ExtensionView,
   GdpSignUpDialog,
-  PersistenceUtils_exports as PersistenceUtils
+  PersistenceUtils_exports as PersistenceUtils,
+  StateChangesStatusBarPills_exports as StateChangesStatusBarPills
 };
 //# sourceMappingURL=common.js.map

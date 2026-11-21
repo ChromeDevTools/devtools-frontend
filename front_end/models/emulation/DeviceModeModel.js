@@ -315,7 +315,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     emulate(type, device, mode, scale) {
         const resetPageScaleFactor = this.#type !== type || this.#device !== device || this.#mode !== mode;
-        const deviceChanged = this.#type !== type || this.#device !== device;
         this.#type = type;
         // Save the resulting scale settings once rather than every intermediate change.
         this.#isApplyingDeviceScale = true;
@@ -324,19 +323,17 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
                 console.assert(Boolean(device) && Boolean(mode), 'Must pass device and mode for device emulation');
                 this.#mode = mode;
                 this.#device = device;
-                if (deviceChanged) {
-                    const map = this.#deviceScaleMapSetting.get();
-                    const savedDevice = map[device.title];
-                    if (savedDevice) {
-                        this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
-                        // An explicitly requested scale takes precedence over the saved one.
-                        if (scale === undefined && !savedDevice.autoAdjust && savedDevice.scale > 0) {
-                            scale = savedDevice.scale;
-                        }
+                const map = this.#deviceScaleMapSetting.get();
+                const savedDevice = map[device.title];
+                if (savedDevice) {
+                    this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
+                    // An explicitly requested scale takes precedence over the saved one.
+                    if (scale === undefined && !savedDevice.autoAdjust && savedDevice.scale > 0) {
+                        scale = savedDevice.scale;
                     }
-                    else {
-                        this.#autoAdjustScaleSetting.set(scale === undefined);
-                    }
+                }
+                else {
+                    this.#autoAdjustScaleSetting.set(scale === undefined);
                 }
                 if (scale !== undefined) {
                     this.#autoFitScaleOnInitialize = false;
@@ -354,7 +351,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
                 this.#device = null;
                 this.#mode = null;
                 this.#autoFitScaleOnInitialize = false;
-                if (deviceChanged && type === Type.Responsive) {
+                if (type === Type.Responsive) {
                     const map = this.#deviceScaleMapSetting.get();
                     const savedDevice = map['Responsive'];
                     if (savedDevice) {

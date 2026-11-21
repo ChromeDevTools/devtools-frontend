@@ -8696,6 +8696,10 @@ var NativeFunctions = [
     signatures: [["initDict"]]
   },
   {
+    name: "showUnboundedElement",
+    signatures: [["?options"]]
+  },
+  {
     name: "InstallResultEvent",
     signatures: [["type", "?eventInitDict"]]
   },

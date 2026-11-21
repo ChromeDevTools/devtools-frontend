@@ -6026,7 +6026,8 @@ export const generatedProperties = [
         ],
         "keywords": [
             "none",
-            "auto"
+            "auto",
+            "match-element"
         ],
         "name": "view-transition-name"
     },

@@ -3,6 +3,7 @@ import * as Root from '../core/root/root.js';
 import type * as UIModule from '../ui/legacy/legacy.js';
 export { createTarget, waitForTarget } from './TargetHelpers.js';
 export { beforeEachWithTeardown, registerTestTeardown } from './TestTeardown.js';
+export { expectConsoleLogs } from './TrackConsoleLogs.js';
 export declare function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void;
 export declare function registerNoopActions(actionIds: string[]): void;
 export declare function initializeGlobalVars({ reset }?: {
@@ -20,12 +21,6 @@ export declare namespace describeWithEnvironment {
 export declare function createFakeSetting<T>(name: string, defaultValue: T): Common.Settings.Setting<T>;
 export declare function createFakeRegExpSetting(name: string, defaultValue: string): Common.Settings.RegExpSetting;
 export declare function setupActionRegistry(): void;
-/** This needs to be invoked within a describe block, rather than within an it() block. **/
-export declare function expectConsoleLogs(expectedLogs: {
-    warn?: string[];
-    log?: string[];
-    error?: string[];
-}): void;
 export declare function setUserAgentForTesting(): void;
 export declare function restoreUserAgentForTesting(): void;
 export declare function resetHostConfig(): void;

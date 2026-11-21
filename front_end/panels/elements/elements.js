@@ -491,6 +491,9 @@ var Audits;
     ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
     ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
     ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+    ElementAccessibilityIssueReason2["AnchorMenuDescendant"] = "AnchorMenuDescendant";
+    ElementAccessibilityIssueReason2["InteractiveContentMenuDescendant"] = "InteractiveContentMenuDescendant";
+    ElementAccessibilityIssueReason2["TextMenuDescendant"] = "TextMenuDescendant";
   })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
   let StyleSheetLoadingIssueReason;
   ((StyleSheetLoadingIssueReason2) => {
@@ -1598,6 +1601,7 @@ var Network;
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
     DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
+    DeviceBoundSessionFetchResult2["CrossSiteRefreshSessionConfig"] = "CrossSiteRefreshSessionConfig";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -3223,7 +3227,6 @@ import * as UI12 from "../../ui/legacy/legacy.js";
 var PropertyRenderer_exports = {};
 __export(PropertyRenderer_exports, {
   BinOpRenderer: () => BinOpRenderer,
-  CSSControlMap: () => CSSControlMap,
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
   EditableContent: () => EditableContent,
   Highlighting: () => Highlighting,
@@ -3602,7 +3605,6 @@ __export(StylePropertyTreeElement_exports, {
   GridTemplateRenderer: () => GridTemplateRenderer,
   LengthRenderer: () => LengthRenderer,
   LightDarkColorRenderer: () => LightDarkColorRenderer,
-  LinearGradientRenderer: () => LinearGradientRenderer,
   LinkableNameRenderer: () => LinkableNameRenderer,
   MathFunctionRenderer: () => MathFunctionRenderer,
   PositionAnchorRenderer: () => PositionAnchorRenderer,
@@ -4929,14 +4931,12 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
         property,
         rendererMap,
         matchedResult,
-        /* cssControls */
-        void 0,
         /* options */
         {},
         tracing,
         signal
       );
-      substitutions.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+      substitutions.push(Renderer.render(matchedResult.ast.tree, context));
     }
     const asyncCallbackResults = [];
     while (tracing.nextEvaluation()) {
@@ -4945,14 +4945,12 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
         property,
         rendererMap,
         matchedResult,
-        /* cssControls */
-        void 0,
         /* options */
         {},
         tracing,
         signal
       );
-      evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+      evaluations.push(Renderer.render(matchedResult.ast.tree, context));
       asyncCallbackResults.push(tracing.runAsyncEvaluations());
     }
     this.#substitutions = substitutions;
@@ -4975,14 +4973,12 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
         property,
         rendererMap,
         matchedResult,
-        /* cssControls */
-        void 0,
         /* options */
         {},
         autofocusTracing,
         signal
       );
-      this.#evaluations[0] = Renderer.render(matchedResult.ast.tree, context).nodes;
+      this.#evaluations[0] = Renderer.render(matchedResult.ast.tree, context);
       await autofocusTracing.runAsyncEvaluations();
     }
     if (this.#substitutions.length === 0 && this.#evaluations.length === 0) {
@@ -4991,12 +4987,11 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
         property,
         rendererMap,
         matchedResult,
-        void 0,
         {},
         void 0,
         signal
       );
-      this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+      this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context));
     }
     this.#pendingFocus = focus;
     this.requestUpdate();
@@ -5190,7 +5185,7 @@ var EnvFunctionRenderer = class extends EnvFunctionRendererBase {
         if (match.varNameIsValid) {
           return html7`${match.value}`;
         }
-        return Renderer.render(fallbackNodes, substitution.renderingContext(context)).nodes;
+        return Renderer.render(fallbackNodes, substitution.renderingContext(context), context.callbacks);
       }
     }
     const func = this.propertyData ? getTracingTooltip(
@@ -5207,7 +5202,7 @@ var EnvFunctionRenderer = class extends EnvFunctionRendererBase {
     ) : "env";
     const valueClass = classMap2({ "inactive-value": !match.varNameIsValid });
     const fallbackClass = classMap2({ "inactive-value": match.varNameIsValid });
-    return html7`<span>${func}(<span class=${valueClass}>${match.varName}</span>${fallbackNodes ? html7`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>` : nothing2})</span>`;
+    return html7`<span>${func}(<span class=${valueClass}>${match.varName}</span>${fallbackNodes ? html7`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context)}</span>` : nothing2})</span>`;
   }
 };
 var FlexGridRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.FlexGridGridLanesMatch);
@@ -5221,7 +5216,7 @@ var FlexGridRenderer = class extends FlexGridRendererBase {
     this.#stylesContainer = stylesContainer;
   }
   render(match, context) {
-    const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
+    const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context);
     if (!this.#propertyData?.editable()) {
       return children;
     }
@@ -5331,7 +5326,7 @@ var VariableRenderer = class extends VariableRendererBase {
   }
   render(match, context) {
     if (this.#propertyData?.property.ownerStyle.parentRule instanceof SDK4.CSSRule.CSSFunctionRule) {
-      return Renderer.render(ASTUtils.children(match.node), context).nodes;
+      return Renderer.render(ASTUtils.children(match.node), context);
     }
     const { declaration, value: variableValue } = match.resolveVariable() ?? {};
     const fromFallback = variableValue === void 0;
@@ -5340,7 +5335,7 @@ var VariableRenderer = class extends VariableRendererBase {
     const substitution = context.tracing?.substitution({ match, context });
     if (substitution) {
       if (declaration?.declaration) {
-        const { nodes, cssControls } = Renderer.renderValueNodes(
+        const nodes = Renderer.renderValueNodes(
           { name: declaration.name, value: declaration.value ?? "" },
           substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles),
           getPropertyRenderers(
@@ -5352,16 +5347,24 @@ var VariableRenderer = class extends VariableRendererBase {
             this.#computedStyles,
             this.#computedStyleExtraFields
           ),
-          substitution
+          substitution,
+          void 0,
+          void 0,
+          context.callbacks
         );
-        cssControls.forEach((value5, key2) => value5.forEach((control) => context.addControl(key2, control)));
         return nodes;
       }
       if (!declaration && match.fallback) {
-        return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
+        return Renderer.render(match.fallback, substitution.renderingContext(context), context.callbacks);
       }
     }
-    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : void 0;
+    let colorSwatch = null;
+    const onColor = fromFallback ? (newColor) => {
+      if (colorSwatch && newColor && typeof newColor !== "string") {
+        colorSwatch.setColor(newColor);
+      }
+    } : void 0;
+    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context, { onColor }) : void 0;
     const varCall = this.#propertyData ? getTracingTooltip(
       "var",
       match.node,
@@ -5383,7 +5386,7 @@ var VariableRenderer = class extends VariableRendererBase {
       text: match.name,
       isDefined: computedValue !== null && !fromFallback,
       onLinkActivate
-    }}></devtools-link-swatch>${renderedFallback ? html7`, ${renderedFallback.nodes}` : nothing2})</span>${tooltipId ? html7`<devtools-tooltip
+    }}></devtools-link-swatch>${renderedFallback ? html7`, ${renderedFallback}` : nothing2})</span>${tooltipId ? html7`<devtools-tooltip
             id=${tooltipId}
             variant=rich
             jslogContext=elements.css-var>${widget2(ElementsComponents2.CSSVariableValueView.CSSVariableValueView, {
@@ -5395,15 +5398,7 @@ var VariableRenderer = class extends VariableRendererBase {
     if (!color) {
       return varSwatch;
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
-    context.addControl("color", colorSwatch);
-    if (fromFallback) {
-      renderedFallback?.cssControls.get("color")?.forEach(
-        (innerSwatch) => innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
-          colorSwatch.setColor(ev.data.color);
-        })
-      );
-    }
+    colorSwatch = new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
     return this.#propertyData?.editable() ? html7`<devtools-widget ${widget2(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` : html7`${colorSwatch}${varSwatch}`;
   }
 };
@@ -5461,7 +5456,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
   }
   render(match, context) {
     if (this.#propertyData?.property.ownerStyle.parentRule instanceof SDK4.CSSRule.CSSFunctionRule) {
-      return Renderer.render(ASTUtils.children(match.node), context).nodes;
+      return Renderer.render(ASTUtils.children(match.node), context);
     }
     const rawValue = match.rawAttributeValue();
     const attributeValue = match.resolveAttributeValue();
@@ -5476,7 +5471,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
     if (substitution) {
       if (fromFallback) {
         if (match.fallback) {
-          return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
+          return Renderer.render(match.fallback, substitution.renderingContext(context), context.callbacks);
         }
       } else if (match.substitutionText !== null) {
         const matching = SDK4.CSSPropertyParser.matchDeclaration(
@@ -5496,11 +5491,20 @@ var AttributeRenderer = class extends AttributeRendererBase {
             this.#computedStyles,
             this.#computedStyleExtraFields
           ),
-          substitution
-        ).nodes;
+          substitution,
+          void 0,
+          void 0,
+          context.callbacks
+        );
       }
     }
-    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : void 0;
+    let colorSwatch = null;
+    const onColor = fromFallback ? (newColor) => {
+      if (colorSwatch && newColor && typeof newColor !== "string") {
+        colorSwatch.setColor(newColor);
+      }
+    } : void 0;
+    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context, { onColor }) : void 0;
     const attrCall = this.#propertyData ? getTracingTooltip(
       "attr",
       match.node,
@@ -5527,20 +5531,12 @@ var AttributeRenderer = class extends AttributeRendererBase {
           id=${tooltipId}
           variant=rich
           jslogContext=elements.css-var
-        >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing2}${match.type ? html7` <span class=${typeClass}>${match.type}</span>` : nothing2}${renderedFallback ? html7`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing2})</span>`;
+        >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing2}${match.type ? html7` <span class=${typeClass}>${match.type}</span>` : nothing2}${renderedFallback ? html7`, <span class=${fallbackClass}>${renderedFallback}</span>` : nothing2})</span>`;
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
       return varSwatch;
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
-    context.addControl("color", colorSwatch);
-    if (fromFallback) {
-      renderedFallback?.cssControls.get("color")?.forEach(
-        (innerSwatch) => innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
-          colorSwatch.setColor(ev.data.color);
-        })
-      );
-    }
+    colorSwatch = new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
     return this.#propertyData?.editable() ? html7`<devtools-widget ${widget2(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` : html7`${colorSwatch}${varSwatch}`;
   }
   #handleAttributeActivate(node, attribute) {
@@ -5550,30 +5546,6 @@ var AttributeRenderer = class extends AttributeRendererBase {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AttributeLinkClicked);
     Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ATTR_LINK);
     ElementsPanel.instance().highlightNodeAttribute(node, attribute);
-  }
-};
-var LinearGradientRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.LinearGradientMatch);
-var LinearGradientRenderer = class extends LinearGradientRendererBase {
-  // clang-format on
-  render(match, context) {
-    const children = ASTUtils.children(match.node);
-    const { nodes, cssControls } = Renderer.render(children, context);
-    const angles = cssControls.get("angle");
-    const angle = angles?.length === 1 ? angles[0] : null;
-    if (angle instanceof InlineEditor.CSSAngle.CSSAngle) {
-      angle.updateProperty(context.matchedResult.getComputedText(match.node));
-      const args = ASTUtils.callArgs(match.node);
-      const angleNode = args[0]?.find((node) => context.matchedResult.getMatch(node) instanceof SDK4.CSSPropertyParserMatchers.AngleMatch);
-      const angleMatch = angleNode && context.matchedResult.getMatch(angleNode);
-      if (angleMatch) {
-        angle.addEventListener(InlineEditor.InlineEditorUtils.ValueChangedEvent.eventName, (ev) => {
-          angle.updateProperty(
-            context.matchedResult.getComputedText(match.node, (match2) => match2 === angleMatch ? ev.data.value : null)
-          );
-        });
-      }
-    }
-    return nodes;
   }
 };
 var RelativeColorChannelRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.RelativeColorChannelMatch);
@@ -5607,6 +5579,9 @@ var RelativeColorChannelRenderer = class extends RelativeColorChannelRendererBas
         jslogContext=elements.relative-color-channel>${value5.toFixed(3)}</devtools-tooltip>`;
   }
 };
+function colorToText(color) {
+  return typeof color === "string" ? color : color.getAuthoredText() ?? color.asString();
+}
 var ColorRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.ColorMatch);
 var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
   // clang-format on
@@ -5617,7 +5592,7 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
     this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
   }
-  #getValueChild(match, context) {
+  #getValueChild(match, context, onAngle) {
     if (match.node.name !== "CallExpression") {
       return { valueChild: html7`<span>${match.text}</span>` };
     }
@@ -5625,7 +5600,7 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
     const args = ASTUtils.siblings(match.node.getChild("ArgList"));
     const childTracingContexts = context.tracing?.evaluation([args], { match, context }) ?? void 0;
     const renderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
-    const { nodes, cssControls } = Renderer.render(args, renderingContext);
+    const nodes = Renderer.render(args, renderingContext, { onAngle });
     const valueChild = html7`<span>${this.#propertyData ? getTracingTooltip(
       func,
       match.node,
@@ -5638,10 +5613,23 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
       this.#propertyData.property,
       this.#propertyData.parentShorthand()?.property.name
     ) : func}${nodes}</span>`;
-    return { valueChild, cssControls, childTracingContexts };
+    return { valueChild, childTracingContexts };
   }
   render(match, context) {
-    const { valueChild, cssControls, childTracingContexts } = this.#getValueChild(match, context);
+    let colorSwatch = null;
+    const onAngle = match.node.name === "CallExpression" && context.ast.text(match.node.getChild("Callee")).match(/^(hsla?|hwba?)/) ? (angle) => {
+      const hue = Common.Color.parseHueNumeric(`${angle.value}${angle.unit}`);
+      const color2 = colorSwatch?.color;
+      if (hue === null || !colorSwatch || !color2) {
+        return;
+      }
+      if (color2.is(Common.Color.Format.HSL) || color2.is(Common.Color.Format.HSLA)) {
+        colorSwatch.setColor(new Common.Color.HSL(hue, color2.s, color2.l, color2.alpha));
+      } else if (color2.is(Common.Color.Format.HWB) || color2.is(Common.Color.Format.HWBA)) {
+        colorSwatch.setColor(new Common.Color.HWB(hue, color2.w, color2.b, color2.alpha));
+      }
+    } : void 0;
+    const { valueChild, childTracingContexts } = this.#getValueChild(match, context, onAngle);
     let colorText = context.matchedResult.getComputedText(match.node);
     if (match.relativeColor) {
       const fakeSpan = document.body.appendChild(document.createElement("span"));
@@ -5652,47 +5640,26 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
     const color = Common.Color.parse(colorText);
     if (!color) {
       if (match.node.name === "CallExpression") {
-        return Renderer.render(ASTUtils.children(match.node), context).nodes;
+        return Renderer.render(ASTUtils.children(match.node), context);
       }
       return html7`${colorText}`;
     }
     if (match.node.name === "CallExpression" && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const displayColor = color.as((color.alpha ?? 1) !== 1 ? Common.Color.Format.HEXA : Common.Color.Format.HEX);
-        const swatch2 = new _ColorRenderer(this.#stylesContainer, null).renderColorSwatch(
+        const swatch = new _ColorRenderer(this.#stylesContainer, null).renderColorSwatch(
           displayColor.isGamutClipped() ? color : displayColor.nickname() ?? displayColor,
           match,
           context
         );
-        context.addControl("color", swatch2);
-        return { template: html7`${swatch2}<span>${displayColor.asString()}</span>` };
+        return { template: html7`${swatch}<span>${displayColor.asString()}</span>` };
       });
       if (evaluation) {
         return evaluation;
       }
     }
-    const swatch = this.renderColorSwatch(color, match, context);
-    context.addControl("color", swatch);
-    if (cssControls && match.node.name === "CallExpression" && context.ast.text(match.node.getChild("Callee")).match(/^(hsla?|hwba?)/)) {
-      const [angle] = cssControls.get("angle") ?? [];
-      if (angle instanceof InlineEditor.CSSAngle.CSSAngle) {
-        angle.updateProperty(swatch.color?.asString() ?? "");
-        angle.addEventListener(InlineEditor.InlineEditorUtils.ValueChangedEvent.eventName, (ev) => {
-          const hue = Common.Color.parseHueNumeric(ev.data.value);
-          const color2 = swatch.color;
-          if (!hue || !color2) {
-            return;
-          }
-          if (color2.is(Common.Color.Format.HSL) || color2.is(Common.Color.Format.HSLA)) {
-            swatch.setColor(new Common.Color.HSL(hue, color2.s, color2.l, color2.alpha));
-          } else if (color2.is(Common.Color.Format.HWB) || color2.is(Common.Color.Format.HWBA)) {
-            swatch.setColor(new Common.Color.HWB(hue, color2.w, color2.b, color2.alpha));
-          }
-          angle.updateProperty(swatch.color?.asString() ?? "");
-        });
-      }
-    }
-    return this.#propertyData?.editable() ? html7`<devtools-widget ${widget2(EditableContent)}>${swatch}${valueChild}</devtools-widget>` : html7`${swatch}${valueChild}`;
+    colorSwatch = this.renderColorSwatch(color, match, context);
+    return this.#propertyData?.editable() ? html7`<devtools-widget ${widget2(EditableContent)}>${colorSwatch}${valueChild}</devtools-widget>` : html7`${colorSwatch}${valueChild}`;
   }
   // Renders a swatch for `color`. When the user changes the color through the swatch, a `ValueEditEvent` is dispatched
   // to update the enclosing `EditableContent`, and the new text is recorded as the edit of `match`.
@@ -5733,6 +5700,14 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
         void this.#addColorContrastInfo(swatchIcon);
       }
     }
+    const { onColor } = context.callbacks;
+    if (onColor) {
+      onColor(color ?? null, match);
+      swatch.addEventListener(
+        InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
+        (ev) => onColor(ev.data.color, match)
+      );
+    }
     return swatch;
   }
   async #addColorContrastInfo(swatchIcon) {
@@ -5763,8 +5738,15 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
     return html7`<span>light-dark(<span class=${lightClasses}>${light}</span>, <span class=${darkClasses}>${dark}</span>)</span>`;
   }
   render(match, context) {
-    const { nodes: light, cssControls: lightControls } = Renderer.render(match.light, context);
-    const { nodes: dark, cssControls: darkControls } = Renderer.render(match.dark, context);
+    let colorSwatch = null;
+    let activeColor = null;
+    const onBranchColor = (branch) => (newColor) => {
+      if (colorSwatch && activeColor === branch && newColor && typeof newColor !== "string") {
+        colorSwatch.setColor(newColor);
+      }
+    };
+    const light = Renderer.render(match.light, context, { onColor: onBranchColor(match.light) });
+    const dark = Renderer.render(match.dark, context, { onColor: onBranchColor(match.dark) });
     const content = this.#renderContent(match, light, dark);
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
       return content;
@@ -5775,21 +5757,18 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
     if (!color) {
       return content;
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(void 0, match, context);
-    context.addControl("color", colorSwatch);
-    const styledContent = until(this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls), content);
+    colorSwatch = new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(void 0, match, context);
+    const styledContent = until(this.applyColorScheme(match, context, colorSwatch, light, dark, (active) => {
+      activeColor = active;
+    }), content);
     return this.#propertyData?.editable() ? html7`<devtools-widget ${widget2(EditableContent)}>${colorSwatch}${styledContent}</devtools-widget>` : html7`${colorSwatch}${styledContent}`;
   }
-  async applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls) {
+  async applyColorScheme(match, context, colorSwatch, light, dark, onActiveColor) {
     const activeColor = await this.#activeColor(match);
     if (context.signal?.aborted || !activeColor) {
       return this.#renderContent(match, light, dark);
     }
-    const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get("color");
-    activeColorSwatches?.forEach((swatch) => swatch.addEventListener(
-      InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
-      (ev) => colorSwatch.setColor(ev.data.color)
-    ));
+    onActiveColor(activeColor);
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
     const color = colorText && Common.Color.parse(colorText);
     if (color) {
@@ -5840,27 +5819,6 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
     this.#propertyData = propertyData;
   }
   render(match, context) {
-    const hookUpColorArg = (node, onChange) => {
-      if (node instanceof InlineEditor.ColorMixSwatch.ColorMixSwatch || node instanceof InlineEditor.ColorSwatch.ColorSwatch) {
-        if (node instanceof InlineEditor.ColorSwatch.ColorSwatch) {
-          node.addEventListener(
-            InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
-            (ev) => onChange(ev.data.color.getAuthoredText() ?? ev.data.color.asString())
-          );
-        } else {
-          node.addEventListener(
-            InlineEditor.ColorMixSwatch.ColorMixChangedEvent.eventName,
-            (ev) => onChange(ev.data.text)
-          );
-        }
-        const color = node.getText();
-        if (color) {
-          onChange(color);
-          return true;
-        }
-      }
-      return false;
-    };
     const childTracingContexts = context.tracing?.evaluation(
       match.space.length ? [match.color1, match.color2, match.space] : [match.color1, match.color2],
       { match, context }
@@ -5868,8 +5826,29 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
     const color1RenderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
     const color2RenderingContext = childTracingContexts?.at(1)?.renderingContext(context) ?? context;
     const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
-    const color1 = Renderer.render(match.color1, color1RenderingContext);
-    const color2 = Renderer.render(match.color2, color2RenderingContext);
+    let firstColor = null;
+    let secondColor = null;
+    const firstOrigins = /* @__PURE__ */ new Set();
+    const secondOrigins = /* @__PURE__ */ new Set();
+    let mixSwatch = null;
+    const color1 = Renderer.render(match.color1, color1RenderingContext, {
+      onColor: (color, origin) => {
+        firstOrigins.add(origin);
+        firstColor = color ? colorToText(color) : null;
+        if (firstColor) {
+          mixSwatch?.setFirstColor(firstColor);
+        }
+      }
+    });
+    const color2 = Renderer.render(match.color2, color2RenderingContext, {
+      onColor: (color, origin) => {
+        secondOrigins.add(origin);
+        secondColor = color ? colorToText(color) : null;
+        if (secondColor) {
+          mixSwatch?.setSecondColor(secondColor);
+        }
+      }
+    });
     const contentChild = html7`<span>${this.#propertyData ? getTracingTooltip(
       "color-mix",
       match.node,
@@ -5881,10 +5860,8 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
       this.#propertyData.tooltipIdFactory,
       this.#propertyData.property,
       this.#propertyData.parentShorthand()?.property.name
-    ) : "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` : ""}${color1.nodes}, ${color2.nodes})</span>`;
-    const color1Controls = color1.cssControls.get("color") ?? [];
-    const color2Controls = color2.cssControls.get("color") ?? [];
-    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || color1Controls.length !== 1 || color2Controls.length !== 1) {
+    ) : "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext)}, ` : ""}${color1}, ${color2})</span>`;
+    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || firstOrigins.size !== 1 || secondOrigins.size !== 1) {
       return contentChild;
     }
     const space = match.space.map((space2) => context.matchedResult.getComputedText(space2)).join(" ");
@@ -5896,7 +5873,6 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const initialColor = Common.Color.parse("#000");
         const swatch2 = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, match, context);
-        context.addControl("color", swatch2);
         const asyncEvalCallback = async () => {
           const results = await this.#stylesContainer.cssModel()?.resolveValues(void 0, nodeId, colorMixText);
           if (context.signal?.aborted) {
@@ -5921,14 +5897,25 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
         return evaluation;
       }
     }
-    const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
-    if (!hookUpColorArg(color1Controls[0], (text) => swatch.setFirstColor(text)) || !hookUpColorArg(color2Controls[0], (text) => swatch.setSecondColor(text))) {
+    if (!firstColor || !secondColor) {
+      context.callbacks.onColor?.(null, match);
       return contentChild;
     }
+    const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
+    mixSwatch = swatch;
+    swatch.setFirstColor(firstColor);
+    swatch.setSecondColor(secondColor);
     swatch.tabIndex = -1;
     swatch.setColorMixText(colorMixText);
     UI7.ARIAUtils.setLabel(swatch, colorMixText);
-    context.addControl("color", swatch);
+    const { onColor } = context.callbacks;
+    if (onColor) {
+      onColor(swatch.getText(), match);
+      swatch.addEventListener(
+        InlineEditor.ColorMixSwatch.ColorMixChangedEvent.eventName,
+        (ev) => onColor(ev.data.text, match)
+      );
+    }
     if (context.tracing) {
       return html7`${swatch}${contentChild}`;
     }
@@ -5962,7 +5949,7 @@ var ContrastColorRenderer = class extends ContrastColorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
   render(match, context) {
-    const content = html7`<span>contrast-color(${Renderer.render(match.color, context).nodes})</span>`;
+    const content = html7`<span>contrast-color(${Renderer.render(match.color, context)})</span>`;
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
       return content;
     }
@@ -5976,7 +5963,6 @@ var ContrastColorRenderer = class extends ContrastColorRendererBase {
       return content;
     }
     const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
-    context.addControl("color", colorSwatch);
     return this.#propertyData?.editable() ? html7`<devtools-widget ${widget2(EditableContent)}>${colorSwatch}${content}</devtools-widget>` : html7`${colorSwatch}${content}`;
   }
 };
@@ -6019,16 +6005,29 @@ var AngleRenderer = class extends AngleRendererBase {
         void propertyData.applyStyleText(propertyData.renderedPropertyText(), true);
       }
     });
+    const container = context.findParent(match.node, SDK4.CSSPropertyParserMatchers.ColorMatch) ?? context.findParent(match.node, SDK4.CSSPropertyParserMatchers.LinearGradientMatch);
+    const backgroundNode = container && !context.matchedResult.hasUnresolvedSubstitutions(container.node) ? container.node : null;
+    if (backgroundNode) {
+      cssAngle.updateProperty(context.matchedResult.getComputedText(backgroundNode));
+    }
     cssAngle.addEventListener("valuechanged", async ({ data }) => {
       cssAngle.dispatchEvent(new ValueEditEvent(data.value));
       context.recordEdit(match, data.value);
+      if (backgroundNode) {
+        cssAngle.updateProperty(
+          context.matchedResult.getComputedText(backgroundNode, (m) => m === match ? data.value : null)
+        );
+      }
+      const angle = InlineEditor.CSSAngleUtils.parseText(data.value);
+      if (angle) {
+        context.callbacks.onAngle?.(angle);
+      }
       await propertyData.applyStyleText(propertyData.renderedPropertyText(), false);
     });
     cssAngle.addEventListener("unitchanged", ({ data }) => {
       cssAngle.dispatchEvent(new ValueEditEvent(data.value));
       context.recordEdit(match, data.value);
     });
-    context.addControl("angle", cssAngle);
     return html7`<devtools-widget ${widget2(EditableContent)}>${cssAngle}${angleText}</devtools-widget>`;
   }
 };
@@ -6124,7 +6123,7 @@ var BezierRenderer = class extends BezierRendererBase {
     this.#propertyData = propertyData;
   }
   render(match, context) {
-    const nodes = match.node.name === "CallExpression" ? Renderer.render(ASTUtils.children(match.node), context).nodes : match.text;
+    const nodes = match.node.name === "CallExpression" ? Renderer.render(ASTUtils.children(match.node), context) : match.text;
     if (!this.#propertyData?.editable() || !InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(
       context.matchedResult.getComputedText(match.node)
     )) {
@@ -6151,8 +6150,8 @@ var AutoBaseRenderer = class extends AutoBaseRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
   render(match, context) {
-    const auto = Renderer.render(match.auto, context).nodes;
-    const base = Renderer.render(match.base, context).nodes;
+    const auto = Renderer.render(match.auto, context);
+    const base = Renderer.render(match.base, context);
     const isAppearanceBase = Boolean(this.#computedStyleExtraFields?.isAppearanceBase);
     return html7`<span>-internal-auto-base(<span class=${classMap2({ "inactive-value": isAppearanceBase })}>${auto}</span>,
         <span class=${classMap2({ "inactive-value": !isAppearanceBase })}>${base}</span>)</span>`;
@@ -6288,7 +6287,7 @@ var ShadowModel = class {
       if (parts.length > 0) {
         parts.push(" ");
       }
-      parts.push(typeof part === "string" ? part : Renderer.render(part.node, part.context).nodes);
+      parts.push(typeof part === "string" ? part : Renderer.render(part.node, part.context));
     }
     return html7`${parts}`;
   }
@@ -6420,7 +6419,6 @@ var ShadowRenderer = class extends ShadowRendererBase {
           void 0,
           void 0,
           void 0,
-          void 0,
           new ValueUpdateTracking(computedValueAst)
         );
         queue.unshift(
@@ -6462,7 +6460,6 @@ var ShadowRenderer = class extends ShadowRendererBase {
       context.property,
       context.renderers,
       context.matchedResult,
-      context.cssControls,
       context.options,
       context.tracing,
       context.signal,
@@ -6476,8 +6473,7 @@ var ShadowRenderer = class extends ShadowRendererBase {
         result.push(document.createTextNode(", "));
       }
       if (!model || !this.#propertyData?.editable()) {
-        const { nodes } = Renderer.render(shadow, nestedContext);
-        result.push(nodes);
+        result.push(Renderer.render(shadow, nestedContext));
         texts.push(() => nestedEdits.textRange(...ASTUtils.range(shadow)));
         continue;
       }
@@ -6486,7 +6482,7 @@ var ShadowRenderer = class extends ShadowRendererBase {
       );
       texts.push(() => isImportant ? `${model.text()} ${nestedEdits.textRange(isImportant, isImportant)}` : model.text());
       if (isImportant) {
-        result.push(document.createTextNode(" "), Renderer.render(isImportant, nestedContext).nodes);
+        result.push(document.createTextNode(" "), Renderer.render(isImportant, nestedContext));
       }
     }
     context.recordEdit(match, () => texts.map((text) => text()).join(", "));
@@ -6498,12 +6494,12 @@ var GridTemplateRenderer = class extends GridTemplateRendererBase {
   // clang-format on
   render(match, context) {
     if (match.lines.length <= 1) {
-      return Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
+      return Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context);
     }
     const indent = Common.Settings.Settings.instance().resolve(SDK4.SDKSettings.textEditorIndentSettingDescriptor).get();
     return html7`
       ${match.lines.map((line) => {
-      const lines = Renderer.render(line, context).nodes;
+      const lines = Renderer.render(line, context);
       return html7`
         <span class='styles-clipboard-only'>${indent.repeat(2)}</span>
         ${lines}`;
@@ -6595,9 +6591,10 @@ var BaseFunctionRenderer = class extends BaseFunctionRendererBase {
   }
   render(match, context) {
     const childTracingContexts = context.tracing?.evaluation(match.args, { match, context });
-    const renderedArgs = match.args.map(
-      (arg, idx) => Renderer.render(arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context).nodes
-    );
+    const renderedArgs = match.args.map((arg, idx) => Renderer.render(
+      arg,
+      childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context
+    ));
     const func = this.#propertyData ? getTracingTooltip(
       match.func,
       match.node,
@@ -6725,7 +6722,7 @@ var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends AnchorFunctio
     return html7`<span>${match.functionName}(${until(_AnchorFunctionRenderer.decorateAnchorForAnchorLink(
       this.#stylesContainer,
       { needsSpace: remainingArgs.length > 1 }
-    ))}${Renderer.render(remainingArgs, context).nodes}</span>`;
+    ))}${Renderer.render(remainingArgs, context)}</span>`;
   }
 };
 var PositionAnchorRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.PositionAnchorMatch);
@@ -6771,7 +6768,7 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
     this.#stylesContainer = stylesContainer;
   }
   render(match, context) {
-    const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
+    const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context);
     if (!this.#propertyData?.editable() || !InlineEditor.PositionAreaEditor.parsePositionArea(context.matchedResult.getComputedPropertyValueText())) {
       return html7`${children}`;
     }
@@ -6912,8 +6909,7 @@ var PositionTryRenderer = class extends PositionTryRendererBase {
   render(match, context) {
     const content = [];
     if (match.preamble.length > 0) {
-      const { nodes } = Renderer.render(match.preamble, context);
-      content.push(nodes);
+      content.push(Renderer.render(match.preamble, context));
     }
     const node = this.#propertyData ? this.#matchedStyles.nodeForStyle(this.#propertyData.property.ownerStyle) : this.#matchedStyles.node();
     const fallbackLabels = [];
@@ -6922,9 +6918,9 @@ var PositionTryRenderer = class extends PositionTryRendererBase {
       const classes = classMap2({
         "inactive-value": !this.#propertyData?.inherited() && node === this.#matchedStyles.node() && i !== this.#matchedStyles.activePositionFallbackIndex()
       });
-      content.push(html7`<span class=${classes}>${i > 0 ? ", " : nothing2}${Renderer.render(fallback.filter((node2) => node2.name !== "Important"), context).nodes}</span>`);
+      content.push(html7`<span class=${classes}>${i > 0 ? ", " : nothing2}${Renderer.render(fallback.filter((node2) => node2.name !== "Important"), context)}</span>`);
       if (important) {
-        content.push(html7` ${Renderer.render(important, context).nodes}`);
+        content.push(html7` ${Renderer.render(important, context)}`);
       }
       fallbackLabels.push(
         context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim()
@@ -7088,7 +7084,6 @@ function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyle
     new CSSWideKeywordRenderer(stylesContainer, propertyData),
     new LightDarkColorRenderer(stylesContainer, matchedStyles, propertyData),
     new GridTemplateRenderer(),
-    new LinearGradientRenderer(),
     new AnchorFunctionRenderer(stylesContainer),
     new PositionAnchorRenderer(stylesContainer),
     new FlexGridRenderer(stylesContainer, propertyData),
@@ -7504,7 +7499,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   onattach() {
     if (this.#lazyRender) {
       this.nameElement = Renderer.renderNameElement(this.name);
-      this.valueElement = Renderer.renderValueElement(this.property, null, []).valueElement;
+      this.valueElement = Renderer.renderValueElement(this.property, null, []);
       if (this.parent?.root || !this.property.parsedOk) {
         const placeholder = document.createElement("span");
         placeholder.classList.add("enabled-button");
@@ -7610,7 +7605,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.listItemElement.removeChildren();
     const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
     this.#edits = matchedResult ? new ValueUpdateTracking(matchedResult.ast) : void 0;
-    this.valueElement = Renderer.renderValueElement(this.property, matchedResult, renderers, void 0, void 0, this.#edits).valueElement;
+    this.valueElement = Renderer.renderValueElement(this.property, matchedResult, renderers, void 0, void 0, this.#edits);
     this.nameElement = Renderer.renderNameElement(this.name);
     if (!this.treeOutline) {
       return;
@@ -7643,7 +7638,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         }
       };
       this.listItemElement.appendChild(tooltip);
-    } else if (Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor).get()) {
+    } else if (!this.property.name.startsWith("--") && Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor).get()) {
       const tooltipId = getTooltipId(this.tooltipIdFactory, "property-doc", this.property, this.getLonghand()?.name);
       this.nameElement.setAttribute("aria-details", tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip({
@@ -14494,7 +14489,6 @@ var TracingContext = class _TracingContext {
       context.property,
       context.renderers,
       context.matchedResult,
-      context.cssControls,
       context.options,
       this
     );
@@ -14615,7 +14609,6 @@ var TracingContext = class _TracingContext {
     return results.some((result) => result !== false);
   }
 };
-var CSSControlMap = Map;
 var ValueEdit = class {
   constructor(original, value5) {
     this.original = original;
@@ -14727,12 +14720,11 @@ var EditableContent = class extends UI11.Widget.Widget {
   }
 };
 var RenderingContext = class {
-  constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal, edits, callbacks = {}) {
+  constructor(ast, property, renderers, matchedResult, options = {}, tracing, signal, edits, callbacks = {}) {
     this.ast = ast;
     this.property = property;
     this.renderers = renderers;
     this.matchedResult = matchedResult;
-    this.cssControls = cssControls;
     this.options = options;
     this.tracing = tracing;
     this.signal = signal;
@@ -14743,7 +14735,6 @@ var RenderingContext = class {
   property;
   renderers;
   matchedResult;
-  cssControls;
   options;
   tracing;
   signal;
@@ -14754,16 +14745,6 @@ var RenderingContext = class {
   // together. Does nothing if the context doesn't track changes, e.g. for value traces.
   recordEdit(match, value5) {
     this.edits?.recordEdit(match, value5);
-  }
-  addControl(cssType, control) {
-    if (this.cssControls) {
-      const controls = this.cssControls.get(cssType);
-      if (!controls) {
-        this.cssControls.set(cssType, [control]);
-      } else {
-        controls.push(control);
-      }
-    }
   }
   getComputedLonghandName(node) {
     if (!this.matchedResult.ast.propertyName) {
@@ -14794,7 +14775,7 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
   #matchedResult;
   #output = [];
   #context;
-  constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal, edits, callbacks) {
+  constructor(ast, property, renderers, matchedResult, options, tracing, signal, edits, callbacks) {
     super(ast);
     this.#matchedResult = matchedResult;
     this.#context = new RenderingContext(
@@ -14802,7 +14783,6 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
       property,
       renderers,
       this.#matchedResult,
-      cssControls,
       options,
       tracing,
       signal,
@@ -14816,13 +14796,11 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
     if (!Array.isArray(nodeOrNodes)) {
       return this.render([nodeOrNodes], context, callbacks);
     }
-    const cssControls = new CSSControlMap();
     const renderers = nodeOrNodes.map((node) => this.walkExcludingSuccessors(
       context.ast.subtree(node),
       context.property,
       context.renderers,
       context.matchedResult,
-      cssControls,
       context.options,
       context.tracing,
       context.signal,
@@ -14839,7 +14817,7 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
       nodes2.push(...renderer.#output);
       return nodes2;
     }, []);
-    return { nodes: html11`${nodes}`, cssControls };
+    return html11`${nodes}`;
   }
   renderedMatchForTest(_nodes, _match) {
   }
@@ -14894,17 +14872,17 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
   // The renderers record the changes they make to the text of the value in `edits`, if given, see
   // `RenderingContext.recordEdit`.
   static renderValueElement(property, matchedResult, renderers, tracing, signal, edits) {
-    const { template, cssControls } = this.valueTemplate(property, matchedResult, renderers, tracing, signal, edits);
+    const template = this.valueTemplate(property, matchedResult, renderers, tracing, signal, edits);
     const fragment = document.createDocumentFragment();
     render8(template, fragment);
     const valueElement = fragment.firstElementChild;
     valueElement.remove();
     valueElement.normalize();
-    return { valueElement, cssControls };
+    return valueElement;
   }
   static valueTemplate(property, matchedResult, renderers, tracing, signal, edits) {
-    const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
-    const template = html11`<span
+    const nodes = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
+    return html11`<span
       jslog=${VisualLogging7.value().track({
       change: true,
       keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape"
@@ -14913,11 +14891,10 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
       class="value"
       tabindex="-1"
     >${nodes}</span>`;
-    return { template, cssControls };
   }
-  static renderValueNodes(property, matchedResult, renderers, tracing, signal, edits) {
+  static renderValueNodes(property, matchedResult, renderers, tracing, signal, edits, callbacks) {
     if (!matchedResult) {
-      return { nodes: html11`${property.value}`, cssControls: /* @__PURE__ */ new Map() };
+      return html11`${property.value}`;
     }
     const rendererMap = /* @__PURE__ */ new Map();
     for (const renderer of renderers) {
@@ -14928,13 +14905,12 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
       property instanceof SDK7.CSSProperty.CSSProperty ? property : null,
       rendererMap,
       matchedResult,
-      void 0,
       {},
       tracing,
       signal,
       edits
     );
-    return _Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
+    return _Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context, callbacks);
   }
 };
 var URLRendererBase = rendererBase(SDK7.CSSPropertyParserMatchers.URLMatch);
@@ -14982,7 +14958,7 @@ var BinOpRendererBase = rendererBase(SDK7.CSSPropertyParserMatchers.BinOpMatch);
 var BinOpRenderer = class extends BinOpRendererBase {
   // clang-format on
   render(match, context) {
-    const [lhs, binop, rhs] = SDK7.CSSPropertyParser.ASTUtils.children(match.node).map((child) => html11`<span>${Renderer.render(child, context).nodes}</span>`);
+    const [lhs, binop, rhs] = SDK7.CSSPropertyParser.ASTUtils.children(match.node).map((child) => html11`<span>${Renderer.render(child, context)}</span>`);
     return html11`${lhs} ${binop} ${rhs}`;
   }
 };
@@ -15651,7 +15627,7 @@ function renderPropertyContents(node, cache, propertyName, propertyValue, catego
     { name: propertyName, value: propertyValue },
     matchProperty(propertyName, propertyValue),
     [new ColorRenderer2(), new URLRenderer(null, node), new StringRenderer()]
-  ).valueElement;
+  );
   value5.slot = "value";
   cache.set(cacheKey, { name, value: value5 });
   return { name, value: value5 };
@@ -15676,7 +15652,7 @@ var createPropertyElement = (node, cache, propertyName, propertyValue, traceable
 };
 var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, linkifier) => {
   const trace = new ElementsComponents5.ComputedStyleTrace.ComputedStyleTrace();
-  const { valueElement } = Renderer.renderValueElement(
+  const valueElement = Renderer.renderValueElement(
     property,
     matchProperty(property.name, property.value),
     [new ColorRenderer2(), new URLRenderer(null, node), new StringRenderer()]
@@ -15706,7 +15682,7 @@ var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, l
 };
 var ColorRenderer2 = class extends rendererBase(SDK9.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
-  render(match, context) {
+  render(match) {
     const color = Common7.Color.parse(match.text);
     if (!color) {
       return html12`${match.text}`;
@@ -15714,7 +15690,6 @@ var ColorRenderer2 = class extends rendererBase(SDK9.CSSPropertyParserMatchers.C
     const swatch = new InlineEditor4.ColorSwatch.ColorSwatch();
     swatch.setReadonly(true);
     swatch.renderColor(color);
-    context.addControl("color", swatch);
     return html12`${swatch}<span>${match.text}</span>`;
   }
   matcher() {

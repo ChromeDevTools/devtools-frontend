@@ -12,6 +12,7 @@ screenshot_diff.test.js
 screenshot_retry.test.js
 sinon_restore.test.js
 snapshot.test.js
+unexpected_console_error.test.js
 unit.test.js
 unit_2.test.js
 widget_update_after_failure.test.js

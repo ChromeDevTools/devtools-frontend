@@ -100,9 +100,7 @@ function renderPropertyContents(node, cache, propertyName, propertyValue, catego
     }
     const name = Renderer.renderNameElement(propertyName);
     name.slot = 'name';
-    const value = Renderer
-        .renderValueElement({ name: propertyName, value: propertyValue }, matchProperty(propertyName, propertyValue), [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()])
-        .valueElement;
+    const value = Renderer.renderValueElement({ name: propertyName, value: propertyValue }, matchProperty(propertyName, propertyValue), [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
     value.slot = 'value';
     cache.set(cacheKey, { name, value });
     return { name, value };
@@ -133,7 +131,7 @@ const createPropertyElement = (node, cache, propertyName, propertyValue, traceab
 };
 const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, linkifier) => {
     const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
-    const { valueElement } = Renderer.renderValueElement(property, matchProperty(property.name, property.value), [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
+    const valueElement = Renderer.renderValueElement(property, matchProperty(property.name, property.value), [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
     valueElement.slot = 'trace-value';
     trace.appendChild(valueElement);
     const rule = property.ownerStyle.parentRule;
@@ -163,7 +161,7 @@ const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles,
 // clang-format off
 class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatch) {
     // clang-format on
-    render(match, context) {
+    render(match) {
         const color = Common.Color.parse(match.text);
         if (!color) {
             return html `${match.text}`;
@@ -171,7 +169,6 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
         const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
         swatch.setReadonly(true);
         swatch.renderColor(color);
-        context.addControl('color', swatch);
         return html `${swatch}<span>${match.text}</span>`;
     }
     matcher() {

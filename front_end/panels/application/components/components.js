@@ -7,7 +7,8 @@ var __export = (target, all) => {
 // ../../front_end/panels/application/components/AdsView.ts
 var AdsView_exports = {};
 __export(AdsView_exports, {
-  AdsView: () => AdsView
+  AdsView: () => AdsView,
+  DEFAULT_VIEW: () => DEFAULT_VIEW
 });
 import "../../../ui/legacy/components/data_grid/data_grid.js";
 import "../../../ui/kit/kit.js";
@@ -19,6 +20,7 @@ import * as Components from "../../../ui/legacy/components/utils/utils.js";
 import * as UI from "../../../ui/legacy/legacy.js";
 import * as Lit from "../../../ui/lit/lit.js";
 import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
+import * as PanelCommon from "../../common/common.js";
 
 // gen/front_end/panels/application/components/adScriptsTable.css.js
 var adScriptsTable_css_default = `/*
@@ -183,6 +185,7 @@ var COUNT_DOC_URL = "https://developer.chrome.com/docs/ads/metrics/count";
 var CPU_USAGE_DOC_URL = "https://developer.chrome.com/docs/ads/metrics/weight-cpu";
 var NETWORK_USAGE_DOC_URL = "https://developer.chrome.com/docs/ads/metrics/weight-network";
 var AD_DETECTION_DOC_URL = "https://developer.chrome.com/docs/ads/detection";
+var MAX_OWNER_RESOLVE_RETRIES = 3;
 var UIStrings = {
   /**
    * @description Title for the metrics section in the ads view of the Application panel.
@@ -259,6 +262,10 @@ var UIStrings = {
    */
   adIframes: "Ad iframes",
   /**
+   * @description Context menu item for a row in the ad iframes table in the ads view of the Application panel. Opens the details of the ad iframe under Frames in the Application panel.
+   */
+  showIframeDetails: "Show `iframe` details",
+  /**
    * @description Title for the ad scripts table in the ads view of the Application panel.
    * @example {3} PH1
    */
@@ -318,6 +325,9 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/application/components/AdsView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+function isStaleNode(node) {
+  return node !== null && node.domModel().nodeForId(node.id) !== node;
+}
 var formatMetric = (val, formatter) => {
   if (val === void 0 || val === -1) {
     return i18nString(UIStrings.notAvailable);
@@ -381,6 +391,16 @@ var DEFAULT_VIEW = (input, output, target) => {
       </devtools-tooltip>
     `;
   };
+  const renderElementId = (frame) => {
+    if (!frame.ownerNode) {
+      return frame.elementId;
+    }
+    return html`${repeat(
+      [frame.ownerNode],
+      (node) => node,
+      (node) => PanelCommon.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: frame.elementId })
+    )}`;
+  };
   Lit.render(html`
     <style>${adsView_css_default}</style>
     <div class="ads-view-container" jslog=${VisualLogging.pane("ads")}>
@@ -440,7 +460,8 @@ var DEFAULT_VIEW = (input, output, target) => {
       <hr class="divider">
       <div class="ad-frames-title">${i18nString(UIStrings.adIframesTitle, { PH1: input.adFrames.length })}</div>
       <div class="ad-frames-container">
-        <devtools-data-grid striped resize="last" class="ad-frames-data-grid" name=${i18nString(UIStrings.adIframes)}>
+        <devtools-data-grid striped resize="last" class="ad-frames-data-grid" name=${i18nString(UIStrings.adIframes)}
+            @mouseleave=${input.onAdFramesMouseLeave}>
           <table>
             <tr>
               <th id="elementId" weight="1" sortable>${i18nString(UIStrings.elementId)}</th>
@@ -448,15 +469,10 @@ var DEFAULT_VIEW = (input, output, target) => {
               <th id="cpuTime" weight="1" sortable type="numeric">${i18nString(UIStrings.cpu)}</th>
               <th id="networkBytes" weight="1" sortable type="numeric">${i18nString(UIStrings.network)}</th>
             </tr>
-            ${input.adFrames.map((frame) => html`
-              <tr>
-                <td title=${frame.elementId}>
-                  ${frame.elementId ? html`
-                        <button class="text-button link-style devtools-link" @click=${frame.revealFrame}>
-                          ${frame.elementId}
-                        </button>
-                      ` : Lit.nothing}
-                </td>
+            ${repeat(input.adFrames, (frame) => frame.frameId, (frame) => html`
+              <tr
+                @contextmenu=${(e) => input.onAdFrameContextMenu(e.detail, frame.frameId)}>
+                <td title=${frame.elementId}>${renderElementId(frame)}</td>
                 <td title=${frame.initialOrigin}>${frame.initialOrigin}</td>
                 <td title=${frame.cpuTime} data-value=${frame.rawCpuTime}>${frame.cpuTime}</td>
                 <td title=${frame.networkBytes} data-value=${frame.rawNetworkBytes}>${frame.networkBytes}</td>
@@ -555,8 +571,11 @@ var AdsView = class extends UI.Widget.Widget {
   #pollSessionId = 0;
   #view;
   #adFrames = /* @__PURE__ */ new Map();
-  #adIframeElementIds = /* @__PURE__ */ new Map();
-  #fetchingElementIds = /* @__PURE__ */ new Set();
+  // Maps an ad frame ID to its resolved owner element, or null if it has none
+  // or couldn't be resolved.
+  #adIframeOwners = /* @__PURE__ */ new Map();
+  #fetchingOwners = /* @__PURE__ */ new Set();
+  #ownerResolveRetries = /* @__PURE__ */ new Map();
   #unresolvedScriptIds = /* @__PURE__ */ new Set();
   #adScriptNodeData = [];
   #urlToLinkElement = /* @__PURE__ */ new Map();
@@ -648,7 +667,8 @@ var AdsView = class extends UI.Widget.Widget {
   #processAdFrames(metrics) {
     for (const frameId of metrics.removeAdFrames || []) {
       this.#adFrames.delete(frameId);
-      this.#adIframeElementIds.delete(frameId);
+      this.#adIframeOwners.delete(frameId);
+      this.#ownerResolveRetries.delete(frameId);
     }
     for (const frame of metrics.updateAdFrames || []) {
       const frameId = frame.frameId;
@@ -657,16 +677,20 @@ var AdsView = class extends UI.Widget.Widget {
       this.#adFrames.set(frameId, newFrame);
     }
     for (const frameId of this.#adFrames.keys()) {
-      if (!this.#adIframeElementIds.has(frameId) && !this.#fetchingElementIds.has(frameId)) {
-        this.#fetchingElementIds.add(frameId);
-        void this.#fetchIframeElementId(frameId).then((elementId) => {
-          if (this.#adFrames.has(frameId) && elementId !== void 0) {
-            this.#adIframeElementIds.set(frameId, elementId);
+      const currentOwner = this.#adIframeOwners.get(frameId);
+      if ((currentOwner === void 0 || isStaleNode(currentOwner)) && !this.#fetchingOwners.has(frameId)) {
+        this.#fetchingOwners.add(frameId);
+        void this.#fetchIframeOwner(frameId).then((owner) => {
+          if (owner !== void 0) {
+            this.#ownerResolveRetries.delete(frameId);
+            if (this.#adFrames.has(frameId)) {
+              this.#adIframeOwners.set(frameId, owner);
+              this.requestUpdate();
+            }
           }
         }).catch(() => {
         }).finally(() => {
-          this.#fetchingElementIds.delete(frameId);
-          this.requestUpdate();
+          this.#fetchingOwners.delete(frameId);
         });
       }
     }
@@ -715,17 +739,50 @@ var AdsView = class extends UI.Widget.Widget {
       this.#reconstructProvenance(script.scriptId, newScriptsMap);
     }
   }
-  async #fetchIframeElementId(frameId) {
+  // Returns the owner element, null if the frame has none or retries are
+  // exhausted, or undefined if it couldn't be resolved yet and should be
+  // retried on a later poll.
+  async #fetchIframeOwner(frameId) {
     const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
     if (!frame) {
       return void 0;
     }
     const deferredNode = await frame.getOwnerDeferredDOMNode();
-    if (deferredNode) {
-      const node = await deferredNode.resolvePromise();
-      return node?.getAttribute("id") || null;
+    if (!deferredNode) {
+      return null;
     }
-    return null;
+    const owner = await deferredNode.resolvePromise();
+    if (owner) {
+      return owner;
+    }
+    const retries = this.#ownerResolveRetries.get(frameId) ?? 0;
+    if (retries >= MAX_OWNER_RESOLVE_RETRIES) {
+      return null;
+    }
+    if (this.#adFrames.has(frameId)) {
+      this.#ownerResolveRetries.set(frameId, retries + 1);
+    }
+    return void 0;
+  }
+  // Offers the same "Show iframe details" item as the context menu of an
+  // <iframe> node in the Elements panel.
+  #populateAdFrameContextMenu(contextMenu, frameId) {
+    const frameManager = SDK.FrameManager.FrameManager.instance();
+    if (frameManager.getFrame(frameId)) {
+      contextMenu.viewSection().appendItem(i18nString(UIStrings.showIframeDetails), () => {
+        const frame = frameManager.getFrame(frameId);
+        if (frame) {
+          void Common.Revealer.reveal(frame);
+        }
+      }, { jslogContext: "show-frame-details" });
+    }
+  }
+  // The link of an Element ID hides the highlight of its node when the mouse
+  // leaves the link. The data grid can move or rebuild the link under the
+  // cursor, and then the link doesn't notice that the mouse leaves. So hide
+  // the highlight when the mouse leaves a row or the table as well.
+  #hideNodeHighlight() {
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
   }
   #onPrimaryPageChanged() {
     this.#currentMetrics = {
@@ -739,8 +796,9 @@ var AdsView = class extends UI.Widget.Widget {
       removeAdFrames: []
     };
     this.#adFrames.clear();
-    this.#adIframeElementIds.clear();
-    this.#fetchingElementIds.clear();
+    this.#adIframeOwners.clear();
+    this.#fetchingOwners.clear();
+    this.#ownerResolveRetries.clear();
     this.#unresolvedScriptIds.clear();
     this.#adScriptNodeData.length = 0;
     this.#urlToLinkElement.clear();
@@ -752,23 +810,17 @@ var AdsView = class extends UI.Widget.Widget {
     const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
     const adFramesArray = [];
     for (const [frameId, frame] of this.#adFrames) {
-      const elementIdText = this.#adIframeElementIds.has(frameId) ? this.#adIframeElementIds.get(frameId) || i18nString(UIStrings.unnamed) : "";
-      const revealFrame = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const frameToReveal = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-        if (frameToReveal) {
-          void Common.Revealer.reveal(frameToReveal);
-        }
-      };
+      const ownerNode = this.#adIframeOwners.get(frameId);
+      const elementIdText = ownerNode !== void 0 ? ownerNode?.getAttribute("id") || i18nString(UIStrings.unnamed) : "";
       adFramesArray.push({
+        frameId,
         elementId: elementIdText,
+        ownerNode: ownerNode ?? null,
         initialOrigin: frame.initialOrigin || "",
         cpuTime: formatCpu(frame.cpuTime),
         rawCpuTime: frame.cpuTime ?? -1,
         networkBytes: formatNetwork(frame.networkBytes),
-        rawNetworkBytes: frame.networkBytes ?? -1,
-        revealFrame
+        rawNetworkBytes: frame.networkBytes ?? -1
       });
     }
     for (const scriptId of this.#unresolvedScriptIds) {
@@ -797,7 +849,9 @@ var AdsView = class extends UI.Widget.Widget {
       adFrames: adFramesArray,
       adScripts: this.#adScriptNodeData,
       target: target || null,
-      getLinkElement: (url) => this.#urlToLinkElement.get(url)
+      getLinkElement: (url) => this.#urlToLinkElement.get(url),
+      onAdFramesMouseLeave: () => this.#hideNodeHighlight(),
+      onAdFrameContextMenu: (contextMenu, frameId) => this.#populateAdFrameContextMenu(contextMenu, frameId)
     };
     this.#view(viewInput, void 0, this.contentElement);
   }
@@ -1293,6 +1347,9 @@ var Audits;
     ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
     ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
     ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+    ElementAccessibilityIssueReason2["AnchorMenuDescendant"] = "AnchorMenuDescendant";
+    ElementAccessibilityIssueReason2["InteractiveContentMenuDescendant"] = "InteractiveContentMenuDescendant";
+    ElementAccessibilityIssueReason2["TextMenuDescendant"] = "TextMenuDescendant";
   })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
   let StyleSheetLoadingIssueReason;
   ((StyleSheetLoadingIssueReason2) => {
@@ -2400,6 +2457,7 @@ var Network;
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
     DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
+    DeviceBoundSessionFetchResult2["CrossSiteRefreshSessionConfig"] = "CrossSiteRefreshSessionConfig";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {

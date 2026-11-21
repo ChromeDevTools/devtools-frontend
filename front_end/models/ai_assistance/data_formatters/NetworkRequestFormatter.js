@@ -198,7 +198,14 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
         const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
         return formatRequestInitiatorChain(this.#request, networkLog);
     }
+    /**
+     * Formats waterfall timing phases into `Label: value` lines, omitting phases that did not occur.
+     *
+     * In `ResourceTiming`, `connectStart` to `connectEnd` spans the `sslStart` to `sslEnd` handshake.
+     * The `SSL` label notes this overlap because plain-text output lacks waterfall bars to show nested ranges.
+     */
     formatNetworkRequestTiming() {
+        const { RequestTimeRangeNames } = NetworkTimeCalculator;
         const results = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
         const getDuration = (name) => {
             const result = results.find(r => r.name === name);
@@ -218,27 +225,43 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
             },
             {
                 label: 'Queueing (duration)',
-                value: getDuration('queueing'),
+                value: getDuration("queueing" /* RequestTimeRangeNames.QUEUEING */),
             },
             {
                 label: 'Connection start (stalled) (duration)',
-                value: getDuration('blocking'),
+                value: getDuration("blocking" /* RequestTimeRangeNames.BLOCKING */),
+            },
+            {
+                label: 'Proxy negotiation (duration)',
+                value: getDuration("proxy" /* RequestTimeRangeNames.PROXY */),
+            },
+            {
+                label: 'DNS lookup (duration)',
+                value: getDuration("dns" /* RequestTimeRangeNames.DNS */),
+            },
+            {
+                label: 'Initial connection (duration)',
+                value: getDuration("connecting" /* RequestTimeRangeNames.CONNECTING */),
+            },
+            {
+                label: 'SSL (included in Initial connection) (duration)',
+                value: getDuration("ssl" /* RequestTimeRangeNames.SSL */),
             },
             {
                 label: 'Request sent (duration)',
-                value: getDuration('sending'),
+                value: getDuration("sending" /* RequestTimeRangeNames.SENDING */),
             },
             {
                 label: 'Waiting for server response (duration)',
-                value: getDuration('waiting'),
+                value: getDuration("waiting" /* RequestTimeRangeNames.WAITING */),
             },
             {
                 label: 'Content download (duration)',
-                value: getDuration('receiving'),
+                value: getDuration("receiving" /* RequestTimeRangeNames.RECEIVING */),
             },
             {
                 label: 'Duration (duration)',
-                value: getDuration('total'),
+                value: getDuration("total" /* RequestTimeRangeNames.TOTAL */),
             },
         ];
         return labels.filter(label => !!label.value).map(label => `${label.label}: ${label.value}`).join('\n');

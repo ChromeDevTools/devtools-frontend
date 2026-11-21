@@ -1545,10 +1545,13 @@ export namespace Audits {
     InteractiveContentOptionChild = 'InteractiveContentOptionChild',
     InteractiveContentLegendChild = 'InteractiveContentLegendChild',
     InteractiveContentSummaryDescendant = 'InteractiveContentSummaryDescendant',
+    AnchorMenuDescendant = 'AnchorMenuDescendant',
+    InteractiveContentMenuDescendant = 'InteractiveContentMenuDescendant',
+    TextMenuDescendant = 'TextMenuDescendant',
   }
 
   /**
-   * This issue warns about errors in the select or summary element content model.
+   * This issue warns about errors in the select, summary, or menu element content model.
    */
   export interface ElementAccessibilityIssueDetails {
     nodeId: DOM.BackendNodeId;
@@ -12248,6 +12251,7 @@ export namespace Network {
     AttestationCertificationError = 'AttestationCertificationError',
     AttestationSigningError = 'AttestationSigningError',
     FederatedRegistrationRedirected = 'FederatedRegistrationRedirected',
+    CrossSiteRefreshSessionConfig = 'CrossSiteRefreshSessionConfig',
   }
 
   /**

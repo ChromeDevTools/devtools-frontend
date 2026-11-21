@@ -3,6 +3,7 @@ import type * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import * as Console from '../panels/console/console.js';
 import * as Components from '../ui/legacy/components/utils/utils.js';
+export { checkForUnexpectedConsoleLogs, type ConsoleLike, type ConsoleLogTracker, createConsoleLogTracker, expectConsoleLogs, type ExpectedConsoleLogs, startTrackingConsoleLogs, stopTrackingConsoleLogs, } from './TrackConsoleLogs.js';
 export declare function createConsoleViewMessageWithStubDeps(rawMessage: SDK.ConsoleModel.ConsoleMessage): {
     message: Console.ConsoleViewMessage.ConsoleViewMessage;
     linkifier: sinon.SinonStubbedInstance<Components.Linkifier.Linkifier>;

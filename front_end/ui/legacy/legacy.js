@@ -9849,7 +9849,7 @@ function shouldShowLocaleInfobar() {
   if (getDisableLocaleInfoBarSetting().get()) {
     return false;
   }
-  const languageSettingValue = Common11.Settings.Settings.instance().moduleSetting("language").get();
+  const languageSettingValue = Common11.Settings.Settings.instance().resolve(SettingsUI2.MainSettings.languageSettingDescriptor).get();
   if (languageSettingValue !== "en-US") {
     return false;
   }
@@ -9860,7 +9860,7 @@ function createLocaleInfobarSpec(onDismiss) {
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: "language" }).of(locale.language || "en") || "English";
-  const languageSetting = Common11.Settings.Settings.instance().moduleSetting("language");
+  const languageSetting = Common11.Settings.Settings.instance().resolve(SettingsUI2.MainSettings.languageSettingDescriptor);
   return {
     key: "locale-mismatch",
     type: "info" /* INFO */,

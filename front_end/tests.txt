@@ -486,6 +486,7 @@ panels/common/DOMLinkifier.test.js
 panels/common/ExtensionPanel.test.js
 panels/common/ExtensionServer.test.js
 panels/common/GdpSignUpDialog.test.js
+panels/common/StateChangesStatusBarPills.test.js
 panels/console/ConsoleContextSelector.test.js
 panels/console/ConsoleFormat.test.js
 panels/console/ConsoleInsightTeaser.test.js
@@ -797,6 +798,7 @@ services/puppeteer/PuppeteerConnection.test.js
 services/trace_bounds/TraceBounds.test.js
 services/tracing/FreshRecording.test.js
 services/tracing/TracingManager.test.js
+testing/ConsoleHelpers.test.js
 testing/MockCDPConnection.test.js
 testing/MockScopeChain.test.js
 testing/MutationHelpers.test.js

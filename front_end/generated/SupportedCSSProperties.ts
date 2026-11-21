@@ -6044,7 +6044,8 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "keywords": [
    "none",
-   "auto"
+   "auto",
+   "match-element"
   ],
   "name": "view-transition-name"
  },

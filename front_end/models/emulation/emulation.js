@@ -504,6 +504,9 @@ var Audits;
     ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
     ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
     ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+    ElementAccessibilityIssueReason2["AnchorMenuDescendant"] = "AnchorMenuDescendant";
+    ElementAccessibilityIssueReason2["InteractiveContentMenuDescendant"] = "InteractiveContentMenuDescendant";
+    ElementAccessibilityIssueReason2["TextMenuDescendant"] = "TextMenuDescendant";
   })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
   let StyleSheetLoadingIssueReason;
   ((StyleSheetLoadingIssueReason2) => {
@@ -1611,6 +1614,7 @@ var Network;
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
     DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
+    DeviceBoundSessionFetchResult2["CrossSiteRefreshSessionConfig"] = "CrossSiteRefreshSessionConfig";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -5121,7 +5125,6 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   }
   emulate(type, device, mode, scale) {
     const resetPageScaleFactor = this.#type !== type || this.#device !== device || this.#mode !== mode;
-    const deviceChanged = this.#type !== type || this.#device !== device;
     this.#type = type;
     this.#isApplyingDeviceScale = true;
     try {
@@ -5129,17 +5132,15 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
         console.assert(Boolean(device) && Boolean(mode), "Must pass device and mode for device emulation");
         this.#mode = mode;
         this.#device = device;
-        if (deviceChanged) {
-          const map = this.#deviceScaleMapSetting.get();
-          const savedDevice = map[device.title];
-          if (savedDevice) {
-            this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
-            if (scale === void 0 && !savedDevice.autoAdjust && savedDevice.scale > 0) {
-              scale = savedDevice.scale;
-            }
-          } else {
-            this.#autoAdjustScaleSetting.set(scale === void 0);
+        const map = this.#deviceScaleMapSetting.get();
+        const savedDevice = map[device.title];
+        if (savedDevice) {
+          this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
+          if (scale === void 0 && !savedDevice.autoAdjust && savedDevice.scale > 0) {
+            scale = savedDevice.scale;
           }
+        } else {
+          this.#autoAdjustScaleSetting.set(scale === void 0);
         }
         if (scale !== void 0) {
           this.#autoFitScaleOnInitialize = false;
@@ -5154,7 +5155,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
         this.#device = null;
         this.#mode = null;
         this.#autoFitScaleOnInitialize = false;
-        if (deviceChanged && type === "Responsive" /* Responsive */) {
+        if (type === "Responsive" /* Responsive */) {
           const map = this.#deviceScaleMapSetting.get();
           const savedDevice = map["Responsive"];
           if (savedDevice) {

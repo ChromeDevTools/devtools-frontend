@@ -109,6 +109,12 @@ export declare class NetworkRequestFormatter {
      * the request's origin.
      */
     formatRequestInitiatorChain(): string;
+    /**
+     * Formats waterfall timing phases into `Label: value` lines, omitting phases that did not occur.
+     *
+     * In `ResourceTiming`, `connectStart` to `connectEnd` spans the `sslStart` to `sslEnd` handshake.
+     * The `SSL` label notes this overlap because plain-text output lacks waterfall bars to show nested ranges.
+     */
     formatNetworkRequestTiming(): string;
 }
 /**

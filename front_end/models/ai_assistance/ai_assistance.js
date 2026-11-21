@@ -1328,6 +1328,9 @@ var Audits;
     ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
     ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
     ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+    ElementAccessibilityIssueReason2["AnchorMenuDescendant"] = "AnchorMenuDescendant";
+    ElementAccessibilityIssueReason2["InteractiveContentMenuDescendant"] = "InteractiveContentMenuDescendant";
+    ElementAccessibilityIssueReason2["TextMenuDescendant"] = "TextMenuDescendant";
   })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
   let StyleSheetLoadingIssueReason;
   ((StyleSheetLoadingIssueReason2) => {
@@ -2435,6 +2438,7 @@ var Network;
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
     DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
+    DeviceBoundSessionFetchResult2["CrossSiteRefreshSessionConfig"] = "CrossSiteRefreshSessionConfig";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -5857,7 +5861,14 @@ ${this.formatRequestInitiatorChain()}`;
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     return formatRequestInitiatorChain(this.#request, networkLog);
   }
+  /**
+   * Formats waterfall timing phases into `Label: value` lines, omitting phases that did not occur.
+   *
+   * In `ResourceTiming`, `connectStart` to `connectEnd` spans the `sslStart` to `sslEnd` handshake.
+   * The `SSL` label notes this overlap because plain-text output lacks waterfall bars to show nested ranges.
+   */
   formatNetworkRequestTiming() {
+    const { RequestTimeRangeNames } = NetworkTimeCalculator;
     const results = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
     const getDuration = (name) => {
       const result = results.find((r) => r.name === name);
@@ -5877,27 +5888,43 @@ ${this.formatRequestInitiatorChain()}`;
       },
       {
         label: "Queueing (duration)",
-        value: getDuration("queueing")
+        value: getDuration(RequestTimeRangeNames.QUEUEING)
       },
       {
         label: "Connection start (stalled) (duration)",
-        value: getDuration("blocking")
+        value: getDuration(RequestTimeRangeNames.BLOCKING)
+      },
+      {
+        label: "Proxy negotiation (duration)",
+        value: getDuration(RequestTimeRangeNames.PROXY)
+      },
+      {
+        label: "DNS lookup (duration)",
+        value: getDuration(RequestTimeRangeNames.DNS)
+      },
+      {
+        label: "Initial connection (duration)",
+        value: getDuration(RequestTimeRangeNames.CONNECTING)
+      },
+      {
+        label: "SSL (included in Initial connection) (duration)",
+        value: getDuration(RequestTimeRangeNames.SSL)
       },
       {
         label: "Request sent (duration)",
-        value: getDuration("sending")
+        value: getDuration(RequestTimeRangeNames.SENDING)
       },
       {
         label: "Waiting for server response (duration)",
-        value: getDuration("waiting")
+        value: getDuration(RequestTimeRangeNames.WAITING)
       },
       {
         label: "Content download (duration)",
-        value: getDuration("receiving")
+        value: getDuration(RequestTimeRangeNames.RECEIVING)
       },
       {
         label: "Duration (duration)",
-        value: getDuration("total")
+        value: getDuration(RequestTimeRangeNames.TOTAL)
       }
     ];
     return labels.filter((label) => !!label.value).map((label) => `${label.label}: ${label.value}`).join("\n");
@@ -8242,6 +8269,7 @@ var UIStringsNotTranslate2 = {
   gettingNetworkRequestDetails: "Getting network request details"
 };
 var lockedString6 = i18n13.i18n.lockedString;
+var TRACE_EVENT_KEY_REGEX = /^[a-z]+-\d+$/;
 var GetNetworkRequestDetailsTool = class {
   name = "getNetworkRequestDetails" /* GET_NETWORK_REQUEST_DETAILS */;
   permissionPrompt = "never" /* NEVER */;
@@ -8288,6 +8316,11 @@ var GetNetworkRequestDetailsTool = class {
       return isOriginAllowedByLock(originLock, req.initiatorSecurityOrigin());
     });
     if (!request) {
+      if (TRACE_EVENT_KEY_REGEX.test(args.id)) {
+        return {
+          error: `No request found. "${args.id}" is a performance trace eventKey, not a network request ID. Use getTraceEventByKey to inspect trace events, or call listNetworkRequests to find network request IDs.`
+        };
+      }
       return {
         error: "No request found"
       };
@@ -9552,7 +9585,7 @@ var ListNetworkRequestsTool = class {
     if (requestsToShow.length === 0) {
       if (hasCrossOriginRequest) {
         return {
-          error: `No requests showing with origin ${establishedOrigin.siteId()}. Tell the user to start a new chat`
+          error: `No requests showing with origin ${establishedOrigin.siteId()}. This conversation is locked to ${establishedOrigin.siteId()} (for example from a selected cross-origin file in Sources or an earlier page). Ask the user to start a new chat and remove the cross-origin file from context (or select a resource from the current page first).`
         };
       }
       return {
@@ -15237,7 +15270,7 @@ var skill2 = {
     "listNetworkRequests",
     "getNetworkRequestDetails"
   ],
-  "instructions": "# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to list recorded requests initiated by the active origin as `id;url;status;duration;size` rows, where same-origin URLs omit the `origin` prefix and long query or `data:` URLs end with `...<truncated>`.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (queueing, connection stalled, request sent, waiting for server response, content download, and total duration), status text, response body, and request initiator chain.\n   - If `# Selected network request` was provided in this conversation, it already contains this full output for its `Request ID`; do not call `getNetworkRequestDetails` for that same `id` unless its status was `pending`.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Internal IDs**: `Request ID` and `id` values are internal DevTools lookup keys (distinct from HTTP `X-Request-Id` headers); refer to requests by URL in your response and never output raw `Request ID` values as text.\n* **Origin Lock**: Only requests initiated by the conversation's established origin can be inspected.\n* **Recording**: DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). If `listNetworkRequests` reports that no requests have been recorded, ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
+  "instructions": "# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to list recorded requests initiated by the active origin as `id;url;status;duration;size` rows, where same-origin URLs omit the `origin` prefix and long query or `data:` URLs end with `...<truncated>`.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (queueing, connection stalled, proxy negotiation, DNS lookup, initial connection including SSL, request sent, waiting for server response, content download, and total duration), status text, response body, and request initiator chain.\n   - If `# Selected network request` was provided in this conversation, it already contains this full output for its `Request ID`; do not call `getNetworkRequestDetails` for that same `id` unless its status was `pending`.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Internal IDs**: `Request ID` and `id` values are internal DevTools lookup keys (distinct from HTTP `X-Request-Id` headers); refer to requests by URL in your response and never output raw `Request ID` values as text.\n* **Origin Lock**: Only requests initiated by the conversation's established origin can be inspected. Selecting a cross-origin file locks the conversation to that file's origin rather than the page origin.\n* **Recording**: DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). If `listNetworkRequests` reports that no requests have been recorded, ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
 };
 
 // gen/front_end/models/ai_assistance/skills/performance.skill.js
@@ -15844,6 +15877,7 @@ var AiConversation = class _AiConversation {
   #aiHistoryStorage;
   #targetManager;
   #alwaysAllowedTools;
+  #serverSideLoggingAllowed;
   constructor(options) {
     const {
       type,
@@ -15859,7 +15893,8 @@ var AiConversation = class _AiConversation {
       aiHistoryStorage = AiUtils9.AiHistoryStorage.AiHistoryStorage.instance(),
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       targetManager = SDK33.TargetManager.TargetManager.instance(),
-      alwaysAllowedTools
+      alwaysAllowedTools,
+      serverSideLoggingAllowed = true
     } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
@@ -15870,6 +15905,7 @@ var AiConversation = class _AiConversation {
     this.#aiHistoryStorage = aiHistoryStorage;
     this.#targetManager = targetManager;
     this.#alwaysAllowedTools = alwaysAllowedTools;
+    this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.history = this.#reconstructHistory(data);
@@ -16086,7 +16122,7 @@ ${item.text.trim()}`);
     const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
     const baseOptions = {
       aidaClient: this.#aidaClient,
-      serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
+      serverSideLoggingAllowed: this.#serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed(),
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,

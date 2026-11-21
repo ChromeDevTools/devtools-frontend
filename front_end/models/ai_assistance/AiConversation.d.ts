@@ -36,6 +36,11 @@ export interface AiConversationOptions {
     aiHistoryStorage?: AiHistoryStorage;
     alwaysAllowedTools?: AlwaysAllowedTools;
     targetManager?: SDK.TargetManager.TargetManager;
+    /**
+     * Whether server-side content logging is allowed for this conversation.
+     * Setting this to `false` disables logging and cannot override a global `disallowLogging` policy.
+     */
+    serverSideLoggingAllowed?: boolean;
 }
 export declare class AiConversation {
     #private;

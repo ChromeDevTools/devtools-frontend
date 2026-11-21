@@ -78,10 +78,11 @@ export class AiConversation {
     #aiHistoryStorage;
     #targetManager;
     #alwaysAllowedTools;
+    #serverSideLoggingAllowed;
     constructor(options) {
         const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiUtils.AiHistoryStorage.AiHistoryStorage.instance(), 
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        targetManager = SDK.TargetManager.TargetManager.instance(), alwaysAllowedTools, } = options;
+        targetManager = SDK.TargetManager.TargetManager.instance(), alwaysAllowedTools, serverSideLoggingAllowed = true, } = options;
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
         this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -91,6 +92,7 @@ export class AiConversation {
         this.#aiHistoryStorage = aiHistoryStorage;
         this.#targetManager = targetManager;
         this.#alwaysAllowedTools = alwaysAllowedTools;
+        this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.history = this.#reconstructHistory(data);
@@ -315,7 +317,7 @@ export class AiConversation {
         const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
         const baseOptions = {
             aidaClient: this.#aidaClient,
-            serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
+            serverSideLoggingAllowed: this.#serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed(),
             sessionId: this.id,
             changeManager: this.#changeManager,
             performanceRecordAndReload: this.#performanceRecordAndReload,

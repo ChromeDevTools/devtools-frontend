@@ -2215,12 +2215,15 @@
                         "NonPhrasingContentOptionChild",
                         "InteractiveContentOptionChild",
                         "InteractiveContentLegendChild",
-                        "InteractiveContentSummaryDescendant"
+                        "InteractiveContentSummaryDescendant",
+                        "AnchorMenuDescendant",
+                        "InteractiveContentMenuDescendant",
+                        "TextMenuDescendant"
                     ]
                 },
                 {
                     "id": "ElementAccessibilityIssueDetails",
-                    "description": "This issue warns about errors in the select or summary element content model.",
+                    "description": "This issue warns about errors in the select, summary, or menu element content model.",
                     "type": "object",
                     "properties": [
                         {
@@ -18350,7 +18353,8 @@
                         "PreProvisionedKeyNotFound",
                         "AttestationCertificationError",
                         "AttestationSigningError",
-                        "FederatedRegistrationRedirected"
+                        "FederatedRegistrationRedirected",
+                        "CrossSiteRefreshSessionConfig"
                     ]
                 },
                 {

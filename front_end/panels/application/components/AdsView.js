@@ -11,6 +11,7 @@ import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as PanelCommon from '../../common/common.js';
 import adScriptsTableStyles from './adScriptsTable.css.js';
 import adsViewStyles from './adsView.css.js';
 const { html } = Lit;
@@ -21,6 +22,7 @@ const COUNT_DOC_URL = 'https://developer.chrome.com/docs/ads/metrics/count';
 const CPU_USAGE_DOC_URL = 'https://developer.chrome.com/docs/ads/metrics/weight-cpu';
 const NETWORK_USAGE_DOC_URL = 'https://developer.chrome.com/docs/ads/metrics/weight-network';
 const AD_DETECTION_DOC_URL = 'https://developer.chrome.com/docs/ads/detection';
+const MAX_OWNER_RESOLVE_RETRIES = 3;
 const UIStrings = {
     /**
      * @description Title for the metrics section in the ads view of the Application panel.
@@ -97,6 +99,10 @@ const UIStrings = {
      */
     adIframes: 'Ad iframes',
     /**
+     * @description Context menu item for a row in the ad iframes table in the ads view of the Application panel. Opens the details of the ad iframe under Frames in the Application panel.
+     */
+    showIframeDetails: 'Show `iframe` details',
+    /**
      * @description Title for the ad scripts table in the ads view of the Application panel.
      * @example {3} PH1
      */
@@ -156,6 +162,14 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/AdsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+/**
+ * The DOM model can stop tracking the node of an <iframe> element and track a
+ * new node for it instead, e.g. when the iframe navigates. A node that is no
+ * longer tracked can't be highlighted or revealed.
+ */
+function isStaleNode(node) {
+    return node !== null && node.domModel().nodeForId(node.id) !== node;
+}
 const formatMetric = (val, formatter) => {
     if (val === undefined || val === -1) {
         return i18nString(UIStrings.notAvailable);
@@ -172,7 +186,7 @@ const SCRIPT_LINK_OPTIONS = {
     jslogContext: 'ad-script',
 };
 const stopPropagation = (e) => e.stopPropagation();
-const DEFAULT_VIEW = (input, output, target) => {
+export const DEFAULT_VIEW = (input, output, target) => {
     const metrics = input.metrics;
     const formatValue = (val, isPercentage) => {
         return formatMetric(val, (v) => {
@@ -225,6 +239,15 @@ const DEFAULT_VIEW = (input, output, target) => {
       </devtools-tooltip>
     `;
     };
+    const renderElementId = (frame) => {
+        if (!frame.ownerNode) {
+            return frame.elementId;
+        }
+        // The data grid shows a copy of the link, which keeps pointing at the node
+        // that it was created for. Keying the link by the node makes the data grid
+        // copy it again when the owner element is resolved again.
+        return html `${repeat([frame.ownerNode], node => node, node => PanelCommon.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: frame.elementId }))}`;
+    };
     // clang-format off
     Lit.render(html `
     <style>${adsViewStyles}</style>
@@ -269,7 +292,8 @@ const DEFAULT_VIEW = (input, output, target) => {
       <hr class="divider">
       <div class="ad-frames-title">${i18nString(UIStrings.adIframesTitle, { PH1: input.adFrames.length })}</div>
       <div class="ad-frames-container">
-        <devtools-data-grid striped resize="last" class="ad-frames-data-grid" name=${i18nString(UIStrings.adIframes)}>
+        <devtools-data-grid striped resize="last" class="ad-frames-data-grid" name=${i18nString(UIStrings.adIframes)}
+            @mouseleave=${input.onAdFramesMouseLeave}>
           <table>
             <tr>
               <th id="elementId" weight="1" sortable>${i18nString(UIStrings.elementId)}</th>
@@ -277,17 +301,10 @@ const DEFAULT_VIEW = (input, output, target) => {
               <th id="cpuTime" weight="1" sortable type="numeric">${i18nString(UIStrings.cpu)}</th>
               <th id="networkBytes" weight="1" sortable type="numeric">${i18nString(UIStrings.network)}</th>
             </tr>
-            ${input.adFrames.map(frame => html `
-              <tr>
-                <td title=${frame.elementId}>
-                  ${frame.elementId
-        ? html `
-                        <button class="text-button link-style devtools-link" @click=${frame.revealFrame}>
-                          ${frame.elementId}
-                        </button>
-                      `
-        : Lit.nothing}
-                </td>
+            ${repeat(input.adFrames, frame => frame.frameId, frame => html `
+              <tr
+                @contextmenu=${(e) => input.onAdFrameContextMenu(e.detail, frame.frameId)}>
+                <td title=${frame.elementId}>${renderElementId(frame)}</td>
                 <td title=${frame.initialOrigin}>${frame.initialOrigin}</td>
                 <td title=${frame.cpuTime} data-value=${frame.rawCpuTime}>${frame.cpuTime}</td>
                 <td title=${frame.networkBytes} data-value=${frame.rawNetworkBytes}>${frame.networkBytes}</td>
@@ -388,8 +405,11 @@ export class AdsView extends UI.Widget.Widget {
     #pollSessionId = 0;
     #view;
     #adFrames = new Map();
-    #adIframeElementIds = new Map();
-    #fetchingElementIds = new Set();
+    // Maps an ad frame ID to its resolved owner element, or null if it has none
+    // or couldn't be resolved.
+    #adIframeOwners = new Map();
+    #fetchingOwners = new Set();
+    #ownerResolveRetries = new Map();
     #unresolvedScriptIds = new Set();
     #adScriptNodeData = [];
     #urlToLinkElement = new Map();
@@ -472,7 +492,8 @@ export class AdsView extends UI.Widget.Widget {
         // Drop removed frames from the local cache.
         for (const frameId of metrics.removeAdFrames || []) {
             this.#adFrames.delete(frameId);
-            this.#adIframeElementIds.delete(frameId);
+            this.#adIframeOwners.delete(frameId);
+            this.#ownerResolveRetries.delete(frameId);
         }
         // Merge partial updates into the local cache.
         for (const frame of metrics.updateAdFrames || []) {
@@ -487,21 +508,26 @@ export class AdsView extends UI.Widget.Widget {
             const newFrame = { ...existingFrame, ...frame };
             this.#adFrames.set(frameId, newFrame);
         }
-        // Asynchronously fetch Element IDs for newly tracked frames.
-        // Duplicate requests are prevented by #fetchingElementIds.
+        // Asynchronously fetch the owner elements of newly tracked frames, and of
+        // frames whose owner element has to be resolved again.
+        // Duplicate requests are prevented by #fetchingOwners.
         for (const frameId of this.#adFrames.keys()) {
-            if (!this.#adIframeElementIds.has(frameId) && !this.#fetchingElementIds.has(frameId)) {
-                this.#fetchingElementIds.add(frameId);
-                void this.#fetchIframeElementId(frameId)
-                    .then(elementId => {
-                    if (this.#adFrames.has(frameId) && elementId !== undefined) {
-                        this.#adIframeElementIds.set(frameId, elementId);
+            const currentOwner = this.#adIframeOwners.get(frameId);
+            if ((currentOwner === undefined || isStaleNode(currentOwner)) && !this.#fetchingOwners.has(frameId)) {
+                this.#fetchingOwners.add(frameId);
+                void this.#fetchIframeOwner(frameId)
+                    .then(owner => {
+                    if (owner !== undefined) {
+                        this.#ownerResolveRetries.delete(frameId);
+                        if (this.#adFrames.has(frameId)) {
+                            this.#adIframeOwners.set(frameId, owner);
+                            this.requestUpdate();
+                        }
                     }
                 })
                     .catch(() => { })
                     .finally(() => {
-                    this.#fetchingElementIds.delete(frameId);
-                    this.requestUpdate();
+                    this.#fetchingOwners.delete(frameId);
                 });
             }
         }
@@ -550,17 +576,55 @@ export class AdsView extends UI.Widget.Widget {
             this.#reconstructProvenance(script.scriptId, newScriptsMap);
         }
     }
-    async #fetchIframeElementId(frameId) {
+    // Returns the owner element, null if the frame has none or retries are
+    // exhausted, or undefined if it couldn't be resolved yet and should be
+    // retried on a later poll.
+    async #fetchIframeOwner(frameId) {
         const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
         if (!frame) {
             return undefined;
         }
         const deferredNode = await frame.getOwnerDeferredDOMNode();
-        if (deferredNode) {
-            const node = await deferredNode.resolvePromise();
-            return node?.getAttribute('id') || null;
+        if (!deferredNode) {
+            return null;
         }
-        return null;
+        const owner = await deferredNode.resolvePromise();
+        if (owner) {
+            return owner;
+        }
+        // `resolvePromise()` can transiently return null (e.g. if the parent
+        // document updates mid-flight). Cap retries so a persistent null still
+        // falls back to <unnamed> without polling CDP forever.
+        const retries = this.#ownerResolveRetries.get(frameId) ?? 0;
+        if (retries >= MAX_OWNER_RESOLVE_RETRIES) {
+            return null;
+        }
+        if (this.#adFrames.has(frameId)) {
+            this.#ownerResolveRetries.set(frameId, retries + 1);
+        }
+        return undefined;
+    }
+    // Offers the same "Show iframe details" item as the context menu of an
+    // <iframe> node in the Elements panel.
+    #populateAdFrameContextMenu(contextMenu, frameId) {
+        const frameManager = SDK.FrameManager.FrameManager.instance();
+        if (frameManager.getFrame(frameId)) {
+            contextMenu.viewSection().appendItem(i18nString(UIStrings.showIframeDetails), () => {
+                // FrameManager hands out a new ResourceTreeFrame for a frame that
+                // moved to another target, so look the frame up again.
+                const frame = frameManager.getFrame(frameId);
+                if (frame) {
+                    void Common.Revealer.reveal(frame);
+                }
+            }, { jslogContext: 'show-frame-details' });
+        }
+    }
+    // The link of an Element ID hides the highlight of its node when the mouse
+    // leaves the link. The data grid can move or rebuild the link under the
+    // cursor, and then the link doesn't notice that the mouse leaves. So hide
+    // the highlight when the mouse leaves a row or the table as well.
+    #hideNodeHighlight() {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
     #onPrimaryPageChanged() {
         this.#currentMetrics = {
@@ -574,8 +638,9 @@ export class AdsView extends UI.Widget.Widget {
             removeAdFrames: [],
         };
         this.#adFrames.clear();
-        this.#adIframeElementIds.clear();
-        this.#fetchingElementIds.clear();
+        this.#adIframeOwners.clear();
+        this.#fetchingOwners.clear();
+        this.#ownerResolveRetries.clear();
         this.#unresolvedScriptIds.clear();
         this.#adScriptNodeData.length = 0;
         this.#urlToLinkElement.clear();
@@ -589,25 +654,17 @@ export class AdsView extends UI.Widget.Widget {
         for (const [frameId, frame] of this.#adFrames) {
             // The table displays the resolved ID, or an <unnamed> placeholder if the
             // element lacks an ID attribute, or an empty string while pending.
-            const elementIdText = this.#adIframeElementIds.has(frameId) ?
-                (this.#adIframeElementIds.get(frameId) || i18nString(UIStrings.unnamed)) :
-                '';
-            const revealFrame = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const frameToReveal = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-                if (frameToReveal) {
-                    void Common.Revealer.reveal(frameToReveal);
-                }
-            };
+            const ownerNode = this.#adIframeOwners.get(frameId);
+            const elementIdText = ownerNode !== undefined ? (ownerNode?.getAttribute('id') || i18nString(UIStrings.unnamed)) : '';
             adFramesArray.push({
+                frameId,
                 elementId: elementIdText,
+                ownerNode: ownerNode ?? null,
                 initialOrigin: frame.initialOrigin || '',
                 cpuTime: formatCpu(frame.cpuTime),
                 rawCpuTime: frame.cpuTime ?? -1,
                 networkBytes: formatNetwork(frame.networkBytes),
                 rawNetworkBytes: frame.networkBytes ?? -1,
-                revealFrame,
             });
         }
         for (const scriptId of this.#unresolvedScriptIds) {
@@ -643,6 +700,8 @@ export class AdsView extends UI.Widget.Widget {
             adScripts: this.#adScriptNodeData,
             target: target || null,
             getLinkElement: (url) => this.#urlToLinkElement.get(url),
+            onAdFramesMouseLeave: () => this.#hideNodeHighlight(),
+            onAdFrameContextMenu: (contextMenu, frameId) => this.#populateAdFrameContextMenu(contextMenu, frameId),
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

@@ -265,12 +265,12 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
     request.addDirectSocketChunk({
       data: 'MQ==',
       type: SDK.NetworkRequest.DirectSocketChunkType.SEND,
-      timestamp: 1700000001.123,
+      timestamp: new Date('2026-01-02T00:00:01.123').getTime() / 1000,
     });
     request.addDirectSocketChunk({
       data: 'Mg==',
       type: SDK.NetworkRequest.DirectSocketChunkType.RECEIVE,
-      timestamp: 1700000000.456,
+      timestamp: new Date('2026-01-01T23:59:59.456').getTime() / 1000,
     });
 
     chunkView = await renderView(request);
@@ -278,8 +278,8 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
 
     // Initial sort is ASC by time.
     await assertGridData(chunkView, [
-      ['Mg==', '1\xA0B', '22:13:20.456'],
-      ['MQ==', '1\xA0B', '22:13:21.123'],
+      ['Mg==', '1\xA0B', '23:59:59.456'],
+      ['MQ==', '1\xA0B', '00:00:01.123'],
     ]);
 
     // Click time header to sort DESC.
@@ -290,16 +290,16 @@ describeWithEnvironment('ResourceDirectSocketChunkView', () => {
     dispatchClickEvent(timeHeader);
     await chunkView.updateComplete;
     await assertGridData(chunkView, [
-      ['MQ==', '1\xA0B', '22:13:21.123'],
-      ['Mg==', '1\xA0B', '22:13:20.456'],
+      ['MQ==', '1\xA0B', '00:00:01.123'],
+      ['Mg==', '1\xA0B', '23:59:59.456'],
     ]);
 
     // Click time header to sort ASC again.
     dispatchClickEvent(timeHeader);
     await chunkView.updateComplete;
     await assertGridData(chunkView, [
-      ['Mg==', '1\xA0B', '22:13:20.456'],
-      ['MQ==', '1\xA0B', '22:13:21.123'],
+      ['Mg==', '1\xA0B', '23:59:59.456'],
+      ['MQ==', '1\xA0B', '00:00:01.123'],
     ]);
   });
 });

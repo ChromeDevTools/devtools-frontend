@@ -174,14 +174,20 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                         }
                       }}>
                         ${input.columns.map(col => {
-                        const value = col.id === 'time' ? row.timeText : (row.item.data[col.id] ?? '');
-                        const title = col.id === 'time' ? row.timeTooltip : undefined;
-                        return html`
-                              <td class="resource-chunk-view-td" title=${ifDefined(title)}
-                                  data-value=${ifDefined(typeof value === 'string' ? value : undefined)}>
-                                ${value}
+                          if (col.id === 'time') {
+                            return html`
+                              <td class="resource-chunk-view-td" title=${row.timeTooltip}
+                                  data-value=${row.item.getTime()}>
+                                ${row.timeText}
                               </td>`;
-                      })}
+                          }
+                          const value = row.item.data[col.id] ?? '';
+                          return html`
+                            <td class="resource-chunk-view-td"
+                                data-value=${ifDefined(typeof value === 'string' ? value : undefined)}>
+                              ${value}
+                            </td>`;
+                        })}
                       </tr>
                     `)}
                   </table>

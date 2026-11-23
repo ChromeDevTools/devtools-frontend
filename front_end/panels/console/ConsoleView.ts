@@ -162,6 +162,11 @@ const UIStrings = {
    */
   eagerlyEvaluateTextInThePrompt: 'Eagerly evaluate text in the prompt',
   /**
+   * @description Label for a checkbox in the Console settings section that enables evaluating expressions as you type
+   * in the prompt.
+   */
+  eagerEvaluation: 'Eager evaluation',
+  /**
    * @description Description of a setting that controls whether text typed in the console should be autocompleted from commands executed in the local console history.
    */
   autocompleteFromHistory: 'Autocomplete from history',
@@ -169,6 +174,11 @@ const UIStrings = {
    * @description Description of a setting that controls whether user activation is triggered by evaluation'.
    */
   treatEvaluationAsUserActivation: 'Treat evaluation as user activation',
+  /**
+   * @description Label for a checkbox in the Console settings section that allows code executed in the Console to
+   * trigger user activation.
+   */
+  evaluateTriggersUserActivation: 'Treat code evaluation as user action',
   /**
    * @description Text in Console view of the Console panel, indicating that a number of console
    * messages have been hidden.
@@ -298,20 +308,14 @@ const {bindToSetting} = UI.UIUtils;
 export interface SettingsPaneInput {
   showSettingsPane: boolean;
   networkMessagesSetting: Common.Settings.Setting<boolean>;
-  networkMessagesTitle: Common.UIString.LocalizedString;
   monitoringXHREnabledSetting: Common.Settings.Setting<boolean>;
   preserveConsoleLogSetting: Common.Settings.Setting<boolean>;
   consoleEagerEvalSetting: Common.Settings.Setting<boolean>;
-  consoleEagerEvalLabel: Common.UIString.LocalizedString;
   filterByExecutionContextSetting: Common.Settings.Setting<boolean>;
   consoleHistoryAutocompleteSetting: Common.Settings.Setting<boolean>;
-  consoleHistoryAutocompleteLabel: Common.UIString.LocalizedString;
   groupSimilarSetting: Common.Settings.Setting<boolean>;
-  groupSimilarLabel: Common.UIString.LocalizedString;
   userActivationEvalSetting: Common.Settings.Setting<boolean>;
-  userActivationEvalLabel: Common.UIString.LocalizedString;
   showCorsErrorsSetting: Common.Settings.Setting<boolean>;
-  showCorsErrorsLabel: Common.UIString.LocalizedString;
 }
 
 function renderSettingsPane(input: SettingsPaneInput): LitTemplate {
@@ -322,7 +326,7 @@ function renderSettingsPane(input: SettingsPaneInput): LitTemplate {
       role="group"
       aria-label=${i18nString(UIStrings.consoleSettings)}>
     <devtools-checkbox
-        title=${input.networkMessagesTitle}
+        title=${i18nString(UIStrings.networkMessages)}
         ${bindToSetting(input.networkMessagesSetting)}>
       ${i18nString(UIStrings.networkMessages)}
     </devtools-checkbox>
@@ -339,7 +343,7 @@ function renderSettingsPane(input: SettingsPaneInput): LitTemplate {
     <devtools-checkbox
         title=${i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)}
         ${bindToSetting(input.consoleEagerEvalSetting)}>
-      ${input.consoleEagerEvalLabel}
+      ${i18nString(UIStrings.eagerEvaluation)}
     </devtools-checkbox>
     <devtools-checkbox
         title=${i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)}
@@ -349,22 +353,22 @@ function renderSettingsPane(input: SettingsPaneInput): LitTemplate {
     <devtools-checkbox
         title=${i18nString(UIStrings.autocompleteFromHistory)}
         ${bindToSetting(input.consoleHistoryAutocompleteSetting)}>
-      ${input.consoleHistoryAutocompleteLabel}
+      ${i18nString(UIStrings.autocompleteFromHistory)}
     </devtools-checkbox>
     <devtools-checkbox
         title=${i18nString(UIStrings.groupSimilarMessagesInConsole)}
         ${bindToSetting(input.groupSimilarSetting)}>
-      ${input.groupSimilarLabel}
+      ${i18nString(UIStrings.groupSimilarMessagesInConsole)}
     </devtools-checkbox>
     <devtools-checkbox
         title=${i18nString(UIStrings.treatEvaluationAsUserActivation)}
         ${bindToSetting(input.userActivationEvalSetting)}>
-      ${input.userActivationEvalLabel}
+      ${i18nString(UIStrings.evaluateTriggersUserActivation)}
     </devtools-checkbox>
     <devtools-checkbox
         title=${i18nString(UIStrings.showCorsErrorsInConsole)}
         ${bindToSetting(input.showCorsErrorsSetting)}>
-      ${input.showCorsErrorsLabel}
+      ${i18nString(UIStrings.showCorsErrorsInConsole)}
     </devtools-checkbox>
   </div>`;
   // clang-format on
@@ -789,23 +793,14 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.#settingsPaneView({
       showSettingsPane: this.showSettingsPaneSetting.get(),
       networkMessagesSetting: this.filter.networkMessagesSetting,
-      networkMessagesTitle:
-          Settings.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title,
       monitoringXHREnabledSetting: this.#monitoringXHREnabledSetting,
       preserveConsoleLogSetting: this.#preserveConsoleLogSetting,
       consoleEagerEvalSetting: this.#consoleEagerEvalSetting,
-      consoleEagerEvalLabel: Settings.SettingUIRegistration.resolve(this.#consoleEagerEvalSetting.descriptor()).title,
       filterByExecutionContextSetting: this.filter.filterByExecutionContextSetting,
       consoleHistoryAutocompleteSetting: this.consoleHistoryAutocompleteSetting,
-      consoleHistoryAutocompleteLabel:
-          Settings.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title,
       groupSimilarSetting: this.groupSimilarSetting,
-      groupSimilarLabel: Settings.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
       userActivationEvalSetting: this.#userActivationEvalSetting,
-      userActivationEvalLabel:
-          Settings.SettingUIRegistration.resolve(this.#userActivationEvalSetting.descriptor()).title,
       showCorsErrorsSetting: this.showCorsErrorsSetting,
-      showCorsErrorsLabel: Settings.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title,
     },
                            undefined, this.#settingsPaneContainer);
     this.#progressView(this.#createProgressViewInput(), undefined, this.progressToolbarItem.element);

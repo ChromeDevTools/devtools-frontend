@@ -35,6 +35,7 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
   beforeEach(() => {
     // @ts-expect-error
     originalLanguageModel = window.LanguageModel;
+    Common.Settings.Settings.instance().createSetting('console-insights-enabled', false).set(true);
     updateHostConfig({
       aidaAvailability: {
         enabled: true,
@@ -181,14 +182,14 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
   });
 
   it('shows FRE dialog on "Tell me more" click', async () => {
-    Common.Settings.Settings.instance().settingForTest('console-insights-enabled').set(false);
+    Common.Settings.Settings.instance().createSetting('console-insights-enabled', false).set(false);
     const show = sinon.stub(Dialogs.FreDialog.FreDialog, 'show');
     const view = createViewFunctionStub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser);
     new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined, view);
     const input = await view.nextInput;
     await input.onTellMeMoreClick(new Event('click'));
     sinon.assert.calledOnce(show);
-    Common.Settings.Settings.instance().settingForTest('console-insights-enabled').set(true);
+    Common.Settings.Settings.instance().createSetting('console-insights-enabled', false).set(true);
   });
 
   it('disables teasers on "Dont show" change', async () => {

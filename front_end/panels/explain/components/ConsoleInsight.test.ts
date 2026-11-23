@@ -34,18 +34,20 @@ describeWithEnvironment('ConsoleInsight', () => {
     `;
 
   beforeEach(() => {
+    Common.Settings.Settings.instance().createSetting('console-insights-enabled', false).set(true);
+    Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false).set(true);
     sinon.stub(Host.AidaClient.HostConfigTracker.instance(), 'pollAidaAvailability').callsFake(async () => {});
   });
 
   afterEach(() => {
     component?.detach();
-    Common.Settings.Settings.instance().settingForTest('console-insights-enabled').set(true);
-    Common.Settings.Settings.instance().settingForTest('console-insights-onboarding-finished').set(true);
+    Common.Settings.Settings.instance().createSetting('console-insights-enabled', false).set(true);
+    Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false).set(true);
     setColorScheme('light');
   });
 
   it('shows opt-in teaser when setting is turned off', async () => {
-    Common.Settings.Settings.instance().settingForTest('console-insights-enabled').set(false);
+    Common.Settings.Settings.instance().createSetting('console-insights-enabled', false).set(false);
     const {view, component} = await createConsoleInsightWidget();
 
     assert.strictEqual(view.input.state.type, Explain.State.LOADING);
@@ -110,7 +112,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   it('shows reminder on first run of console insights', async () => {
-    Common.Settings.Settings.instance().settingForTest('console-insights-onboarding-finished').set(false);
+    Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false).set(false);
     const {view, component} = await createConsoleInsightWidget();
 
     assert.strictEqual(view.input.state.type, Explain.State.LOADING);

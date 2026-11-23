@@ -12,7 +12,13 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {createResource, getMainFrame, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
+import {
+  createResource,
+  getInitializedResourceTreeModel,
+  getMainFrame,
+  mockResourceTree,
+} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
@@ -353,5 +359,234 @@ describe('ResourceMapping', () => {
       const functionBounds = await resourceMapping.functionBoundsAtRawLocation(makeLocation(SCRIPTS[1], 11, 9));
       assert.isNotOk(functionBounds);
     });
+  });
+});
+
+describe('ResourceMapping frame navigation', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let backend: MockDebuggerBackend|null = null;
+
+  afterEach(() => {
+    backend?.universe.dispose();
+    backend = null;
+    Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+  });
+
+  it('removes old frame UISourceCodes and adds navigated frame UISourceCodes on frame navigation', async () => {
+    const inspectedPageUrl = urlString`http://127.0.0.1:8000/devtools/resources/inspected-page.html`;
+    const magicFrameUrl = urlString`http://127.0.0.1:8000/devtools/bindings/resources/magic-frame.html`;
+    const magicScriptUrl = urlString`http://127.0.0.1:8000/devtools/bindings/resources/magic-script.js`;
+    const magicStyleUrl = urlString`http://127.0.0.1:8000/devtools/bindings/resources/magic-style.css`;
+    const emptyFrameUrl = urlString`http://127.0.0.1:8000/devtools/bindings/resources/empty-frame.html`;
+    const mainFrameId = 'main-frame' as Protocol.Page.FrameId;
+    const childFrameId = 'child-frame' as Protocol.Page.FrameId;
+    const childLoaderId = 'child-loader' as Protocol.Network.LoaderId;
+    const navigatedChildLoaderId = 'navigated-child-loader' as Protocol.Network.LoaderId;
+    const mainContextId = 1 as Protocol.Runtime.ExecutionContextId;
+    const childContextId = 2 as Protocol.Runtime.ExecutionContextId;
+    const navigatedChildContextId = 3 as Protocol.Runtime.ExecutionContextId;
+    const styleSheetId = 'magic-style-id' as Protocol.DOM.StyleSheetId;
+
+    backend = new MockDebuggerBackend();
+    // Instantiate bindings before creating the target so all model observers attach in startup order.
+    void backend.universe.cssWorkspaceBinding;
+    void backend.universe.debuggerWorkspaceBinding;
+    const {workspace} = backend.universe;
+
+    backend.cdpConnection.setSuccessHandler('Network.enable', () => ({}));
+    backend.cdpConnection.setSuccessHandler('Network.setAttachDebugStack', () => ({}));
+    backend.cdpConnection.setSuccessHandler('Page.enable', () => ({}));
+    backend.cdpConnection.setSuccessHandler('DOM.enable', () => ({}));
+    backend.cdpConnection.setSuccessHandler('CSS.enable', () => ({}));
+    backend.cdpConnection.setSuccessHandler(
+        'Page.getResourceTree',
+        () => ({
+          frameTree: {
+            frame: {
+              id: mainFrameId,
+              loaderId: 'main-loader' as Protocol.Network.LoaderId,
+              url: inspectedPageUrl,
+              domainAndRegistry: '127.0.0.1',
+              securityOrigin: 'http://127.0.0.1:8000',
+              mimeType: 'text/html',
+              secureContextType: Protocol.Page.SecureContextType.SecureLocalhost,
+              crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.NotIsolated,
+              gatedAPIFeatures: [],
+            },
+            resources: [
+              {
+                url: inspectedPageUrl,
+                type: Protocol.Network.ResourceType.Document,
+                mimeType: 'text/html',
+                contentSize: 42,
+              },
+            ],
+          },
+        }));
+
+    const target =
+        backend.createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
+    backend.universe.targetManager.setScopeTarget(target);
+    await getInitializedResourceTreeModel(target);
+
+    backend.cdpConnection.dispatchEvent(
+        'Runtime.executionContextCreated',
+        {
+          context: {
+            id: mainContextId,
+            origin: 'http://127.0.0.1:8000',
+            name: '',
+            uniqueId: 'main-ctx',
+            auxData: {isDefault: true, frameId: mainFrameId, type: 'default'},
+          },
+        },
+        target.sessionId,
+    );
+
+    const snapshotWorkspaceURLs = (): string[] =>
+        workspace.uiSourceCodes().map(c => c.url()).sort(Platform.StringUtilities.caseInsensetiveComparator);
+
+    assert.deepEqual(snapshotWorkspaceURLs(), [inspectedPageUrl]);
+
+    backend.cdpConnection.dispatchEvent(
+        'Page.frameAttached',
+        {frameId: childFrameId, parentFrameId: mainFrameId},
+        target.sessionId,
+    );
+    backend.cdpConnection.dispatchEvent(
+        'Page.frameNavigated',
+        {
+          frame: {
+            id: childFrameId,
+            parentId: mainFrameId,
+            loaderId: childLoaderId,
+            url: magicFrameUrl,
+            domainAndRegistry: '127.0.0.1',
+            securityOrigin: 'http://127.0.0.1:8000',
+            mimeType: 'text/html',
+            secureContextType: Protocol.Page.SecureContextType.SecureLocalhost,
+            crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.NotIsolated,
+            gatedAPIFeatures: [],
+          },
+          type: Protocol.Page.NavigationType.Navigation,
+        },
+        target.sessionId,
+    );
+    backend.cdpConnection.dispatchEvent(
+        'Runtime.executionContextCreated',
+        {
+          context: {
+            id: childContextId,
+            origin: 'http://127.0.0.1:8000',
+            name: '',
+            uniqueId: 'child-ctx',
+            auxData: {isDefault: true, frameId: childFrameId, type: 'default'},
+          },
+        },
+        target.sessionId,
+    );
+    backend.cdpConnection.dispatchEvent(
+        'CSS.styleSheetAdded',
+        {
+          header: {
+            styleSheetId,
+            frameId: childFrameId,
+            sourceURL: magicStyleUrl,
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            title: '',
+            disabled: false,
+            isInline: false,
+            isMutable: false,
+            isConstructed: false,
+            loadingFailed: false,
+            startLine: 0,
+            startColumn: 0,
+            length: 0,
+            endLine: 0,
+            endColumn: 0,
+          },
+        },
+        target.sessionId,
+    );
+    const magicScript = await backend.addScript(
+        target,
+        {
+          url: magicScriptUrl,
+          content: 'console.log("magic");',
+          executionContextId: childContextId,
+          hasSourceURL: false,
+        },
+        null,
+    );
+    const magicVmUrl = `debugger:///VM${magicScript.scriptId} magic-script.js`;
+
+    assert.deepEqual(
+        snapshotWorkspaceURLs(),
+        [
+          magicVmUrl,
+          magicFrameUrl,
+          magicScriptUrl,
+          magicStyleUrl,
+          inspectedPageUrl,
+        ].sort(Platform.StringUtilities.caseInsensetiveComparator),
+    );
+
+    backend.cdpConnection.dispatchEvent(
+        'CSS.styleSheetRemoved',
+        {styleSheetId},
+        target.sessionId,
+    );
+    backend.cdpConnection.dispatchEvent(
+        'Runtime.executionContextDestroyed',
+        {executionContextId: childContextId, executionContextUniqueId: 'child-ctx'},
+        target.sessionId,
+    );
+    backend.cdpConnection.dispatchEvent(
+        'Page.frameNavigated',
+        {
+          frame: {
+            id: childFrameId,
+            parentId: mainFrameId,
+            loaderId: navigatedChildLoaderId,
+            url: emptyFrameUrl,
+            domainAndRegistry: '127.0.0.1',
+            securityOrigin: 'http://127.0.0.1:8000',
+            mimeType: 'text/html',
+            secureContextType: Protocol.Page.SecureContextType.SecureLocalhost,
+            crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.NotIsolated,
+            gatedAPIFeatures: [],
+          },
+          type: Protocol.Page.NavigationType.Navigation,
+        },
+        target.sessionId,
+    );
+    backend.cdpConnection.dispatchEvent(
+        'Runtime.executionContextCreated',
+        {
+          context: {
+            id: navigatedChildContextId,
+            origin: 'http://127.0.0.1:8000',
+            name: '',
+            uniqueId: 'navigated-child-ctx',
+            auxData: {isDefault: true, frameId: childFrameId, type: 'default'},
+          },
+        },
+        target.sessionId,
+    );
+
+    assert.isNull(workspace.uiSourceCodeForURL(magicFrameUrl));
+    assert.isNull(workspace.uiSourceCodeForURL(magicScriptUrl));
+    assert.isNull(workspace.uiSourceCodeForURL(magicStyleUrl));
+    assert.deepEqual(
+        snapshotWorkspaceURLs(),
+        [
+          magicVmUrl,
+          emptyFrameUrl,
+          inspectedPageUrl,
+        ].sort(Platform.StringUtilities.caseInsensetiveComparator),
+    );
   });
 });

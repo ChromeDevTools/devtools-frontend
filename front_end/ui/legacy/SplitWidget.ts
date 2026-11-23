@@ -58,6 +58,7 @@ export class SplitWidget extends SplitWidgetBase {
   #showMode: ShowMode = ShowMode.BOTH;
   #savedShowMode: ShowMode;
   #autoAdjustOrientation = false;
+  #noDefaultSplitter = false;
   readonly #zoomManager = ZoomManager.instance();
 
   constructor(
@@ -394,7 +395,7 @@ export class SplitWidget extends SplitWidgetBase {
     this.#cancelAnimation();
     this.#mainElement.classList.remove('maximized', 'hidden');
     this.#sidebarElement.classList.remove('maximized', 'hidden');
-    this.#resizerElement.classList.remove('hidden');
+    this.#resizerElement.classList.toggle('hidden', this.#noDefaultSplitter);
     this.setResizable(true);
 
     // Make sure main is the first in the children list.
@@ -760,9 +761,10 @@ export class SplitWidget extends SplitWidgetBase {
   }
 
   hideDefaultResizer(noSplitter?: boolean): void {
-    this.#resizerElement.classList.toggle('hidden', Boolean(noSplitter));
+    this.#noDefaultSplitter = Boolean(noSplitter);
+    this.#resizerElement.classList.toggle('hidden', this.#showMode !== ShowMode.BOTH || this.#noDefaultSplitter);
     this.uninstallResizer(this.#resizerElement);
-    this.#sidebarElement.classList.toggle('no-default-splitter', Boolean(noSplitter));
+    this.#sidebarElement.classList.toggle('no-default-splitter', this.#noDefaultSplitter);
   }
 
   installResizer(resizerElement: Element): void {
@@ -778,6 +780,30 @@ export class SplitWidget extends SplitWidgetBase {
       this.installResizer(resizer);
     } else {
       this.uninstallResizer(resizer);
+    }
+  }
+
+  setCustomResizers(elements: Element[]|null, noSplitter = false): void {
+    if (elements === null) {
+      for (const el of this.#resizerWidget.elements()) {
+        if (el !== this.#resizerElement) {
+          this.uninstallResizer(el);
+        }
+      }
+      this.#noDefaultSplitter = false;
+      this.#resizerElement.classList.toggle('hidden', this.#showMode !== ShowMode.BOTH);
+      this.#sidebarElement.classList.remove('no-default-splitter');
+      this.installResizer(this.#resizerElement);
+      return;
+    }
+    this.hideDefaultResizer(noSplitter);
+    for (const el of this.#resizerWidget.elements()) {
+      if (!elements.includes(el)) {
+        this.uninstallResizer(el);
+      }
+    }
+    for (const el of elements) {
+      this.installResizer(el);
     }
   }
 
@@ -921,18 +947,26 @@ export type ShowAttribute = 'main'|'sidebar'|'both';
 /**
  * `<devtools-split-view>` hosts a `SplitWidget`.
  *
- * `direction`, `sidebar-position`, and `show` can change at any time.
- * `name`, `sidebar-initial-size`, `sidebar-initial-width`,
+ * `direction`, `sidebar-position`, `show`, `resizer`, and `no-splitter` can
+ * change at any time. `resizer` accepts space-separated element IDs of custom
+ * resizer handles (resolving `<devtools-tabbed-pane>` to its header element)
+ * and disables the built-in resizer; `no-splitter` also hides the default
+ * splitter border. `name`, `sidebar-initial-size`, `sidebar-initial-width`,
  * `sidebar-initial-height`, and `constraints-in-dip` are only read when
  * the widget is created.
  */
 export class SplitWidgetElement extends WidgetElement<SplitWidget> {
-  static readonly observedAttributes: string[] = ['direction', 'sidebar-position', 'sidebar-initial-size', 'show'];
+  static readonly observedAttributes: string[] =
+      ['direction', 'sidebar-position', 'sidebar-initial-size', 'show', 'resizer', 'no-splitter'];
+
+  readonly #resizerObserver = new MutationObserver(() => this.#syncResizers());
+  #hasCustomResizers = false;
 
   constructor() {
     super();
 
     registerWidgetConfig(this, widgetConfig(element => {
+                           const splitElement = element as SplitWidgetElement;
                            const vertical = element.getAttribute('direction') === 'column';
                            const autoAdjustOrientation = element.getAttribute('direction') === 'auto';
                            const secondIsSidebar = element.getAttribute('sidebar-position') === 'second';
@@ -944,9 +978,9 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
                            const defaultSidebarWidth = !isNaN(sidebarWidth) ? sidebarWidth : fallbackSize;
                            const defaultSidebarHeight = !isNaN(sidebarHeight) ? sidebarHeight : fallbackSize;
 
-                           const widget = new SplitWidget(
-                               vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight,
-                               element.hasAttribute('constraints-in-dip'), element as SplitWidgetElement);
+                           const widget = new SplitWidget(vertical, secondIsSidebar, settingName, defaultSidebarWidth,
+                                                          defaultSidebarHeight,
+                                                          element.hasAttribute('constraints-in-dip'), splitElement);
 
                            if (element.getAttribute('sidebar-initial-size') === 'minimized') {
                              widget.setSidebarMinimized(true);
@@ -960,6 +994,7 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
                            } else if (show === 'sidebar') {
                              widget.hideMain();
                            }
+                           splitElement.#syncResizers(widget);
                            widget.addEventListener(Events.SHOW_MODE_CHANGED, () => {
                              element.dispatchEvent(new CustomEvent('change', {detail: widget.showMode()}));
                            });
@@ -968,7 +1003,71 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
                          }));
   }
 
-  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.#updateResizerObserver();
+    this.#syncResizers();
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.#resizerObserver.disconnect();
+  }
+
+  #updateResizerObserver(): void {
+    this.#resizerObserver.disconnect();
+    if (this.isConnected && this.hasAttribute('resizer')) {
+      this.#resizerObserver.observe(this, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ['id'],
+      });
+    }
+  }
+
+  #syncResizers(widget = Widget.get(this) as SplitWidget | null): void {
+    if (!widget) {
+      return;
+    }
+    const resizerAttr = this.getAttribute('resizer');
+    if (resizerAttr === null) {
+      if (this.#hasCustomResizers) {
+        this.#hasCustomResizers = false;
+        widget.setCustomResizers(null);
+      }
+      return;
+    }
+    this.#hasCustomResizers = true;
+    const ids = resizerAttr.split(/\s+/).filter(Boolean);
+    const root = this.getRootNode();
+    const parentSplit = this.parentElement?.closest('devtools-split-view') ?? null;
+    const elements: Element[] = [];
+    for (const id of ids) {
+      const selector = `#${CSS.escape(id)}`;
+      let match = this.querySelector(selector);
+      if (match && match.closest('devtools-split-view') !== this) {
+        match = null;
+      }
+      if (!match && (root instanceof Document || root instanceof ShadowRoot || root instanceof Element)) {
+        const candidate = root.querySelector(selector);
+        if (candidate && candidate.closest('devtools-split-view') === parentSplit) {
+          match = candidate;
+        }
+      }
+      if (match) {
+        elements.push(match instanceof WidgetElement ? match.resizerElement() : match);
+      }
+    }
+    widget.setCustomResizers(elements, this.hasAttribute('no-splitter'));
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string|null, newValue: string|null): void {
+    if (name === 'resizer' || name === 'no-splitter') {
+      this.#updateResizerObserver();
+      this.#syncResizers();
+      return;
+    }
     const widget = Widget.get(this) as SplitWidget | null;
     if (!widget) {
       return;
@@ -997,6 +1096,12 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
 }
 
 customElements.define('devtools-split-view', SplitWidgetElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-split-view': SplitWidgetElement;
+  }
+}
 
 export const enum ShowMode {
   BOTH = 'Both',

@@ -681,5 +681,141 @@ describeWithEnvironment('SplitWidget', () => {
     renderWithShow('both');
     renderWithShow('both');
     sinon.assert.calledOnce(showBothSpy);
+    container.detach();
+  });
+
+  it('installs declarative custom resizers from resizer attribute and updates dynamically', async () => {
+    const container = renderElementIntoDOM(new UI.Widget.VBox());
+
+    const renderWithResizer =
+        (useTabbedPane: boolean, resizer: string|typeof nothing = 'custom-resizer', noSplitter = false) => {
+          // clang-format off
+      render(html`
+        <devtools-split-view direction="row" sidebar-position="second"
+            resizer=${resizer} ?no-splitter=${noSplitter}>
+          <div slot="main">Main</div>
+          ${useTabbedPane ? html`
+            <devtools-tabbed-pane id="custom-resizer" slot="sidebar">
+              <div id="tab-1" label="Tab 1">Content</div>
+            </devtools-tabbed-pane>
+          ` : html`
+            <div slot="sidebar">
+              <div id="custom-resizer" class="custom-header">Header</div>
+            </div>
+          `}
+        </devtools-split-view>`, container.contentElement);
+          // clang-format on
+        };
+
+    renderWithResizer(false, 'custom-resizer', true);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const splitElement = container.contentElement.querySelector('devtools-split-view')!;
+    const splitWidget = splitElement.getWidget()!;
+    const defaultResizer = splitWidget.resizerElement() as HTMLElement;
+    const customDiv = container.contentElement.querySelector<HTMLElement>('#custom-resizer')!;
+    assert.strictEqual(defaultResizer.style.getPropertyValue('cursor'), '');
+    assert.isTrue(defaultResizer.classList.contains('hidden'));
+    assert.strictEqual(customDiv.style.getPropertyValue('cursor'), 'ns-resize');
+
+    // Switching the resizer target to a <devtools-tabbed-pane> installs its shadow header element.
+    renderWithResizer(true, 'custom-resizer', false);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const tabbedPane = container.contentElement.querySelector('devtools-tabbed-pane')!.getWidget()!;
+    const tabbedHeader = tabbedPane.headerElement() as HTMLElement;
+    assert.strictEqual(customDiv.style.getPropertyValue('cursor'), '');
+    assert.isFalse(defaultResizer.classList.contains('hidden'));
+    assert.strictEqual(tabbedHeader.style.getPropertyValue('cursor'), 'ns-resize');
+
+    // Removing the resizer attribute restores the built-in resizer.
+    renderWithResizer(true, nothing, false);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.strictEqual(tabbedHeader.style.getPropertyValue('cursor'), '');
+    assert.strictEqual(defaultResizer.style.getPropertyValue('cursor'), 'ns-resize');
+    container.detach();
+  });
+
+  it('keeps the default resizer hidden across show-mode transitions with resizer and no-splitter', async () => {
+    const container = renderElementIntoDOM(new UI.Widget.VBox());
+
+    const renderSplit = (show: UI.SplitWidget.ShowAttribute, resizer: string|typeof nothing, noSplitter: boolean) => {
+      // clang-format off
+      render(html`
+        <devtools-split-view direction="row" sidebar-position="second"
+            show=${show} resizer=${resizer} ?no-splitter=${noSplitter}>
+          <div slot="main">Main</div>
+          <div slot="sidebar">
+            <div id="custom-resizer">Header</div>
+          </div>
+        </devtools-split-view>`, container.contentElement);
+      // clang-format on
+    };
+
+    // Initial show="main" with custom resizer (without no-splitter) keeps default resizer hidden.
+    renderSplit('main', 'custom-resizer', false);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const splitWidget = container.contentElement.querySelector('devtools-split-view')!.getWidget()!;
+    const defaultResizer = splitWidget.resizerElement() as HTMLElement;
+    assert.isTrue(defaultResizer.classList.contains('hidden'));
+
+    // Switching to show="both" without no-splitter reveals the splitter border.
+    renderSplit('both', 'custom-resizer', false);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.isFalse(defaultResizer.classList.contains('hidden'));
+
+    // Switching show="main" -> show="both" with no-splitter keeps default resizer hidden.
+    renderSplit('main', 'custom-resizer', true);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.isTrue(defaultResizer.classList.contains('hidden'));
+
+    renderSplit('both', 'custom-resizer', true);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.isTrue(defaultResizer.classList.contains('hidden'));
+
+    // Removing resizer while show="main" keeps default resizer hidden until show="both".
+    renderSplit('main', nothing, false);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.isTrue(defaultResizer.classList.contains('hidden'));
+
+    renderSplit('both', nothing, false);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.isFalse(defaultResizer.classList.contains('hidden'));
+    container.detach();
+  });
+
+  it('preserves imperative resizers when connecting or reparenting <devtools-split-view> without resizer', async () => {
+    const containerA = renderElementIntoDOM(new UI.Widget.VBox());
+    const containerB = renderElementIntoDOM(new UI.Widget.VBox(), {allowMultipleChildren: true});
+    const detachedHost = document.createElement('div');
+    // clang-format off
+    render(html`
+      <devtools-split-view direction="row" sidebar-position="second">
+        <div slot="main">Main</div>
+        <div slot="sidebar"><div class="imperative-handle">Handle</div></div>
+      </devtools-split-view>`, detachedHost);
+    // clang-format on
+
+    const splitElement = detachedHost.querySelector('devtools-split-view')!;
+    const splitWidget = UI.Widget.Widget.getOrCreateWidget(splitElement) as UI.SplitWidget.SplitWidget;
+    const handle = splitElement.querySelector<HTMLElement>('.imperative-handle')!;
+    const defaultResizer = splitWidget.resizerElement() as HTMLElement;
+    splitWidget.hideDefaultResizer();
+    splitWidget.installResizer(handle);
+
+    splitWidget.show(containerA.contentElement);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(handle.style.getPropertyValue('cursor'), 'ns-resize');
+    assert.strictEqual(defaultResizer.style.getPropertyValue('cursor'), '');
+
+    splitWidget.show(containerB.contentElement);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(handle.style.getPropertyValue('cursor'), 'ns-resize');
+    assert.strictEqual(defaultResizer.style.getPropertyValue('cursor'), '');
+
+    containerA.detach();
+    containerB.detach();
   });
 });

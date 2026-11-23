@@ -356,6 +356,10 @@ export class WidgetElement<WidgetT extends AnyWidget> extends HTMLElement {
     return false;
   }
 
+  resizerElement(): Element {
+    return this;
+  }
+
   connectedCallback(): void {
     if (this.#disconnectTimeout) {
       clearTimeout(this.#disconnectTimeout);

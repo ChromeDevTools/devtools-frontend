@@ -1975,6 +1975,11 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
     }
   }
 
+  override resizerElement(): Element {
+    const widget = Widget.getOrCreateWidget(this) as TabbedPane;
+    return widget.headerElement();
+  }
+
   override connectedCallback(): void {
     super.connectedCallback();
     this.#syncTabs();

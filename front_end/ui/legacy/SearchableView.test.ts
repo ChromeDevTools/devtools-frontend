@@ -279,7 +279,7 @@ describeWithEnvironment('SearchableView', () => {
   });
 
   describe('presenter with view stub', () => {
-    it('passes state to view and updates on toggles, match counts, and visibility changes', () => {
+    it('passes state to view and updates on toggles, match counts, and visibility changes', async () => {
       const searchable = createSearchable();
       searchable.supportsMatchCounts = () => true;
       const searchInputElement = document.createElement('input');
@@ -301,6 +301,14 @@ describeWithEnvironment('SearchableView', () => {
       searchableView.setPlaceholder('Custom placeholder', 'Custom aria label');
       assert.strictEqual(view.input.placeholder, 'Custom placeholder');
       assert.strictEqual(view.input.searchAriaLabel, 'Custom aria label');
+
+      searchableView.placeholder = 'Updated placeholder';
+      searchableView.searchAriaLabel = 'Updated aria label';
+      await searchableView.updateComplete;
+      assert.strictEqual(searchableView.placeholder, 'Updated placeholder');
+      assert.strictEqual(searchableView.searchAriaLabel, 'Updated aria label');
+      assert.strictEqual(view.input.placeholder, 'Updated placeholder');
+      assert.strictEqual(view.input.searchAriaLabel, 'Updated aria label');
 
       searchableView.replaceable = true;
       searchableView.showSearchField();

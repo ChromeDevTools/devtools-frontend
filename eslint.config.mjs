@@ -1092,7 +1092,6 @@ export default defineConfig([
       'front_end/panels/mobile_throttling/ThrottlingSettingsTab.ts',
       'front_end/panels/network/BinaryResourceView.ts',
       'front_end/panels/network/EventSourceMessagesView.ts',
-      'front_end/panels/network/NetworkDataGridNode.ts',
       'front_end/panels/network/NetworkFrameGrouper.ts',
       'front_end/panels/network/NetworkLogViewColumns.ts',
       'front_end/panels/network/NetworkOverview.ts',

@@ -978,7 +978,7 @@
       Common.Settings.Settings.instance({
         forceNew: true,
         ...Main.Main.instanceForTest.createSettingsStorage(prefs),
-        settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+        settingRegistrations: [],
         runSettingsMigration: false,
         console: Common.Console.Console.instance(),
       });

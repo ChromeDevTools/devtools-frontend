@@ -66,7 +66,7 @@ export async function createTargetUniverse(
       syncedStorage: settingStorage,
       globalStorage: settingStorage,
       localStorage: settingStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      settingRegistrations: [],
       ...options?.settingsCreationOptions,
     },
     hostConfig: options?.hostConfig ?? {},

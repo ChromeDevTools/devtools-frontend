@@ -197,7 +197,7 @@ export class MainImpl {
     const creationOptions: Foundation.Universe.CreationOptions = {
       settingsCreationOptions: {
         ...this.createSettingsStorage(prefs),
-        settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+        settingRegistrations: [],
         logSettingAccess: VisualLogging.logSettingAccess,
         runSettingsMigration: !Host.InspectorFrontendHost.isUnderTest(),
       },

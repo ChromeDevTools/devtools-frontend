@@ -213,7 +213,7 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
 
       const item = requestConditionsDrawer.contentElement.querySelectorAll('.blocked-url')[index];
       assert.exists(item);
-      assert.isTrue(item.querySelector('input')?.disabled);
+      assert.isTrue(item.querySelector<UI.UIUtils.CheckboxLabel>('devtools-checkbox')?.disabled);
       assert.exists(item.querySelector('devtools-icon[name=cross-circle-filled]'));
       const tooltip = item.querySelector(`devtools-tooltip[id=url-pattern-error-${index}]`);
       assert.exists(tooltip);
@@ -231,7 +231,7 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
 
       const item = requestConditionsDrawer.contentElement.querySelectorAll('.blocked-url')[index];
       assert.exists(item);
-      assert.isTrue(item.querySelector('input')?.disabled);
+      assert.isTrue(item.querySelector<UI.UIUtils.CheckboxLabel>('devtools-checkbox')?.disabled);
       assert.exists(item.querySelector('devtools-icon[name=cross-circle-filled]'));
       const tooltip = item.querySelector(`devtools-tooltip[id=url-pattern-error-${index}]`);
       assert.exists(tooltip);

@@ -10,11 +10,13 @@ import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';
 
-async function checkboxIsChecked(element: ElementHandle<HTMLInputElement>): Promise<boolean> {
+type CheckboxElement = Element&{checked: boolean};
+
+async function checkboxIsChecked(element: ElementHandle<CheckboxElement>): Promise<boolean> {
   return await element.evaluate(node => node.checked);
 }
 
-async function setCheckBox(element: ElementHandle<HTMLInputElement>, wantChecked: boolean): Promise<void> {
+async function setCheckBox(element: ElementHandle<CheckboxElement>, wantChecked: boolean): Promise<void> {
   const checked = await checkboxIsChecked(element);
   if (checked !== wantChecked) {
     await element.click();
@@ -68,7 +70,8 @@ describe('The Request conditions drawer', function() {
     await devToolsPage.waitForAriaNone('Remove');
 
     const firstListItem = await devToolsPage.waitFor('.blocked-url');
-    const firstCheckbox = await (await devToolsPage.waitFor('devtools-list .blocked-url-checkbox')).toElement('input');
+    const firstCheckbox =
+        await devToolsPage.waitFor('devtools-list .blocked-url-checkbox') as ElementHandle<CheckboxElement>;
     assert.isTrue(await checkboxIsChecked(firstCheckbox));
     await firstListItem.click();
     assert.isTrue(await checkboxIsChecked(firstCheckbox));

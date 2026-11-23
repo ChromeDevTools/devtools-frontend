@@ -222,6 +222,7 @@ devtools_ui_module("unittests") {
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/source_frame:bundle",
+    "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
     "../../ui/settings:bundle",
     "../linear_memory_inspector/components:bundle",

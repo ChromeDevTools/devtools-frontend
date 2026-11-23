@@ -17,6 +17,7 @@ import {dispatchEvent} from '../../testing/MockConnection.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame} from '../../testing/ResourceHelpers.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 import * as Network from './network.js';
 
@@ -898,6 +899,50 @@ describeWithEnvironment('NetworkLogView', () => {
     });
   });
 
+  describe('InitiatorComparator', () => {
+    const {InitiatorComparator} = Network.NetworkDataGridNode.NetworkRequestNode;
+
+    function createNode(initiator: Protocol.Network.Initiator|null): Network.NetworkDataGridNode.NetworkRequestNode {
+      const request = createNetworkRequest({url: 'https://www.example.com/api', initiator});
+      return new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    }
+
+    function scriptInitiator(url: string, lineNumber: number): Protocol.Network.Initiator {
+      const callFrame =
+          {url, scriptId: '1' as Protocol.Runtime.ScriptId, functionName: '', lineNumber, columnNumber: 0};
+      return {type: Protocol.Network.InitiatorType.Script, stack: {callFrames: [callFrame]}};
+    }
+
+    it('sorts script initiators by file name and line number when no cell is rendered', () => {
+      const nodeA = createNode(scriptInitiator('https://www.example.com/a.js', 20));
+      const nodeB = createNode(scriptInitiator('https://www.example.com/b.js', 1));
+      const nodeB2 = createNode(scriptInitiator('https://www.example.com/b.js', 2));
+
+      assert.isBelow(InitiatorComparator(nodeA, nodeB), 0);
+      assert.isAbove(InitiatorComparator(nodeB, nodeA), 0);
+      assert.isBelow(InitiatorComparator(nodeB, nodeB2), 0);
+      assert.strictEqual(InitiatorComparator(nodeB, nodeB), 0);
+    });
+
+    it('sorts parser, other and preload initiators by their cell text', () => {
+      const parserNode = createNode({type: Protocol.Network.InitiatorType.Parser, url: 'https://www.example.com/'});
+      const otherNode = createNode(null);
+      const preloadNode = createNode({type: Protocol.Network.InitiatorType.Preload});
+
+      assert.isBelow(InitiatorComparator(parserNode, otherNode), 0);
+      assert.isBelow(InitiatorComparator(otherNode, preloadNode), 0);
+      assert.isAbove(InitiatorComparator(preloadNode, parserNode), 0);
+    });
+
+    it('sorts a node without a request first', () => {
+      const node = createNode(null);
+      const nodeWithoutRequest = new Network.NetworkDataGridNode.NetworkNode(createParentView());
+
+      assert.isBelow(InitiatorComparator(nodeWithoutRequest, node), 0);
+      assert.isAbove(InitiatorComparator(node, nodeWithoutRequest), 0);
+    });
+  });
+
   describe('isConsoleOriginated', () => {
     function createRequestWithInitiator(
         resourceType: Common.ResourceType.ResourceType,
@@ -1116,6 +1161,59 @@ describeWithEnvironment('NetworkLogView', () => {
       const span = cell.querySelector('span');
       assert.isNotNull(span);
       assert.isFalse(span.classList.contains('devtools-link'));
+    });
+
+    function renderInitiatorCell(initiator: Protocol.Network.Initiator,
+                                 parentView = createParentView()): HTMLTableCellElement {
+      const request = createNetworkRequest({url: 'https://www.example.com/asset.js', initiator});
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(parentView, request);
+      return renderNodeCell(networkRequestNode, 'initiator');
+    }
+
+    it('renders a link and the Script subtitle for a script initiator', () => {
+      const parentView = createParentView();
+      parentView.linkifier.returns(new Components.Linkifier.Linkifier());
+      const callFrame = {
+        url: 'https://www.example.com/a.js',
+        scriptId: '1' as Protocol.Runtime.ScriptId,
+        functionName: '',
+        lineNumber: 4,
+        columnNumber: 0,
+      };
+
+      const cell = renderInitiatorCell({type: Protocol.Network.InitiatorType.Script, stack: {callFrames: [callFrame]}},
+                                       parentView);
+
+      assert.lengthOf(cell.children, 2);
+      assert.strictEqual(cell.querySelector('.network-cell-subtitle')?.textContent, 'Script');
+      assert.isTrue(cell.classList.contains('network-script-initiated'));
+      assert.isFalse(cell.classList.contains('network-dim-cell'));
+    });
+
+    it('renders a link and the Parser subtitle for a parser initiator', () => {
+      const cell =
+          renderInitiatorCell({type: Protocol.Network.InitiatorType.Parser, url: 'https://www.example.com/index.html'});
+
+      assert.lengthOf(cell.children, 2);
+      assert.strictEqual(cell.querySelector('.network-cell-subtitle')?.textContent, 'Parser');
+      assert.include(cell.textContent, 'index.html');
+    });
+
+    it('renders a link and a subtitle for a signed exchange initiator', () => {
+      const cell = renderInitiatorCell(
+          {type: Protocol.Network.InitiatorType.SignedExchange, url: 'https://www.example.com/page.sxg'});
+
+      assert.lengthOf(cell.children, 2);
+      assert.strictEqual(cell.querySelector('.network-cell-subtitle')?.textContent, 'signed-exchange');
+      assert.include(cell.textContent, 'page.sxg');
+    });
+
+    it('renders a dimmed text for a preload initiator', () => {
+      const cell = renderInitiatorCell({type: Protocol.Network.InitiatorType.Preload});
+
+      assert.strictEqual(cell.textContent, 'Preload');
+      assert.strictEqual(cell.title, 'Preload');
+      assert.isTrue(cell.classList.contains('network-dim-cell'));
     });
   });
 });

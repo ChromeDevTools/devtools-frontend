@@ -632,19 +632,16 @@ function isFirstPrimaryColumn(dataGrid: DataGrid.DataGrid.DataGridImpl<unknown>|
 }
 
 export class NetworkRequestNode extends NetworkNode {
-  #initiatorCell: Element|null;
   #requestInternal: SDK.NetworkRequest.NetworkRequest;
   readonly #isNavigationRequestInternal: boolean;
   override selectable: boolean;
   #isOnInitiatorPathInternal: boolean;
   #isOnInitiatedPathInternal: boolean;
-  #linkifiedInitiatorAnchor?: HTMLElement;
 
   static readonly #requestNumberByRequest = new WeakMap<SDK.NetworkRequest.NetworkRequest, number>();
 
   constructor(parentView: NetworkLogViewInterface, request: SDK.NetworkRequest.NetworkRequest) {
     super(parentView);
-    this.#initiatorCell = null;
     this.#requestInternal = request;
     this.#isNavigationRequestInternal = false;
     this.selectable = true;
@@ -754,22 +751,31 @@ export class NetworkRequestNode extends NetworkNode {
     if (!aRequest || !bRequest) {
       return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
-    const aHasInitiatorCell = a instanceof NetworkRequestNode && a.#initiatorCell;
-    const bHasInitiatorCell = b instanceof NetworkRequestNode && b.#initiatorCell;
-    if (!aHasInitiatorCell || !bHasInitiatorCell) {
-      return !aHasInitiatorCell ? -1 : 1;
-    }
-    // `a` and `b` are guaranteed NetworkRequestNodes with present initiatorCell elements.
-    const networkRequestNodeA = (a);
-    const networkRequestNodeB = (b);
+    return NetworkRequestNode.#initiatorSortKey(aRequest).localeCompare(NetworkRequestNode.#initiatorSortKey(bRequest));
+  }
 
-    const aText = networkRequestNodeA.#linkifiedInitiatorAnchor ?
-        networkRequestNodeA.#linkifiedInitiatorAnchor.textContent || '' :
-        (networkRequestNodeA.#initiatorCell as HTMLElement).title;
-    const bText = networkRequestNodeB.#linkifiedInitiatorAnchor ?
-        networkRequestNodeB.#linkifiedInitiatorAnchor.textContent || '' :
-        (networkRequestNodeB.#initiatorCell as HTMLElement).title;
-    return aText.localeCompare(bText);
+  /**
+   * Returns the text that the initiator column sorts by. The text comes from
+   * the initiator data, so that the sort order does not depend on rendered cells.
+   */
+  static #initiatorSortKey(request: SDK.NetworkRequest.NetworkRequest): string {
+    const initiator = Logs.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
+    switch (initiator.type) {
+      case SDK.NetworkRequest.InitiatorType.SCRIPT: {
+        const name = Bindings.ResourceUtils.displayNameForURL(initiator.url);
+        return initiator.lineNumber === undefined ? name : `${name}:${initiator.lineNumber + 1}`;
+      }
+      case SDK.NetworkRequest.InitiatorType.REDIRECT:
+        return initiator.url;
+      case SDK.NetworkRequest.InitiatorType.PRELOAD:
+        return i18nString(UIStrings.preload);
+      case SDK.NetworkRequest.InitiatorType.PARSER:
+      case SDK.NetworkRequest.InitiatorType.SIGNED_EXCHANGE:
+      case SDK.NetworkRequest.InitiatorType.PREFLIGHT:
+        return '';
+      default:
+        return request.fromEarlyHints() ? i18nString(UIStrings.earlyHints) : i18nString(UIStrings.otherC);
+    }
   }
 
   static InitiatorAddressSpaceComparator(a: NetworkNode, b: NetworkNode): number {
@@ -1171,8 +1177,6 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   override createCells(trElement: HTMLElement): void {
-    this.#initiatorCell = null;
-
     trElement.setAttribute('data-network-request-id', this.#requestInternal.requestId());
     trElement.classList.toggle('network-throttled-row', Boolean(this.throttlingConditions()?.urlPattern));
     trElement.classList.toggle('network-warning-row', this.isWarning());
@@ -1612,7 +1616,6 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   #renderInitiatorCell(cell: HTMLElement): void {
-    this.#initiatorCell = cell;
     const request = this.#requestInternal;
     const initiator = Logs.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
 
@@ -1650,14 +1653,12 @@ export class NetworkRequestNode extends NetworkNode {
       case SDK.NetworkRequest.InitiatorType.SCRIPT: {
         const target = SDK.NetworkManager.NetworkManager.forRequest(request)?.target() || null;
         const linkifier = this.parentView().linkifier();
-        if (initiator.stack?.callFrames.length) {
-          this.#linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(target, initiator.stack);
-        } else {
-          this.#linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
-              target, initiator.scriptId, initiator.url, initiator.lineNumber, {columnNumber: initiator.columnNumber});
-        }
-        UI.Tooltip.Tooltip.install((this.#linkifiedInitiatorAnchor), '');
-        cell.appendChild(this.#linkifiedInitiatorAnchor);
+        const anchor = initiator.stack?.callFrames.length ?
+            linkifier.linkifyStackTraceTopFrame(target, initiator.stack) :
+            linkifier.linkifyScriptLocation(target, initiator.scriptId, initiator.url, initiator.lineNumber,
+                                            {columnNumber: initiator.columnNumber});
+        UI.Tooltip.Tooltip.install(anchor, '');
+        cell.appendChild(anchor);
         this.#appendSubtitle(
             cell, this.#isConsoleOriginated() ? i18nString(UIStrings.console) : i18nString(UIStrings.script));
         cell.classList.add('network-script-initiated');

@@ -15,8 +15,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBreadcrumbsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type UserScrollPosition = 'start'|'middle'|'end';
-
 export interface Crumb {
   title: CrumbTitle;
   selected: boolean;

@@ -4,22 +4,21 @@
 
 import {assert} from 'chai';
 import {after, before, describe, it} from 'mocha';
+import sinon from 'sinon';
 
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {
-  assertElements,
   dispatchClickEvent,
   doubleRaf,
   renderElementIntoDOM,
-  waitForScrollLeft,
 } from '../../../testing/DOMHelpers.js';
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
 } from '../../../testing/EnvironmentHelpers.js';
 import {withNoMutations} from '../../../testing/MutationHelpers.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -31,12 +30,14 @@ interface MakeCrumbOptions {
   nodeName?: string;
   nodeNameNicelyCased?: string;
   attributes?: Record<string, string>;
+  parentNode?: SDK.DOMModel.DOMNode|null;
 }
 
 const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   const attributes = overrides.attributes || {};
   const newCrumb = {
     id: (overrides.id || 1) as Protocol.DOM.NodeId,
+    parentNode: overrides.parentNode ?? null,
     nodeType: () => overrides.nodeType ?? Node.ELEMENT_NODE,
     pseudoType: () => overrides.pseudoType ?? '',
     shadowRootType: () => overrides.shadowRootType ?? '',
@@ -47,6 +48,41 @@ const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   } as unknown as SDK.DOMModel.DOMNode;
   return newCrumb;
 };
+
+const documentCrumb = makeCrumb({
+  nodeType: Node.DOCUMENT_NODE,
+  id: 1,
+  nodeName: 'document',
+  nodeNameNicelyCased: 'document',
+});
+
+const bodyCrumb = makeCrumb({
+  nodeType: Node.ELEMENT_NODE,
+  id: 2,
+  nodeName: 'body',
+  nodeNameNicelyCased: 'body',
+  parentNode: documentCrumb,
+});
+
+const divCrumb = makeCrumb({
+  nodeType: Node.ELEMENT_NODE,
+  id: 3,
+  nodeName: 'div',
+  nodeNameNicelyCased: 'div',
+  attributes: {
+    id: 'test-id',
+  },
+  parentNode: bodyCrumb,
+});
+
+/**
+ * Resolves once the (smooth) scroll of `element` has fully finished. Polling
+ * `scrollLeft` is not reliable here: on slow bots a smooth scroll can stall
+ * between two polls and look finished while it is still moving.
+ */
+function waitForScrollEnd(element: HTMLElement): Promise<void> {
+  return new Promise(resolve => element.addEventListener('scrollend', () => resolve(), {once: true}));
+}
 
 describe('ElementsBreadcrumbs', () => {
   before(async () => {
@@ -159,20 +195,6 @@ describe('ElementsBreadcrumbs', () => {
     });
 
     it('excludes the document node', () => {
-      const documentCrumb = makeCrumb({
-        nodeType: Node.DOCUMENT_NODE,
-        id: 1,
-        nodeName: 'document',
-        nodeNameNicelyCased: 'document',
-      });
-
-      const bodyCrumb = makeCrumb({
-        nodeType: Node.ELEMENT_NODE,
-        id: 2,
-        nodeName: 'body',
-        nodeNameNicelyCased: 'body',
-      });
-
       const result = ElementsComponents.ElementsBreadcrumbsUtils.crumbsToRender([documentCrumb, bodyCrumb], bodyCrumb);
 
       assert.deepEqual(result, [
@@ -188,82 +210,210 @@ describe('ElementsBreadcrumbs', () => {
     });
   });
 
-  describe('rendering breadcrumbs', () => {
-    async function renderBreadcrumbs(data: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbsData): Promise<{
-      component: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs,
-      shadowRoot: ShadowRoot,
-    }> {
-      const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-      renderElementIntoDOM(component);
-      component.data = data;
-
-      await RenderCoordinator.done();
-      assert.isNotNull(component.shadowRoot);
-      return {
-        component,
-        shadowRoot: component.shadowRoot,
-      };
+  describe('presenter', () => {
+    function createPresenter() {
+      const view = createViewFunctionStub(ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs);
+      const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs(undefined, view);
+      return {view, component};
     }
 
-    const bodyCrumb = makeCrumb({
-      nodeType: Node.ELEMENT_NODE,
-      id: 2,
-      nodeName: 'body',
-      nodeNameNicelyCased: 'body',
+    it('derives the crumbs from the selected node and its ancestors', async () => {
+      const {view, component} = createPresenter();
+
+      component.selectedNode = divCrumb;
+      await view.nextInput;
+
+      // The document node is excluded, and the crumbs are ordered from the root down.
+      assert.lengthOf(view.input.crumbs, 2);
+      assert.strictEqual(view.input.crumbs[0].node, bodyCrumb);
+      assert.isFalse(view.input.crumbs[0].selected);
+      assert.strictEqual(view.input.crumbs[1].node, divCrumb);
+      assert.isTrue(view.input.crumbs[1].selected);
     });
 
-    const divCrumb = makeCrumb({
-      nodeType: Node.ELEMENT_NODE,
-      id: 3,
-      nodeName: 'div',
-      nodeNameNicelyCased: 'div',
-      attributes: {
-        id: 'test-id',
-      },
-    });
+    it('dispatches NodeSelectedEvent when a crumb is clicked', async () => {
+      const {view, component} = createPresenter();
+      component.selectedNode = divCrumb;
+      await view.nextInput;
 
-    it('renders all the breadcrumbs provided', async () => {
-      const {shadowRoot} = await renderBreadcrumbs({
-        crumbs: [divCrumb, bodyCrumb],
-        selectedNode: bodyCrumb,
+      let selectedNode: SDK.DOMModel.DOMNode|null = null;
+      component.element.addEventListener('breadcrumbsnodeselected', event => {
+        selectedNode = event.node;
       });
 
-      const crumbs = Array.from(shadowRoot.querySelectorAll('[data-crumb]'));
+      view.input.onCrumbClick(bodyCrumb);
+      assert.strictEqual(selectedNode, bodyCrumb);
+    });
+
+    it('highlights and hides highlight on mouse/focus events', async () => {
+      const {view, component} = createPresenter();
+      const highlightSpy = sinon.spy(bodyCrumb, 'highlight');
+      const hideHighlightSpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+
+      component.selectedNode = bodyCrumb;
+      await view.nextInput;
+
+      view.input.onCrumbMouseMove(bodyCrumb);
+      sinon.assert.calledOnce(highlightSpy);
+
+      view.input.onCrumbMouseLeave();
+      sinon.assert.calledOnce(hideHighlightSpy);
+
+      view.input.onCrumbFocus(bodyCrumb);
+      sinon.assert.calledTwice(highlightSpy);
+
+      view.input.onCrumbBlur();
+      sinon.assert.calledTwice(hideHighlightSpy);
+    });
+
+    it('computes the overflow and scroll button state from the viewport', async () => {
+      const {view, component} = createPresenter();
+      component.selectedNode = divCrumb;
+      await view.nextInput;
+      assert.isFalse(view.input.overflowing);
+
+      view.input.onViewportChange({windowWidth: 100, contentWidth: 300, scrollLeft: 0});
+      let input = await view.nextInput;
+      assert.isTrue(input.overflowing);
+      assert.isFalse(input.canScrollLeft);
+      assert.isTrue(input.canScrollRight);
+
+      view.input.onViewportChange({windowWidth: 100, contentWidth: 300, scrollLeft: 200});
+      input = await view.nextInput;
+      assert.isTrue(input.canScrollLeft);
+      assert.isFalse(input.canScrollRight);
+    });
+
+    it('only asks to scroll to the selected crumb when the selection changes or the crumbs start to overflow',
+       async () => {
+         const {view, component} = createPresenter();
+
+         component.selectedNode = divCrumb;
+         assert.isTrue((await view.nextInput).scrollSelectedCrumbIntoView);
+
+         // A DOM tree update re-renders with the same selection.
+         component.requestUpdate();
+         assert.isFalse((await view.nextInput).scrollSelectedCrumbIntoView);
+
+         view.input.onViewportChange({windowWidth: 100, contentWidth: 300, scrollLeft: 0});
+         assert.isTrue((await view.nextInput).scrollSelectedCrumbIntoView);
+
+         // Scrolling keeps the overflow state, so it does not trigger another auto-scroll.
+         view.input.onViewportChange({windowWidth: 100, contentWidth: 300, scrollLeft: 50});
+         assert.isFalse((await view.nextInput).scrollSelectedCrumbIntoView);
+       });
+
+    it('treats the end of a short scroll range as the end', async () => {
+      const {view, component} = createPresenter();
+      component.selectedNode = divCrumb;
+      await view.nextInput;
+
+      // The content only overflows by 5px, and the user scrolled all the way.
+      view.input.onViewportChange({windowWidth: 100, contentWidth: 105, scrollLeft: 5});
+      const input = await view.nextInput;
+      assert.isTrue(input.canScrollLeft);
+      assert.isFalse(input.canScrollRight);
+    });
+
+    it('does not overflow when the crumbs are empty or hidden', async () => {
+      const {view, component} = createPresenter();
+      component.selectedNode = divCrumb;
+      await view.nextInput;
+      view.input.onViewportChange({windowWidth: 100, contentWidth: 300, scrollLeft: 0});
+      await view.nextInput;
+
+      view.input.onViewportChange({windowWidth: 0, contentWidth: 0, scrollLeft: 0});
+      const input = await view.nextInput;
+      assert.isFalse(input.overflowing);
+      assert.isFalse(input.canScrollLeft);
+      assert.isFalse(input.canScrollRight);
+    });
+  });
+
+  describe('rendering breadcrumbs', () => {
+    /**
+     * Waits until the widget has rendered and reacted to the ResizeObserver
+     * and scroll notifications that the rendering triggers.
+     */
+    async function settle(component: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs): Promise<void> {
+      for (let i = 0; i < 2; i++) {
+        await component.updateComplete;
+        await doubleRaf();
+      }
+      await component.updateComplete;
+    }
+
+    async function renderBreadcrumbs(selectedNode: SDK.DOMModel.DOMNode, width?: string):
+        Promise<{component: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs, wrapper: HTMLElement}> {
+      const wrapper = document.createElement('div');
+      if (width) {
+        wrapper.style.width = width;
+      }
+      renderElementIntoDOM(wrapper);
+
+      const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
+      component.markAsRoot();
+      component.show(wrapper);
+      component.selectedNode = selectedNode;
+      await settle(component);
+      return {component, wrapper};
+    }
+
+    function getOverflowButtons(component: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs):
+        {leftButton: HTMLButtonElement, rightButton: HTMLButtonElement} {
+      const leftButton = component.contentElement.querySelector('button.overflow.left');
+      assert.instanceOf(leftButton, HTMLButtonElement);
+      const rightButton = component.contentElement.querySelector('button.overflow.right');
+      assert.instanceOf(rightButton, HTMLButtonElement);
+      return {leftButton, rightButton};
+    }
+
+    it('renders as soon as it is shown', async () => {
+      const wrapper = document.createElement('div');
+      renderElementIntoDOM(wrapper);
+      const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
+      component.markAsRoot();
+
+      component.show(wrapper);
+      await component.updateComplete;
+
+      assert.isNotNull(component.contentElement.querySelector('nav.crumbs'));
+    });
+
+    it('renders all the breadcrumbs', async () => {
+      const {component} = await renderBreadcrumbs(divCrumb);
+
+      const crumbs = component.contentElement.querySelectorAll('[data-crumb]');
       assert.lengthOf(crumbs, 2);
     });
 
     it('highlights the active breadcrumb', async () => {
-      const {shadowRoot} = await renderBreadcrumbs({
-        crumbs: [divCrumb, bodyCrumb],
-        selectedNode: bodyCrumb,
-      });
-      const activeCrumbs = shadowRoot.querySelectorAll('.crumb.selected');
+      const {component} = await renderBreadcrumbs(divCrumb);
+
+      const activeCrumbs = component.contentElement.querySelectorAll('.crumb.selected');
       assert.lengthOf(activeCrumbs, 1);
+      assert.strictEqual(activeCrumbs[0].getAttribute('data-node-id'), String(divCrumb.id));
     });
 
     it('updates the text if a crumb\'s title changes', async () => {
-      const {component, shadowRoot} = await renderBreadcrumbs({
-        crumbs: [divCrumb, bodyCrumb],
-        selectedNode: bodyCrumb,
-      });
+      const options = {id: 4, nodeName: 'div', nodeNameNicelyCased: 'div', parentNode: bodyCrumb};
+      const node = makeCrumb(options);
+      const {component} = await renderBreadcrumbs(node);
 
-      await withNoMutations(shadowRoot, async shadowRoot => {
-        const newDiv = makeCrumb({nodeName: 'span', nodeNameNicelyCased: 'span'});
-        component.data = {
-          crumbs: [newDiv, bodyCrumb],
-          selectedNode: bodyCrumb,
-        };
+      await withNoMutations(component.contentElement, async contentElement => {
+        // ElementsPanel calls requestUpdate() when the DOM tree changes while the selection stays the same.
+        options.nodeNameNicelyCased = 'span';
+        component.requestUpdate();
+        await component.updateComplete;
 
-        await RenderCoordinator.done();
-
-        const renderedTextForUpdatedCrumb = shadowRoot.querySelector('.crumb:last-child devtools-node-text');
+        const renderedTextForUpdatedCrumb = contentElement.querySelector('.crumb:last-child devtools-node-text');
         assert.instanceOf(renderedTextForUpdatedCrumb, HTMLElement);
         assert.strictEqual(renderedTextForUpdatedCrumb.dataset.nodeTitle, 'span');
       });
     });
 
     describe('when the breadcrumbs overflow', () => {
-      const bodyCrumb = makeCrumb({
+      const longBodyCrumb = makeCrumb({
         nodeType: Node.ELEMENT_NODE,
         id: 2,
         nodeName: 'body',
@@ -273,7 +423,7 @@ describe('ElementsBreadcrumbs', () => {
         },
       });
 
-      const divCrumb = makeCrumb({
+      const longDivCrumb = makeCrumb({
         nodeType: Node.ELEMENT_NODE,
         id: 3,
         nodeName: 'div',
@@ -281,150 +431,115 @@ describe('ElementsBreadcrumbs', () => {
         attributes: {
           id: 'test-id-with-a-really-long-name',
         },
+        parentNode: longBodyCrumb,
       });
 
-      it('shows the scrolling icons if the crumbs do not fit in their container', async () => {
-        const thinWrapper = document.createElement('div');
-        thinWrapper.style.width = '400px';
+      it('shows the overflow buttons and scrolls the selected crumb into view', async () => {
+        const {component} = await renderBreadcrumbs(longDivCrumb, '400px');
 
-        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-        thinWrapper.appendChild(component);
-        renderElementIntoDOM(thinWrapper);
-        component.data = {
-          crumbs: [divCrumb, bodyCrumb],
-          selectedNode: bodyCrumb,
-        };
-        await RenderCoordinator.done();
-        assert.isNotNull(component.shadowRoot);
-
-        const scrollButtons = component.shadowRoot.querySelectorAll('button.overflow');
-        assertElements(scrollButtons, HTMLButtonElement);
-
-        assert.lengthOf(scrollButtons, 2, 'there are two scroll buttons');
-        const leftButton = scrollButtons[0];
-        const rightButton = scrollButtons[1];
-
-        assert.isTrue(leftButton.disabled);
-        assert.isFalse(rightButton.disabled);
+        const {leftButton, rightButton} = getOverflowButtons(component);
+        assert.isFalse(leftButton.classList.contains('hidden'));
+        assert.isFalse(rightButton.classList.contains('hidden'));
+        // The selected node is the last crumb, so the crumbs are scrolled to the end.
+        assert.isFalse(leftButton.disabled);
+        assert.isTrue(rightButton.disabled);
       });
 
-      it('disables the right button once the user has scrolled to the end', async () => {
-        const thinWrapper = document.createElement('div');
-        thinWrapper.style.width = '400px';
-        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-        thinWrapper.appendChild(component);
-        renderElementIntoDOM(thinWrapper);
-        component.data = {
-          crumbs: [divCrumb, bodyCrumb],
-          selectedNode: bodyCrumb,
-        };
-        await RenderCoordinator.done();
+      it('disables the left button once the user has scrolled to the start', async () => {
+        const {component} = await renderBreadcrumbs(longDivCrumb, '400px');
+        const {leftButton, rightButton} = getOverflowButtons(component);
+        const crumbsWindow = component.contentElement.querySelector('.crumbs-window');
+        assert.instanceOf(crumbsWindow, HTMLDivElement);
 
-        assert.isNotNull(component.shadowRoot);
-
-        const rightButton = component.shadowRoot.querySelector('button.overflow.right');
-        assert.instanceOf(rightButton, HTMLButtonElement);
-        assert.isFalse(rightButton.disabled);
-
-        await withNoMutations(component.shadowRoot, async shadowRoot => {
-          dispatchClickEvent(rightButton);
-          const scrollWrapper = shadowRoot.querySelector('.crumbs-window');
-          assert.instanceOf(scrollWrapper, HTMLDivElement);
-          await waitForScrollLeft(scrollWrapper, 100);
-          await RenderCoordinator.done();
-          assert.isTrue(rightButton.disabled);
+        await withNoMutations(component.contentElement, async () => {
+          const scrollEnd = waitForScrollEnd(crumbsWindow);
+          dispatchClickEvent(leftButton);
+          await scrollEnd;
+          await component.updateComplete;
+          assert.isTrue(leftButton.disabled);
+          assert.isFalse(rightButton.disabled);
         });
       });
 
+      it('keeps the manual scroll position when the DOM tree updates', async () => {
+        const {component} = await renderBreadcrumbs(longDivCrumb, '400px');
+        const {leftButton} = getOverflowButtons(component);
+        const crumbsWindow = component.contentElement.querySelector('.crumbs-window');
+        assert.instanceOf(crumbsWindow, HTMLDivElement);
+
+        const scrollEnd = waitForScrollEnd(crumbsWindow);
+        dispatchClickEvent(leftButton);
+        await scrollEnd;
+        const scrollLeftAfterManualScroll = crumbsWindow.scrollLeft;
+
+        // ElementsPanel re-renders the crumbs on every DOM tree update, while the selection stays the same.
+        component.selectedNode = longDivCrumb;
+        component.requestUpdate();
+        await settle(component);
+
+        assert.strictEqual(crumbsWindow.scrollLeft, scrollLeftAfterManualScroll);
+      });
+
+      it('scrolls the selected crumb into view again after being detached and re-attached', async () => {
+        const {component, wrapper} = await renderBreadcrumbs(longDivCrumb, '400px');
+        const {rightButton} = getOverflowButtons(component);
+        // The selected node is the last crumb, so the crumbs start scrolled to the end.
+        assert.isTrue(rightButton.disabled);
+
+        // Removing the element from the DOM resets its scroll position.
+        component.detach();
+        component.show(wrapper);
+        await settle(component);
+
+        const crumbsWindow = component.contentElement.querySelector('.crumbs-window');
+        assert.instanceOf(crumbsWindow, HTMLDivElement);
+        assert.isAbove(crumbsWindow.scrollLeft, 0);
+        assert.isTrue(getOverflowButtons(component).rightButton.disabled);
+      });
+
+      it('does not keep re-rendering once the overflow state has settled', async () => {
+        const {component} = await renderBreadcrumbs(longDivCrumb, '400px');
+
+        const performUpdateSpy = sinon.spy(component, 'performUpdate');
+        await doubleRaf();
+        await doubleRaf();
+        sinon.assert.notCalled(performUpdateSpy);
+      });
+
       it('hides the overflow buttons should the user resize the window to be large enough', async () => {
-        const thinWrapper = document.createElement('div');
-        thinWrapper.style.width = '400px';
-        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-        thinWrapper.appendChild(component);
-        renderElementIntoDOM(thinWrapper);
-        component.data = {
-          crumbs: [divCrumb, bodyCrumb],
-          selectedNode: bodyCrumb,
-        };
-        await RenderCoordinator.done();
-
-        assert.isNotNull(component.shadowRoot);
-
-        const leftButton = component.shadowRoot.querySelector('button.overflow.left');
-        assert.instanceOf(leftButton, HTMLButtonElement);
-        const rightButton = component.shadowRoot.querySelector('button.overflow.right');
-        assert.instanceOf(rightButton, HTMLButtonElement);
-
+        const {component, wrapper} = await renderBreadcrumbs(longDivCrumb, '400px');
+        const {leftButton, rightButton} = getOverflowButtons(component);
         assert.isFalse(leftButton.classList.contains('hidden'));
         assert.isFalse(rightButton.classList.contains('hidden'));
 
-        thinWrapper.style.width = '800px';
-        // Changing the width should trigger the resize observer, so we need to wait for that to happen.
-        await doubleRaf();
-        await RenderCoordinator.done();
+        wrapper.style.width = '800px';
+        await settle(component);
 
         assert.isTrue(leftButton.classList.contains('hidden'));
         assert.isTrue(rightButton.classList.contains('hidden'));
       });
 
-      it('hides the overflow should the list of nodes change so the crumbs no longer overflow', async () => {
-        const thinWrapper = document.createElement('div');
-        thinWrapper.style.width = '400px';
-
-        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-        thinWrapper.appendChild(component);
-        renderElementIntoDOM(thinWrapper);
-        component.data = {
-          crumbs: [divCrumb, bodyCrumb],
-          selectedNode: bodyCrumb,
-        };
-        await RenderCoordinator.done();
-        assert.isNotNull(component.shadowRoot);
-        const leftButton = component.shadowRoot.querySelector('button.overflow.left');
-        assert.instanceOf(leftButton, HTMLButtonElement);
-        const rightButton = component.shadowRoot.querySelector('button.overflow.right');
-        assert.instanceOf(rightButton, HTMLButtonElement);
-
-        // Ensure the buttons are visible now
+      it('hides the overflow buttons should the selection change so the crumbs no longer overflow', async () => {
+        const {component} = await renderBreadcrumbs(longDivCrumb, '400px');
+        const {leftButton, rightButton} = getOverflowButtons(component);
         assert.isFalse(leftButton.classList.contains('hidden'));
         assert.isFalse(rightButton.classList.contains('hidden'));
 
-        component.data = {
-          crumbs: [bodyCrumb],
-          selectedNode: bodyCrumb,
-        };
-        await RenderCoordinator.done();
-        // The buttons are hidden now the list is no longer overflowing
+        component.selectedNode = longBodyCrumb;
+        await settle(component);
+
         assert.isTrue(leftButton.classList.contains('hidden'));
         assert.isTrue(rightButton.classList.contains('hidden'));
       });
 
       it('shows the overflow buttons should the user resize the window down to be small', async () => {
-        const thinWrapper = document.createElement('div');
-        thinWrapper.style.width = '800px';
-        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-        thinWrapper.appendChild(component);
-        renderElementIntoDOM(thinWrapper);
-
-        component.data = {
-          crumbs: [divCrumb, bodyCrumb],
-          selectedNode: bodyCrumb,
-        };
-        await RenderCoordinator.done();
-        assert.isNotNull(component.shadowRoot);
-
-        const leftButton = component.shadowRoot.querySelector('button.overflow.left');
-        assert.instanceOf(leftButton, HTMLButtonElement);
-        const rightButton = component.shadowRoot.querySelector('button.overflow.right');
-        assert.instanceOf(rightButton, HTMLButtonElement);
-
+        const {component, wrapper} = await renderBreadcrumbs(longDivCrumb, '800px');
+        const {leftButton, rightButton} = getOverflowButtons(component);
         assert.isTrue(leftButton.classList.contains('hidden'));
         assert.isTrue(rightButton.classList.contains('hidden'));
 
-        thinWrapper.style.width = '400px';
-        // Give the resize observer time to fire.
-        await doubleRaf();
-        await RenderCoordinator.done();
+        wrapper.style.width = '400px';
+        await settle(component);
 
         assert.isFalse(leftButton.classList.contains('hidden'));
         assert.isFalse(rightButton.classList.contains('hidden'));

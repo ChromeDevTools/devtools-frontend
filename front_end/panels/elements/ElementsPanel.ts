@@ -39,7 +39,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
@@ -273,11 +272,11 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     crumbsContainer.id = 'elements-crumbs';
     this.accessibilityTreeView = new AccessibilityTreeView();
     this.breadcrumbs = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-    this.breadcrumbs.addEventListener('breadcrumbsnodeselected', event => {
+    this.breadcrumbs.element.addEventListener('breadcrumbsnodeselected', event => {
       this.crumbNodeSelected(event);
     });
 
-    crumbsContainer.appendChild(this.breadcrumbs);
+    this.breadcrumbs.show(crumbsContainer);
 
     this.#computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(
         UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
@@ -537,23 +536,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       this.#domTreeWidget.selectDOMNode(null);
     }
 
-    if (selectedNode) {
-      const crumbs = [selectedNode];
-
-      for (let current: (SDK.DOMModel.DOMNode|null) = selectedNode.parentNode; current; current = current.parentNode) {
-        crumbs.push(current);
-      }
-
-      this.breadcrumbs.data = {
-        crumbs,
-        selectedNode,
-      };
-
-      if (this.accessibilityTreeView) {
-        void this.accessibilityTreeView.selectedNodeChanged(selectedNode);
-      }
-    } else {
-      this.breadcrumbs.data = {crumbs: [], selectedNode: null};
+    this.breadcrumbs.selectedNode = selectedNode;
+    if (selectedNode && this.accessibilityTreeView) {
+      void this.accessibilityTreeView.selectedNodeChanged(selectedNode);
     }
 
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, selectedNode);
@@ -914,46 +899,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  private updateBreadcrumbIfNeeded(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>): void {
-    const nodes = event.data;
-    /* If we don't have a selected node then we can tell the breadcrumbs that & bail. */
-    const selectedNode = this.selectedDOMNode();
-    if (!selectedNode) {
-      this.breadcrumbs.data = {
-        crumbs: [],
-        selectedNode: null,
-      };
-      return;
-    }
-
-    /* This function gets called whenever the tree outline is updated
-     * and contains any nodes that have changed.
-     * What we need to do is construct the new set of breadcrumb nodes, combining the Nodes
-     * that we had before with the new nodes, and pass them into the breadcrumbs component.
-     */
-
-    // Get the current set of active crumbs
-    const existingCrumbs = [selectedNode];
-    for (let current: (SDK.DOMModel.DOMNode|null) = selectedNode.parentNode; current; current = current.parentNode) {
-      existingCrumbs.push(current);
-    }
-
-    /* Get the change nodes from the event & convert them to breadcrumb nodes */
-    const nodesThatHaveChangedMap = new Map<Protocol.DOM.NodeId, SDK.DOMModel.DOMNode>();
-    nodes.forEach(crumb => nodesThatHaveChangedMap.set(crumb.id, crumb));
-
-    /* Loop over our existing crumbs, and if any have an ID that matches an ID from the new nodes
-     * that we have, use the new node, rather than the one we had, because it's changed.
-     */
-    const newSetOfCrumbs = existingCrumbs.map(crumb => {
-      const replacement = nodesThatHaveChangedMap.get(crumb.id);
-      return replacement || crumb;
-    });
-
-    this.breadcrumbs.data = {
-      crumbs: newSetOfCrumbs,
-      selectedNode,
-    };
+  private updateBreadcrumbIfNeeded(): void {
+    // The tree was updated, so the titles of the selected node or its ancestors may have changed.
+    this.breadcrumbs.selectedNode = this.selectedDOMNode();
+    this.breadcrumbs.requestUpdate();
   }
 
   private crumbNodeSelected(event: ElementsComponents.ElementsBreadcrumbs.NodeSelectedEvent): void {

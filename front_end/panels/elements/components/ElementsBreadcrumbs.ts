@@ -1,22 +1,20 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/kit/kit.js';
 import '../../../ui/components/node_text/node_text.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import * as UI from '../../../ui/legacy/legacy.js';
+import {Directives, html, type LitTemplate, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
-import {crumbsToRender, type UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
+import {type Crumb, crumbsToRender} from './ElementsBreadcrumbsUtils.js';
 
-const {html} = Lit;
+const {classMap} = Directives;
 
 const UIStrings = {
   /**
@@ -46,330 +44,249 @@ export class NodeSelectedEvent extends Event {
   }
 }
 
-export interface ElementsBreadcrumbsData {
-  selectedNode: SDK.DOMModel.DOMNode|null;
-  crumbs: SDK.DOMModel.DOMNode[];
+/** Geometry of the scrollable crumbs window, reported by the view. */
+export interface Viewport {
+  windowWidth: number;
+  contentWidth: number;
+  scrollLeft: number;
 }
 
-export class ElementsBreadcrumbs extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #resizeObserver = new ResizeObserver(() => this.#checkForOverflowOnResize());
+export interface ViewInput {
+  crumbs: Crumb[];
+  overflowing: boolean;
+  canScrollLeft: boolean;
+  canScrollRight: boolean;
+  scrollSelectedCrumbIntoView: boolean;
+  onCrumbClick: (node: SDK.DOMModel.DOMNode) => void;
+  onCrumbMouseMove: (node: SDK.DOMModel.DOMNode) => void;
+  onCrumbMouseLeave: () => void;
+  onCrumbFocus: (node: SDK.DOMModel.DOMNode) => void;
+  onCrumbBlur: () => void;
+  onViewportChange: (viewport: Viewport) => void;
+}
 
-  #crumbsData: readonly SDK.DOMModel.DOMNode[] = [];
-  #selectedDOMNode: SDK.DOMModel.DOMNode|null = null;
-  #overflowing = false;
-  #userScrollPosition: UserScrollPosition = 'start';
-  #isObservingResize = false;
-  #userHasManuallyScrolled = false;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-  set data(data: ElementsBreadcrumbsData) {
-    this.#selectedDOMNode = data.selectedNode;
-    this.#crumbsData = data.crumbs;
-    this.#userHasManuallyScrolled = false;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+function measureViewport(crumbsWindow: Element): Viewport|null {
+  const content = crumbsWindow.querySelector('.crumbs-scroll-container');
+  if (!content) {
+    return null;
   }
+  return {
+    windowWidth: crumbsWindow.clientWidth,
+    contentWidth: content.clientWidth,
+    scrollLeft: crumbsWindow.scrollLeft,
+  };
+}
 
-  disconnectedCallback(): void {
-    this.#isObservingResize = false;
-    this.#resizeObserver.disconnect();
-  }
-
-  #onCrumbClick(node: SDK.DOMModel.DOMNode): (event: Event) => void {
-    return (event: Event): void => {
-      event.preventDefault();
-      this.dispatchEvent(new NodeSelectedEvent(node));
-    };
-  }
-
-  /*
-   * When the window is resized, we need to check if we either:
-   * 1) overflowing, and now the window is big enough that we don't need to
-   * 2) not overflowing, and now the window is small and we do need to
-   *
-   * If either of these are true, we toggle the overflowing state accordingly and trigger a re-render.
-   */
-  async #checkForOverflowOnResize(): Promise<void> {
-    const crumbScrollContainer = this.#shadow.querySelector('.crumbs-scroll-container');
-    const crumbWindow = this.#shadow.querySelector('.crumbs-window');
-
-    if (!crumbScrollContainer || !crumbWindow) {
+function renderOverflowButton(direction: 'left'|'right', disabled: boolean, overflowing: boolean,
+                              target: HTMLElement): LitTemplate {
+  const tooltipString = direction === 'left' ? i18nString(UIStrings.scrollLeft) : i18nString(UIStrings.scrollRight);
+  const onClick = (): void => {
+    const crumbsWindow = target.querySelector('.crumbs-window');
+    if (!crumbsWindow) {
       return;
     }
+    const amount = crumbsWindow.clientWidth / 2;
+    crumbsWindow.scrollBy({left: direction === 'left' ? -amount : amount, behavior: 'smooth'});
+  };
+  // clang-format off
+  return html`
+    <button
+      class=${classMap({overflow: true, [direction]: true, hidden: !overflowing})}
+      @click=${onClick}
+      ?disabled=${disabled}
+      aria-label=${tooltipString}
+      title=${tooltipString}>
+      <devtools-icon name=${'triangle-' + direction} style="width: var(--sys-size-6); height: 10px;">
+      </devtools-icon>
+    </button>
+  `;
+  // clang-format on
+}
 
-    const crumbWindowWidth = await RenderCoordinator.read<number>(() => {
-      return crumbWindow.clientWidth;
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${elementsBreadcrumbsStyles}</style>
+    <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)} jslog=${VisualLogging.elementsBreadcrumbs()}>
+      ${renderOverflowButton('left', !input.canScrollLeft, input.overflowing, target)}
+
+      <div class="crumbs-window"
+        @scroll=${(event: Event) => {
+          const viewport = event.currentTarget instanceof Element && measureViewport(event.currentTarget);
+          if (viewport) {
+            input.onViewportChange(viewport);
+          }
+        }}>
+        <ul class="crumbs-scroll-container">
+          ${input.crumbs.map(crumb => {
+            // eslint-disable-next-line @devtools/no-a-tags-in-lit
+            return html`
+              <li class=${classMap({crumb: true, selected: crumb.selected})}
+                data-node-id=${crumb.node.id}
+                data-crumb="true"
+              >
+                <a href="#" draggable=false class="crumb-link"
+                  jslog=${VisualLogging.item().track({click: true, resize: true})}
+                  @click=${(event: Event) => {
+                    event.preventDefault();
+                    input.onCrumbClick(crumb.node);
+                  }}
+                  @mousemove=${() => input.onCrumbMouseMove(crumb.node)}
+                  @mouseleave=${input.onCrumbMouseLeave}
+                  @focus=${() => input.onCrumbFocus(crumb.node)}
+                  @blur=${input.onCrumbBlur}
+                >
+                  <devtools-node-text data-node-title=${crumb.title.main} .data=${{
+                    nodeTitle: crumb.title.main,
+                    nodeId: crumb.title.extras.id,
+                    nodeClasses: crumb.title.extras.classes,
+                  }}>
+                  </devtools-node-text>
+                </a>
+              </li>`;
+          })}
+        </ul>
+      </div>
+      ${renderOverflowButton('right', !input.canScrollRight, input.overflowing, target)}
+    </nav>
+  `, target, {container: {classes: ['elements-breadcrumbs']}});
+  // clang-format on
+
+  const crumbsWindow = target.querySelector('.crumbs-window');
+  if (!crumbsWindow) {
+    return;
+  }
+  if (input.scrollSelectedCrumbIntoView) {
+    target.querySelector('.crumb.selected')?.scrollIntoView({
+      // Jump straight to the selected crumb; smooth scrolling is only for the overflow buttons.
+      behavior: 'auto',
+      // Only scroll the crumbs horizontally; never scroll ancestors vertically.
+      block: 'nearest',
+      inline: 'nearest',
     });
+  }
+  const viewport = measureViewport(crumbsWindow);
+  if (viewport) {
+    input.onViewportChange(viewport);
+  }
+};
 
-    const scrollContainerWidth = await RenderCoordinator.read<number>(() => {
-      return crumbScrollContainer.clientWidth;
-    });
+export class ElementsBreadcrumbs extends UI.Widget.Widget {
+  readonly #view: View;
+  readonly #resizeObserver = new ResizeObserver(() => this.requestUpdate());
 
-    if (this.#overflowing) {
-      // We currently have overflow buttons.
-      // If the content while displaying buttons still fits, then we can
-      // rerender without overflow.
-      if (scrollContainerWidth < crumbWindowWidth) {
-        this.#overflowing = false;
-      }
-      // We currently do not have overflow buttons.
-      // If the content won't fit anymore, then rerender with overflow.
-    } else if (scrollContainerWidth > crumbWindowWidth) {
-      this.#overflowing = true;
-    }
-    void this.#ensureSelectedNodeIsVisible();
-    void this.#updateScrollState(crumbWindow);
+  #selectedDOMNode: SDK.DOMModel.DOMNode|null = null;
+  #overflowing = false;
+  #canScrollLeft = false;
+  #canScrollRight = false;
+  // Only auto-scroll when the selection changes or the crumbs start to overflow,
+  // so that DOM tree updates never override a manual scroll by the user.
+  #scrollSelectedCrumbIntoView = false;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
   }
 
-  #onCrumbMouseMove(node: SDK.DOMModel.DOMNode): () => void {
-    return (): void => node.highlight();
+  /**
+   * The crumbs are derived from the selected node and its ancestors. Call
+   * `requestUpdate()` to re-render them when the DOM tree changes while the
+   * selection stays the same.
+   */
+  set selectedNode(selectedNode: SDK.DOMModel.DOMNode|null) {
+    if (this.#selectedDOMNode === selectedNode) {
+      return;
+    }
+    this.#selectedDOMNode = selectedNode;
+    this.#scrollSelectedCrumbIntoView = true;
+    this.requestUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#resizeObserver.observe(this.contentElement);
+    this.requestUpdate();
+  }
+
+  override willHide(): void {
+    this.#resizeObserver.disconnect();
+    super.willHide();
+  }
+
+  override onDetach(): void {
+    super.onDetach();
+    // Removing the element from the DOM resets its scroll position. Treat the
+    // next show as a fresh overflow, so the selected crumb is scrolled into view.
+    this.#overflowing = false;
+  }
+
+  #onCrumbClick(node: SDK.DOMModel.DOMNode): void {
+    this.element.dispatchEvent(new NodeSelectedEvent(node));
+  }
+
+  #onCrumbMouseMove(node: SDK.DOMModel.DOMNode): void {
+    node.highlight();
   }
 
   #onCrumbMouseLeave(): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
   }
 
-  #onCrumbFocus(node: SDK.DOMModel.DOMNode): () => void {
-    return (): void => node.highlight();
+  #onCrumbFocus(node: SDK.DOMModel.DOMNode): void {
+    node.highlight();
   }
 
   #onCrumbBlur(): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
   }
 
-  #engageResizeObserver(): void {
-    if (!this.#resizeObserver || this.#isObservingResize === true) {
+  #onViewportChange({windowWidth, contentWidth, scrollLeft}: Viewport): void {
+    // The window gets narrower once the overflow buttons are shown, so the
+    // buttons only disappear again once the crumbs fit next to them.
+    const overflowing = contentWidth > windowWidth;
+    const maxScrollLeft = contentWidth - windowWidth;
+    // `scrollLeft` can be fractional, while the widths are rounded.
+    const canScrollLeft = overflowing && scrollLeft > 0;
+    const canScrollRight = overflowing && Math.ceil(scrollLeft) < maxScrollLeft;
+    if (overflowing === this.#overflowing && canScrollLeft === this.#canScrollLeft &&
+        canScrollRight === this.#canScrollRight) {
       return;
     }
-
-    const crumbs = this.#shadow.querySelector('.crumbs');
-
-    if (!crumbs) {
-      return;
+    if (overflowing && !this.#overflowing) {
+      this.#scrollSelectedCrumbIntoView = true;
     }
-
-    this.#resizeObserver.observe(crumbs);
-    this.#isObservingResize = true;
+    this.#overflowing = overflowing;
+    this.#canScrollLeft = canScrollLeft;
+    this.#canScrollRight = canScrollRight;
+    this.requestUpdate();
   }
 
-  /**
-   * This method runs after render or resize and checks if the crumbs are too large
-   * for their container and therefore we need to render the overflow buttons at
-   * either end which the user can use to scroll back and forward through the crumbs.
-   * If it finds that we are overflowing, it sets the instance variable and
-   * triggers a re-render. If we are not overflowing, this method returns and
-   * does nothing.
-   */
-  async #checkForOverflow(): Promise<void> {
-    const crumbScrollContainer = this.#shadow.querySelector('.crumbs-scroll-container');
-    const crumbWindow = this.#shadow.querySelector('.crumbs-window');
-
-    if (!crumbScrollContainer || !crumbWindow) {
-      return;
+  override performUpdate(): void {
+    const nodes = [];
+    for (let node = this.#selectedDOMNode; node; node = node.parentNode) {
+      nodes.push(node);
     }
-
-    const crumbWindowWidth = await RenderCoordinator.read<number>(() => {
-      return crumbWindow.clientWidth;
-    });
-
-    const scrollContainerWidth = await RenderCoordinator.read<number>(() => {
-      return crumbScrollContainer.clientWidth;
-    });
-
-    if (this.#overflowing) {
-      // We currently have overflow buttons.
-      // If the content while displaying buttons still fits, then we can
-      // rerender without overflow.
-      if (scrollContainerWidth < crumbWindowWidth) {
-        this.#overflowing = false;
-        void this.#render();
-      }
-      // We currently do not have overflow buttons.
-      // If the content won't fit anymore, then rerender with overflow.
-    } else if (scrollContainerWidth > crumbWindowWidth) {
-      this.#overflowing = true;
-      void this.#render();
-    }
-  }
-
-  #onCrumbsWindowScroll(event: Event): void {
-    if (!event.target) {
-      return;
-    }
-
-    /* not all Events are DOM Events so the TS Event def doesn't have
-     * .target typed as an Element but in this case we're getting this
-     * from a DOM event so we're confident of having .target and it
-     * being an element
-     */
-    const scrollWindow = event.target as Element;
-
-    this.#updateScrollState(scrollWindow);
-  }
-
-  #updateScrollState(scrollWindow: Element): void {
-    const maxScrollLeft = scrollWindow.scrollWidth - scrollWindow.clientWidth;
-    const currentScroll = scrollWindow.scrollLeft;
-
-    /**
-     * When we check if the user is at the beginning or end of the crumbs (such
-     * that we disable the relevant button - you can't keep scrolling right if
-     * you're at the last breadcrumb) we want to not check exact numbers but
-     * give a bit of padding. This means if the user has scrolled to nearly the
-     * end but not quite (e.g. there are 2 more pixels they could scroll) we'll
-     * mark it as them being at the end. This variable controls how much padding
-     * we apply. So if a user has scrolled to within 10px of the end, we count
-     * them as being at the end and disable the button.
-     */
-    const scrollBeginningAndEndPadding = 10;
-
-    if (currentScroll < scrollBeginningAndEndPadding) {
-      this.#userScrollPosition = 'start';
-    } else if (currentScroll >= maxScrollLeft - scrollBeginningAndEndPadding) {
-      this.#userScrollPosition = 'end';
-    } else {
-      this.#userScrollPosition = 'middle';
-    }
-
-    void this.#render();
-  }
-
-  #onOverflowClick(direction: 'left'|'right'): () => void {
-    return (): void => {
-      this.#userHasManuallyScrolled = true;
-      const scrollWindow = this.#shadow.querySelector('.crumbs-window');
-
-      if (!scrollWindow) {
-        return;
-      }
-
-      const amountToScrollOnClick = scrollWindow.clientWidth / 2;
-
-      const newScrollAmount = direction === 'left' ?
-          Math.max(Math.floor(scrollWindow.scrollLeft - amountToScrollOnClick), 0) :
-          scrollWindow.scrollLeft + amountToScrollOnClick;
-
-      scrollWindow.scrollTo({
-        behavior: 'smooth',
-        left: newScrollAmount,
-      });
+    const input: ViewInput = {
+      crumbs: crumbsToRender(nodes, this.#selectedDOMNode),
+      overflowing: this.#overflowing,
+      canScrollLeft: this.#canScrollLeft,
+      canScrollRight: this.#canScrollRight,
+      scrollSelectedCrumbIntoView: this.#scrollSelectedCrumbIntoView,
+      onCrumbClick: node => this.#onCrumbClick(node),
+      onCrumbMouseMove: node => this.#onCrumbMouseMove(node),
+      onCrumbMouseLeave: () => this.#onCrumbMouseLeave(),
+      onCrumbFocus: node => this.#onCrumbFocus(node),
+      onCrumbBlur: () => this.#onCrumbBlur(),
+      onViewportChange: viewport => this.#onViewportChange(viewport),
     };
-  }
-
-  #renderOverflowButton(direction: 'left'|'right', disabled: boolean): Lit.TemplateResult {
-    const buttonStyles = Lit.Directives.classMap({
-      overflow: true,
-      [direction]: true,
-      hidden: !this.#overflowing,
-    });
-
-    const tooltipString = direction === 'left' ? i18nString(UIStrings.scrollLeft) : i18nString(UIStrings.scrollRight);
-    // clang-format off
-    return html`
-      <button
-        class=${buttonStyles}
-        @click=${this.#onOverflowClick(direction)}
-        ?disabled=${disabled}
-        aria-label=${tooltipString}
-        title=${tooltipString}>
-        <devtools-icon name=${'triangle-' + direction} style="width: var(--sys-size-6); height: 10px;">
-        </devtools-icon>
-      </button>
-      `;
-    // clang-format on
-  }
-
-  #render(): void {
-    const crumbs = crumbsToRender(this.#crumbsData, this.#selectedDOMNode);
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    Lit.render(html`
-      <style>${elementsBreadcrumbsStyles}</style>
-      <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)} jslog=${VisualLogging.elementsBreadcrumbs()}>
-        ${this.#renderOverflowButton('left', this.#userScrollPosition === 'start')}
-
-        <div class="crumbs-window" @scroll=${this.#onCrumbsWindowScroll}>
-          <ul class="crumbs-scroll-container">
-            ${crumbs.map(crumb => {
-              const crumbClasses = {
-                crumb: true,
-                selected: crumb.selected,
-              };
-              // eslint-disable-next-line @devtools/no-a-tags-in-lit
-              return html`
-                <li class=${Lit.Directives.classMap(crumbClasses)}
-                  data-node-id=${crumb.node.id}
-                  data-crumb="true"
-                >
-                  <a href="#" draggable=false class="crumb-link"
-                    jslog=${VisualLogging.item().track({click:true, resize:true})}
-                    @click=${this.#onCrumbClick(crumb.node)}
-                    @mousemove=${this.#onCrumbMouseMove(crumb.node)}
-                    @mouseleave=${this.#onCrumbMouseLeave}
-                    @focus=${this.#onCrumbFocus(crumb.node)}
-                    @blur=${this.#onCrumbBlur}
-                  >
-                    <devtools-node-text data-node-title=${crumb.title.main} .data=${{
-                      nodeTitle: crumb.title.main,
-                      nodeId: crumb.title.extras.id,
-                      nodeClasses: crumb.title.extras.classes,
-                    }}>
-                    </devtools-node-text>
-                  </a>
-                </li>`;
-            })}
-          </ul>
-        </div>
-        ${this.#renderOverflowButton('right', this.#userScrollPosition === 'end')}
-      </nav>
-    `, this.#shadow, { host: this });
-    // clang-format on
-
-    void this.#checkForOverflow();
-    this.#engageResizeObserver();
-    void this.#ensureSelectedNodeIsVisible();
-  }
-
-  async #ensureSelectedNodeIsVisible(): Promise<void> {
-    /*
-     * If the user has manually scrolled the crumbs in either direction, we
-     * effectively hand control over the scrolling down to them. This is to
-     * prevent the user manually scrolling to the end, and then us scrolling
-     * them back to the selected node. The moment they click either scroll
-     * button we set userHasManuallyScrolled, and we reset it when we get new
-     * data in. This means if the user clicks on a different element in the
-     * tree, we will auto-scroll that element into view, because we'll get new
-     * data and hence the flag will be reset.
-     */
-    if (!this.#selectedDOMNode || !this.#shadow || !this.#overflowing || this.#userHasManuallyScrolled) {
-      return;
-    }
-    const activeCrumbId = this.#selectedDOMNode.id;
-    const activeCrumb = this.#shadow.querySelector(`.crumb[data-node-id="${activeCrumbId}"]`);
-
-    if (activeCrumb) {
-      await RenderCoordinator.scroll(() => {
-        activeCrumb.scrollIntoView({
-          // We only want to scroll smoothly when the user is clicking the
-          // buttons manually. If we are automatically scrolling, we could be
-          // scrolling a long distance, so just jump there right away. This
-          // most commonly occurs when the user first opens DevTools on a
-          // deeply nested element, and the slow scrolling of the breadcrumbs
-          // is just a distraction and not useful.
-          behavior: 'auto',
-        });
-      });
-    }
+    this.#scrollSelectedCrumbIntoView = false;
+    this.#view(input, undefined, this.contentElement);
   }
 }
 
-customElements.define('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
-
 declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-elements-breadcrumbs': ElementsBreadcrumbs;
-  }
-
   interface HTMLElementEventMap {
     [NodeSelectedEvent.eventName]: NodeSelectedEvent;
   }

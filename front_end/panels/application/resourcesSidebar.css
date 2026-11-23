@@ -72,7 +72,7 @@ devtools-icon.navigator-font-tree-item {
   right: var(--sys-size-3);
 }
 
-.tree-outline li:hover .ai-button-container {
+.tree-outline li:is(:hover, .hovered) .ai-button-container {
   display: inline-flex;
 }
 

@@ -228,6 +228,7 @@ devtools_ui_module("unittests") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/components/report_view:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/lit:bundle",

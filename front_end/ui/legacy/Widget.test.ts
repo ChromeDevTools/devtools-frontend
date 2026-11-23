@@ -914,6 +914,72 @@ describeWithEnvironment('Widget', () => {
 
       assert.strictEqual(fooSetterCount, 2, 'fooSetterCount 2nd');
     });
+
+    it('removes the element from the DOM when the widget itself is detached', () => {
+      const parent = renderElementIntoDOM(new UI.Widget.Widget());
+      Lit.render(html`<devtools-widget ${UI.Widget.widget(TestWidget)}></devtools-widget>`, parent.contentElement);
+      const element = parent.contentElement.querySelector('devtools-widget');
+      assert.exists(element);
+      const child = UI.Widget.Widget.get(element);
+      assert.instanceOf(child, TestWidget);
+
+      child.detach();
+
+      assert.isNull(child.parentWidget());
+      assert.isFalse(element.isConnected);
+    });
+
+    it('keeps the element in the DOM when the parent widget detaches its child widgets', () => {
+      const parent = renderElementIntoDOM(new UI.Widget.Widget());
+      const renderChild = () => {
+        Lit.render(html`<devtools-widget ${UI.Widget.widget(TestWidget)}></devtools-widget>`, parent.contentElement);
+      };
+      renderChild();
+      const element = parent.contentElement.querySelector('devtools-widget');
+      assert.exists(element);
+      const child = UI.Widget.Widget.get(element);
+      assert.instanceOf(child, TestWidget);
+      assert.strictEqual(child.parentWidget(), parent);
+
+      parent.detachChildWidgets();
+
+      assert.isNull(child.parentWidget());
+      assert.strictEqual(element.parentElement, parent.contentElement);
+      assert.strictEqual(detachedCount, 1);
+      assert.isFalse(parent.shouldHideOnDetach());
+
+      renderChild();
+      assert.strictEqual(parent.contentElement.querySelector('devtools-widget'), element);
+    });
+
+    it('shows the widget again when its detached element is connected again', () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
+      try {
+        const parent = renderElementIntoDOM(new UI.Widget.Widget());
+        const section = document.createElement('div');
+        Lit.render(html`<devtools-widget ${UI.Widget.widget(TestWidget)}></devtools-widget>`, section);
+        parent.contentElement.appendChild(section);
+        const element = section.querySelector('devtools-widget');
+        assert.exists(element);
+        const child = UI.Widget.Widget.get(element);
+        assert.instanceOf(child, TestWidget);
+        assert.strictEqual(attachedCount, 1);
+
+        parent.detachChildWidgets();
+        parent.contentElement.removeChildren();
+        clock.tick(0);
+        assert.strictEqual(element.parentElement, section);
+
+        parent.contentElement.appendChild(section);
+
+        assert.strictEqual(child.parentWidget(), parent);
+        assert.isTrue(child.isShowing());
+        assert.isFalse(element.classList.contains('hidden'));
+        assert.strictEqual(attachedCount, 2);
+      } finally {
+        clock.restore();
+      }
+    });
   });
 
   describe('WidgetElement', () => {

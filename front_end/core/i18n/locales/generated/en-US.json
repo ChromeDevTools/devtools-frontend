@@ -3848,6 +3848,9 @@
   "panels/application/components/AdsView.ts | showIframeDetails": {
     "message": "Show iframe details"
   },
+  "panels/application/components/AdsView.ts | subframes": {
+    "message": "Subframes"
+  },
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "Total CPU usage by ads"
   },

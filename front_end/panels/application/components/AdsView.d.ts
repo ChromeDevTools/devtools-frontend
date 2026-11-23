@@ -22,6 +22,10 @@ interface AdFrameNodeData {
     rawNetworkBytes: number;
     cpuTime: string;
     rawCpuTime: number;
+    /**
+     * The number of frames nested under the ad iframe at any depth.
+     */
+    subframeCount: number;
 }
 interface AdScriptNodeData {
     url: Platform.DevToolsPath.UrlString;

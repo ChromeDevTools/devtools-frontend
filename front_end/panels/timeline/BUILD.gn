@@ -194,6 +194,7 @@ devtools_ui_module("unittests") {
     "ModificationsManager.test.ts",
     "RecordingMetadata.test.ts",
     "SaveFileFormatter.test.ts",
+    "TargetForEvent.test.ts",
     "ThirdPartyTreeView.test.ts",
     "TimelineCommentContext.test.ts",
     "TimelineCommentController.test.ts",

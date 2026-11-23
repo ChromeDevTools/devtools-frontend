@@ -295,4 +295,138 @@ describeWithEnvironment('ChatView', () => {
       sinon.assert.calledWith(onTextChangeStub, 'test text');
     });
   });
+
+  describe('scrolling', () => {
+    async function renderScrollableChat(): Promise<{
+      chat: AiAssistancePanel.ChatView,
+      main: HTMLElement,
+      container: HTMLElement,
+      appendMessage: () => Promise<void>,
+    }> {
+      const messages: AiAssistancePanel.ChatMessage.Message[] = [];
+      for (let i = 0; i < 10; i++) {
+        messages.push({
+          entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER,
+          id: `user-${i}`,
+          text: `User message ${i}\nLine 2\nLine 3`,
+        });
+        messages.push({
+          entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+          id: `model-${i}`,
+          parts: [{type: 'answer', text: `Model response ${i}\nLine 2\nLine 3`}],
+        });
+      }
+
+      const chat = new AiAssistancePanel.ChatView(getProp({messages}));
+      chat.style.display = 'block';
+      chat.style.height = '100%';
+      const container = document.createElement('div');
+      container.style.width = '400px';
+      container.style.height = '200px';
+      container.append(chat);
+      renderElementIntoDOM(container, {includeCommonStyles: true});
+      // First frame renders child ChatMessage widgets and fires ResizeObserver;
+      // second frame flushes the resulting programmatic scroll event through #handleScroll.
+      await raf();
+      await raf();
+      const main = chat.shadowRoot?.querySelector('main');
+      assert.exists(main);
+      assert.isAbove(main.scrollHeight, main.clientHeight);
+      assert.isAbove(main.scrollTop, 0);
+
+      let followUpCount = 0;
+      async function appendMessage(): Promise<void> {
+        assert.exists(main);
+        const previousScrollHeight = main.scrollHeight;
+        messages.push({
+          entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER,
+          id: `user-follow-up-${followUpCount++}`,
+          text: 'Follow-up message\nLine 2\nLine 3\nLine 4',
+        });
+        chat.props = getProp({messages: [...messages]});
+        // First frame renders child ChatMessage widgets and fires ResizeObserver;
+        // second frame flushes the resulting programmatic scroll event through #handleScroll.
+        await raf();
+        await raf();
+        assert.isAbove(main.scrollHeight, previousScrollHeight);
+      }
+
+      return {chat, main, container, appendMessage};
+    }
+
+    it('re-pins auto-scroll when scrollToBottom is called after scrolling up', async () => {
+      const {chat, main, appendMessage} = await renderScrollableChat();
+
+      // Simulate manual scroll up to the top.
+      main.scrollTop = 0;
+      await raf();
+      assert.strictEqual(main.scrollTop, 0);
+
+      // Calling scrollToBottom should jump to the current bottom and re-pin auto-scroll.
+      chat.scrollToBottom();
+      const scrollTopAfterCall = main.scrollTop;
+      assert.isAbove(scrollTopAfterCall, 0);
+      await raf();
+
+      // Appending a new message should resize the messages container and advance scrollTop again.
+      await appendMessage();
+
+      assert.isAbove(main.scrollTop, scrollTopAfterCall);
+      assert.closeTo(main.scrollTop + main.clientHeight, main.scrollHeight, 2);
+    });
+
+    it('keeps auto-scroll unpinned on resize after manual scroll up', async () => {
+      const {main, appendMessage} = await renderScrollableChat();
+
+      main.scrollTop = 0;
+      await raf();
+      assert.strictEqual(main.scrollTop, 0);
+
+      await appendMessage();
+
+      assert.strictEqual(main.scrollTop, 0);
+    });
+
+    it('unpins on the first manual scroll up after a no-op scrollToBottom', async () => {
+      const {chat, main, appendMessage} = await renderScrollableChat();
+
+      // Already at the bottom, so scrollToBottom is a no-op scrollTop write.
+      chat.scrollToBottom();
+
+      // Immediately scroll up once; the single scroll event must not be swallowed.
+      main.scrollTop = 0;
+      await raf();
+      assert.strictEqual(main.scrollTop, 0);
+
+      await appendMessage();
+
+      assert.strictEqual(main.scrollTop, 0);
+    });
+
+    it('preserves saved scroll position when restoreScrollPosition runs while hidden', async () => {
+      const {chat, main, container, appendMessage} = await renderScrollableChat();
+
+      // Scroll manually to a non-zero, non-bottom offset.
+      main.scrollTop = 50;
+      await raf();
+      assert.strictEqual(main.scrollTop, 50);
+
+      // Hiding the container clamps scrollTop to 0; restoring while hidden must not erase 50.
+      container.style.display = 'none';
+      chat.restoreScrollPosition();
+
+      // Showing the container and restoring again should return to 50 without leaving
+      // #isProgrammaticScroll stuck true.
+      container.style.display = '';
+      chat.restoreScrollPosition();
+      await raf();
+      assert.strictEqual(main.scrollTop, 50);
+
+      // Confirm #handleScroll still processes user scrolls after the hidden restore.
+      main.scrollTop = main.scrollHeight;
+      await raf();
+      await appendMessage();
+      assert.closeTo(main.scrollTop + main.clientHeight, main.scrollHeight, 2);
+    });
+  });
 });

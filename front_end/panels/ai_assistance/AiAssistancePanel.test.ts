@@ -1117,6 +1117,103 @@ describeWithEnvironment('AI Assistance Panel', () => {
          // But AiAssistanceQuerySubmitted must be called on turn 2 (twice total).
          sinon.assert.callCount(querySubmittedSpy, 2);
        });
+
+    it('scrolls to bottom on follow-up turns without selected context in AI V2', async () => {
+      updateHostConfig({
+        devToolsAiV2Architecture: {
+          enabled: true,
+        },
+      });
+      const chatView = sinon.createStubInstance(AiAssistancePanel.ChatView);
+      const {panel, view} = await createAiAssistancePanel({
+        chatView,
+        aidaClient: mockAidaClient([
+          [{explanation: 'turn 1 answer'}],
+          [{explanation: 'turn 2 answer'}],
+        ]),
+      });
+
+      void panel.handleAction('freestyler.elements-floating-button');
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.isNull(nextInput.props.context);
+
+      // Turn 1.
+      nextInput.props.onTextSubmit('turn 1');
+      const turn1Finished = await waitForLoadingToFinish(view);
+      sinon.assert.calledOnce(chatView.scrollToBottom);
+
+      // Turn 2.
+      assert(turn1Finished.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      turn1Finished.props.onTextSubmit('turn 2');
+      await waitForLoadingToFinish(view);
+      sinon.assert.calledTwice(chatView.scrollToBottom);
+    });
+
+    it('does not trigger a second scrollToBottom on context events', async () => {
+      const continueAfterUserQuery = Promise.withResolvers<void>();
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns((async function*() {
+        await continueAfterUserQuery.promise;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
+          details: [{title: 'DOM', text: '<div></div>'}],
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Done',
+          complete: true,
+        };
+      })());
+
+      const chatView = sinon.createStubInstance(AiAssistancePanel.ChatView);
+      const {panel, view} = await createAiAssistancePanel({chatView});
+
+      void panel.handleAction('freestyler.elements-floating-button');
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      nextInput.props.onTextSubmit('test');
+      await view.nextInput;
+      sinon.assert.calledOnce(chatView.scrollToBottom);
+
+      continueAfterUserQuery.resolve();
+      await waitForLoadingToFinish(view);
+      sinon.assert.calledOnce(chatView.scrollToBottom);
+    });
+
+    it('scrolls to bottom when a side-effect confirmation is yielded', async () => {
+      const confirmPromise = Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns((async function*() {
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Updating element', callId: 'a'};
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+          description: null,
+          confirm: confirmPromise.resolve,
+          callId: 'a',
+        };
+        await confirmPromise.promise;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Done',
+          complete: true,
+        };
+      })());
+
+      const chatView = sinon.createStubInstance(AiAssistancePanel.ChatView);
+      const {panel, view} = await createAiAssistancePanel({chatView});
+
+      void panel.handleAction('freestyler.elements-floating-button');
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      nextInput.props.onTextSubmit('test');
+      await waitForSideEffectDialog(view);
+      sinon.assert.calledTwice(chatView.scrollToBottom);
+
+      confirmPromise.resolve(AiAssistanceModel.Tool.PermissionDecision.REJECT);
+      await waitForLoadingToFinish(view);
+    });
   });
 
   describe('context changes', () => {

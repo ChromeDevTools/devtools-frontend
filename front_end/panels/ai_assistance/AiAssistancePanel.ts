@@ -2121,9 +2121,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           this.requestUpdate();
 
           // This handles scrolling to the bottom for live conversations when:
-          // * User submits the query & the context step is shown.
-          // * There is a side effect dialog  shown.
-          if (data.type === AiAssistanceModel.AiAgent.ResponseType.CONTEXT ||
+          // * User submits a query.
+          // * There is a side effect dialog shown.
+          if (data.type === AiAssistanceModel.AiAgent.ResponseType.USER_QUERY ||
               data.type === AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT) {
             this.#viewOutput.chatView?.scrollToBottom();
           }

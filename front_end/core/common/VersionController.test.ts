@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from './common.js';
@@ -25,7 +25,7 @@ describe('VersionController', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -365,7 +365,7 @@ describe('updateVersionFrom37To38', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -452,15 +452,11 @@ describe('updateVersionFrom38To39', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
     setting = settings.createSetting('preferred-network-condition', {title: 'Offline', i18nTitleKey: 'Offline'});
-  });
-
-  afterEach(() => {
-    Common.Settings.resetSettings();  // Clear SettingsRegistrations.
   });
 
   it('renames the preferred-network-condition for "Slow 3G"', async () => {
@@ -515,7 +511,7 @@ describe('updateVersionFrom38To39', () => {
         syncedStorage,
         globalStorage,
         localStorage,
-        settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+        settingRegistrations: [],
         runSettingsMigration: false,
         console: new Common.Console.Console(),
       });
@@ -677,7 +673,7 @@ describe('updateVersionFrom40To41', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -740,7 +736,7 @@ describe('updateVersionFrom41To42', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -788,7 +784,7 @@ describe('access logging', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      settingRegistrations: [],
       logSettingAccess,
       console: new Common.Console.Console(),
     });

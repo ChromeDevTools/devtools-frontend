@@ -87,7 +87,7 @@ describe('CrUXManager', () => {
                           syncedStorage: dummyStorage,
                           globalStorage,
                           localStorage: dummyStorage,
-                          settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+                          settingRegistrations: [],
                         },
                       }).cruxManager;
       manager.getConfigSetting().set({enabled: true});
@@ -103,7 +103,7 @@ describe('CrUXManager', () => {
                           syncedStorage: dummyStorage,
                           globalStorage: dummyStorage,
                           localStorage: dummyStorage,
-                          settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+                          settingRegistrations: [],
                         },
                       }).cruxManager;
       manager.getConfigSetting().set({enabled: true});

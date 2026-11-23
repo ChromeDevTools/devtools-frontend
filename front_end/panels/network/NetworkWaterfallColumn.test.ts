@@ -48,7 +48,7 @@ describeWithEnvironment('NetworkWaterfallColumn', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      settingRegistrations: [],
       console: Common.Console.Console.instance(),
     });
   });

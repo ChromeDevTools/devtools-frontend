@@ -25,6 +25,11 @@ const DELAY_BEFORE_PROMOTION_COLLAPSE_IN_MS = 5000;
 
 const {GlobalAiButton} = Main.GlobalAiButton;
 
+function getClickCountSetting(): Common.Settings.Setting<number> {
+  return Common.Settings.Settings.instance().createSetting<number>('global-ai-button-click-count', 0,
+                                                                   Common.Settings.SettingStorageType.SYNCED);
+}
+
 describe('GlobalAiButton', () => {
   before(async () => {
     await initializeGlobalVars();
@@ -36,7 +41,7 @@ describe('GlobalAiButton', () => {
 
   let clock: sinon.SinonFakeTimers;
   beforeEach(() => {
-    Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(0);
+    getClickCountSetting().set(0);
   });
 
   async function createWidget() {
@@ -72,7 +77,7 @@ describe('GlobalAiButton', () => {
 
     it('shows freestyler in drawer and increases click count', async () => {
       const {view} = await createWidget();
-      const setting = Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count');
+      const setting = getClickCountSetting();
       setting.set(0);
 
       view.input.onClick();
@@ -135,7 +140,7 @@ describe('GlobalAiButton', () => {
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
+      getClickCountSetting().set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
 
@@ -149,7 +154,7 @@ describe('GlobalAiButton', () => {
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
+      getClickCountSetting().set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
       clock.tick(DELAY_BEFORE_PROMOTION_COLLAPSE_IN_MS);
@@ -165,7 +170,7 @@ describe('GlobalAiButton', () => {
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
+      getClickCountSetting().set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
 
@@ -182,7 +187,7 @@ describe('GlobalAiButton', () => {
         now: new Date('2026-10-01'),  // After 2026-09-30
         toFake: ['setTimeout', 'Date'],
       });
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
+      getClickCountSetting().set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
 
@@ -196,7 +201,7 @@ describe('GlobalAiButton', () => {
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT);
+      getClickCountSetting().set(CLICK_COUNT_LIMIT);
 
       const {view} = await createWidget();
 
@@ -218,7 +223,7 @@ describe('GlobalAiButton', () => {
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
+      getClickCountSetting().set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
       assert.strictEqual(view.input.state, Main.GlobalAiButton.GlobalAiButtonState.PROMOTION);

@@ -346,6 +346,71 @@ describe('CSSMatchedStyles', () => {
                          'inherited-color');
     });
 
+    it('resolves vars with unresolved CSS-wide keywords in pseudo elements', async () => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+      const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent.id = 2 as Protocol.DOM.NodeId;
+      node.parentNode = parent;
+      node.pseudoElements.returns(new Map());
+
+      const matchedStyles = await getMatchedStyles({
+        connection,
+        node,
+        inheritedPayload: [{
+          matchedCSSRules: [ruleMatch(':root',
+                                      [
+                                        {name: '--sel-inherit', value: 'inherit'},
+                                        {name: '--sel-unset', value: 'unset'},
+                                        {name: '--sel-revert', value: 'revert'},
+                                      ])],
+        }],
+        pseudoPayload: [{
+          pseudoType: Protocol.DOM.PseudoType.Selection,
+          matches: [ruleMatch('::selection', [{name: 'color', value: 'var(--sel-inherit)'}])],
+        }],
+        inheritedPseudoPayload: [{
+          pseudoElements: [{
+            pseudoType: Protocol.DOM.PseudoType.Selection,
+            matches: [ruleMatch('::selection', [{name: '--sel-inherit', value: 'blue'}])],
+          }],
+        }],
+      });
+
+      const selectionStyles = matchedStyles.pseudoStyles(Protocol.DOM.PseudoType.Selection);
+      assert.lengthOf(selectionStyles, 2);
+      const selectionStyle = selectionStyles[0];
+      assert.strictEqual(matchedStyles.computeCSSVariable(selectionStyle, '--sel-inherit')?.value, 'inherit');
+      assert.strictEqual(matchedStyles.computeCSSVariable(selectionStyle, '--sel-unset')?.value, 'unset');
+      assert.strictEqual(matchedStyles.computeCSSVariable(selectionStyle, '--sel-revert')?.value, 'revert');
+    });
+
+    it('resolves vars with inherited CSS-wide keywords in pseudo elements', async () => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+      const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent.id = 2 as Protocol.DOM.NodeId;
+      node.parentNode = parent;
+      node.pseudoElements.returns(new Map());
+
+      const matchedStyles = await getMatchedStyles({
+        connection,
+        node,
+        matchedPayload: [ruleMatch('div', [{name: '--color', value: 'inherit'}])],
+        inheritedPayload: [{
+          matchedCSSRules: [ruleMatch(':root', [{name: '--color', value: 'red'}])],
+        }],
+        pseudoPayload: [{
+          pseudoType: Protocol.DOM.PseudoType.After,
+          matches: [ruleMatch('div::after', [{name: 'color', value: 'var(--color)'}])],
+        }],
+      });
+
+      const afterStyles = matchedStyles.pseudoStyles(Protocol.DOM.PseudoType.After);
+      assert.lengthOf(afterStyles, 1);
+      assert.strictEqual(matchedStyles.computeCSSVariable(afterStyles[0], '--color')?.value, 'red');
+    });
+
     it('correcty handles cycles', async () => {
       async function compute(name: string, styleRules: string[], inheritedRules: string[][]) {
         const ruleToRuleMatch = (rule: string, index: number) => ruleMatch(

@@ -11,6 +11,7 @@ node_ts_library("extensions") {
     "can-reveal-requests.test.ts",
     "can-search-in-extension-panel.test.ts",
     "debugger-language-plugins.test.ts",
+    "inspected-window-eval.test.ts",
     "mock-extension.test.ts",
   ]
 

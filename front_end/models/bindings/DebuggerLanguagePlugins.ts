@@ -587,7 +587,10 @@ export class DebuggerLanguagePluginManager implements
   }> {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
-    if (rawModuleHandle) {
+    // Scripts from different targets can share a rawModuleId (`${sourceURL}@${hash}`), even
+    // if the plugin's handleScript() rejected some of them (e.g. due to extension host policy).
+    // Like hasPluginForScript(), only consider the plugin for scripts it actually accepted.
+    if (rawModuleHandle?.scripts.includes(script)) {
       await rawModuleHandle.addRawModulePromise;
       if (rawModuleHandle === this.#rawModuleHandles.get(rawModuleId)) {
         return {rawModuleId, plugin: rawModuleHandle.plugin};
@@ -913,7 +916,7 @@ export class DebuggerLanguagePluginManager implements
       Promise<Platform.DevToolsPath.UrlString[]|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|undefined> {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
-    if (rawModuleHandle) {
+    if (rawModuleHandle?.scripts.includes(script)) {
       return rawModuleHandle.addRawModulePromise;
     }
     return Promise.resolve(undefined);

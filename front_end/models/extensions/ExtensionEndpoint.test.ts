@@ -87,8 +87,11 @@ describe('LanguageExtensionEndpoint', () => {
     const channel = new MessageChannel();
     const pluginManager = sinon.createStubInstance(Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager);
     const languageEndpoint = new Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint(
-        true, '', 'test-plugin', {language: 'lang', symbol_types: [Protocol.Debugger.DebugSymbolsType.SourceMap]},
-        channel.port1, pluginManager);
+        '', 'test-plugin', {language: 'lang', symbol_types: [Protocol.Debugger.DebugSymbolsType.SourceMap]},
+        channel.port1, pluginManager, {
+          allowFileAccess: true,
+          canInspectScript: () => true,
+        });
 
     const requestReceived = receiveRequest(channel.port2);
 

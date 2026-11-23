@@ -425,19 +425,24 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       throw new Error('Received a message from an unregistered extension');
     }
     const endpoint = new Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint(
-        registration.allowFileAccess, extensionOrigin, pluginName, {language, symbol_types: symbol_types_array}, port,
-        pluginManager);
+        extensionOrigin, pluginName, {language, symbol_types: symbol_types_array}, port, pluginManager, {
+          allowFileAccess: registration.allowFileAccess,
+          canInspectScript: script =>
+              this.extensionEnabled(_shared_port) && this.extensionAllowedOnScript(script, registration),
+        });
     pluginManager.addPlugin(endpoint);
     return this.status.OK();
   }
 
-  private async loadWasmValue<T>(
-      expectValue: boolean, convert: (result: Protocol.Runtime.RemoteObject) => Record | T, expression: string,
-      stopId: unknown): Promise<Record|T> {
+  private async loadWasmValue<T>(expectValue: boolean, convert: (result: Protocol.Runtime.RemoteObject) => Record | T,
+                                 expression: string, stopId: unknown, port: MessagePort): Promise<Record|T> {
     const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const callFrame = pluginManager.callFrameForStopId(stopId as Bindings.DebuggerLanguagePlugins.StopId);
     if (!callFrame) {
       return this.status.E_BADARG('stopId', 'Unknown stop id');
+    }
+    if (!this.extensionAllowedOnScript(callFrame.script, port)) {
+      return this.status.E_FAILED('Permission denied');
     }
     const result = await callFrame.debuggerModel.agent.invoke_evaluateOnCallFrame({
       callFrameId: callFrame.id,
@@ -455,8 +460,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.E_FAILED('Failed');
   }
 
-  private async onGetWasmLinearMemory(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage):
-      Promise<Record|number[]> {
+  private async onGetWasmLinearMemory(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage,
+                                      port: MessagePort): Promise<Record|number[]> {
     if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory) {
       return this.status.E_BADARG(
           'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory}`);
@@ -464,7 +469,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return await this.loadWasmValue<number[]>(
         false, result => result.value,
         `[].slice.call(new Uint8Array(memories[0].buffer, ${Number(message.offset)}, ${Number(message.length)}))`,
-        message.stopId);
+        message.stopId, port);
   }
 
   private convertWasmValue(valueClass: 'local'|'global'|'operand', index: number):
@@ -493,36 +498,36 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     };
   }
 
-  private async onGetWasmGlobal(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage):
-      Promise<Record|Chrome.DevTools.WasmValue> {
+  private async onGetWasmGlobal(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage,
+                                port: MessagePort): Promise<Record|Chrome.DevTools.WasmValue> {
     if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal) {
       return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal}`);
     }
     const global = Number(message.global);
     const result = await this.loadWasmValue<Chrome.DevTools.WasmValue|undefined>(
-        true, this.convertWasmValue('global', global), `globals[${global}]`, message.stopId);
+        true, this.convertWasmValue('global', global), `globals[${global}]`, message.stopId, port);
     return result ?? this.status.E_BADARG('global', `No global with index ${global}`);
   }
 
-  private async onGetWasmLocal(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage):
-      Promise<Record|Chrome.DevTools.WasmValue> {
+  private async onGetWasmLocal(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage,
+                               port: MessagePort): Promise<Record|Chrome.DevTools.WasmValue> {
     if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal) {
       return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal}`);
     }
     const local = Number(message.local);
     const result = await this.loadWasmValue<Chrome.DevTools.WasmValue|undefined>(
-        true, this.convertWasmValue('local', local), `locals[${local}]`, message.stopId);
+        true, this.convertWasmValue('local', local), `locals[${local}]`, message.stopId, port);
     return result ?? this.status.E_BADARG('local', `No local with index ${local}`);
   }
 
-  private async onGetWasmOp(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage):
-      Promise<Record|Chrome.DevTools.WasmValue> {
+  private async onGetWasmOp(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage,
+                            port: MessagePort): Promise<Record|Chrome.DevTools.WasmValue> {
     if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmOp) {
       return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmOp}`);
     }
     const op = Number(message.op);
     const result = await this.loadWasmValue<Chrome.DevTools.WasmValue|undefined>(
-        true, this.convertWasmValue('operand', op), `stack[${op}]`, message.stopId);
+        true, this.convertWasmValue('operand', op), `stack[${op}]`, message.stopId, port);
     return result ?? this.status.E_BADARG('op', `No operand with index ${op}`);
   }
 
@@ -1079,21 +1084,31 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private extensionAllowedOnScript(script: SDK.Script.Script,
                                    portOrExtension: MessagePort|RegisteredExtension): boolean {
+    if (!this.extensionAllowedOnTarget(script.target(), portOrExtension)) {
+      return false;
+    }
+
+    const isSyntheticWasmURL = (url: Platform.DevToolsPath.UrlString): boolean =>
+        script.isWasm() && Common.ParsedURL.schemeIs(url, 'wasm:');
+
     // TODO(542925220): embedderName is a terrible proxy, but currently V8 stores the original URL only in there.
     // We'll add a proper field in the future and will replace it then.
     const embedderName = script.embedderName();
-    if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
+    if (embedderName && URL.canParse(embedderName) && !isSyntheticWasmURL(embedderName) &&
+        !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
       return false;
     }
-    // Scripts with a sourceURL comment carry a page-chosen URL, and anonymous scripts (e.g. eval
-    // without sourceURL) carry none. An empty URL must not reach extensionAllowedOnURL, because
-    // isAllowedOnTarget() would silently fall back to the primary page's URL. For both cases we
-    // can only check the embedderName (above) and the target the script runs in.
-    if (script.hasSourceURL || !script.contentURL()) {
-      return this.extensionAllowedOnTarget(script.target(), portOrExtension);
+
+    // Scripts with a sourceURL comment carry a page-chosen URL, anonymous scripts (e.g. eval
+    // without sourceURL) carry none, and buffer-instantiated Wasm modules carry a synthetic
+    // wasm:// URL. An empty URL must not reach extensionAllowedOnURL, because isAllowedOnTarget()
+    // would silently fall back to the primary page's URL. For these cases we can only check the
+    // embedderName (above) and the target the script runs in.
+    const contentURL = script.contentURL();
+    if (script.hasSourceURL || !contentURL || isSyntheticWasmURL(contentURL)) {
+      return true;
     }
-    return this.extensionAllowedOnURL(script.contentURL(), portOrExtension) &&
-        this.extensionAllowedOnTarget(script.target(), portOrExtension);
+    return this.extensionAllowedOnURL(contentURL, portOrExtension);
   }
 
   /**

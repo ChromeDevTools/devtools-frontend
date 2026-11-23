@@ -100,6 +100,11 @@ class LanguageExtensionEndpointImpl extends ExtensionEndpoint {
   }
 }
 
+export interface LanguageExtensionPolicy {
+  allowFileAccess: boolean;
+  canInspectScript: (script: SDK.Script.Script) => boolean;
+}
+
 export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
   private readonly supportedScriptTypes: {
     language: string,
@@ -108,21 +113,24 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   };
   private readonly endpoint: LanguageExtensionEndpointImpl;
   private readonly extensionOrigin: string;
+  readonly #canInspectScript: (script: SDK.Script.Script) => boolean;
   readonly allowFileAccess: boolean;
   readonly name: string;
 
-  constructor(allowFileAccess: boolean, extensionOrigin: string, name: string, supportedScriptTypes: {
+  constructor(extensionOrigin: string, name: string, supportedScriptTypes: {
     language: string,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     symbol_types: string[],
   },
               port: Platform.HostRuntime.WorkerMessagePort,
-              pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager) {
+              pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager,
+              policy: LanguageExtensionPolicy) {
     this.name = name;
     this.extensionOrigin = extensionOrigin;
     this.supportedScriptTypes = supportedScriptTypes;
     this.endpoint = new LanguageExtensionEndpointImpl(this, port, pluginManager);
-    this.allowFileAccess = allowFileAccess;
+    this.allowFileAccess = policy.allowFileAccess;
+    this.#canInspectScript = policy.canInspectScript;
   }
 
   canAccessURL(url: string): boolean {
@@ -135,6 +143,9 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   }
 
   handleScript(script: SDK.Script.Script): boolean {
+    if (!this.#canInspectScript(script)) {
+      return false;
+    }
     try {
       if (!this.canAccessURL(script.contentURL()) || (script.hasSourceURL && !this.canAccessURL(script.sourceURL)) ||
           (script.debugSymbols?.externalURL && !this.canAccessURL(script.debugSymbols.externalURL))) {
@@ -162,9 +173,6 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
    */
   addRawModule(rawModuleId: string, symbolsURL: string,
                rawModule: Chrome.DevTools.RawModule): Promise<string[]|{missingSymbolFiles: string[]}> {
-    if (!this.canAccessURL(symbolsURL) || !this.canAccessURL(rawModule.url)) {
-      return Promise.resolve([]);
-    }
     return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.AddRawModule,
                                      {rawModuleId, symbolsURL, rawModule}, isAddRawModuleResult);
   }

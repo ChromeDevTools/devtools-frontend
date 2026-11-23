@@ -9,7 +9,7 @@ import sinon from 'sinon';
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
@@ -474,6 +474,83 @@ describe('DebuggerLanguagePluginManager', () => {
       assert.strictEqual(pluginManager.uiSourceCodeForURL(dataScript.debuggerModel,
                                                           urlString`https://victim.example/source.c`, dataScript),
                          uiSourceCode);
+    });
+  });
+
+  describe('per-script rawModuleId isolation', () => {
+    let backend: MockDebuggerBackend;
+
+    beforeEach(() => {
+      backend = new MockDebuggerBackend();
+      backend.cdpConnection.setSuccessHandler('Debugger.getWasmBytecode', () => ({bytecode: 'AGFzbQEAAAA='}));
+    });
+
+    function addWasmScript(target: SDK.Target.Target, scriptId: string): SDK.Script.Script {
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assert.isOk(debuggerModel);
+      return debuggerModel.parsedScriptSource(scriptId as Protocol.Runtime.ScriptId, urlString`wasm://wasm/ecab951a`, 0,
+                                              0, 0, 40, 0, 'ecab951a', null, undefined, false, false, 40, false, null,
+                                              null, Protocol.Debugger.ScriptLanguage.WebAssembly,
+                                              [{type: Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF}], null, null);
+    }
+
+    function createCallFrameForScript(script: SDK.Script.Script): SDK.DebuggerModel.CallFrame {
+      return new SDK.DebuggerModel.CallFrame(script.debuggerModel, script, {
+        callFrameId: '0' as Protocol.Debugger.CallFrameId,
+        functionName: 'main',
+        location: {scriptId: script.scriptId, lineNumber: 0, columnNumber: 10},
+        url: script.sourceURL,
+        scopeChain: [],
+        this: {type: Protocol.Runtime.RemoteObjectType.Undefined},
+      });
+    }
+
+    it('does not bind a plugin to a rejected script that shares rawModuleId with an accepted script', async () => {
+      const allowedTarget = backend.createTarget();
+      const blockedTarget = backend.createTarget();
+      const {pluginManager} = backend.universe.debuggerWorkspaceBinding;
+
+      const listVariablesSpy = sinon.spy(() => Promise.resolve([{scope: 'LOCAL', name: 'x', type: 'i32'}]));
+      const plugin = new (class extends TestPlugin {
+        override handleScript(script: SDK.Script.Script): boolean {
+          return script.target() === allowedTarget;
+        }
+        override addRawModule(): Promise<string[]> {
+          return Promise.resolve(['https://allowed.example/main.c']);
+        }
+        override rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation):
+            Promise<Chrome.DevTools.SourceLocation[]> {
+          return Promise.resolve([{
+            rawModuleId: rawLocation.rawModuleId,
+            sourceFileURL: 'https://allowed.example/main.c',
+            lineNumber: 1,
+            columnNumber: 0,
+          }]);
+        }
+        override listVariablesInScope(): Promise<Chrome.DevTools.Variable[]> {
+          return listVariablesSpy();
+        }
+        override getScopeInfo(): Promise<Chrome.DevTools.ScopeInfo> {
+          return Promise.resolve({type: 'LOCAL', typeName: 'Local'});
+        }
+      })('RestrictedPlugin');
+      pluginManager.addPlugin(plugin);
+
+      const allowedScript = addWasmScript(allowedTarget, '1');
+      const blockedScript = addWasmScript(blockedTarget, '1');
+
+      assert.isTrue(pluginManager.hasPluginForScript(allowedScript));
+      assert.isFalse(pluginManager.hasPluginForScript(blockedScript));
+      assert.isUndefined(await pluginManager.getSourcesForScript(blockedScript));
+
+      const blockedScopes = await pluginManager.resolveScopeChain(createCallFrameForScript(blockedScript));
+      assert.isNull(blockedScopes);
+      sinon.assert.notCalled(listVariablesSpy);
+
+      const allowedScopes = await pluginManager.resolveScopeChain(createCallFrameForScript(allowedScript));
+      assert.isNotNull(allowedScopes);
+      assert.lengthOf(allowedScopes, 1);
+      sinon.assert.calledOnce(listVariablesSpy);
     });
   });
 });

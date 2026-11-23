@@ -22,8 +22,11 @@ for (const allowFileAccess of [true, false]) {
       const channel = new MessageChannel();
       const pluginManager = sinon.createStubInstance(Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager);
       endpoint = new Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint(
-          allowFileAccess, '', '', {language: 'lang', symbol_types: [Protocol.Debugger.DebugSymbolsType.SourceMap]},
-          channel.port1, pluginManager);
+          '', '', {language: 'lang', symbol_types: [Protocol.Debugger.DebugSymbolsType.SourceMap]}, channel.port1,
+          pluginManager, {
+            allowFileAccess,
+            canInspectScript: () => true,
+          });
     });
 
     it('canAccessURL respects allowFileAccess correctly', () => {
@@ -53,21 +56,6 @@ for (const allowFileAccess of [true, false]) {
       assert.isTrue(endpoint.handleScript(script));
     });
 
-    it('addRawModule respects allowFileAccess correctly', async () => {
-      const endpointProxyStub = sinon.stub(Extensions.ExtensionEndpoint.ExtensionEndpoint.prototype, 'sendRequest');
-      endpointProxyStub.resolves([]);
-      await endpoint.addRawModule('', 'file:///file', {url: 'http://example.com'});
-      assert.strictEqual(endpointProxyStub.calledOnce, allowFileAccess);
-      await endpoint.addRawModule('', 'http://example.com', {url: 'file:///file'});
-      assert.strictEqual(endpointProxyStub.calledTwice, allowFileAccess);
-      await endpoint.addRawModule('', 'http://example.com', {url: 'http://example.com'});
-      assert.lengthOf(endpointProxyStub.getCalls(), allowFileAccess ? 3 : 1);
-      await endpoint.addRawModule('', '', {url: 'http://example.com'});
-      assert.lengthOf(endpointProxyStub.getCalls(), allowFileAccess ? 4 : 2);
-      await endpoint.addRawModule('', 'wasm.debug.wasm', {url: 'http://example.com'});
-      assert.lengthOf(endpointProxyStub.getCalls(), allowFileAccess ? 5 : 3);
-    });
-
     it('validates all properties in getFunctionInfo results', async () => {
       const endpointProxyStub = sinon.stub(Extensions.ExtensionEndpoint.ExtensionEndpoint.prototype, 'sendRequest');
       endpointProxyStub.resolves({frames: []});
@@ -91,3 +79,28 @@ for (const allowFileAccess of [true, false]) {
     });
   });
 }
+
+describe('LanguageExtensionEndpoint with LanguageExtensionPolicy', () => {
+  it('does not handle scripts rejected by canInspectScript', () => {
+    const channel = new MessageChannel();
+    const canInspectScript = sinon.stub<[SDK.Script.Script], boolean>().returns(false);
+    const pluginManager = sinon.createStubInstance(Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager);
+    const endpoint = new Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint(
+        'chrome-extension://ext-id', 'TestPlugin', {
+          language: Protocol.Debugger.ScriptLanguage.WebAssembly,
+          symbol_types: [Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF],
+        },
+        channel.port1, pluginManager, {allowFileAccess: false, canInspectScript});
+
+    const script = sinon.createStubInstance(SDK.Script.Script);
+    script.debugSymbols = {type: Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF};
+    script.scriptLanguage.returns(Protocol.Debugger.ScriptLanguage.WebAssembly);
+    script.contentURL.returns(urlString`https://allowed.example/app.wasm`);
+
+    assert.isFalse(endpoint.handleScript(script));
+    sinon.assert.calledOnceWithExactly(canInspectScript, script);
+
+    canInspectScript.returns(true);
+    assert.isTrue(endpoint.handleScript(script));
+  });
+});

@@ -28,7 +28,13 @@ import {
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import type {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
-import {addChildFrame, FRAME_URL, getMainFrame, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {
+  addChildFrame,
+  FRAME_URL,
+  getInitializedResourceTreeModel,
+  getMainFrame,
+  mockResourceTree,
+} from '../../testing/ResourceTreeHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -2414,28 +2420,28 @@ describe('Wasm extension API', () => {
   const context = setupDevtoolsExtensionHooks();
   let stopId: unknown;
   beforeEach(() => {
-    const target = getBackend(context).createTarget();
+    const backend = getBackend(context);
+    const target = backend.createTarget();
     target.setInspectedURL(urlString`http://example.com`);
-    const targetManager = target.targetManager();
-    const resourceMapping =
-        new Bindings.ResourceMapping.ResourceMapping(targetManager, Workspace.Workspace.WorkspaceImpl.instance());
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
-    });
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
 
-    const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
-    callFrame.debuggerModel = new SDK.DebuggerModel.DebuggerModel(target);
-    sinon.stub(callFrame, 'id').get(() => '0' as Protocol.Debugger.CallFrameId);
-    sinon.stub(callFrame.debuggerModel.agent, 'invoke_evaluateOnCallFrame')
-        .returns(
-            Promise.resolve({result: {type: Protocol.Runtime.RemoteObjectType.Undefined}, getError: () => undefined}));
-    stopId = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager.stopIdForCallFrame(
-        callFrame);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assert.isOk(debuggerModel);
+    const script = debuggerModel.parsedScriptSource(
+        '0' as Protocol.Runtime.ScriptId, urlString`http://example.com/module.wasm`, 0, 0, 0, 10, 0, 'hash', null,
+        undefined, false, false, 10, false, null, null, Protocol.Debugger.ScriptLanguage.WebAssembly, null, null, null);
+    const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, script, {
+      callFrameId: '0' as Protocol.Debugger.CallFrameId,
+      functionName: 'main',
+      location: {scriptId: script.scriptId, lineNumber: 0, columnNumber: 0},
+      url: script.sourceURL,
+      scopeChain: [],
+      this: {type: Protocol.Runtime.RemoteObjectType.Undefined},
+    });
+    sinon.stub(debuggerModel.agent, 'invoke_evaluateOnCallFrame')
+        .resolves({result: {type: Protocol.Runtime.RemoteObjectType.Undefined}, getError: () => undefined});
+    stopId = backend.universe.debuggerWorkspaceBinding.pluginManager.stopIdForCallFrame(callFrame);
   });
 
   function captureError(expectedMessage: string): sinon.SinonStub {
@@ -2475,8 +2481,179 @@ describe('Wasm extension API', () => {
   });
 });
 
+describe('Wasm extension API hosts policy', () => {
+  const context = setupDevtoolsExtensionHooks({
+    hostsPolicy: {
+      runtimeAllowedHosts: [allowedUrl],
+      runtimeBlockedHosts: ['<all_urls>'],
+    },
+  });
+  expectConsoleLogs({error: ['Extension server error: Operation failed: Permission denied']});
+  const permissionDenied = {
+    code: 'E_FAILED',
+    description: 'Operation failed: %s',
+    details: ['Permission denied'],
+    isError: true,
+  };
+
+  let mainTarget: SDK.Target.Target;
+
+  beforeEach(async () => {
+    const backend = getBackend(context);
+    mockResourceTree(backend.cdpConnection);
+    mainTarget = backend.createTarget({id: 'main-target' as Protocol.Target.TargetID, type: SDK.Target.Type.FRAME});
+    await getInitializedResourceTreeModel(mainTarget);
+    mainTarget.setInspectedURL(allowedUrl);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+    assert.exists(context.chrome.devtools);
+  });
+
+  function addWasmScript(target: SDK.Target.Target, options?: {
+    scriptId?: string,
+    url?: Platform.DevToolsPath.UrlString,
+    embedderName?: Platform.DevToolsPath.UrlString,
+  }): SDK.Script.Script {
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assert.isOk(debuggerModel);
+    const url = options?.url ?? urlString`wasm://wasm/ecab951a`;
+    return debuggerModel.parsedScriptSource(
+        (options?.scriptId ?? '1') as Protocol.Runtime.ScriptId, url, 0, 0, 0, 40,
+        1 as Protocol.Runtime.ExecutionContextId, 'ecab951a', {isDefault: true}, undefined, false, false, 40, false,
+        null, null, Protocol.Debugger.ScriptLanguage.WebAssembly,
+        [{type: Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF}], options?.embedderName ?? url, null);
+  }
+
+  function registerStopId(script: SDK.Script.Script): unknown {
+    const callFrame = new SDK.DebuggerModel.CallFrame(script.debuggerModel, script, {
+      callFrameId: '0' as Protocol.Debugger.CallFrameId,
+      functionName: 'main',
+      location: {scriptId: script.scriptId, lineNumber: 0, columnNumber: 0},
+      url: script.sourceURL,
+      scopeChain: [],
+      this: {type: Protocol.Runtime.RemoteObjectType.Undefined},
+    });
+    return getBackend(context).universe.debuggerWorkspaceBinding.pluginManager.stopIdForCallFrame(callFrame);
+  }
+
+  async function assertWasmAccessDenied(script: SDK.Script.Script): Promise<void> {
+    const evaluateStub = sinon.stub(script.debuggerModel.agent, 'invoke_evaluateOnCallFrame').resolves({
+      result: {type: Protocol.Runtime.RemoteObjectType.Object, value: [1, 2, 3, 4]},
+      getError: () => undefined,
+    });
+    const stopId = registerStopId(script);
+    const languageServices = context.chrome.devtools!.languageServices;
+
+    const memory = await languageServices.getWasmLinearMemory(0, 4, stopId);
+    assert.strictEqual(memory.byteLength, 0);
+    const results: unknown[] = [
+      await languageServices.getWasmGlobal(0, stopId),
+      await languageServices.getWasmLocal(0, stopId),
+      await languageServices.getWasmOp(0, stopId),
+    ];
+    for (const result of results) {
+      assertIsStatus(result);
+      assert.deepEqual(result, permissionDenied);
+    }
+    sinon.assert.notCalled(evaluateStub);
+  }
+
+  it('allows Wasm inspection for buffer-compiled wasm:// scripts on an allowed target under <all_urls> block policy',
+     async () => {
+       const script = addWasmScript(mainTarget);
+       sinon.stub(script.debuggerModel.agent, 'invoke_evaluateOnCallFrame')
+           .callsFake(async(request): Promise<Protocol.Debugger.EvaluateOnCallFrameResponse> => {
+             if (request.expression.includes('memories[0].buffer')) {
+               return {
+                 result: {type: Protocol.Runtime.RemoteObjectType.Object, value: [10, 20, 30, 40]},
+                 getError: () => undefined,
+               };
+             }
+             return {
+               result: {
+                 type: Protocol.Runtime.RemoteObjectType.Object,
+                 subtype: Protocol.Runtime.RemoteObjectSubtype.Wasmvalue,
+                 description: 'i32',
+                 preview: {
+                   type: Protocol.Runtime.ObjectPreviewType.Object,
+                   overflow: false,
+                   properties: [{name: 'value', type: Protocol.Runtime.PropertyPreviewType.Number, value: '42'}],
+                 },
+               },
+               getError: () => undefined,
+             };
+           });
+
+       const stopId = registerStopId(script);
+       const languageServices = context.chrome.devtools!.languageServices;
+       const memory = await languageServices.getWasmLinearMemory(0, 4, stopId);
+       assert.deepEqual(Array.from(new Uint8Array(memory)), [10, 20, 30, 40]);
+       assert.deepEqual(await languageServices.getWasmGlobal(0, stopId), {type: 'i32', value: 42});
+     });
+
+  it('denies Wasm inspection on a blocked OOPIF target', async () => {
+    const blockedTarget = getBackend(context).createTarget({
+      id: 'blocked-oopif' as Protocol.Target.TargetID,
+      type: SDK.Target.Type.FRAME,
+      parentTarget: mainTarget,
+    });
+    await getInitializedResourceTreeModel(blockedTarget);
+    blockedTarget.setInspectedURL(blockedUrl);
+    const script = addWasmScript(blockedTarget);
+
+    await assertWasmAccessDenied(script);
+  });
+
+  it('denies Wasm inspection for a blocked cross-origin script loaded in an allowed target', async () => {
+    const script = addWasmScript(mainTarget, {
+      url: urlString`${blockedUrl}/secret.wasm`,
+      embedderName: urlString`${blockedUrl}/secret.wasm`,
+    });
+
+    await assertWasmAccessDenied(script);
+  });
+
+  it('does not forward blocked Wasm modules or bytecode to registered language extension plugins', async () => {
+    const plugin = new StubLanguageExtension();
+    const addRawModuleSpy = sinon.spy(plugin, 'addRawModule');
+    await context.chrome.devtools!.languageServices.registerLanguageExtensionPlugin(plugin, 'DWARF', {
+      language: Protocol.Debugger.ScriptLanguage.WebAssembly,
+      symbol_types: [Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF],
+    });
+
+    const blockedTarget = getBackend(context).createTarget({
+      id: 'blocked-plugin-target' as Protocol.Target.TargetID,
+      type: SDK.Target.Type.FRAME,
+      parentTarget: mainTarget,
+    });
+    await getInitializedResourceTreeModel(blockedTarget);
+    blockedTarget.setInspectedURL(blockedUrl);
+
+    const blockedBytecodeStub = sinon.stub(blockedTarget.debuggerAgent(), 'invoke_getWasmBytecode')
+                                    .resolves({bytecode: 'AGFzbQEAAAA=', getError: () => undefined});
+    const allowedBytecodeStub = sinon.stub(mainTarget.debuggerAgent(), 'invoke_getWasmBytecode')
+                                    .resolves({bytecode: 'AGFzbQEAAAA=', getError: () => undefined});
+
+    addWasmScript(blockedTarget, {scriptId: 'blocked-1', url: urlString`wasm://wasm/b1`});
+    addWasmScript(mainTarget, {
+      scriptId: 'blocked-2',
+      url: urlString`${blockedUrl}/secret.wasm`,
+      embedderName: urlString`${blockedUrl}/secret.wasm`,
+    });
+    const allowedScript = addWasmScript(mainTarget, {scriptId: 'allowed-1', url: urlString`wasm://wasm/a1`});
+
+    await getBackend(context).universe.debuggerWorkspaceBinding.pluginManager.getSourcesForScript(allowedScript);
+
+    sinon.assert.notCalled(blockedBytecodeStub);
+    sinon.assert.calledOnce(allowedBytecodeStub);
+    sinon.assert.calledOnce(addRawModuleSpy);
+    assert.strictEqual(addRawModuleSpy.firstCall.args[2].url, 'wasm://wasm/a1');
+  });
+});
+
 class StubLanguageExtension implements Chrome.DevTools.LanguageExtensionPlugin {
-  async addRawModule(): Promise<string[]|{missingSymbolFiles: string[]}> {
+  async addRawModule(_rawModuleId: string, _symbolsURL: string,
+                     _rawModule: Chrome.DevTools.RawModule): Promise<string[]|{missingSymbolFiles: string[]}> {
     return [];
   }
   async sourceLocationToRawLocation(): Promise<Chrome.DevTools.RawLocationRange[]> {

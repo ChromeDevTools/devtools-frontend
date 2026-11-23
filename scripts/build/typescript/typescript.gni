@@ -190,7 +190,7 @@ template("ts_library") {
   _compiler_options.outDir = _outdir
   _compiler_options.rootDirs = [
     rebase_path(devtools_location_prepend, target_gen_dir),
-    rebase_path("$root_gen_dir/$devtools_location", target_gen_dir),
+    rebase_path("$devtools_gen_dir/", target_gen_dir),
   ]
   _compiler_options.allowJs = false
   _compiler_options.checkJs = false
@@ -358,7 +358,7 @@ template("ts_library") {
         rootDir = rebase_path(_rootdir, target_gen_dir)
         rootDirs = [
           rebase_path(devtools_location_prepend, target_gen_dir),
-          rebase_path("$root_gen_dir/$devtools_location", target_gen_dir),
+          rebase_path("$devtools_gen_dir/", target_gen_dir),
         ]
         outDir = "."
         declarationDir = "."

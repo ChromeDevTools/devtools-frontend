@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("../scripts/build/ninja/copy.gni")
+import("../scripts/build/ninja/vars.gni")
 import("../scripts/build/typescript/typescript.gni")
 
 group("test") {
@@ -78,7 +79,7 @@ generated_file("build_config") {
   data = [ "$target_gen_dir/build.json" ]
   output_conversion = "json"
   contents = {
-    SOURCE_ROOT = rebase_path("//$devtools_location", target_gen_dir)
+    SOURCE_ROOT = rebase_path(devtools_location_prepend, target_gen_dir)
     CHECKOUT_ROOT = rebase_path("//", target_gen_dir)
     BUILD_ROOT = rebase_path(root_build_dir, target_gen_dir)
     BUILD_WITH_CHROMIUM = build_with_chromium

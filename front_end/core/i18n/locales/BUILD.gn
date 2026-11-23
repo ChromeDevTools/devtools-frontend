@@ -2,10 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../../config/gni/i18n.gni")
 import("../../../../scripts/build/ninja/minify_json.gni")
 import("../../../../scripts/build/ninja/node.gni")
-
-import("//$devtools_root_location/config/gni/i18n.gni")
 
 node_action("collect_strings") {
   script = "front_end/core/i18n/collect-ui-strings.js"

@@ -2,7 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//build/config/devtools.gni")
 import("../../scripts/build/ninja/vars.gni")
 
 remote_devtools_locales = [
@@ -109,7 +108,8 @@ remote_fetch_pattern =
 local_fetch_pattern = "./locales/@LOCALE@.json"
 
 # Paths from which to collect UI strings
-devtools_collection_directories = [ "//$devtools_location/front_end" ]
+devtools_collection_directories = [ devtools_location_prepend + "front_end" ]
 
 # Paths where to find the translated UI string JSON files.
-devtools_locale_directory = "//$devtools_location/front_end/core/i18n/locales"
+devtools_locale_directory =
+    devtools_location_prepend + "front_end/core/i18n/locales"

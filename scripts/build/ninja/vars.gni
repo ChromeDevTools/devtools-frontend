@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//build/config/devtools.gni")
 import("//build/toolchain/kythe.gni")
+import("//build_overrides/build.gni")
 
 declare_args() {
   # Whether we bundle module entrypoints into a single file or not. The arg is
@@ -21,8 +21,10 @@ assert(
     devtools_build_with_bundled_chromium_deps || build_with_chromium,
     "devtools_build_with_bundled_chromium_deps can only be false when build_with_chromium is true")
 
-# Introduce a new variable to make sure that string
-# interpolation keeps on working. If we don't, GN
-# doesn't know what is part of a variable and what
-# is an actual string, without the `/` separator.
-devtools_location_prepend = "//$devtools_location"
+# Compute the DevTools source and gen root relative to this .gni file's own
+# directory (scripts/build/ninja/). Because GN evaluates import()ed files in
+# their own directory rather than the caller's, "../../../" always resolves to
+# the DevTools root regardless of where the repo is mounted relative to `//`
+# (standalone, in Chromium, or in embedders such as chrome-devtools-mcp).
+devtools_location_prepend = get_path_info("../../../", "abspath")
+devtools_gen_dir = get_path_info("../../../", "gen_dir")

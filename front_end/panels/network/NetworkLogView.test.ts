@@ -1592,6 +1592,59 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridd
     sinon.assert.calledOnceWithExactly(revealStub, appliedConditions, false);
   });
 
+  it('renders large request rows with subtitles, an error row and a pending row', async () => {
+    Common.Settings.Settings.instance().createSetting('network-log-large-rows', false).set(true);
+    networkLogView = createNetworkLogView();
+    renderElementIntoDOM(networkLogView, {includeCommonStyles: true, width: 600, height: 200});
+    networkLogView.columns().switchViewMode(true);
+    networkLogView.setRecording(true);
+
+    const finishedRequest = createNetworkRequest(urlString`http://localhost/path/index.html`, {finished: true});
+    finishedRequest.setResourceType(Common.ResourceType.resourceTypes.Document);
+    finishedRequest.mimeType = 'text/html';
+    finishedRequest.statusCode = 200;
+    finishedRequest.statusText = 'OK';
+    finishedRequest.setIssueTime(1, 1);
+    finishedRequest.responseReceivedTime = 2;
+    finishedRequest.endTime = 3;
+    finishedRequest.resourceSize = 5678;
+    finishedRequest.setTransferSize(1234);
+
+    const failedRequest = createNetworkRequest(urlString`http://localhost/path/missing.js`, {finished: true});
+    failedRequest.setResourceType(Common.ResourceType.resourceTypes.Script);
+    failedRequest.statusCode = 404;
+    failedRequest.setIssueTime(1, 1);
+    failedRequest.responseReceivedTime = 2;
+    failedRequest.endTime = 3;
+
+    const cachedRequest = createNetworkRequest(urlString`http://localhost/path/cached.css`, {finished: true});
+    cachedRequest.setResourceType(Common.ResourceType.resourceTypes.Stylesheet);
+    cachedRequest.statusCode = 200;
+    cachedRequest.setFromMemoryCache();
+    cachedRequest.resourceSize = 100;
+
+    const pendingRequest = createNetworkRequest(urlString`http://localhost/path/pending.json`, {});
+
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(finishedRequest);
+    assert.exists(networkManager);
+    networkLog.modelAdded(networkManager);
+    for (const request of [finishedRequest, failedRequest, cachedRequest]) {
+      networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.LoadingFinished, request);
+    }
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestUpdated, pendingRequest);
+    networkLogView.columns().dataGrid().updateInstantly();
+
+    await RenderCoordinator.done();
+    await raf();
+    networkLogView.columns().dataGrid().updateInstantly();
+
+    const rows = networkLogView.element.querySelectorAll('tr[data-network-request-id]');
+    assert.lengthOf(rows, 4);
+    assert.lengthOf(networkLogView.element.querySelectorAll('tr.network-error-row'), 1);
+
+    await assertScreenshot('network-log/large-request-rows.png');
+  });
+
   it('preserves selection when a WebSocket frame is received', async () => {
     const {rootNode, networkLogView} = createEnvironment();
 

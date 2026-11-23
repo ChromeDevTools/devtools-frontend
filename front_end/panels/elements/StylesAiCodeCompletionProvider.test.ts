@@ -80,7 +80,7 @@ describeWithEnvironment('StylesAiCodeCompletionProvider', () => {
     sinon.stub(Host.AidaClient.HostConfigTracker.instance(), 'pollAidaAvailability').resolves();
     sinon.stub(Host.AidaClient.HostConfigTracker.instance(), 'aidaAvailability')
         .get(() => Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
-    Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
   });
 
   it('does not create a provider when the feature is disabled', () => {

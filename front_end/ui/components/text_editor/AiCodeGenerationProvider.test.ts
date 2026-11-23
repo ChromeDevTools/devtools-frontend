@@ -80,7 +80,7 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       dispose: () => {},
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
     } as unknown as Host.AidaClient.HostConfigTracker);
-    Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
     Common.Settings.Settings.instance().createSetting('ai-code-generation-onboarding-completed', true);
     sinon.stub(UI.UIUtils.PromotionManager.instance(), 'canShowPromotion').returns(true);
     sinon.stub(UI.UIUtils.PromotionManager.instance(), 'maybeShowPromotion').returns(true);
@@ -516,13 +516,13 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
     // To simulate this, `ai-code-completion-enabled` setting is set to false.
     // After creating the provider, we set the `ai-code-completion-enabled` setting to true.
     Common.Settings.Settings.instance().settingForTest('ai-code-generation-onboarding-completed').set(false);
-    Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(false);
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(false);
     const showDialogSpy = sinon.spy(AiCodeGenerationUpgradeDialog.AiCodeGenerationUpgradeDialog, 'show');
     const {editor, provider} = createEditorWithProvider('// Hello');
     editor.dispatch({selection: {anchor: 8}});
     await clock.tickAsync(0);
 
-    Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
     await clock.tickAsync(0);
     dispatchCtrlI(editor);
     await clock.tickAsync(0);

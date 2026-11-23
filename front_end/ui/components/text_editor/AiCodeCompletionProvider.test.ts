@@ -71,8 +71,8 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
   });
 
   afterEach(() => {
-    Common.Settings.Settings.instance().settingForTest('ai-code-completion-teaser-dismissed').set(false);
-    Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(false);
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false).set(false);
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(false);
   });
 
   it('does not create a provider when the feature is disabled', () => {
@@ -198,7 +198,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
 
   describe('Triggers code completion', () => {
     it('triggers code completion on text change', async () => {
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
       const {editor, provider} = createEditorWithProvider('');
       const completeCodeStub = sinon.stub(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'completeCode');
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
@@ -214,7 +214,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
     it('triggers code completion when AIDA becomes available', async () => {
       await setAidaAvailability(Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
       const completeCodeStub = sinon.stub(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'completeCode');
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
       const {editor, provider} = createEditorWithProvider('');
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
 
@@ -236,7 +236,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
 
     it('does not trigger code completion when AIDA becomes unavailable', async () => {
       const completeCodeStub = sinon.stub(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'completeCode');
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
       const {editor, provider} = createEditorWithProvider('');
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
 
@@ -258,7 +258,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
 
     it('debounces requests for code completion', async () => {
       const completeCodeStub = sinon.stub(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'completeCode');
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
       const {editor, provider} = createEditorWithProvider('');
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
 
@@ -275,7 +275,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
 
   describe('Dispatches', () => {
     beforeEach(() => {
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
     });
 
     it('dispatches a suggestion to the editor when AIDA returns one', async () => {
@@ -430,7 +430,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
     it('accepts suggestion on Tab and records acceptance', async () => {
       const registerUserAcceptanceSpy =
           sinon.spy(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'registerUserAcceptance');
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
       const {editor, provider} = createEditorWithProvider('');
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
 
@@ -456,7 +456,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
     it('accepts suggestion on Enter and records acceptance', async () => {
       const registerUserAcceptanceSpy =
           sinon.spy(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'registerUserAcceptance');
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
       const {editor, provider} = createEditorWithProvider('');
       await clock.tickAsync(0);
 
@@ -483,7 +483,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
       it(`ignores ${key} for generation suggestions`, async () => {
         const registerUserAcceptanceSpy =
             sinon.spy(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'registerUserAcceptance');
-        Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+        Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
         const {editor, provider} = createEditorWithProvider('');
         await clock.tickAsync(0);
 
@@ -508,7 +508,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
     }
 
     it('dismisses suggestion on Escape', async () => {
-      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
       const {editor, provider} = createEditorWithProvider('');
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
 

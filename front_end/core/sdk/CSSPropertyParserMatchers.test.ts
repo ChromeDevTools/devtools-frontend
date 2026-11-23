@@ -167,8 +167,8 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.exists(ast, text);
       assert.exists(match, text);
       assert.deepEqual(match.space.map(n => ast.text(n)), ['in', 'srgb', 'var(--interpolation)', 'hue']);
-      assert.strictEqual(match.color1.map(n => ast.text(n)).join(), 'red,var(--percentage)');
-      assert.strictEqual(match.color2.map(n => ast.text(n)).join(), 'rgb(var(--rgb))');
+      assert.deepEqual(match.items.map(item => item.map(n => ast.text(n)).join()),
+                       ['red,var(--percentage)', 'rgb(var(--rgb))']);
     }
     {
       const {ast, match, text} = matchSingleValue(
@@ -177,17 +177,23 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.exists(ast, text);
       assert.exists(match, text);
       assert.strictEqual(match.space.map(n => ast.text(n)).join(), 'var(--space)');
-      assert.strictEqual(match.color1.map(n => ast.text(n)).join(), 'var(--color1)');
-      assert.strictEqual(match.color2.map(n => ast.text(n)).join(), 'var(--color2)');
+      assert.deepEqual(match.items.map(item => item.map(n => ast.text(n)).join()), ['var(--color1)', 'var(--color2)']);
+    }
+    {
+      const {ast, match, text} = matchSingleValue('color', 'color-mix(var(--color1), var(--color1), var(--color2))',
+                                                  new SDK.CSSPropertyParserMatchers.ColorMixMatcher());
+      assert.exists(ast, text);
+      assert.exists(match, text);
+      assert.isEmpty(match.space, text);
+      assert.deepEqual(match.items.map(item => item.map(n => ast.text(n)).join()),
+                       ['var(--color1)', 'var(--color1)', 'var(--color2)']);
     }
 
-    for (const fail
-             of ['color-mix(var(--color1), var(--color1), var(--color2))',
-                 'color-mix(var(--space), var(--color1) var(--percentage) var(--percentage), var(--color2))',
-                 'color-mix(var(--space), var(--color1) 10% var(--percentage), var(--color2))',
-                 'color-mix(var(--space), var(--color1), var(--color2) 15%)',
-                 'color-mix(var(--space), var(--color1), var(--color2) var(--percentage))',
-                 'color-mix(var(--space), var(--multiple-colors))',
+    for (const fail of ['color-mix(var(--space), var(--color1) var(--percentage) var(--percentage), var(--color2))',
+                        'color-mix(var(--space), var(--color1) 10% var(--percentage), var(--color2))',
+                        'color-mix(var(--space), var(--color1), var(--color2) 15%)',
+                        'color-mix(var(--space), var(--color1), var(--color2) var(--percentage))',
+                        'color-mix(var(--space), var(--multiple-colors))',
     ]) {
       const {ast, match, text} = matchSingleValue('color', fail, new SDK.CSSPropertyParserMatchers.ColorMixMatcher());
       assert.exists(ast, text);
@@ -196,20 +202,23 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
   });
 
   it('parses color-mix', () => {
-    function check(space: string, color1: string, color2: string): void {
-      const {ast, match, text} = matchSingleValue(
-          'color', `color-mix(${space}, ${color1}, ${color2})`, new SDK.CSSPropertyParserMatchers.ColorMixMatcher());
+    function colorMix(space: string, items: string[]): string {
+      return `color-mix(${(space ? [space, ...items] : items).join(', ')})`;
+    }
+
+    function check(space: string, ...items: string[]): void {
+      const {ast, match, text} =
+          matchSingleValue('color', colorMix(space, items), new SDK.CSSPropertyParserMatchers.ColorMixMatcher());
       assert.exists(ast, text);
       assert.exists(match, text);
 
       assert.deepEqual(match.space.map(n => ast.text(n)).join(' '), space, text);
-      assert.strictEqual(match.color1.map(n => ast.text(n)).join(' '), color1, text);
-      assert.strictEqual(match.color2.map(n => ast.text(n)).join(' '), color2, text);
+      assert.deepEqual(match.items.map(item => item.map(n => ast.text(n)).join(' ')), items, text);
     }
 
-    function checkFailure(space: string, color1: string, color2: string): void {
-      const {match, text} = matchSingleValue(
-          'color', `color-mix(${space}, ${color1}, ${color2})`, new SDK.CSSPropertyParserMatchers.ColorMixMatcher());
+    function checkFailure(space: string, ...items: string[]): void {
+      const {match, text} =
+          matchSingleValue('color', colorMix(space, items), new SDK.CSSPropertyParserMatchers.ColorMixMatcher());
       assert.isNull(match, text);
     }
 
@@ -218,17 +227,23 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     check('in srgb', 'red 35%', 'blue');
     check('in srgb', '35% red', 'blue 16%');
     check('in srgb', '/*a*/ 35% /*b*/ red /*c*/', '/*a*/ blue /*b*/ 16% /*c*/');
+    check('in srgb', '0% red', 'blue 0%');
+    check('in hsl', 'teal');
+    check('in oklch longer hue', 'red', 'green 20%', 'blue');
+    check('in srgb', 'red 0%', 'green 0%', 'blue 0%');
+    check('in srgb', 'red calc(10% + 20%)', 'blue');
+    check('', 'red', 'blue');
+    check('', 'red');
+    check('', 'red 20%', 'green', 'blue');
     checkFailure('insrgb shorter hue', 'red 35%', 'blue');
     checkFailure('/*asd*/srgb in', 'red 35%', 'blue');
-    checkFailure('in srgb', '0% red', 'blue 0%');
-
-    const {ast, match, text} =
-        matchSingleValue('color', 'color-mix(red, blue)', new SDK.CSSPropertyParserMatchers.ColorMixMatcher());
-    assert.exists(ast, text);
-    assert.exists(match, text);
-    assert.isEmpty(match.space, text);
-    assert.strictEqual(match.color1.map(n => ast.text(n)).join(' '), 'red', text);
-    assert.strictEqual(match.color2.map(n => ast.text(n)).join(' '), 'blue', text);
+    checkFailure('in srgb', '50%', 'red');
+    checkFailure('in srgb', 'red blue');
+    checkFailure('in', 'red 35%', 'blue');
+    checkFailure('');
+    checkFailure('in srgb');
+    checkFailure('in srgb', 'red', '');
+    checkFailure('in srgb', 'red', 'green 10% 20%', 'blue');
   });
 
   it('parses contrast-color', () => {

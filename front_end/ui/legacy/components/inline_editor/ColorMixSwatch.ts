@@ -4,13 +4,12 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../../../core/common/common.js';
-import * as Platform from '../../../../core/platform/platform.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import colorMixSwatchStyles from './colorMixSwatch.css.js';
 
-const {html, render, Directives: {ref}} = Lit;
+const {html, render, Directives: {ref, classMap}} = Lit;
 
 export class ColorMixChangedEvent extends Event {
   static readonly eventName = 'colormixchanged';
@@ -23,11 +22,15 @@ export class ColorMixChangedEvent extends Event {
   }
 }
 
+export function serializeColorMix(space: string, items: string[]): string {
+  return `color-mix(${space ? `${space}, ` : ''}${items.join(', ')})`;
+}
+
 export class ColorMixSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private colorMixText = '';     // color-mix(in srgb, hotpink, white)
-  private firstColorText = '';   // hotpink
-  private secondColorText = '';  // white
+  private space = '';             // in srgb
+  private items: string[] = [];   // hotpink 20%, white
+  private colors: string[] = [];  // hotpink, white
   #icon: HTMLElement|null = null;
 
   mixedColor(): Common.Color.Color|null {
@@ -35,46 +38,48 @@ export class ColorMixSwatch extends HTMLElement {
     return colorText ? Common.Color.parse(colorText) : null;
   }
 
-  setFirstColor(text: string): void {
-    // We need to replace `colorMixText` because it is the CSS for the
-    // the middle section where we actually show the mixed colors.
-    // So, when a color changed, we need to update colorMixText to
-    // reflect the new color (not the old one).
-    if (this.firstColorText) {
-      this.colorMixText = this.colorMixText.replace(this.firstColorText, text);
-    }
-    this.firstColorText = text;
-    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
+  setColorMix(space: string, items: string[]): void {
+    this.space = space;
+    this.items = [...items];
+    this.colors = items.map(() => '');
+    this.dispatchEvent(new ColorMixChangedEvent(this.getText()));
     this.#render();
   }
 
-  setSecondColor(text: string): void {
-    // We need to replace from the last to handle the same colors case
-    // i.e. replacing the second color of `color-mix(in srgb, red 50%, red 10%)`
-    // to `blue` should result in `color-mix(in srgb, red 50%, blue 10%)`.
-    if (this.secondColorText) {
-      this.colorMixText = Platform.StringUtilities.replaceLast(this.colorMixText, this.secondColorText, text);
+  setColor(index: number, text: string): void {
+    if (index < 0 || index >= this.items.length) {
+      return;
     }
-    this.secondColorText = text;
-    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
-    this.#render();
-  }
-
-  setColorMixText(text: string): void {
-    this.colorMixText = text;
-    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
+    // We need to replace the color in its item because the text is the CSS
+    // for the section where we actually show the mixed colors. Replacing it
+    // within the item handles the same colors case, i.e. replacing the second
+    // color of `color-mix(in srgb, red 50%, red 10%)` with `blue` should result
+    // in `color-mix(in srgb, red 50%, blue 10%)`.
+    if (this.colors[index]) {
+      this.items[index] = this.items[index].replace(this.colors[index], text);
+    }
+    this.colors[index] = text;
+    this.dispatchEvent(new ColorMixChangedEvent(this.getText()));
     this.#render();
   }
 
   getText(): string {
-    return this.colorMixText;
+    if (!this.items.length) {
+      return '';
+    }
+    return serializeColorMix(this.space, this.items);
   }
 
   #render(): void {
-    if (!this.colorMixText || !this.firstColorText || !this.secondColorText) {
-      render(this.colorMixText, this.shadow, {host: this});
+    const colorMixText = this.getText();
+    if (!colorMixText || this.colors.some(color => !color)) {
+      render(colorMixText, this.shadow, {host: this});
       return;
     }
+
+    // The icon shows how two colors overlap into the mixed color. It shows
+    // only the mixed color when there's one color, or more than two.
+    const mixOnly = this.colors.length !== 2;
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -84,13 +89,14 @@ export class ColorMixSwatch extends HTMLElement {
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
     render(
-      html`<style>${colorMixSwatchStyles}</style><div class="swatch-icon"
+      html`<style>${colorMixSwatchStyles}</style><div class=${classMap({'swatch-icon': true, 'mix-only': mixOnly})}
       ${ref(e => {this.#icon = e as HTMLElement; })}
       jslog=${VisualLogging.cssColorMix()}
-      style="--color: ${this.colorMixText}">
-        <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.firstColorText}"></span>
-        <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.secondColorText}"></span>
-        <span class="swatch swatch-mix" id="mix-result" style="--color: ${this.colorMixText}"></span></div>`,
+      style="--color: ${colorMixText}">${mixOnly ? html`
+        <span class="swatch" id="mix-result" style="--color: ${colorMixText}"></span>` : html`
+        <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.colors[0]}"></span>
+        <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.colors[1]}"></span>
+        <span class="swatch swatch-mix" id="mix-result" style="--color: ${colorMixText}"></span>`}</div>`,
       this.shadow, {host: this});
     // clang-format on
   }

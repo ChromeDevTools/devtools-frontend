@@ -402,19 +402,9 @@ export class AngleMatcher extends AngleMatcherBase {
   }
 }
 
-function literalToNumber(node: CodeMirror.SyntaxNode, ast: SyntaxTree): number|null {
-  if (node.type.name !== 'NumberLiteral') {
-    return null;
-  }
-  const text = ast.text(node);
-
-  return Number(text.substring(0, text.length - ast.text(node.getChild('Unit')).length));
-}
-
 export class ColorMixMatch implements Match {
-  constructor(
-      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly space: CodeMirror.SyntaxNode[],
-      readonly color1: CodeMirror.SyntaxNode[], readonly color2: CodeMirror.SyntaxNode[]) {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly space: CodeMirror.SyntaxNode[],
+              readonly items: CodeMirror.SyntaxNode[][]) {
   }
 }
 
@@ -440,39 +430,32 @@ export class ColorMixMatcher extends ColorMixMatcherBase {
       return null;
     }
     const computedValueArgs = ASTUtils.callArgs(value);
-    if (computedValueArgs.length !== 2 && computedValueArgs.length !== 3) {
+    // The optional interpolation method is the only argument that starts with a literal `in`. The colors follow it.
+    const hasSpace = computedValueArgs.length > 0 &&
+        computedValueTree.text(ASTUtils.stripComments(computedValueArgs[0]).next().value) === 'in';
+    const [space, ...items] = hasSpace ? computedValueArgs : [[], ...computedValueArgs];
+    if ((hasSpace && space.length < 2) || items.length < 1) {
       return null;
     }
 
-    const [space, color1, color2] = computedValueArgs.length === 3 ? computedValueArgs : [[], ...computedValueArgs];
-    // Verify that all arguments are there, and that an optional interpolation method starts with a literal `in`.
-    if ((space.length > 0 &&
-         (space.length < 2 || computedValueTree.text(ASTUtils.stripComments(space).next().value) !== 'in')) ||
-        color1.length < 1 || color2.length < 1) {
-      return null;
-    }
-
-    // Verify there's at most one percentage value for each color.
-    const p1 =
-        color1.filter(n => n.type.name === 'NumberLiteral' && computedValueTree.text(n.getChild('Unit')) === '%');
-    const p2 =
-        color2.filter(n => n.type.name === 'NumberLiteral' && computedValueTree.text(n.getChild('Unit')) === '%');
-    if (p1.length > 1 || p2.length > 1) {
-      return null;
-    }
-
-    // Verify that if both colors carry percentages, they aren't both zero (which is an invalid property value).
-    if (p1[0] && p2[0] && (literalToNumber(p1[0], computedValueTree) ?? 0) === 0 &&
-        (literalToNumber(p2[0], computedValueTree) ?? 0) === 0) {
-      return null;
+    // Verify that each item has a color and at most one percentage value.
+    for (const item of items) {
+      const nodes = [...ASTUtils.stripComments(item)];
+      const nonPercentages =
+          nodes.filter(n => n.type.name !== 'NumberLiteral' || computedValueTree.text(n.getChild('Unit')) !== '%');
+      // Without a literal percentage, a second value can still be a percentage written as a function, e.g. calc().
+      if (nodes.length > 2 || nonPercentages.length < 1 ||
+          (nonPercentages.length === 2 && !nonPercentages.some(n => n.name === 'CallExpression'))) {
+        return null;
+      }
     }
 
     const args = ASTUtils.callArgs(node);
     if (args.length !== computedValueArgs.length) {
       return null;
     }
-    const [authoredSpace, authoredColor1, authoredColor2] = args.length === 3 ? args : [[], ...args];
-    return new ColorMixMatch(matching.ast.text(node), node, authoredSpace, authoredColor1, authoredColor2);
+    const [authoredSpace, ...authoredItems] = hasSpace ? args : [[], ...args];
+    return new ColorMixMatch(matching.ast.text(node), node, authoredSpace, authoredItems);
   }
 }
 

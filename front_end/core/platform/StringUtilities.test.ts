@@ -822,23 +822,6 @@ describe('StringUtilities', () => {
     fnExpectingLowerCaseString(lower);
   });
 
-  describe('replaceLast', () => {
-    it('should return the input string when the search is not found', () => {
-      const output = Platform.StringUtilities.replaceLast('input', 'search', 'repl');
-      assert.strictEqual(output, 'input');
-    });
-
-    it('should replace the occurrance when the search exists inside the input', () => {
-      const output = Platform.StringUtilities.replaceLast('input', 'pu', 'r');
-      assert.strictEqual(output, 'inrt');
-    });
-
-    it('should replace the last occurrence when there are multiple matches', () => {
-      const output = Platform.StringUtilities.replaceLast('inpuput', 'pu', 'r');
-      assert.strictEqual(output, 'inpurt');
-    });
-  });
-
   describe('stringifyWithPrecision', () => {
     it('should stringify with 2 precision if precision argument is not given', () => {
       assert.strictEqual('0.69', Platform.StringUtilities.stringifyWithPrecision(0.685733));

@@ -994,36 +994,23 @@ export class ColorMixRenderer extends ColorMixRendererBase {
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): LitTemplate {
-    const childTracingContexts = context.tracing?.evaluation(
-        match.space.length ? [match.color1, match.color2, match.space] : [match.color1, match.color2],
-        {match, context});
-    const color1RenderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
-    const color2RenderingContext = childTracingContexts?.at(1)?.renderingContext(context) ?? context;
-    const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
+    const childTracingContexts =
+        context.tracing?.evaluation(match.space.length ? [...match.items, match.space] : match.items, {match, context});
+    const spaceRenderingContext = childTracingContexts?.at(match.items.length)?.renderingContext(context) ?? context;
 
-    let firstColor: string|null = null;
-    let secondColor: string|null = null;
-    const firstOrigins = new Set<SDK.CSSPropertyParser.Match>();
-    const secondOrigins = new Set<SDK.CSSPropertyParser.Match>();
+    const colors = match.items.map(() => '');
+    const origins = match.items.map(() => new Set<SDK.CSSPropertyParser.Match>());
     let mixSwatch: InlineEditor.ColorMixSwatch.ColorMixSwatch|null = null;
-    const color1 = Renderer.render(match.color1, color1RenderingContext, {
-      onColor: (color, origin) => {
-        firstOrigins.add(origin);
-        firstColor = color ? colorToText(color) : null;
-        if (firstColor) {
-          mixSwatch?.setFirstColor(firstColor);
-        }
-      },
-    });
-    const color2 = Renderer.render(match.color2, color2RenderingContext, {
-      onColor: (color, origin) => {
-        secondOrigins.add(origin);
-        secondColor = color ? colorToText(color) : null;
-        if (secondColor) {
-          mixSwatch?.setSecondColor(secondColor);
-        }
-      },
-    });
+    const items = match.items.map(
+        (item, i) => Renderer.render(item, childTracingContexts?.at(i)?.renderingContext(context) ?? context, {
+          onColor: (color, origin) => {
+            origins[i].add(origin);
+            colors[i] = color ? colorToText(color) : '';
+            if (colors[i]) {
+              mixSwatch?.setColor(i, colors[i]);
+            }
+          },
+        }));
     const contentChild = html`<span>${
         this.#propertyData ?
             getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles,
@@ -1031,18 +1018,17 @@ export class ColorMixRenderer extends ColorMixRendererBase {
                               this.#propertyData.tooltipIdFactory, this.#propertyData.property,
                               this.#propertyData.parentShorthand()?.property.name) :
             'color-mix'}(${match.space.length ? html`${Renderer.render(match.space, spaceRenderingContext)}, ` : ''}${
-        color1}, ${color2})</span>`;
+        items.map((item, i) => html`${i > 0 ? ', ' : ''}${item}`)})</span>`;
 
     // Each argument needs exactly one color, which its renderer reported during the render above.
-    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || firstOrigins.size !== 1 ||
-        secondOrigins.size !== 1) {
+    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) ||
+        origins.some(itemOrigins => itemOrigins.size !== 1)) {
       return contentChild;
     }
 
     const space = match.space.map(space => context.matchedResult.getComputedText(space)).join(' ');
-    const color1Text = match.color1.map(color => context.matchedResult.getComputedText(color)).join(' ');
-    const color2Text = match.color2.map(color => context.matchedResult.getComputedText(color)).join(' ');
-    const colorMixText = `color-mix(${space ? `${space}, ` : ''}${color1Text}, ${color2Text})`;
+    const itemTexts = match.items.map(item => item.map(node => context.matchedResult.getComputedText(node)).join(' '));
+    const colorMixText = InlineEditor.ColorMixSwatch.serializeColorMix(space, itemTexts);
 
     const nodeId = this.#stylesContainer.node()?.id;
     if (nodeId !== undefined && childTracingContexts) {
@@ -1074,16 +1060,15 @@ export class ColorMixRenderer extends ColorMixRendererBase {
       }
     }
 
-    if (!firstColor || !secondColor) {
+    if (colors.some(color => !color)) {
       context.callbacks.onColor?.(null, match);
       return contentChild;
     }
     const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
     mixSwatch = swatch;
-    swatch.setFirstColor(firstColor);
-    swatch.setSecondColor(secondColor);
+    swatch.setColorMix(space, itemTexts);
+    colors.forEach((color, i) => swatch.setColor(i, color));
     swatch.tabIndex = -1;
-    swatch.setColorMixText(colorMixText);
     UI.ARIAUtils.setLabel(swatch, colorMixText);
     const {onColor} = context.callbacks;
     if (onColor) {

@@ -247,13 +247,32 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         assert.exists(colorSwatches.find(colorSwatch => colorSwatch.nextElementSibling?.textContent === 'blue'));
       });
 
-      it('should show color mix swatch without an interpolation method', () => {
-        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(red, blue)');
-        stylePropertyTreeElement.updateTitle();
+      for (const value
+               of ['color-mix(red, blue)', 'color-mix(in hsl, teal)', 'color-mix(in srgb, red, green 20%, blue)']) {
+        it(`should show color mix swatch for ${value}`, () => {
+          const stylePropertyTreeElement = getTreeElement('color', value);
+          stylePropertyTreeElement.updateTitle();
 
-        const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+          const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+          assert.exists(colorMixSwatch);
+          assert.strictEqual(colorMixSwatch.getText(), value);
+          assert.strictEqual(stylePropertyTreeElement.valueElement?.textContent, value);
+        });
+      }
+
+      it('updates the color mix swatch when the third color changes', () => {
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, red, red, red)');
+        stylePropertyTreeElement.updateTitle();
+        assert.exists(stylePropertyTreeElement.valueElement);
+
+        const colorMixSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-color-mix-swatch');
         assert.exists(colorMixSwatch);
-        assert.strictEqual(colorMixSwatch.getText(), 'color-mix(red, blue)');
+        const colorSwatches = stylePropertyTreeElement.valueElement.querySelectorAll('devtools-color-swatch');
+        assert.lengthOf(colorSwatches, 3);
+        const newColor = Common.Color.parse('#0000ff');
+        assert.exists(newColor);
+        colorSwatches[2].setColor(newColor);
+        assert.strictEqual(colorMixSwatch.getText(), 'color-mix(in srgb, red, red, #0000ff)');
       });
 
       it('should show color mix swatch when color-mix is used with a known variable as color', () => {
@@ -351,11 +370,11 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         outerColorMix.addEventListener(InlineEditor.ColorMixSwatch.ColorMixChangedEvent.eventName, handler);
         assert.strictEqual(outerColorMix.getText(), 'color-mix(in srgb, color-mix(in oklch, red, green), blue)');
         assert.strictEqual(innerColorMix.getText(), 'color-mix(in oklch, red, green)');
-        innerColorMix.setFirstColor('blue');
+        innerColorMix.setColor(0, 'blue');
         assert.deepEqual(handler.args[0][0].data, {text: 'color-mix(in srgb, color-mix(in oklch, blue, green), blue)'});
         assert.strictEqual(outerColorMix.getText(), 'color-mix(in srgb, color-mix(in oklch, blue, green), blue)');
 
-        // setFirstColor does not actually update the rendered color swatches or the textContent, which is why the first
+        // setColor does not actually update the rendered color swatches or the textContent, which is why the first
         // color is still red here.
         const colorSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-color-swatch');
         assert.isOk(colorSwatch);
@@ -367,31 +386,34 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
             handler.args[1][0].data, {text: 'color-mix(in srgb, color-mix(in oklch, #ff0000, green), blue)'});
       });
 
-      it('supports evaluation during tracing', async () => {
-        const property = addProperty('color', 'color-mix(in srgb, black, white)');
-        connection.setHandler('CSS.resolveValues', null);
-        connection.setSuccessHandler('CSS.resolveValues',
-                                     (request: Protocol.CSS.ResolveValuesRequest) =>
-                                         ({results: request.values.map(v => v === property.value ? 'grey' : v)}));
-        const matchedResult = property.parseValue(matchedStyles, new Map());
+      for (const value of ['color-mix(in srgb, black, white)', 'color-mix(in srgb, black, white, grey)']) {
+        it(`supports evaluation during tracing of ${value}`, async () => {
+          const property = addProperty('color', value);
+          connection.setHandler('CSS.resolveValues', null);
+          connection.setSuccessHandler('CSS.resolveValues',
+                                       (request: Protocol.CSS.ResolveValuesRequest) =>
+                                           ({results: request.values.map(v => v === property.value ? 'grey' : v)}));
+          const matchedResult = property.parseValue(matchedStyles, new Map());
 
-        const context =
-            new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), false);
-        assert.isTrue(context.nextEvaluation());
-        const valueElement = Elements.PropertyRenderer.Renderer.renderValueElement(
-            property, matchedResult,
-            Elements.StylePropertyTreeElement.getPropertyRenderers(
-                property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map(), null),
-            context);
+          const context =
+              new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), false);
+          assert.isTrue(context.nextEvaluation());
+          const valueElement = Elements.PropertyRenderer.Renderer.renderValueElement(
+              property, matchedResult,
+              Elements.StylePropertyTreeElement.getPropertyRenderers(property.name, matchedStyles.nodeStyles()[0],
+                                                                     stylesSidebarPane, matchedStyles, null, new Map(),
+                                                                     null),
+              context);
 
-        const colorSwatch = valueElement.querySelector('devtools-color-swatch');
-        assert.exists(colorSwatch);
-        const setColorTextCall = spyCall(colorSwatch, 'setColor');
+          const colorSwatch = valueElement.querySelector('devtools-color-swatch');
+          assert.exists(colorSwatch);
+          const setColorTextCall = spyCall(colorSwatch, 'setColor');
 
-        assert.isTrue(await context.runAsyncEvaluations());
-        assert.strictEqual((await setColorTextCall).args[0].asString(), '#808080');
-        assert.strictEqual(valueElement.innerText, '#808080');
-      });
+          assert.isTrue(await context.runAsyncEvaluations());
+          assert.strictEqual((await setColorTextCall).args[0].asString(), '#808080');
+          assert.strictEqual(valueElement.innerText, '#808080');
+        });
+      }
 
       it('does not show color mix swatch when color-mix is used with multi-color arguments', () => {
         for (const value of ['color-mix(in srgb, red blue, green)', 'color-mix(in srgb, red, green blue)']) {
@@ -1836,16 +1858,18 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       assert.strictEqual(swatches[0].parentElement?.innerText, '6px 5px red');
     });
 
-    it('renders a color-mix child', () => {
-      const stylePropertyTreeElement = getTreeElement('box-shadow', '10px 11px color-mix(in srgb, red, blue)');
-      stylePropertyTreeElement.updateTitle();
-      assert.exists(stylePropertyTreeElement.valueElement);
-      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
-      assert.instanceOf(stylePropertyTreeElement.valueElement.firstElementChild?.firstElementChild,
-                        InlineEditor.Swatches.CSSShadowSwatch);
-      const swatches = stylePropertyTreeElement.valueElement.querySelectorAll('devtools-color-mix-swatch');
-      assert.exists(swatches);
-    });
+    for (const colorMix of ['color-mix(in srgb, red, blue)', 'color-mix(in srgb, red, green, blue)']) {
+      it(`renders a ${colorMix} child`, () => {
+        const stylePropertyTreeElement = getTreeElement('box-shadow', `10px 11px ${colorMix}`);
+        stylePropertyTreeElement.updateTitle();
+        assert.exists(stylePropertyTreeElement.valueElement);
+        renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+        assert.instanceOf(stylePropertyTreeElement.valueElement.firstElementChild?.firstElementChild,
+                          InlineEditor.Swatches.CSSShadowSwatch);
+        const swatches = stylePropertyTreeElement.valueElement.querySelectorAll('devtools-color-mix-swatch');
+        assert.lengthOf(swatches, 1);
+      });
+    }
 
     it('renders shadow icon in the presence of a var()', () => {
       mockVariableMap['--offset'] = '10px 10px';

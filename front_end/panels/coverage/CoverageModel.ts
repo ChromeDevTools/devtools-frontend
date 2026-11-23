@@ -52,7 +52,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private coverageByContentProvider: Map<TextUtils.ContentProvider.ContentProvider, CoverageInfo>;
   private coverageUpdateTimes: Set<number>;
   private suspensionState: SuspensionState;
-  private pollTimer: number|null;
+  private pollTimer: ReturnType<typeof setTimeout>|null;
   private currentPollPromise: Promise<void>|null;
   private shouldResumePollingOnResume: boolean|null;
   private jsBacklog: Array<BacklogItem<Protocol.Profiler.ScriptCoverage>>;
@@ -204,7 +204,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       return;
     }
     if (this.suspensionState === SuspensionState.ACTIVE || this.performanceTraceRecording) {
-      this.pollTimer = window.setTimeout(() => this.pollLoop(), COVERAGE_POLLING_PERIOD_MS);
+      this.pollTimer = globalThis.setTimeout(() => this.pollLoop(), COVERAGE_POLLING_PERIOD_MS);
     }
   }
 
@@ -234,7 +234,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   private clearTimer(): void {
     if (this.pollTimer) {
-      clearTimeout(this.pollTimer);
+      globalThis.clearTimeout(this.pollTimer);
       this.pollTimer = null;
     }
   }

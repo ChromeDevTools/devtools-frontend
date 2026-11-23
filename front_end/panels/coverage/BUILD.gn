@@ -94,3 +94,16 @@ devtools_ui_module("unittests") {
     "../../ui/legacy:bundle",
   ]
 }
+
+devtools_api_test_module("api_tests") {
+  sources = [ "CoverageModel.test.api.ts" ]
+
+  ts_deps = [
+    ":coverage",
+    "../../../test/api",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
+  ]
+}

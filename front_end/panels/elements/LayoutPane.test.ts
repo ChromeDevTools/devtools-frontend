@@ -7,6 +7,7 @@ import {afterEach, beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -15,6 +16,7 @@ import {cleanTestDOM} from '../../testing/DOMHooks.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Elements from './elements.js';
 
@@ -24,6 +26,12 @@ describeWithEnvironment('LayoutPane', () => {
   let overlayModel: SDK.OverlayModel.OverlayModel;
   let getNodesByStyle: sinon.SinonStub;
   beforeEach(() => {
+    SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showGridLineLabelsSettingDescriptor, {
+      title: i18n.i18n.lockedLazyString('Enum setting title'),
+    });
+    SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showGridTrackSizesSettingDescriptor, {
+      title: i18n.i18n.lockedLazyString('Boolean setting title'),
+    });
     target = createTarget();
     domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
     assert.exists(domModel);
@@ -87,8 +95,9 @@ describeWithEnvironment('LayoutPane', () => {
   });
 
   it('stores a setting when changed and updates UI when setting changes', async () => {
-    const component = await renderComponent();
     const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showGridTrackSizesSettingDescriptor);
+    setting.set(true);
+    const component = await renderComponent();
 
     assert.isTrue(setting.get());
     const input = component.contentElement.querySelector('[data-boolean-setting]');

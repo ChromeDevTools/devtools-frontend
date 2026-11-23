@@ -900,7 +900,7 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
     if (!this.resourceTreeModel) {
       return;
     }
-    this.resourceTreeModel.reloadPage();
+    this.resourceTreeModel.reloadPage(undefined, undefined, /* checkForRepost */ true);
   }
 
   private navigationUrlKeyUp(event: KeyboardEvent): void {

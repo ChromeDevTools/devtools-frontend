@@ -137,6 +137,26 @@ describeWithEnvironment('ScreencastApp', () => {
     sinon.assert.calledTwice(navigationHistoryStub);
   });
 
+  it('checks for a form repost when the user clicks the reload button', async () => {
+    const target = createTarget();
+    const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(screenCaptureModel);
+    assert.exists(resourceTreeModel);
+    sinon.stub(resourceTreeModel, 'navigationHistory').resolves(null);
+    const reloadPage = sinon.stub(resourceTreeModel, 'reloadPage');
+
+    const view = createViewFunctionStub(Screencast.ScreencastView.ScreencastView);
+    const screencastView = new Screencast.ScreencastView.ScreencastView(undefined, view);
+    screencastView.screenCaptureModel = screenCaptureModel;
+    renderElementIntoDOM(screencastView);
+    const input = await view.nextInput;
+
+    input.onReloadClick();
+
+    sinon.assert.calledOnceWithExactly(reloadPage, undefined, undefined, true);
+  });
+
   it('renders default view with common styles', async () => {
     const rootView = new UI.RootView.RootView(new TestUniverse());
     renderElementIntoDOM(rootView, {includeCommonStyles: true, width: 800, height: 600});

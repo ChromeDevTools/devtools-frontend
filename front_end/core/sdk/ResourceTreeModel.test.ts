@@ -293,6 +293,16 @@ describe('ResourceTreeModel', () => {
     sinon.assert.notCalled(reloadSubframePage);
   });
 
+  it('forwards checkForRepost from reloadAllPages to reloadPage', () => {
+    const tabTarget = universe.createTarget({type: SDK.Target.Type.TAB});
+    const mainFrameTarget = universe.createTarget({parentTarget: tabTarget});
+    const reloadPage = sinon.spy(getResourceTreeModel(mainFrameTarget), 'reloadPage');
+
+    SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(universe.targetManager, true, undefined, true);
+
+    sinon.assert.calledOnceWithExactly(reloadPage, true, undefined, true);
+  });
+
   it('tags reloads with the targets loaderId', async () => {
     const target = universe.createTarget({connection});
     const resourceTreeModel = await getInitializedResourceTreeModel(target);
@@ -302,7 +312,37 @@ describe('ResourceTreeModel', () => {
     resourceTreeModel.reloadPage();
     sinon.assert.calledOnce(reload);
     assert.deepEqual(
-        reload.args[0], [{ignoreCache: undefined, loaderId: LOADER_ID, scriptToEvaluateOnLoad: undefined}]);
+        reload.args[0],
+        [{ignoreCache: undefined, loaderId: LOADER_ID, scriptToEvaluateOnLoad: undefined, checkForRepost: undefined}]);
+  });
+
+  it('sends checkForRepost with Page.reload', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const reload = sinon.spy(target.pageAgent(), 'invoke_reload');
+
+    resourceTreeModel.reloadPage(false, undefined, true);
+
+    sinon.assert.calledOnce(reload);
+    assert.deepEqual(
+        reload.args[0],
+        [{ignoreCache: false, loaderId: LOADER_ID, scriptToEvaluateOnLoad: undefined, checkForRepost: true}]);
+  });
+
+  it('keeps checkForRepost for a deferred reload', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const reload = sinon.spy(target.pageAgent(), 'invoke_reload');
+
+    resourceTreeModel.suspendReload();
+    resourceTreeModel.reloadPage(false, undefined, true);
+    sinon.assert.notCalled(reload);
+
+    resourceTreeModel.resumeReload();
+    sinon.assert.calledOnce(reload);
+    assert.deepEqual(
+        reload.args[0],
+        [{ignoreCache: false, loaderId: LOADER_ID, scriptToEvaluateOnLoad: undefined, checkForRepost: true}]);
   });
 
   it('issues a deferred reload once reloading is resumed if the document did not change', async () => {
@@ -316,8 +356,12 @@ describe('ResourceTreeModel', () => {
 
     resourceTreeModel.resumeReload();
     sinon.assert.calledOnce(reload);
-    assert.deepEqual(reload.args[0],
-                     [{ignoreCache: true, loaderId: LOADER_ID, scriptToEvaluateOnLoad: 'console.log("injected")'}]);
+    assert.deepEqual(reload.args[0], [{
+                       ignoreCache: true,
+                       loaderId: LOADER_ID,
+                       scriptToEvaluateOnLoad: 'console.log("injected")',
+                       checkForRepost: undefined,
+                     }]);
   });
 
   it('drops a deferred reload if the main frame navigated while reloading was suspended', async () => {

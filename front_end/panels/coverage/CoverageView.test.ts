@@ -124,6 +124,20 @@ describeWithEnvironment('CoverageView', () => {
     assert.isTrue(toggleSpy.calledOnce || reloadSpy.calledOnce);
   });
 
+  it('checks for a form repost when it reloads the page to start a recording', async () => {
+    const {target} = setupTargetAndModels();
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    const reloadPage = sinon.stub(resourceTreeModel, 'reloadPage');
+    const view = Coverage.CoverageView.CoverageView.instance();
+    renderElementIntoDOM(view);
+    await view.updateComplete;
+
+    await view.startRecording({reload: true, jsCoveragePerBlock: false});
+
+    sinon.assert.calledOnceWithExactly(reloadPage, undefined, undefined, true);
+  });
+
   it('can handle back/forward cache navigations', async () => {
     const {startSpy, stopSpy, target} = setupTargetAndModels();
     const view = Coverage.CoverageView.CoverageView.instance();

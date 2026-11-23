@@ -451,7 +451,7 @@ export class CoverageView extends UI.Widget.VBox<ShadowRoot> {
 
     this.#output.focusResults();
     if (reload && resourceTreeModel) {
-      resourceTreeModel.reloadPage();
+      resourceTreeModel.reloadPage(undefined, undefined, /* checkForRepost */ true);
     } else {
       void this.#model.startPolling();
     }

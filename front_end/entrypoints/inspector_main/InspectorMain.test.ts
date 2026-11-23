@@ -7,6 +7,7 @@ import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -21,7 +22,7 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
-import type * as UI from '../../ui/legacy/legacy.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as InspectorMain from './inspector_main.js';
 
@@ -238,6 +239,45 @@ describeWithEnvironment('InspectorMainImpl', () => {
     assert.strictEqual(mainFrameTarget.name(), 'Main');
     Root.Runtime.Runtime.setQueryParamForTesting('targetType', '');
   });
+
+  it('checks for a form repost if the host requests a reload of the inspected page', async () => {
+    const reloadAllPages = sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'reloadAllPages');
+    const inspectorMain = new InspectorMain.InspectorMain.InspectorMainImpl();
+    await inspectorMain.run();
+
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
+        Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, true);
+
+    sinon.assert.called(reloadAllPages);
+    sinon.assert.alwaysCalledWithExactly(reloadAllPages, SDK.TargetManager.TargetManager.instance(), true, undefined,
+                                         true);
+  });
+});
+
+describe('ReloadActionDelegate', () => {
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+  });
+
+  afterEach(() => {
+    universe.dispose();
+  });
+
+  for (const {actionId, bypassCache} of [{actionId: 'inspector-main.reload', bypassCache: false},
+                                         {actionId: 'inspector-main.hard-reload', bypassCache: true},
+  ]) {
+    it(`checks for a form repost for ${actionId}`, () => {
+      const reloadAllPages = sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'reloadAllPages');
+      const delegate = new InspectorMain.InspectorMain.ReloadActionDelegate();
+
+      assert.isTrue(delegate.handleAction(UI.Context.Context.instance({forceNew: true}), actionId));
+
+      sinon.assert.calledOnceWithExactly(reloadAllPages, universe.targetManager, bypassCache, undefined, true);
+    });
+  }
 });
 
 describe('BackendSettingsSync', () => {

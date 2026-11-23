@@ -108,7 +108,8 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, ({data: hard}) => {
-          SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(SDK.TargetManager.TargetManager.instance(), hard);
+          SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(SDK.TargetManager.TargetManager.instance(), hard,
+                                                                 undefined, /* checkForRepost */ true);
         });
   }
 }
@@ -117,10 +118,12 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'inspector-main.reload':
-        SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(SDK.TargetManager.TargetManager.instance(), false);
+        SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(SDK.TargetManager.TargetManager.instance(), false,
+                                                               undefined, /* checkForRepost */ true);
         return true;
       case 'inspector-main.hard-reload':
-        SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(SDK.TargetManager.TargetManager.instance(), true);
+        SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(SDK.TargetManager.TargetManager.instance(), true,
+                                                               undefined, /* checkForRepost */ true);
         return true;
     }
     return false;

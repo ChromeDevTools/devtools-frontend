@@ -13,11 +13,28 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createFakeSetting, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as InspectorMain from './inspector_main.js';
 
+const RENDERING_ENUM_DESCRIPTORS = [
+  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
+  SDK.SDKSettings.emulatedCSSMediaSettingDescriptor,
+  SDK.SDKSettings.emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
+  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersContrastSettingDescriptor,
+  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
+  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor,
+  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor,
+  SDK.SDKSettings.emulatedCSSMediaFeatureColorGamutSettingDescriptor,
+  SDK.SDKSettings.emulatedVisionDeficiencySettingDescriptor,
+  SDK.SDKSettings.emulatedOSTextScaleSettingDescriptor,
+];
+
 describeWithEnvironment('RenderingOptions', () => {
   beforeEach(() => {
+    for (const descriptor of RENDERING_ENUM_DESCRIPTORS) {
+      SettingsUI.SettingUIRegistration.register(descriptor, {});
+    }
     const autoDarkModeSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulateAutoDarkModeSettingDescriptor);
     autoDarkModeSetting.setSettingType(Common.Settings.SettingType.BOOLEAN);

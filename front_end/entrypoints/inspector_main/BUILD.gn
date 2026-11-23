@@ -98,5 +98,6 @@ ts_library("unittests") {
     "../../testing",
     "../../ui/components/menus:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/settings:bundle",
   ]
 }

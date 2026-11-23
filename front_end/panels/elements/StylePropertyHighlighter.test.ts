@@ -42,9 +42,11 @@ describeWithEnvironment('StylePropertyHighlighter', () => {
       const property =
           new SDK.CSSProperty.CSSProperty(style, 0, propertyName, 'value', true, false, true, false, '', undefined);
       style.leadingProperties.returns([property]);
+      style.allProperties.returns([property]);
       style.hasActiveProperty.callsFake(name => name === propertyName);
     } else {
       style.leadingProperties.returns([]);
+      style.allProperties.returns([]);
     }
     return new Elements.StylePropertiesSection.StylePropertiesSection(
         stylesSidebarPane, matchedStyles, style,
@@ -73,6 +75,7 @@ describeWithEnvironment('StylePropertyHighlighter', () => {
     // Attach a property late, in order to verify that highlighting the layer repopulates the tree view.
     const property = new SDK.CSSProperty.CSSProperty(style, 0, '', '', true, false, true, false, '', undefined);
     style.leadingProperties.returns([property]);
+    style.allProperties.returns([property]);
     assert.isUndefined(section.propertiesTreeOutline.firstChild());
 
     const highlightBlockSpy = sinon.spy(stylesSidebarPane, 'highlightSectionBlock');

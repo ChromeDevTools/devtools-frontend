@@ -2,17 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as fs from 'node:fs';
-import {join} from 'node:path';
-
-export const storeGeneratedResults = (file: string, content: string): void => {
-  const directory = join(import.meta.dirname, '..', '..', '..', '..', '..', '..', 'perf-data');
-  fs.mkdirSync(directory, {recursive: true});
-
-  const filePath = join(directory, file);
-  fs.writeFileSync(filePath, content, {encoding: 'utf8'});
-};
-
 export const percentile = (values: number[], position: number): number => {
   if (values.length === 0) {
     return 0;

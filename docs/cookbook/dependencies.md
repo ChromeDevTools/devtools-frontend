@@ -19,8 +19,6 @@ manually in consumer code.
 The following scripts run as AutoRollers, but can be manually invoked if
 desired:
 
--   To roll the `HEAD` commit of DevTools frontend into Chromium, use
-    `scripts/deps/roll_to_chromium.py`.
 -   To update DevTools frontend's DEPS, use `roll-dep`.
 
 ## Third-party Guidelines

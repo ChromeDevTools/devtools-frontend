@@ -71,52 +71,67 @@ describe('NetworkPersistenceManager API Test', () => {
     targetUrl: 'about:blank',
   });
 
-  it('binds existing override files when an overrides project is added', async ({inspectedPage, universe}) => {
-    const {persistence, workspace, isolatedFileSystemManager, settings} = universe;
-    // Eagerly initialize NetworkPersistenceManager and FileSystemWorkspaceBinding so they observe workspace changes.
-    void universe.fileSystemWorkspaceBinding;
-    const networkPersistenceManager = universe.networkPersistenceManager;
+  for (const testPlatform of ['linux', 'windows'] as const) {
+    it(`binds existing override files when an overrides project is added (${testPlatform})`,
+        async ({inspectedPage, universe}) => {
+          const originalPlatform = Host.Platform.platform();
+          try {
+            Host.Platform.setPlatformForTests(testPlatform);
 
-    const resourceUrl = urlString`${inspectedPage.domain()}/test/e2e/resources/empty.html`;
-    const networkUISourceCodePromise = new Promise<Workspace.UISourceCode.UISourceCode>(resolve => {
-      const listener = (event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void => {
-        if (event.data.url() === resourceUrl) {
-          workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
-          resolve(event.data);
-        }
-      };
-      workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
-    });
+            const {persistence, workspace, isolatedFileSystemManager, settings} = universe;
+            // Eagerly initialize NetworkPersistenceManager and FileSystemWorkspaceBinding
+            // so they observe workspace changes.
+            void universe.fileSystemWorkspaceBinding;
+            const networkPersistenceManager = universe.networkPersistenceManager;
 
-    await inspectedPage.goToResource('empty.html');
-    const networkUISourceCode = await networkUISourceCodePromise;
-    assert.strictEqual(networkUISourceCode.project().type(), Workspace.Workspace.projectTypes.Network);
+            const resourceUrl = urlString`${inspectedPage.domain()}/test/e2e/resources/empty.html`;
+            const networkUISourceCodePromise = new Promise<Workspace.UISourceCode.UISourceCode>(resolve => {
+              const listener =
+                  (event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void => {
+                    if (event.data.url() === resourceUrl) {
+                      workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
+                      resolve(event.data);
+                    }
+                  };
+              workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
+            });
 
-    const bindingPromise = persistence.once(Persistence.Persistence.Events.BindingCreated);
+            await inspectedPage.goToResource('empty.html');
+            const networkUISourceCode = await networkUISourceCodePromise;
+            assert.strictEqual(networkUISourceCode.project().type(), Workspace.Workspace.projectTypes.Network);
 
-    const host = new URL(resourceUrl).host;
-    const baseDirectory = Host.Platform.isWin() ? host.replace(':', '%3A') : host;
-    const relativeFilePath =
-        `${baseDirectory}/test/e2e/resources/empty.html` as Platform.DevToolsPath.EncodedPathString;
-    const fileSystemPath = urlString`file:///tmp`;
-    const fileSystem = new OverridePlatformFileSystem(
-        fileSystemPath,
-        new Map([[relativeFilePath, 'New Content']]),
-    );
-    isolatedFileSystemManager.addPlatformFileSystem(fileSystemPath, fileSystem);
+            const bindingPromise = persistence.once(Persistence.Persistence.Events.BindingCreated);
 
-    const enabledSetting = settings.resolve(
-        Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor,
-    );
-    enabledSetting.set(true);
+            const host = new URL(resourceUrl).host;
+            assert.include(host, ':');
+            const baseDirectory = Host.Platform.isWin() ? host.replace(':', '%3A') : host;
+            const relativeFilePath = Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
+                `${baseDirectory}/test/e2e/resources/empty.html` as Platform.DevToolsPath.RawPathString,
+            );
+            const fileSystemPath = urlString`file:///tmp`;
+            const fileSystem = new OverridePlatformFileSystem(
+                fileSystemPath,
+                new Map([[relativeFilePath, 'New Content']]),
+            );
+            isolatedFileSystemManager.addPlatformFileSystem(fileSystemPath, fileSystem);
 
-    const binding = await bindingPromise;
-    assert.isTrue(networkPersistenceManager.active());
-    assert.strictEqual(persistence.binding(networkUISourceCode), binding);
-    assert.strictEqual(binding.network.url(), resourceUrl);
-    assert.strictEqual(
-        binding.fileSystem.url().replace('%253A', ':'),
-        `file:///tmp/${host}/test/e2e/resources/empty.html`,
-    );
-  });
+            const enabledSetting = settings.resolve(
+                Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor,
+            );
+            enabledSetting.set(true);
+
+            const binding = await bindingPromise;
+            assert.isTrue(networkPersistenceManager.active());
+            assert.strictEqual(persistence.binding(networkUISourceCode), binding);
+            assert.strictEqual(binding.network.url(), resourceUrl);
+            const expectedHost = testPlatform === 'windows' ? host.replace(':', '%253A') : host;
+            assert.strictEqual(
+                binding.fileSystem.url(),
+                `file:///tmp/${expectedHost}/test/e2e/resources/empty.html`,
+            );
+          } finally {
+            Host.Platform.setPlatformForTests(originalPlatform);
+          }
+        });
+  }
 });

@@ -45,10 +45,15 @@ const UIStrings = {
    */
   enableJavaScript: 'Enable JavaScript',
   /**
+   * @description Label of a menu item in a submenu in the status bar at the bottom of DevTools.
+   * Clicking it resets the changed setting back to its default value.
+   */
+  resetMenuItem: 'Reset',
+  /**
    * @description Tooltip and accessible name of the button in the status bar at the bottom of DevTools.
    * The button opens a menu with the changed settings pills that do not fit.
    */
-  morePills: 'More changed settings',
+  morePills: 'Show more',
   /**
    * @description Text and tooltip of a button in the status bar at the bottom of DevTools. The button
    * changes all settings that have a pill in the status bar back to their default values.
@@ -73,7 +78,10 @@ export interface Pill {
 export interface ViewInput {
   pills: Pill[];
   visiblePillCount: number;
+  showMoreMenuOpen: boolean;
   onResetAll: () => void;
+  onShowMoreMenuOpen: () => void;
+  onShowMoreMenuClosed: () => void;
 }
 
 export interface ViewOutput {
@@ -87,15 +95,21 @@ export interface ViewOutput {
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-function showOverflowMenu(event: Event, overflowPills: Pill[]): void {
-  const target = event.currentTarget as HTMLElement;
-  const rect = target.getBoundingClientRect();
-  const menu = new UI.ContextMenu.ContextMenu(event, {x: rect.left, y: rect.bottom});
+function openShowMoreMenu(event: Event, overflowPills: Pill[], onOpen: () => void, onClosed: () => void): void {
+  const button = event.currentTarget as HTMLElement;
+  const rect = button.getBoundingClientRect();
+  const menu = new UI.ContextMenu.ContextMenu(event, {
+    x: rect.left,
+    y: rect.bottom,
+    onSoftMenuClosed: onClosed,
+  });
   for (const pill of overflowPills) {
-    menu.defaultSection().appendItem(pill.resetTitle, pill.onReset, {
+    const subMenu = menu.defaultSection().appendSubMenuItem(pill.title, false, pill.id);
+    subMenu.defaultSection().appendItem(i18nString(UIStrings.resetMenuItem), pill.onReset, {
       jslogContext: 'reset',
     });
   }
+  onOpen();
   void menu.show();
 }
 
@@ -157,8 +171,9 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         .size=${Buttons.Button.Size.SMALL}
         .title=${i18nString(UIStrings.morePills)}
         .accessibleLabel=${i18nString(UIStrings.morePills)}
+        .accessibleExpanded=${input.showMoreMenuOpen}
         .jslogContext=${'more'}
-        @click=${(event: Event) => showOverflowMenu(event, overflowPills)}></devtools-button>
+        @click=${(event: Event) => openShowMoreMenu(event, overflowPills, input.onShowMoreMenuOpen, input.onShowMoreMenuClosed)}></devtools-button>
       <devtools-button
         ${ref(element => {
           output.resetAllButtonWidth = element instanceof HTMLElement ? () => element.offsetWidth : undefined;
@@ -229,6 +244,21 @@ export class StateChangesStatusBarPills extends UI.Widget.Widget {
     }
   });
   #visiblePillCount = Infinity;
+  #showMoreMenuOpen = false;
+
+  #onShowMoreMenuOpen = (): void => {
+    if (!this.#showMoreMenuOpen) {
+      this.#showMoreMenuOpen = true;
+      this.requestUpdate();
+    }
+  };
+
+  #onShowMoreMenuClosed = (): void => {
+    if (this.#showMoreMenuOpen) {
+      this.#showMoreMenuOpen = false;
+      this.requestUpdate();
+    }
+  };
 
   constructor(
       element: HTMLElement|undefined,
@@ -263,7 +293,15 @@ export class StateChangesStatusBarPills extends UI.Widget.Widget {
     };
     const renderView = (): void => {
       const visiblePillCount = Math.min(this.#visiblePillCount, pills.length);
-      this.#view({pills, visiblePillCount, onResetAll}, this.#viewOutput, this.contentElement);
+      this.#view({
+        pills,
+        visiblePillCount,
+        showMoreMenuOpen: this.#showMoreMenuOpen,
+        onResetAll,
+        onShowMoreMenuOpen: this.#onShowMoreMenuOpen,
+        onShowMoreMenuClosed: this.#onShowMoreMenuClosed,
+      },
+                 this.#viewOutput, this.contentElement);
     };
     renderView();
     if (this.#updateVisiblePillCount()) {

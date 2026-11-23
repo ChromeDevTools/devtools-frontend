@@ -186,6 +186,25 @@ describe('StateChangesStatusBarPills', () => {
     assert.lengthOf(widget.contentElement.querySelectorAll('.pill.collapsed'), 1);
   });
 
+  it('sets showMoreMenuOpen to true when the show more menu opens', async () => {
+    const {view} = await createWidget();
+    assert.isFalse(view.input.showMoreMenuOpen);
+
+    view.input.onShowMoreMenuOpen();
+
+    assert.isTrue((await view.nextInput).showMoreMenuOpen);
+  });
+
+  it('sets showMoreMenuOpen to false when the show more menu closes', async () => {
+    const {view} = await createWidget();
+    view.input.onShowMoreMenuOpen();
+    await view.nextInput;
+
+    view.input.onShowMoreMenuClosed();
+
+    assert.isFalse((await view.nextInput).showMoreMenuOpen);
+  });
+
   describe('view', () => {
     function createPill(
         id: string,
@@ -207,9 +226,13 @@ describe('StateChangesStatusBarPills', () => {
         width = 600,
         visiblePillCount = pills.length,
         output: PanelCommon.StateChangesStatusBarPills.ViewOutput = {},
+        showMoreMenuOpen = false,
+        onShowMoreMenuOpen = sinon.spy(),
+        onShowMoreMenuClosed = sinon.spy(),
         ): HTMLElement {
       const target = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true, width});
-      DEFAULT_VIEW({pills, visiblePillCount, onResetAll}, output, target);
+      DEFAULT_VIEW({pills, visiblePillCount, showMoreMenuOpen, onResetAll, onShowMoreMenuOpen, onShowMoreMenuClosed},
+                   output, target);
       return target;
     }
 
@@ -241,9 +264,25 @@ describe('StateChangesStatusBarPills', () => {
       const secondPill = createPill('cache-disabled', 'Cache disabled');
       const target = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true});
       const firstPill = createPill('cpu-throttling', 'CPU (4×)', () => {
-        DEFAULT_VIEW({pills: [secondPill], visiblePillCount: 1, onResetAll: sinon.spy()}, {}, target);
+        DEFAULT_VIEW({
+          pills: [secondPill],
+          visiblePillCount: 1,
+          showMoreMenuOpen: false,
+          onResetAll: sinon.spy(),
+          onShowMoreMenuOpen: sinon.spy(),
+          onShowMoreMenuClosed: sinon.spy(),
+        },
+                     {}, target);
       });
-      DEFAULT_VIEW({pills: [firstPill, secondPill], visiblePillCount: 2, onResetAll: sinon.spy()}, {}, target);
+      DEFAULT_VIEW({
+        pills: [firstPill, secondPill],
+        visiblePillCount: 2,
+        showMoreMenuOpen: false,
+        onResetAll: sinon.spy(),
+        onShowMoreMenuOpen: sinon.spy(),
+        onShowMoreMenuClosed: sinon.spy(),
+      },
+                   {}, target);
 
       const [firstButton, secondButton] = target.querySelectorAll<Buttons.Button.Button>('.pill devtools-button');
       firstButton.focus();
@@ -256,9 +295,25 @@ describe('StateChangesStatusBarPills', () => {
       const firstPill = createPill('cpu-throttling', 'CPU (4×)');
       const target = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true});
       const secondPill = createPill('cache-disabled', 'Cache disabled', () => {
-        DEFAULT_VIEW({pills: [firstPill], visiblePillCount: 1, onResetAll: sinon.spy()}, {}, target);
+        DEFAULT_VIEW({
+          pills: [firstPill],
+          visiblePillCount: 1,
+          showMoreMenuOpen: false,
+          onResetAll: sinon.spy(),
+          onShowMoreMenuOpen: sinon.spy(),
+          onShowMoreMenuClosed: sinon.spy(),
+        },
+                     {}, target);
       });
-      DEFAULT_VIEW({pills: [firstPill, secondPill], visiblePillCount: 2, onResetAll: sinon.spy()}, {}, target);
+      DEFAULT_VIEW({
+        pills: [firstPill, secondPill],
+        visiblePillCount: 2,
+        showMoreMenuOpen: false,
+        onResetAll: sinon.spy(),
+        onShowMoreMenuOpen: sinon.spy(),
+        onShowMoreMenuClosed: sinon.spy(),
+      },
+                   {}, target);
 
       const [, secondButton] = target.querySelectorAll<Buttons.Button.Button>('.pill devtools-button');
       const resetAllButton = target.querySelector<Buttons.Button.Button>('.reset-all');
@@ -272,9 +327,25 @@ describe('StateChangesStatusBarPills', () => {
       const secondPill = createPill('cache-disabled', 'Cache disabled');
       const target = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true});
       const firstPill = createPill('cpu-throttling', 'CPU (4×)', () => {
-        DEFAULT_VIEW({pills: [secondPill], visiblePillCount: 1, onResetAll: sinon.spy()}, {}, target);
+        DEFAULT_VIEW({
+          pills: [secondPill],
+          visiblePillCount: 1,
+          showMoreMenuOpen: false,
+          onResetAll: sinon.spy(),
+          onShowMoreMenuOpen: sinon.spy(),
+          onShowMoreMenuClosed: sinon.spy(),
+        },
+                     {}, target);
       });
-      DEFAULT_VIEW({pills: [firstPill, secondPill], visiblePillCount: 1, onResetAll: sinon.spy()}, {}, target);
+      DEFAULT_VIEW({
+        pills: [firstPill, secondPill],
+        visiblePillCount: 1,
+        showMoreMenuOpen: false,
+        onResetAll: sinon.spy(),
+        onShowMoreMenuOpen: sinon.spy(),
+        onShowMoreMenuClosed: sinon.spy(),
+      },
+                   {}, target);
 
       const [firstButton] = target.querySelectorAll<Buttons.Button.Button>('.pill devtools-button');
       const resetAllButton = target.querySelector<Buttons.Button.Button>('.reset-all');
@@ -328,23 +399,39 @@ describe('StateChangesStatusBarPills', () => {
       assert.isAbove(output.resetAllButtonWidth?.() ?? 0, 0);
     });
 
-    it('shows collapsed pills in an overflow menu', async () => {
+    it('shows collapsed pills as submenus in the overflow menu', async () => {
       const onReset = sinon.spy();
+      const onShowMoreMenuOpen = sinon.spy();
       const pills = [createPill('cpu-throttling', 'CPU (4×)'), createPill('cache-disabled', 'Cache disabled', onReset)];
-      const target = renderView(pills, sinon.spy(), 300, 1);
+      const target = renderView(pills, sinon.spy(), 300, 1, {}, false, onShowMoreMenuOpen);
 
       const moreButton = target.querySelector<Buttons.Button.Button>('devtools-button.more-pills:not(.collapsed)');
       assert.exists(moreButton);
-      assert.strictEqual(moreButton.title, 'More changed settings');
+      assert.strictEqual(moreButton.title, 'Show more');
+      assert.strictEqual(moreButton.accessibleLabel, 'Show more');
+      assert.isFalse(moreButton.accessibleExpanded);
 
       const menu = getMenu(() => moreButton.click());
-      assert.deepEqual(getMenuItemLabels(menu.defaultSection()), ['Enable cache']);
-      const item = findMenuItemWithLabel(menu.defaultSection(), 'Enable cache');
-      assert.exists(item);
-      menu.invokeHandler(item.id());
+      sinon.assert.calledOnce(onShowMoreMenuOpen);
+      assert.deepEqual(getMenuItemLabels(menu.defaultSection()), ['Cache disabled']);
+      const subMenu = findMenuItemWithLabel(menu.defaultSection(), 'Cache disabled');
+      assert.instanceOf(subMenu, UI.ContextMenu.SubMenu);
+      assert.deepEqual(getMenuItemLabels(subMenu.defaultSection()), ['Reset']);
+      const resetItem = findMenuItemWithLabel(subMenu.defaultSection(), 'Reset');
+      assert.exists(resetItem);
+      menu.invokeHandler(resetItem.id());
 
       sinon.assert.calledOnce(onReset);
       await assertScreenshot('status_bar/state_changes_pills_narrow.png');
+    });
+
+    it('marks the overflow button as expanded when showMoreMenuOpen is true', () => {
+      const pills = [createPill('cpu-throttling', 'CPU (4×)'), createPill('cache-disabled', 'Cache disabled')];
+      const target = renderView(pills, sinon.spy(), 300, 1, {}, true);
+
+      const moreButton = target.querySelector<Buttons.Button.Button>('devtools-button.more-pills:not(.collapsed)');
+      assert.exists(moreButton);
+      assert.isTrue(moreButton.accessibleExpanded);
     });
   });
 

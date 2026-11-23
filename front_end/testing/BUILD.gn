@@ -128,6 +128,7 @@ ts_library("testing") {
     "../ui/legacy/components/utils:bundle",
     "../ui/legacy/theme_support:bundle",
     "../ui/lit:bundle",
+    "../ui/settings:bundle",
     "../ui/visual_logging:testing",
   ]
 }

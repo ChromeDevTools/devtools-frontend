@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../core/common/common.js';
+import * as SettingsUI from '../ui/settings/settings.js';
 
 import {beforeEachWithTeardown} from './TestTeardown.js';
 
@@ -298,6 +299,7 @@ export function setupSettings(reset: boolean): void {
 
 export function cleanupSettings(): void {
   Common.Settings.resetSettings();
+  SettingsUI.SettingUIRegistration.resetSettings();
 }
 
 export function setupSettingsHooks(): void {

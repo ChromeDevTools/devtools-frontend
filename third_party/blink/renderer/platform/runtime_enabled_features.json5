@@ -1209,6 +1209,7 @@
       // Enables icon-only mode for capability elements.
       // https://issues.chromium.org/issues/514564817
       name: "CapabilityElementIconOnlyMode",
+      status: "experimental",
     },
     {
       // Considers the full previous code point (not one UTF-16 code unit) for
@@ -1309,6 +1310,12 @@
       // attribute and referrer on the spec.
       name: "CDTNewReferrerAndReferrerPolicyHandling",
       status: "experimental",
+    },
+    {
+      // Kill switch for deciding breaks between Latin-1 characters in 16-bit
+      // text without ICU in CharacterBreakIterator.
+      name: "CharacterBreakIteratorFastPath",
+      status: "stable",
     },
     {
       name: "CheckableInputTypeLayoutInline",
@@ -1457,6 +1464,10 @@
       name: "CompositeClipPathAnimation",
       status: "stable",
       public: true,
+    },
+    {
+      name: "CompositeColorAnimation",
+      depends_on: ["TrackAnimatedSources"],
     },
     {
       name: "CompositedSelectionUpdate",
@@ -2674,17 +2685,6 @@
       status: "experimental",
     },
     {
-      // Prevents the change event from being fired within
-      // HTMLFieldSetElement::ChildrenChanged because we aren't supposed to
-      // fire events during mutations like that.
-      // https://issues.chromium.org/issues/523756329
-      // https://issues.chromium.org/issues/523748081
-      // https://issues.chromium.org/issues/523737685
-      // Enabled in 151, safe to remove in 153.
-      name: "DisableFormControlChangeEventDuringMutation",
-      status: "stable",
-    },
-    {
       name: "DisallowSpecialSchemeOnNonSpecialUrl",
       status: "stable",
     },
@@ -3510,7 +3510,7 @@
     },
     {
       name: "FontationsPrinting",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "FontDataServiceForCSSLocalFonts",
@@ -3589,7 +3589,7 @@
     {
       name: "FractionalScrollOffsets",
       implied_by: ["FractionalScrollOffsetsForWebAPI"],
-      status: "experimental",
+      status: "stable",
     },
     {
       // https://crbug.com/40384509.
@@ -4512,12 +4512,6 @@
       status: "experimental",
     },
     {
-      // Enables mirroring for stretchy and large MathML operators when
-      // the text direction is right to left.
-      name: "MathMLOperatorRTLMirroring",
-      status: "stable",
-    },
-    {
       name:"MeasureMemory",
       status:"stable",
     },
@@ -4746,13 +4740,6 @@
       // https://issues.chromium.org/issues/41015847
       // This will be shipped in M151, and it can be removed in M153.
       name: "MoveParagraphsPreserveInlineStructure",
-      status: "stable",
-    },
-    {
-      // Clamp a column-count:auto multicol container's max-content inline
-      // size to column-width per css-sizing-4. Kill switch for
-      // crbug.com/41459384.
-      name: "MulticolColumnWidthMaxContentClamp",
       status: "stable",
     },
     {
@@ -6534,6 +6521,12 @@
     },
     {
       name: "SkipHtmlInterchangeInForeignContent",
+      status: "stable",
+    },
+    {
+      // Kill switch for not generating ::before and ::after on images showing
+      // primary content.
+      name: "SkipImageBeforeAfterForPrimaryContent",
       status: "stable",
     },
     {

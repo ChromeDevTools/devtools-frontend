@@ -22,6 +22,7 @@ export const NetworkRequestTypes = {
   Ping: 'Ping',
   Preflight: 'Preflight',
   CSPViolationReport: 'CSPViolationReport',
+  EmailVerification: 'EmailVerification',
   Prefetch: 'Prefetch',
   FedCM: 'FedCM',
 } as const;
@@ -55,7 +56,7 @@ export type ResourcePriority = ('VeryLow'|'Low'|'Medium'|'High'|'VeryHigh');
 export type RenderBlocking =
     ('blocking'|'non_blocking'|'in_body_parser_blocking'|'potentially_blocking'|'dynamically_injected_non_blocking');
 export type ResourceType = keyof typeof NetworkRequestTypes;
-type InitiatorType = ('parser'|'script'|'preload'|'SignedExchange'|'preflight'|'FedCM'|'other');
+type InitiatorType = ('EmailVerification'|'parser'|'script'|'preload'|'SignedExchange'|'preflight'|'FedCM'|'other');
 export type ResourceTiming = Protocol.Network.ResourceTiming;
 export interface CallStack {
   callFrames: Array<{

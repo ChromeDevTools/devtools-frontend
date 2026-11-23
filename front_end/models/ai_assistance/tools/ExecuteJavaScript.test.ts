@@ -40,6 +40,22 @@ describe('ExecuteJavaScriptTool', () => {
     element.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
   });
 
+  function createContext(observation: string) {
+    return {
+      getExecutionContextNode: () => element,
+      execJs: sinon.stub().resolves(observation),
+      changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+      createExtensionScope: sinon.stub().returns({
+        install: sinon.stub().resolves(),
+        uninstall: sinon.stub().resolves(),
+      }),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
+    };
+  }
+
   it('successfully executes JS code', async () => {
     const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
     const mockExecJs = sinon.stub().resolves('{"success": true}');
@@ -86,22 +102,6 @@ describe('ExecuteJavaScriptTool', () => {
       title: 'Title',
       code: 'console.log("test")',
     };
-
-    function createContext(execJsOutput: string) {
-      return {
-        getExecutionContextNode: () => element,
-        execJs: sinon.stub().resolves(execJsOutput),
-        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
-        createExtensionScope: sinon.stub().returns({
-          install: sinon.stub().resolves(),
-          uninstall: sinon.stub().resolves(),
-        }),
-        getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
-          status: 'ESTABLISHED_ORIGIN',
-          origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
-        }),
-      };
-    }
 
     it('returns successful result when output is exactly 8000 bytes', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
@@ -604,22 +604,6 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
       code: 'const data = await fetch("/api/reviews");',
     };
 
-    function createContext(observation: string) {
-      return {
-        getExecutionContextNode: () => element,
-        execJs: sinon.stub().resolves(observation),
-        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
-        createExtensionScope: sinon.stub().returns({
-          install: sinon.stub().resolves(),
-          uninstall: sinon.stub().resolves(),
-        }),
-        getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
-          status: 'ESTABLISHED_ORIGIN',
-          origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
-        }),
-      };
-    }
-
     describe('with the V2 architecture', () => {
       beforeEach(() => {
         updateHostConfig({devToolsAiV2Architecture: {enabled: true}});
@@ -684,6 +668,75 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
       assert.include(response.result, HINT_PHRASE);
       assert.notInclude(response.result, 'listNetworkRequests');
       assert.notInclude(response.result, 'learnSkills');
+    });
+  });
+
+  describe('isolated world', () => {
+    const ISOLATED_WORLD_HINT =
+        'JavaScript run by this tool executes in an isolated world: it shares the page DOM, while globals, framework instances, and customElements defined by page scripts cannot be read. If this identifier is defined by page scripts, do not assume it is missing; inspect DOM attributes, <script> tags, or loaded sources instead.';
+
+    const defaultArgs = {
+      explanation: 'Check page globals',
+      title: 'Checking page globals',
+      code: 'const data = sap.ui.getCore();',
+    };
+
+    it('documents the isolated-world constraint in the code parameter description', () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      assert.include(
+          tool.parameters.properties.code.description,
+          '**CRITICAL** Code runs in an isolated world: it shares the page DOM, while globals, framework instances, and `customElements` defined by page scripts cannot be read.',
+      );
+    });
+
+    it('appends the isolated-world hint to stack-annotated ReferenceError output', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const wrappedCode = `async function ($0, data) {\n  try {\n    ${
+          defaultArgs.code}\n  } catch (error) {\n    return error;\n  }\n}`;
+      const referenceError = AiAssistance.EvaluateAction.EvaluateAction.stringifyError(
+          {
+            message: 'sap is not defined',
+            stack: 'ReferenceError: sap is not defined\n    at async <anonymous> (<anonymous>:3:18)',
+          },
+          wrappedCode,
+      );
+      const response = await tool.handler(defaultArgs, createContext(referenceError));
+
+      assertIsResult(response);
+      assert.strictEqual(
+          response.result,
+          `Error: executing the line "const data = sap.ui.getCore();" failed with the following error:\nsap is not defined\n${
+              ISOLATED_WORLD_HINT}`,
+      );
+    });
+
+    it('appends the isolated-world hint to single-line ReferenceError output', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const referenceError =
+          AiAssistance.EvaluateAction.EvaluateAction.stringifyError({message: 'sap is not defined'}, defaultArgs.code);
+      const response = await tool.handler(defaultArgs, createContext(referenceError));
+
+      assertIsResult(response);
+      assert.strictEqual(response.result, `Error: sap is not defined\n${ISOLATED_WORLD_HINT}`);
+    });
+
+    it('leaves non-ReferenceError error output unchanged', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const typeError =
+          'Error: executing the line "el.foo()" failed with the following error:\nCannot read properties of null (reading \'foo\')';
+      const response = await tool.handler(defaultArgs, createContext(typeError));
+
+      assertIsResult(response);
+      assert.strictEqual(response.result, typeError);
+    });
+
+    it('leaves normal returned string data unchanged', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const returnedString = '\'Error: sap is not defined\'';
+      const response = await tool.handler(defaultArgs, createContext(returnedString));
+
+      assertIsResult(response);
+      assert.strictEqual(response.result, returnedString);
     });
   });
 

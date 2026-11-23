@@ -54,6 +54,23 @@ const NETWORK_TOOLS_HINT =
     'To inspect the page\'s network requests, load the `network` skill with `learnSkills` if it is not loaded yet, then use `listNetworkRequests` and `getNetworkRequestDetails`.';
 
 /**
+ * Matches `DataHandlerResult.result` observations for `ReferenceError`s thrown
+ * when snippets read page-script globals in the `FREESTYLER_WORLD_NAME` isolated world.
+ *
+ * `JavascriptExecutor#generateObservation()` catches snippet errors in its
+ * `try/catch` wrapper, so `EvaluateAction.stringifyError()` formats V8's
+ * `Error#message` from `GetErrorStackOutput.message` without a `ReferenceError:` prefix:
+ * - Single-line when `GetErrorStackOutput.stack` is empty in `getErrorStackOnThePage()`
+ *   or unmapped: `'Error: sap is not defined'`.
+ * - Two-line when `GetErrorStackOutput.stack` maps to a snippet line:
+ *   `'Error: executing the line "sap.ui.getCore()" failed with the following error:\nsap is not defined'`.
+ */
+const ISOLATED_WORLD_REFERENCE_ERROR_PATTERN =
+    /^Error: (?:executing the line .* failed with the following error:\n)?[\w$]+ is not defined$/;
+const ISOLATED_WORLD_HINT =
+    'JavaScript run by this tool executes in an isolated world: it shares the page DOM, while globals, framework instances, and customElements defined by page scripts cannot be read. If this identifier is defined by page scripts, do not assume it is missing; inspect DOM attributes, <script> tags, or loaded sources instead.';
+
+/**
  * Returns one message per size limit that the code exceeds. Each message states
  * the actual value, the limit, and how to fix it, so the model can correct
  * every problem in a single retry.
@@ -153,6 +170,7 @@ export class ExecuteJavaScriptTool implements
   - Store intermediate DOM lookups (\`getComputedStyle\`, \`getAttribute\`) in short local variables instead of chaining them on one line.
   - Split complex logic into multiple steps.
 * **CRITICAL** Network requests (e.g., fetch, XMLHttpRequest) are disabled and cannot be made.
+* **CRITICAL** Code runs in an isolated world: it shares the page DOM, while globals, framework instances, and \`customElements\` defined by page scripts cannot be read. Do not assume a library is missing; inspect DOM attributes, \`<script>\` tags, or loaded sources instead.
 
 For example, to query DOM elements:
 
@@ -225,9 +243,14 @@ const data = {
                                             context.execJs);
 
     const result = await executor.executeAction(params.code, options);
-    if ('result' in result && typeof result.result === 'string' && BLOCKED_NETWORK_ERROR_PATTERN.test(result.result)) {
-      const hint = isV2Architecture ? `${BLOCKED_NETWORK_HINT} ${NETWORK_TOOLS_HINT}` : BLOCKED_NETWORK_HINT;
-      return {...result, result: `${result.result}\n${hint}`};
+    if ('result' in result && typeof result.result === 'string') {
+      if (BLOCKED_NETWORK_ERROR_PATTERN.test(result.result)) {
+        const hint = isV2Architecture ? `${BLOCKED_NETWORK_HINT} ${NETWORK_TOOLS_HINT}` : BLOCKED_NETWORK_HINT;
+        return {...result, result: `${result.result}\n${hint}`};
+      }
+      if (ISOLATED_WORLD_REFERENCE_ERROR_PATTERN.test(result.result)) {
+        return {...result, result: `${result.result}\n${ISOLATED_WORLD_HINT}`};
+      }
     }
     return result;
   }

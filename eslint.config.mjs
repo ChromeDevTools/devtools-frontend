@@ -1014,7 +1014,6 @@ export default defineConfig([
       'front_end/panels/animation/AnimationUI.ts',
       'front_end/panels/application/AppManifestView.ts',
       'front_end/panels/application/ApplicationPanelSidebar.ts',
-      'front_end/panels/application/ApplicationPanelTreeElement.ts',
       'front_end/panels/application/BackForwardCacheTreeElement.ts',
       'front_end/panels/application/BackgroundServiceModel.ts',
       'front_end/panels/application/BackgroundServiceView.ts',

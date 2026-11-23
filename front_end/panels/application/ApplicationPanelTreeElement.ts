@@ -19,7 +19,7 @@ const {html} = Lit;
 
 export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
   protected readonly resourcesPanel: ResourcesPanel;
-  private customItemURL?: Platform.DevToolsPath.UrlString;
+  #customItemURL?: Platform.DevToolsPath.UrlString;
   protected aiButtonContainer?: HTMLElement;
 
   constructor(resourcesPanel: ResourcesPanel, title: string, expandable: boolean, jslogContext: string) {
@@ -35,14 +35,14 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   get itemURL(): Platform.DevToolsPath.UrlString {
-    if (this.customItemURL) {
-      return this.customItemURL;
+    if (this.#customItemURL) {
+      return this.#customItemURL;
     }
     throw new Error('Unimplemented Method');
   }
 
   set itemURL(value: Platform.DevToolsPath.UrlString) {
-    this.customItemURL = value;
+    this.#customItemURL = value;
   }
 
   override onselect(selectedByUser: boolean|undefined): boolean {
@@ -119,7 +119,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
   protected emptyCategoryHeadline: string;
   protected categoryDescription: string;
   protected readonly settingsKey: string;
-  private wasDescendantSelected = false;
+  #wasDescendantSelected = false;
 
   constructor(
       resourcesPanel: ResourcesPanel, categoryName: string, emptyCategoryHeadline: string, categoryDescription: string,
@@ -168,7 +168,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
   override select(omitFocus?: boolean, selectedByUser?: boolean): boolean {
     if (this.selected && selectedByUser && !this.expanded && this.childCount() > 0) {
       this.expand();
-      const childToSelect = this.findChildToAutoSelect();
+      const childToSelect = this.#findChildToAutoSelect();
       if (childToSelect) {
         childToSelect.select(omitFocus, true);
       }
@@ -176,38 +176,38 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     }
 
     const previousSelected = this.treeOutline?.selectedTreeElement ?? null;
-    this.wasDescendantSelected = Boolean(previousSelected?.hasAncestor(this));
+    this.#wasDescendantSelected = Boolean(previousSelected?.hasAncestor(this));
     try {
       return super.select(omitFocus, selectedByUser);
     } finally {
-      this.wasDescendantSelected = false;
+      this.#wasDescendantSelected = false;
     }
   }
 
   override onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
-    if (selectedByUser && !this.wasDescendantSelected && this.childCount() > 0) {
+    if (selectedByUser && !this.#wasDescendantSelected && this.childCount() > 0) {
       if (!this.expanded) {
         this.expand();
       }
-      const childToSelect = this.findChildToAutoSelect();
+      const childToSelect = this.#findChildToAutoSelect();
       if (childToSelect) {
         childToSelect.select(/* omitFocus= */ false, /* selectedByUser= */ true);
         return false;
       }
     }
-    this.updateCategoryView();
+    this.#updateCategoryView();
     const item = this.createGenericStorageAiContext();
     UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item);
     return false;
   }
 
-  private isOriginStorageCategory(): boolean {
+  #isOriginStorageCategory(): boolean {
     return this.settingsKey === 'cookies' || this.settingsKey === 'local-storage' ||
         this.settingsKey === 'session-storage';
   }
 
-  private getMainPageOrigin(): string {
+  #getMainPageOrigin(): string {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return '';
@@ -217,15 +217,15 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     return url ? Common.ParsedURL.ParsedURL.extractOrigin(url) : '';
   }
 
-  private findChildToAutoSelect(): UI.TreeOutline.TreeElement|null {
-    if (!this.isOriginStorageCategory()) {
+  #findChildToAutoSelect(): UI.TreeOutline.TreeElement|null {
+    if (!this.#isOriginStorageCategory()) {
       return null;
     }
     const selectableChildren = this.children().filter(child => child.selectable && !child.isExpandable());
     if (selectableChildren.length === 0) {
       return null;
     }
-    const mainPageOrigin = this.getMainPageOrigin();
+    const mainPageOrigin = this.#getMainPageOrigin();
     if (mainPageOrigin) {
       const matchingChild = selectableChildren.find(child => child.titleAsText() === mainPageOrigin);
       if (matchingChild) {
@@ -235,7 +235,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     return selectableChildren.length === 1 ? selectableChildren[0] : null;
   }
 
-  private updateCategoryView(): void {
+  #updateCategoryView(): void {
     const headline = this.childCount() === 0 ? this.emptyCategoryHeadline : this.categoryName;
     this.resourcesPanel.showCategoryView(this.categoryName, headline, this.categoryDescription, this.categoryLink);
   }
@@ -246,7 +246,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     super.appendChild(child, comparator);
     // Only update if relevant (changing from 0 to 1 child).
     if (this.selected && this.childCount() === 1) {
-      this.updateCategoryView();
+      this.#updateCategoryView();
     }
   }
 
@@ -254,7 +254,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     super.removeChild(child);
     // Only update if relevant (changing to 0 children).
     if (this.selected && this.childCount() === 0) {
-      this.updateCategoryView();
+      this.#updateCategoryView();
     }
   }
 

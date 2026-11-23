@@ -7,6 +7,7 @@ import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -29,10 +30,69 @@ function createSensorsView(): Sensors.SensorsView.SensorsView {
   ]);
 }
 
+function option(value: string, label: string) {
+  return {
+    value,
+    title: i18n.i18n.lockedLazyString(label),
+    text: i18n.i18n.lockedLazyString(label),
+  };
+}
+
+const SENSORS_UI_DESCRIPTORS: Array<{
+  descriptor: Common.Settings.SettingDescriptor<string>,
+  options: Array<[string, string]>,
+}> =
+    [
+      {
+        descriptor: SDK.SDKSettings.touchSettingDescriptor,
+        options: [['none', 'Device-based'], ['force', 'Force enabled']],
+      },
+      {
+        descriptor: SDK.SDKSettings.idleDetectionSettingDescriptor,
+        options: [
+          ['none', 'No idle emulation'],
+          ['{"isUserActive":true,"isScreenUnlocked":true}', 'User active, screen unlocked'],
+          ['{"isUserActive":true,"isScreenUnlocked":false}', 'User active, screen locked'],
+          ['{"isUserActive":false,"isScreenUnlocked":true}', 'User idle, screen unlocked'],
+          ['{"isUserActive":false,"isScreenUnlocked":false}', 'User idle, screen locked'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.cpuPressureSettingDescriptor,
+        options: [
+          ['none', 'No override'],
+          ['nominal', 'Nominal'],
+          ['fair', 'Fair'],
+          ['serious', 'Serious'],
+          ['critical', 'Critical'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.cpuPerformanceSettingDescriptor,
+        options: [
+          ['no-override', 'No override'],
+          ['unknown', 'Tier 0: UNKNOWN'],
+          ['low', 'Tier 1: LOW'],
+          ['mid', 'Tier 2: MID'],
+          ['high', 'Tier 3: HIGH'],
+          ['ultra', 'Tier 4: ULTRA'],
+        ],
+      },
+    ];
+
+function registerSensorsUIRegistrations(): void {
+  for (const {descriptor, options} of SENSORS_UI_DESCRIPTORS) {
+    SettingsUI.SettingUIRegistration.register(descriptor, {
+      options: options.map(([value, label]) => option(value, label)),
+    });
+  }
+}
+
 describeWithEnvironment('SensorsView', () => {
   let view: Sensors.SensorsView.SensorsView;
 
   beforeEach(async () => {
+    registerSensorsUIRegistrations();
     view = createSensorsView();
     renderElementIntoDOM(view);
     await UI.Widget.Widget.allUpdatesComplete;
@@ -1233,6 +1293,7 @@ describeWithEnvironment('SensorsView screenshots', () => {
   let view: Sensors.SensorsView.SensorsView;
 
   beforeEach(async () => {
+    registerSensorsUIRegistrations();
     Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor).set([{
       title: 'Berlin',
       lat: 52.52,

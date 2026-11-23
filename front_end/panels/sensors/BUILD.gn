@@ -82,6 +82,7 @@ ts_library("unittests") {
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",

@@ -112,6 +112,7 @@ export class TabbedPane extends TabbedPaneBase {
   #leftToolbar?: Toolbar;
   #rightToolbar?: Toolbar;
   #trailingSlot!: HTMLSlotElement;
+  readonly #headerResizeObserver = new ResizeObserver(() => this.requestUpdate());
   #lastDispatchedHiddenTabIds = '';
   readonly #zoomManager = ZoomManager.instance();
   allowTabReorder?: boolean;
@@ -163,12 +164,6 @@ export class TabbedPane extends TabbedPaneBase {
     this.headerContentsElement.appendChild(this.#trailingSlot);
     this.#trailingSlot.addEventListener('slotchange', () => this.requestUpdate());
 
-    // Re-run overflow detection whenever the available space for tabs
-    // changes. The header is a flex container in which `headerContentsElement`
-    // is `flex: auto`, so any growth in the left/right toolbars (e.g. the
-    // issues counter loading asynchronously into the right toolbar) shrinks
-    // `headerContentsElement` and is captured by this single observer.
-    new ResizeObserver(() => this.requestUpdate()).observe(this.headerContentsElement);
     this.tabsElement.setAttribute('role', 'tablist');
     this.tabsElement.addEventListener('keydown', this.keyDown.bind(this), false);
     this.#contentElement = this.contentElement.createChild('div', 'tabbed-pane-content');
@@ -600,6 +595,10 @@ export class TabbedPane extends TabbedPaneBase {
 
   override wasShown(): void {
     super.wasShown();
+    // Re-run overflow detection whenever the available space for tabs
+    // changes while shown. Disconnecting on hide avoids firing post-detach
+    // ResizeObserver updates after the pane leaves the DOM.
+    this.#headerResizeObserver.observe(this.headerContentsElement);
     this.#zoomManager.addEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.zoomChanged, this);
     // The zoom factor might have changed while the pane was hidden.
     this.clearMeasuredWidths();
@@ -613,6 +612,7 @@ export class TabbedPane extends TabbedPaneBase {
 
   override willHide(): void {
     super.willHide();
+    this.#headerResizeObserver.disconnect();
     this.#zoomManager.removeEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.zoomChanged, this);
   }
 

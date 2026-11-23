@@ -16,6 +16,7 @@ import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Trace from '../models/trace/trace.js';
 import * as TraceSourceMapsResolver from '../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
+import * as UI from '../ui/legacy/legacy.js';
 import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
 import {cleanTestDOM, setupTestDOM} from './DOMHooks.js';
@@ -126,7 +127,9 @@ afterEach(async function() {
   await run(() => cleanTestDOM(title));
   await run(() => sinon.clock?.runToLast());
   await run(() => sinon.clock?.restore());
-  await run(() => flushPendingActivity());
+  await run(() => flushPendingActivity(20));
+  await run(() => UI.Widget.Widget.flushPendingUpdatesForTesting());
+  await run(() => flushPendingActivity(20));
 
   // Now that all pending renders have settled, run registered per-test teardowns (LIFO order).
   await run(() => runTestTeardowns());

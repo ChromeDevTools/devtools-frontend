@@ -98,22 +98,62 @@ export function widgetConfig<F extends WidgetFactory<AnyWidget>, ParamKeys exten
 
 let currentUpdateQueue: Map<AnyWidget, PromiseWithResolvers<void>>|null = null;
 const currentlyProcessed = new Set<AnyWidget>();
+const inFlightUpdates = new Set<Promise<void>>();
 let nextUpdateQueue = new Map<AnyWidget, PromiseWithResolvers<void>>();
 const pendingAnimationFrames = new WeakMap<Window, number>();
+let pendingMainWindowFrame: {frameId: number, cancel: (handle: number) => void}|undefined;
 let overallUpdatePromise: PromiseWithResolvers<void>|null = null;
+
+function scheduleAnimationFrame(widgetWindow: Window): void {
+  if (widgetWindow === window) {
+    if (!pendingMainWindowFrame) {
+      let didRun = false;
+      const cancel = window.cancelAnimationFrame.bind(window);
+      const frameId = window.requestAnimationFrame(() => {
+        didRun = true;
+        pendingMainWindowFrame = undefined;
+        runNextUpdate();
+      });
+      if (!didRun) {
+        pendingMainWindowFrame = {frameId, cancel};
+      }
+    }
+    return;
+  }
+  if (!pendingAnimationFrames.has(widgetWindow)) {
+    let didRun = false;
+    const frameId = widgetWindow.requestAnimationFrame(() => {
+      didRun = true;
+      pendingAnimationFrames.delete(widgetWindow);
+      runNextUpdate();
+    });
+    if (!didRun) {
+      pendingAnimationFrames.set(widgetWindow, frameId);
+    }
+  }
+}
+
+function cancelAnimationFrameForWindow(widgetWindow: Window): void {
+  if (widgetWindow === window) {
+    if (pendingMainWindowFrame) {
+      const {frameId, cancel} = pendingMainWindowFrame;
+      pendingMainWindowFrame = undefined;
+      cancel(frameId);
+    }
+    return;
+  }
+  const frameId = pendingAnimationFrames.get(widgetWindow);
+  if (frameId !== undefined) {
+    pendingAnimationFrames.delete(widgetWindow);
+    widgetWindow.cancelAnimationFrame(frameId);
+  }
+}
 
 function enqueueIntoNextUpdateQueue(widget: AnyWidget): Promise<void> {
   const scheduledUpdate = nextUpdateQueue.get(widget) ?? Promise.withResolvers<void>();
   nextUpdateQueue.delete(widget);
   nextUpdateQueue.set(widget, scheduledUpdate);
-  const widgetWindow = widget.contentElement.window() || window;
-  if (!pendingAnimationFrames.has(widgetWindow)) {
-    const frameId = widgetWindow.requestAnimationFrame(() => {
-      pendingAnimationFrames.delete(widgetWindow);
-      runNextUpdate();
-    });
-    pendingAnimationFrames.set(widgetWindow, frameId);
-  }
+  scheduleAnimationFrame(widget.contentElement.window() || window);
   return scheduledUpdate.promise;
 }
 
@@ -143,7 +183,12 @@ function cancelUpdate(widget: AnyWidget): void {
   if (scheduledUpdate) {
     scheduledUpdate.resolve();
     nextUpdateQueue.delete(widget);
+    const widgetWindow = widget.contentElement.window() || window;
+    if (![...nextUpdateQueue.keys()].some(w => (w.contentElement.window() || window) === widgetWindow)) {
+      cancelAnimationFrameForWindow(widgetWindow);
+    }
   }
+  resolveOverallUpdatePromise();
 }
 
 function resolveOverallUpdatePromise(): void {
@@ -151,6 +196,28 @@ function resolveOverallUpdatePromise(): void {
       nextUpdateQueue.size === 0 && overallUpdatePromise) {
     overallUpdatePromise.resolve();
     overallUpdatePromise = null;
+  }
+}
+
+async function runWidgetUpdate(widget: AnyWidget, resolve: () => void): Promise<void> {
+  try {
+    const controller = new AbortController();
+    widget.addUpdateController(controller);
+    await widget.performUpdate(controller.signal);
+  } catch (e) {
+    if ((e as Error).name !== 'AbortError') {
+      console.error(`${widget.constructor.name}.performUpdate failed: `, e);
+    }
+  } finally {
+    currentlyProcessed.delete(widget);
+    const nextUpdate = nextUpdateQueue.get(widget);
+    if (nextUpdate) {
+      void nextUpdate.promise.then(resolve);
+      scheduleAnimationFrame(widget.contentElement.window() || window);
+    } else {
+      resolve();
+    }
+    resolveOverallUpdatePromise();
   }
 }
 
@@ -171,34 +238,10 @@ function runNextUpdate(): void {
     }
     const {resolve} = update;
     currentlyProcessed.add(widget);
-    void (async () => {
-      try {
-        const controller = new AbortController();
-        widget.addUpdateController(controller);
-        await widget.performUpdate(controller.signal);
-      } finally {
-        currentlyProcessed.delete(widget);
-        const nextUpdate = nextUpdateQueue.get(widget);
-        if (nextUpdate) {
-          void nextUpdate.promise.then(resolve);
-          const widgetWindow = widget.contentElement.window() || window;
-          if (!pendingAnimationFrames.has(widgetWindow)) {
-            const frameId = widgetWindow.requestAnimationFrame(() => {
-              pendingAnimationFrames.delete(widgetWindow);
-              runNextUpdate();
-            });
-            pendingAnimationFrames.set(widgetWindow, frameId);
-          }
-        } else {
-          resolve();
-        }
-        resolveOverallUpdatePromise();
-      }
-    })().catch(e => {
-      if (e.name !== 'AbortError') {
-        console.error(`${widget.constructor.name}.performUpdate failed: `, e);
-      }
+    const updateTask = runWidgetUpdate(widget, resolve).finally(() => {
+      inFlightUpdates.delete(updateTask);
     });
+    inFlightUpdates.add(updateTask);
   }
   currentUpdateQueue.clear();
   queueMicrotask(() => {
@@ -667,6 +710,27 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
       overallUpdatePromise = Promise.withResolvers<void>();
     }
     return overallUpdatePromise.promise;
+  }
+
+  static async flushPendingUpdatesForTesting(): Promise<void> {
+    for (let i = 0; i < 20; i++) {
+      while (inFlightUpdates.size > 0) {
+        await Promise.all([...inFlightUpdates]);
+      }
+      if (currentUpdateQueue) {
+        await new Promise<void>(resolve => queueMicrotask(resolve));
+      }
+      if (nextUpdateQueue.size === 0 && !currentUpdateQueue && currentlyProcessed.size === 0) {
+        return;
+      }
+      if (nextUpdateQueue.size > 0 && !currentUpdateQueue) {
+        for (const widget of nextUpdateQueue.keys()) {
+          cancelAnimationFrameForWindow(widget.contentElement.window() || window);
+        }
+        cancelAnimationFrameForWindow(window);
+        runNextUpdate();
+      }
+    }
   }
 
   static getOrCreateWidget(element: HTMLElement): Widget {

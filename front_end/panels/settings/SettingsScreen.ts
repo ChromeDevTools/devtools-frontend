@@ -182,6 +182,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
   }
 
   static removeInstanceForTesting(): void {
+    settingsScreenInstance?.detach();
     settingsScreenInstance = undefined;
   }
 

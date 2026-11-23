@@ -233,16 +233,55 @@ describeWithEnvironment('Widget', () => {
     });
 
     it('cancels pending updates', async () => {
+      const cancelAnimationFrameSpy = sinon.spy(window, 'cancelAnimationFrame');
       const widget = new Widget();
       const performUpdate = sinon.spy(widget, 'performUpdate');
       widget.markAsRoot();
       widget.show(renderElementIntoDOM(document.createElement('main')));
       widget.requestUpdate();
+      const allUpdates = Widget.allUpdatesComplete;
 
       widget.detach();
 
       await widget.updateComplete;
+      await allUpdates;
       assert.strictEqual(performUpdate.callCount, 0, 'Expected no calls to `performUpdate`');
+      sinon.assert.calledOnce(cancelAnimationFrameSpy);
+    });
+
+    it('flushes updates stuck behind a stalled requestAnimationFrame via flushPendingUpdatesForTesting', async () => {
+      const rafStub = sinon.stub(window, 'requestAnimationFrame').returns(42);
+      const cancelStub = sinon.stub(window, 'cancelAnimationFrame');
+      const widget = new Widget();
+      const performUpdate = sinon.spy(widget, 'performUpdate');
+      renderElementIntoDOM(widget);
+
+      widget.requestUpdate();
+      sinon.assert.notCalled(performUpdate);
+
+      await Widget.flushPendingUpdatesForTesting();
+      rafStub.restore();
+      cancelStub.restore();
+
+      sinon.assert.calledOnce(performUpdate);
+      sinon.assert.calledWith(cancelStub, 42);
+    });
+
+    it('cancels native animation frames scheduled before sinon.useFakeTimers without warning', async () => {
+      const widget = new Widget();
+      const performUpdate = sinon.spy(widget, 'performUpdate');
+      renderElementIntoDOM(widget);
+      widget.requestUpdate();
+
+      const clock = sinon.useFakeTimers();
+      try {
+        widget.detach();
+      } finally {
+        clock.restore();
+      }
+
+      await widget.updateComplete;
+      sinon.assert.notCalled(performUpdate);
     });
   });
 

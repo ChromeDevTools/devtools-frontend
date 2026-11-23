@@ -1077,4 +1077,14 @@ describeWithEnvironment('TabbedPane shrinkable tabs', () => {
   it('splits the header width evenly when every tab has to shrink', async () => {
     assert.deepEqual(await layOutShrinkableTabs([90, 80, 70], 150), [50, 50, 50]);
   });
+
+  it('disconnects the header ResizeObserver when hidden', () => {
+    const disconnectSpy = sinon.spy(ResizeObserver.prototype, 'disconnect');
+    const tabbedPane = new UI.TabbedPane.TabbedPane();
+    renderElementIntoDOM(tabbedPane);
+
+    tabbedPane.detach();
+
+    sinon.assert.called(disconnectSpy);
+  });
 });

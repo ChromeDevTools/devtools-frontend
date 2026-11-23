@@ -125,6 +125,9 @@ export class AdvancedApp implements UI.App.App {
   }
 
   static removeInstance(): void {
+    if (appInstance) {
+      appInstance.#deviceModeView?.detach();
+    }
     appInstance = null;
   }
 

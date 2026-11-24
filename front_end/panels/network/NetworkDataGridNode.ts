@@ -716,13 +716,19 @@ function renderCellLink(link: CellLink): LitTemplate {
         event.consume(true);
         link.onClick();
       };
+      // The data grid activates the selected row on Enter and Space. Consume these keys to reveal the linked request.
+      const onKeyDown = (event: KeyboardEvent): void => {
+        if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+          onClick(event);
+        }
+      };
       const classes = `devtools-link text-button link-style ${link.className ?? ''}`;
       // clang-format off
       return html`
         <button class=${classes} tabindex="-1" role="link" title=${ifDefined(link.title)}
                 aria-label=${ifDefined(link.iconName ? link.title : undefined)}
                 jslog=${VisualLogging.link(link.jslogContext).track({click: true})}
-                @click=${onClick}>${link.iconName ?
+                @click=${onClick} @keydown=${onKeyDown}>${link.iconName ?
                   html`<devtools-icon name=${link.iconName}></devtools-icon>` : link.text}</button>`;
       // clang-format on
     }

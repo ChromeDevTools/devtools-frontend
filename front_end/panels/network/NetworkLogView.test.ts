@@ -1674,6 +1674,46 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridd
     assert.strictEqual(dataGrid.selectedNode, node);
   });
 
+  it('reveals the linked request when pressing Enter or Space on a focused reveal link', async () => {
+    const initiatorRequest = createNetworkRequest(urlString`https://example.com/api`, {target});
+    const preflightRequest = createNetworkRequest(urlString`https://example.com/api`, {target});
+    preflightRequest.setPreflightInitiatorRequest(initiatorRequest);
+    sinon.stub(preflightRequest, 'initiator').returns({
+      type: Protocol.Network.InitiatorType.Preflight,
+    });
+
+    networkLogView = createNetworkLogView();
+    renderElementIntoDOM(networkLogView, {includeCommonStyles: true, width: 600, height: 200});
+    networkLogView.columns().switchViewMode(true);
+    await UI.Widget.Widget.allUpdatesComplete;
+    const dataGrid = networkLogView.columns().dataGrid();
+    dataGrid.updateInstantly();
+    const rootNode = dataGrid.rootNode();
+
+    const preflightNode =
+        rootNode.children.find(n => (n as Network.NetworkDataGridNode.NetworkNode).request() === preflightRequest);
+    assert.exists(preflightNode);
+    preflightNode.select();
+
+    dataGrid.element.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight', bubbles: true}));
+    const link = preflightNode.element().querySelector('button.devtools-link');
+    assert.instanceOf(link, HTMLButtonElement);
+    assert.strictEqual(document.activeElement, link);
+
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
+    const requestActivatedSpy = sinon.spy();
+    networkLogView.addEventListener(Network.NetworkDataGridNode.Events.RequestActivated, requestActivatedSpy);
+
+    link.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true, cancelable: true}));
+    sinon.assert.calledOnceWithExactly(revealStub, initiatorRequest, false);
+    sinon.assert.notCalled(requestActivatedSpy);
+
+    revealStub.resetHistory();
+    link.dispatchEvent(new KeyboardEvent('keydown', {key: ' ', bubbles: true, cancelable: true}));
+    sinon.assert.calledOnceWithExactly(revealStub, initiatorRequest, false);
+    sinon.assert.notCalled(requestActivatedSpy);
+  });
+
   describe('domain filter', () => {
     async function domainSuggestions(domain: string): Promise<string[]> {
       const setSuggestionProviderSpy = sinon.spy(UI.FilterBar.TextFilterUI.prototype, 'setSuggestionProvider');

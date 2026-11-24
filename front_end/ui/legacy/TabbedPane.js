@@ -87,6 +87,7 @@ export class TabbedPane extends TabbedPaneBase {
     #leftToolbar;
     #rightToolbar;
     #trailingSlot;
+    #headerResizeObserver = new ResizeObserver(() => this.requestUpdate());
     #lastDispatchedHiddenTabIds = '';
     #zoomManager = ZoomManager.instance();
     allowTabReorder;
@@ -132,12 +133,6 @@ export class TabbedPane extends TabbedPaneBase {
         this.#trailingSlot.classList.add('tabbed-pane-trailing-button');
         this.headerContentsElement.appendChild(this.#trailingSlot);
         this.#trailingSlot.addEventListener('slotchange', () => this.requestUpdate());
-        // Re-run overflow detection whenever the available space for tabs
-        // changes. The header is a flex container in which `headerContentsElement`
-        // is `flex: auto`, so any growth in the left/right toolbars (e.g. the
-        // issues counter loading asynchronously into the right toolbar) shrinks
-        // `headerContentsElement` and is captured by this single observer.
-        new ResizeObserver(() => this.requestUpdate()).observe(this.headerContentsElement);
         this.tabsElement.setAttribute('role', 'tablist');
         this.tabsElement.addEventListener('keydown', this.keyDown.bind(this), false);
         this.#contentElement = this.contentElement.createChild('div', 'tabbed-pane-content');
@@ -505,6 +500,10 @@ export class TabbedPane extends TabbedPaneBase {
     }
     wasShown() {
         super.wasShown();
+        // Re-run overflow detection whenever the available space for tabs
+        // changes while shown. Disconnecting on hide avoids firing post-detach
+        // ResizeObserver updates after the pane leaves the DOM.
+        this.#headerResizeObserver.observe(this.headerContentsElement);
         this.#zoomManager.addEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.zoomChanged, this);
         // The zoom factor might have changed while the pane was hidden.
         this.clearMeasuredWidths();
@@ -517,6 +516,7 @@ export class TabbedPane extends TabbedPaneBase {
     }
     willHide() {
         super.willHide();
+        this.#headerResizeObserver.disconnect();
         this.#zoomManager.removeEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.zoomChanged, this);
     }
     wasHidden() {

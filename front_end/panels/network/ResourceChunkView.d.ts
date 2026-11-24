@@ -40,7 +40,6 @@ export declare abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
     protected filterRegex: RegExp | null;
     private selectedChunk;
     private currentSelectedNode?;
-    readonly request: SDK.NetworkRequest.NetworkRequest;
     private readonly messageFilterSetting;
     private sidebarWidget;
     private readonly splitWidgetSettingKey;
@@ -50,7 +49,9 @@ export declare abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
     abstract getRequestChunks(): Chunk[];
     abstract createGridItem(chunk: Chunk): DataGridItem;
     abstract chunkFilter(chunk: Chunk): boolean;
-    constructor(request: SDK.NetworkRequest.NetworkRequest, messageFilterSettingKey: string, splitWidgetSettingKey: string, dataGridDisplayName: Common.UIString.LocalizedString, filterUsingRegexHint: Common.UIString.LocalizedString, opts?: UI.Widget.WidgetOptions, view?: View);
+    constructor(request: SDK.NetworkRequest.NetworkRequest | HTMLElement | undefined, messageFilterSettingKey: string, splitWidgetSettingKey: string, dataGridDisplayName: Common.UIString.LocalizedString, filterUsingRegexHint: Common.UIString.LocalizedString, opts?: UI.Widget.WidgetOptions, view?: View);
+    get request(): SDK.NetworkRequest.NetworkRequest;
+    set request(request: SDK.NetworkRequest.NetworkRequest);
     private onRowContextMenu;
     getColumns(): DataGrid.DataGrid.ColumnDescriptor[];
     chunkAdded(chunk: Chunk): void;

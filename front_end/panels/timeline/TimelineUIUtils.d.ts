@@ -4,6 +4,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 /** Look for scheme:// plus text and exclude any punctuation at the end. **/
 export declare const URL_REGEX: RegExp;
 interface LinkifyLocationOptions {
@@ -25,10 +26,10 @@ export declare class TimelineUIUtils {
     static eventColor(event: Trace.Types.Events.Event): string;
     static eventTitle(event: Trace.Types.Events.Event): string;
     static isUserFrame(frame: Protocol.Runtime.CallFrame): boolean;
-    static buildDetailsNodeForTraceEvent(event: Trace.Types.Events.Event, target: SDK.Target.Target | null, linkifier: LegacyComponents.Linkifier.Linkifier, isFreshOrEnhanced: boolean | undefined, parsedTrace: Trace.TraceModel.ParsedTrace): Promise<Node | null>;
+    static buildDetailsNodeForTraceEvent(event: Trace.Types.Events.Event, target: SDK.Target.Target | null, linkifier: LegacyComponents.Linkifier.Linkifier, isFreshOrEnhanced: boolean | undefined, parsedTrace: Trace.TraceModel.ParsedTrace): Promise<LitTemplate | null>;
     static linkifyLocation(linkifyOptions: LinkifyLocationOptions): Element | null;
     static linkifyTopCallFrame(event: Trace.Types.Events.Event, target: SDK.Target.Target | null, linkifier: LegacyComponents.Linkifier.Linkifier, isFreshOrEnhanced?: boolean, maxLength?: number): Element | null;
-    static buildDetailsNodeForMarkerEvents(event: Trace.Types.Events.MarkerEvent): HTMLElement;
+    static buildDetailsNodeForMarkerEvents(event: Trace.Types.Events.MarkerEvent): LitTemplate;
     static buildConsumeCacheDetails(eventData: {
         consumedCacheSize?: number;
         cacheRejected?: boolean;
@@ -41,11 +42,11 @@ export declare class TimelineUIUtils {
     static isLinkifiableScheme(scheme: string): boolean;
     /**
      * Takes an input string and parses it to look for links. It does this by
-     * looking for URLs in the input string. The returned fragment will contain
+     * looking for URLs in the input string. The returned template will contain
      * the same string but with any links wrapped in clickable links. The text
      * of the link is the URL, so the visible string to the user is unchanged.
      */
-    static parseStringForLinks(rawString: string): DocumentFragment;
+    static parseStringForLinks(rawString: string): LitTemplate;
     static buildTraceEventDetails(parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Event, linkifier: LegacyComponents.Linkifier.Linkifier, canShowPieChart: boolean, entityMapper: Trace.EntityMapper.EntityMapper | null): Promise<DocumentFragment>;
     private static renderEventJson;
     private static renderObjectJson;
@@ -85,20 +86,51 @@ export declare class EventDispatchTypeDescriptor {
  * instead of incorrectly matching the active page's script IDs.
  */
 export declare function stripScriptIds(stackTrace: Protocol.Runtime.StackTrace): Protocol.Runtime.StackTrace;
+/**
+ * A row in a section of the trace event details. `text` and `element` rows
+ * render a title/value pair; `body` rows render their template directly
+ * inside the section body (used for stack traces).
+ */
+export type DetailsRow = {
+    type: 'text';
+    title: string;
+    value: string;
+} | {
+    type: 'element';
+    title: string;
+    value: string | LitTemplate;
+    isWarning: boolean;
+    isStacked: boolean;
+} | {
+    type: 'body';
+    body: LitTemplate;
+};
+export interface DetailsSection {
+    title: string;
+    swatchColor?: string;
+    onRevealEntry?: () => void;
+    rows: DetailsRow[];
+}
+export interface ViewInput {
+    sections: readonly DetailsSection[];
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
+export declare const DEFAULT_VIEW: View;
+/**
+ * Collects the sections and rows of the details of a trace event, and renders
+ * them with the view into a new fragment when `fragment` is read.
+ */
 export declare class TimelineDetailsContentHelper {
     #private;
-    fragment: DocumentFragment;
-    private target;
-    element: HTMLDivElement;
-    private tableElement;
-    constructor(target: SDK.Target.Target | null, linkifier: LegacyComponents.Linkifier.Linkifier | null);
+    constructor(target: SDK.Target.Target | null, linkifier: LegacyComponents.Linkifier.Linkifier | null, view?: View);
+    get fragment(): DocumentFragment;
     addSection(title: string, swatchColor?: string, event?: Trace.Types.Events.Event): void;
     /**
-     * Creates a new section, but only if the provided `body` element is present,
+     * Creates a new section, but only if the provided `body` template is present,
      * otherwise it does nothing.
      */
     appendSectionWithBodyIfExists(title: string, options: {
-        body: HTMLElement | null;
+        body: HTMLElement | LitTemplate | null;
         swatchColor?: string;
         event?: Trace.Types.Events.Event;
     }): void;
@@ -110,7 +142,11 @@ export declare class TimelineDetailsContentHelper {
     appendFunctionStackTraceSection(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): Promise<void>;
     linkifier(): LegacyComponents.Linkifier.Linkifier | null;
     appendTextRow(title: string, value: string | number | boolean): void;
-    appendElementRow(title: string, content: string | Node, isWarning?: boolean, isStacked?: boolean): void;
+    /**
+     * `content` can be a DOM node created by a legacy rendering engine (such as
+     * the Linkifier or ImagePreview); it is embedded into the row as-is.
+     */
+    appendElementRow(title: string, content: string | Node | LitTemplate, isWarning?: boolean, isStacked?: boolean): void;
     appendLocationRow(title: string, url: string, startLine: number, startColumn?: number, text?: string, omitOrigin?: boolean): void;
     appendLocationRange(title: string, url: Platform.DevToolsPath.UrlString, startLine: number, endLine?: number): void;
     /**

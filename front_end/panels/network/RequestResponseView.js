@@ -53,19 +53,36 @@ export const DEFAULT_VIEW = (input, output, target) => {
     render(widgetTemplate, target);
 };
 export class RequestResponseView extends UI.Widget.VBox {
-    request;
+    #request;
     #view;
     #revealPosition;
     constructor(request, view = DEFAULT_VIEW) {
-        super();
-        this.request = request;
+        super(request instanceof HTMLElement ? request : undefined);
+        if (request && !(request instanceof HTMLElement)) {
+            this.#request = request;
+        }
         this.#view = view;
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        this.#request = request;
+        if (this.isShowing()) {
+            this.requestUpdate();
+        }
     }
     wasShown() {
         super.wasShown();
         this.requestUpdate();
     }
     async performUpdate() {
+        if (!this.request) {
+            return;
+        }
         const contentData = await this.request.requestStreamingContent();
         let renderAsText = false;
         const mimeType = this.getMimeTypeForDisplay();

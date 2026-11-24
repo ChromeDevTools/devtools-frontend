@@ -2,7 +2,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import { DataGridItem, ResourceChunkView } from './ResourceChunkView.js';
 export declare class ResourceWebSocketFrameView extends ResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
     #private;
-    constructor(request: SDK.NetworkRequest.NetworkRequest);
+    constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement);
+    get request(): SDK.NetworkRequest.NetworkRequest;
+    set request(request: SDK.NetworkRequest.NetworkRequest);
     getRequestChunks(): SDK.NetworkRequest.WebSocketFrame[];
     createGridItem(frame: SDK.NetworkRequest.WebSocketFrame): DataGridItem;
     chunkFilter(frame: SDK.NetworkRequest.WebSocketFrame): boolean;

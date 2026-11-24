@@ -2046,6 +2046,7 @@ var Network;
     ResourceType2["CSPViolationReport"] = "CSPViolationReport";
     ResourceType2["Preflight"] = "Preflight";
     ResourceType2["FedCM"] = "FedCM";
+    ResourceType2["EmailVerification"] = "EmailVerification";
     ResourceType2["Other"] = "Other";
   })(ResourceType = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -2223,6 +2224,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;
@@ -4616,6 +4618,8 @@ var LONG_LINE_PREVIEW_LENGTH = 60;
 var BLOCKED_NETWORK_ERROR_PATTERN = /^Error: (?:Failed to fetch$|Failed to execute 'send' on 'XMLHttpRequest': Failed to load )/;
 var BLOCKED_NETWORK_HINT = "Network access (e.g., fetch, XMLHttpRequest) is blocked for JavaScript run by this tool, so this error does not mean the page's own network requests are failing. Do not retry network requests with this tool.";
 var NETWORK_TOOLS_HINT = "To inspect the page's network requests, load the `network` skill with `learnSkills` if it is not loaded yet, then use `listNetworkRequests` and `getNetworkRequestDetails`.";
+var ISOLATED_WORLD_REFERENCE_ERROR_PATTERN = /^Error: (?:executing the line .* failed with the following error:\n)?[\w$]+ is not defined$/;
+var ISOLATED_WORLD_HINT = "JavaScript run by this tool executes in an isolated world: it shares the page DOM, while globals, framework instances, and customElements defined by page scripts cannot be read. If this identifier is defined by page scripts, do not assume it is missing; inspect DOM attributes, <script> tags, or loaded sources instead.";
 function describeSizeLimitViolations(code) {
   const violations = [];
   const lines = code.split("\n");
@@ -4687,6 +4691,7 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
   - Store intermediate DOM lookups (\`getComputedStyle\`, \`getAttribute\`) in short local variables instead of chaining them on one line.
   - Split complex logic into multiple steps.
 * **CRITICAL** Network requests (e.g., fetch, XMLHttpRequest) are disabled and cannot be made.
+* **CRITICAL** Code runs in an isolated world: it shares the page DOM, while globals, framework instances, and \`customElements\` defined by page scripts cannot be read. Do not assume a library is missing; inspect DOM attributes, \`<script>\` tags, or loaded sources instead.
 
 For example, to query DOM elements:
 
@@ -4744,10 +4749,16 @@ const data = {
       context.execJs
     );
     const result = await executor.executeAction(params.code, options);
-    if ("result" in result && typeof result.result === "string" && BLOCKED_NETWORK_ERROR_PATTERN.test(result.result)) {
-      const hint = isV2Architecture ? `${BLOCKED_NETWORK_HINT} ${NETWORK_TOOLS_HINT}` : BLOCKED_NETWORK_HINT;
-      return { ...result, result: `${result.result}
+    if ("result" in result && typeof result.result === "string") {
+      if (BLOCKED_NETWORK_ERROR_PATTERN.test(result.result)) {
+        const hint = isV2Architecture ? `${BLOCKED_NETWORK_HINT} ${NETWORK_TOOLS_HINT}` : BLOCKED_NETWORK_HINT;
+        return { ...result, result: `${result.result}
 ${hint}` };
+      }
+      if (ISOLATED_WORLD_REFERENCE_ERROR_PATTERN.test(result.result)) {
+        return { ...result, result: `${result.result}
+${ISOLATED_WORLD_HINT}` };
+      }
     }
     return result;
   }
@@ -10870,8 +10881,9 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
    * code from source maps using the active page target.
    *
    * Note: Function code resolution from source maps is only supported for fresh
-   * recordings (recorded in the current session on the active target page). For
-   * imported traces, it returns null to prevent mismatched source resolution.
+   * recordings (recorded in the current session on the active target page) and
+   * same-origin resources permitted by `canAccessResource()`. For imported traces
+   * or inaccessible origins, it returns null.
    */
   createFormatter() {
     const focus = this.#focus;
@@ -10879,10 +10891,10 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
     const formatter = new PerformanceTraceFormatter(focus);
     const isFresh = this.#freshRecordingTracker.recordingIsFresh(focus.parsedTrace);
     formatter.resolveFunctionCode = async (url, line, column) => {
-      if (!target || !isFresh) {
+      if (!target || !isFresh || !this.canAccessResource(url)) {
         return null;
       }
-      return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(
+      const code = await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(
         target,
         url,
         line,
@@ -10890,6 +10902,10 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
         this.#debuggerWorkspaceBinding,
         { contextLength: 200, contextLineLength: 5, appendProfileData: true }
       );
+      if (code && !this.canAccessResource(code.functionBounds.uiSourceCode.url())) {
+        return null;
+      }
+      return code;
     };
     return formatter;
   }
@@ -10919,12 +10935,15 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   /**
    * Returns the security origin for the performance trace.
    *
-   * Live traces use the origin of the main frame URL.
+   * If the recorded main frame had an opaque origin (for example, a CSP-sandboxed
+   * document whose URL still has an `https:` scheme), this method returns a unique
+   * opaque origin so the trace does not inherit the URL's tuple origin.
    *
-   * Imported traces use a custom scheme (`imported-trace://${host}`) to isolate
-   * them from live pages (such as `https://${host}`). This isolation prevents
-   * cross-origin prompt injection and requires a new conversation when switching
-   * between imported traces and live pages.
+   * Otherwise, live traces use the origin of the main frame URL, and imported
+   * traces use a custom scheme (`imported-trace://${host}`) to isolate them from
+   * live pages (such as `https://${host}`). This isolation prevents cross-origin
+   * prompt injection and requires a new conversation when switching between
+   * imported traces and live pages.
    *
    * If an imported trace origin does not contain a host, this method returns a
    * unique opaque origin.
@@ -10933,7 +10952,9 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
    */
   getOrigin() {
     if (!this.#origin) {
-      if (this.isImported()) {
+      if (this.#focus.parsedTrace.data.Meta.mainFrameIsOpaqueOrigin) {
+        this.#origin = SDK20.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+      } else if (this.isImported()) {
         this.#origin = SDK20.SecurityOrigin.SecurityOrigin.createForImportedTrace(
           this.#focus.parsedTrace.data.Meta.mainFrameURL
         );

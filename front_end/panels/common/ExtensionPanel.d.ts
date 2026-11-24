@@ -1,4 +1,5 @@
 import * as Platform from '../../core/platform/platform.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { ExtensionServer } from './ExtensionServer.js';
 export interface ToolbarButtonData {
@@ -43,18 +44,25 @@ export declare class ExtensionButton {
     data(): ToolbarButtonData;
     toolbarButton(): ExtensionButton;
 }
+export interface SidebarPaneViewInput {
+    server: ExtensionServer;
+    id: string;
+    pageURL?: Platform.DevToolsPath.UrlString;
+    height?: string;
+    showObjectProperties: boolean;
+    objectTree?: ObjectUI.ObjectPropertiesSection.ObjectTree;
+    objectTitle?: string;
+}
+export type SidebarPaneView = (input: SidebarPaneViewInput, output: undefined, target: HTMLElement) => void;
+export declare const SIDEBAR_PANE_DEFAULT_VIEW: SidebarPaneView;
 export declare class ExtensionSidebarPane extends UI.View.SimpleView {
     #private;
-    private server;
-    private extensionView?;
-    private objectPropertiesView?;
-    constructor(server: ExtensionServer, panelName: string, title: Platform.UIString.LocalizedString, id: string, extensionId?: string);
+    constructor(server: ExtensionServer, panelName: string, title: Platform.UIString.LocalizedString, id: string, extensionId?: string, view?: SidebarPaneView);
+    performUpdate(): void;
     id(): string;
     panelName(): string;
     setObject(object: Object, title: string | undefined, callback: (arg0?: (string | null) | undefined) => void): void;
     setExpression(expression: string, title: string | undefined, evaluateOptions: Object | undefined, securityOrigin: string, callback: (arg0?: (string | null) | undefined) => void): void;
     setPage(url: Platform.DevToolsPath.UrlString): void;
     setHeight(height: string): void;
-    private onEvaluate;
-    private createObjectPropertiesView;
 }

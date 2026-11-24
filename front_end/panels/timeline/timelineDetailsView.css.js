@@ -52,6 +52,14 @@ export default `/*
     align-items: center;
   }
 
+  button.timeline-details-chip-title-reveal-entry {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+  }
+
   .timeline-details-chip-title-reveal-entry:hover {
     background: var(--sys-color-state-hover-on-subtle);
     cursor: pointer;

@@ -1692,7 +1692,9 @@ var CSSQuery = class extends UI7.Widget.Widget {
   #view;
   #queryPrefix = "";
   #queryName;
+  #rawQueryText = "";
   #queryText = [];
+  #styleQueryContext;
   #onQueryTextClick;
   #onLinkActivate;
   #getRegisteredPropertyDetails;
@@ -1708,11 +1710,35 @@ var CSSQuery = class extends UI7.Widget.Widget {
   set data(data) {
     this.#queryPrefix = data.queryPrefix;
     this.#queryName = data.queryName;
+    this.#rawQueryText = data.queryText;
     this.#queryText = [{ text: data.queryText, isVariable: false }];
     this.#onQueryTextClick = data.onQueryTextClick;
     this.#onLinkActivate = data.onLinkActivate;
     this.#getRegisteredPropertyDetails = data.getRegisteredPropertyDetails;
     this.#jslogContext = data.jslogContext;
+    if (this.#styleQueryContext) {
+      this.#applyStyleQueryContext(this.#styleQueryContext);
+    }
+    this.performUpdate();
+  }
+  /**
+   * Resolves custom properties in a container style query so parent Lit views
+   * can configure `CSSQuery` declaratively via `widget()` regardless of setter order.
+   */
+  set styleQueryContext(context) {
+    if (this.#styleQueryContext === context) {
+      return;
+    }
+    this.#styleQueryContext = context;
+    if (context) {
+      this.#applyStyleQueryContext(context);
+    } else {
+      this.#matchedStyles = void 0;
+      this.#style = void 0;
+      this.#containerNode = void 0;
+      this.#tooltipPrefix = void 0;
+      this.#queryText = [{ text: this.#rawQueryText, isVariable: false }];
+    }
     this.performUpdate();
   }
   wasShown() {
@@ -1720,11 +1746,15 @@ var CSSQuery = class extends UI7.Widget.Widget {
     this.performUpdate();
   }
   parseStyleQueries(matchedStyles, style, containerNode, tooltipPrefix) {
+    this.styleQueryContext = { matchedStyles, style, containerNode, tooltipPrefix };
+  }
+  #applyStyleQueryContext(context) {
+    const { matchedStyles, style, containerNode, tooltipPrefix } = context;
     this.#matchedStyles = matchedStyles;
     this.#style = style;
     this.#containerNode = containerNode;
     this.#tooltipPrefix = tooltipPrefix;
-    const queryText = this.#queryText[0]?.text;
+    const queryText = this.#rawQueryText;
     if (!queryText) {
       return;
     }
@@ -1765,7 +1795,6 @@ var CSSQuery = class extends UI7.Widget.Widget {
       });
     }
     this.#queryText = sections;
-    this.performUpdate();
   }
   performUpdate() {
     this.#view(
@@ -1791,6 +1820,7 @@ var CSSQuery = class extends UI7.Widget.Widget {
 // ../../front_end/panels/elements/components/ElementsBreadcrumbs.ts
 var ElementsBreadcrumbs_exports = {};
 __export(ElementsBreadcrumbs_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   ElementsBreadcrumbs: () => ElementsBreadcrumbs,
   NodeSelectedEvent: () => NodeSelectedEvent
 });
@@ -1798,9 +1828,8 @@ import "../../../ui/kit/kit.js";
 import "../../../ui/components/node_text/node_text.js";
 import * as i18n11 from "../../../core/i18n/i18n.js";
 import * as SDK3 from "../../../core/sdk/sdk.js";
-import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
-import * as RenderCoordinator from "../../../ui/components/render_coordinator/render_coordinator.js";
-import * as Lit3 from "../../../ui/lit/lit.js";
+import * as UI8 from "../../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html8, render as render8 } from "../../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/elementsBreadcrumbs.css.js
@@ -1810,92 +1839,95 @@ var elementsBreadcrumbs_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  --override-node-text-label-color: var(--sys-color-token-tag);
-  --override-node-text-class-color: var(--sys-color-token-attribute);
-  --override-node-text-id-color: var(--sys-color-token-attribute);
-  --override-node-text-multiple-descriptors-id: var(--sys-color-on-surface);
-  --override-node-text-multiple-descriptors-class: var(--sys-color-token-property);
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    --override-node-text-label-color: var(--sys-color-token-tag);
+    --override-node-text-class-color: var(--sys-color-token-attribute);
+    --override-node-text-id-color: var(--sys-color-token-attribute);
+    --override-node-text-multiple-descriptors-id: var(--sys-color-on-surface);
+    --override-node-text-multiple-descriptors-class: var(--sys-color-token-property);
+  }
 
-.crumbs {
-  display: inline-flex;
-  align-items: stretch;
-  width: 100%;
-  overflow: hidden;
-  pointer-events: auto;
-  cursor: default;
-  white-space: nowrap;
-  position: relative;
-  background: var(--sys-color-cdt-base-container);
-  font-size: inherit;
-  font-family: inherit;
-}
+  .crumbs {
+    display: inline-flex;
+    align-items: stretch;
+    width: 100%;
+    overflow: hidden;
+    pointer-events: auto;
+    cursor: default;
+    white-space: nowrap;
+    position: relative;
+    background: var(--sys-color-cdt-base-container);
+    font-size: inherit;
+    font-family: inherit;
+  }
 
-.crumbs-window {
-  flex-grow: 2;
-  overflow: hidden;
-}
+  .crumbs-window {
+    flex-grow: 2;
+    overflow: hidden;
+  }
 
-.crumbs-scroll-container {
-  display: inline-flex;
-  margin: 0;
-  padding: 0;
-}
+  .crumbs-scroll-container {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+  }
 
-.crumb {
-  display: block;
-  padding: 0 var(--sys-size-4);
-  line-height: var(--sys-size-10);
-  white-space: nowrap;
-}
+  .crumb {
+    display: block;
+    padding: 0 var(--sys-size-4);
+    line-height: var(--sys-size-10);
+    white-space: nowrap;
+  }
 
-.overflow {
-  padding: 0 var(--sys-size-3);
-  font-weight: bold;
-  display: block;
-  border: none;
-  flex-grow: 0;
-  flex-shrink: 0;
-  text-align: center;
-  background-color: var(--sys-color-cdt-base-container);
-  color: var(--sys-color-token-subtle);
-  margin: var(--sys-size-1);
-  outline: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-}
+  .overflow {
+    padding: 0 var(--sys-size-3);
+    font-weight: bold;
+    display: block;
+    border: none;
+    flex-grow: 0;
+    flex-shrink: 0;
+    text-align: center;
+    background-color: var(--sys-color-cdt-base-container);
+    color: var(--sys-color-token-subtle);
+    margin: var(--sys-size-1);
+    outline: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  }
 
-.overflow.hidden {
-  display: none;
-}
+  .overflow.hidden {
+    display: none;
+  }
 
-.overflow:disabled {
-  opacity: 50%;
-}
+  .overflow:disabled {
+    opacity: 50%;
+  }
 
-.overflow:focus {
-  outline-color: var(--sys-color-primary);
-}
+  .overflow:focus {
+    outline-color: var(--sys-color-primary);
+  }
 
-.overflow:not(:disabled):hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-  color: var(--sys-color-on-surface);
-}
+  .overflow:not(:disabled):hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+    color: var(--sys-color-on-surface);
+  }
 
-.crumb-link {
-  text-decoration: none;
-  color: inherit;
-}
+  .crumb-link {
+    text-decoration: none;
+    color: inherit;
+  }
 
-.crumb:hover {
-  background: var(--sys-color-state-hover-on-subtle);
-}
+  .crumb:hover {
+    background: var(--sys-color-state-hover-on-subtle);
+  }
 
-.crumb.selected {
-  background: var(--sys-color-tonal-container);
-}
+  .crumb.selected {
+    background: var(--sys-color-tonal-container);
+  }
 
-.crumb:focus {
-  outline: var(--sys-color-primary) auto var(--sys-size-1);
+  /* The global \\':focus { outline-style: none }\\' reset applies in light DOM, so restore a keyboard focus ring. */
+  .crumb-link:focus-visible {
+    outline: var(--sys-color-primary) auto var(--sys-size-1);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./elementsBreadcrumbs.css")} */`;
@@ -1970,7 +2002,7 @@ var determineElementTitle = (domNode) => {
 };
 
 // ../../front_end/panels/elements/components/ElementsBreadcrumbs.ts
-var { html: html8 } = Lit3;
+var { classMap: classMap2 } = Directives3;
 var UIStrings6 = {
   /**
    * @description Accessible name for DOM tree breadcrumb navigation.
@@ -1995,244 +2027,205 @@ var NodeSelectedEvent = class _NodeSelectedEvent extends Event {
     this.node = node;
   }
 };
-var ElementsBreadcrumbs = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #resizeObserver = new ResizeObserver(() => this.#checkForOverflowOnResize());
-  #crumbsData = [];
-  #selectedDOMNode = null;
-  #overflowing = false;
-  #userScrollPosition = "start";
-  #isObservingResize = false;
-  #userHasManuallyScrolled = false;
-  set data(data) {
-    this.#selectedDOMNode = data.selectedNode;
-    this.#crumbsData = data.crumbs;
-    this.#userHasManuallyScrolled = false;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+function measureViewport(crumbsWindow) {
+  const content = crumbsWindow.querySelector(".crumbs-scroll-container");
+  if (!content) {
+    return null;
   }
-  disconnectedCallback() {
-    this.#isObservingResize = false;
-    this.#resizeObserver.disconnect();
-  }
-  #onCrumbClick(node) {
-    return (event) => {
-      event.preventDefault();
-      this.dispatchEvent(new NodeSelectedEvent(node));
-    };
-  }
-  /*
-   * When the window is resized, we need to check if we either:
-   * 1) overflowing, and now the window is big enough that we don't need to
-   * 2) not overflowing, and now the window is small and we do need to
-   *
-   * If either of these are true, we toggle the overflowing state accordingly and trigger a re-render.
-   */
-  async #checkForOverflowOnResize() {
-    const crumbScrollContainer = this.#shadow.querySelector(".crumbs-scroll-container");
-    const crumbWindow = this.#shadow.querySelector(".crumbs-window");
-    if (!crumbScrollContainer || !crumbWindow) {
+  return {
+    windowWidth: crumbsWindow.clientWidth,
+    contentWidth: content.clientWidth,
+    scrollLeft: crumbsWindow.scrollLeft
+  };
+}
+function renderOverflowButton(direction, disabled, overflowing, target) {
+  const tooltipString = direction === "left" ? i18nString6(UIStrings6.scrollLeft) : i18nString6(UIStrings6.scrollRight);
+  const onClick = () => {
+    const crumbsWindow = target.querySelector(".crumbs-window");
+    if (!crumbsWindow) {
       return;
     }
-    const crumbWindowWidth = await RenderCoordinator.read(() => {
-      return crumbWindow.clientWidth;
-    });
-    const scrollContainerWidth = await RenderCoordinator.read(() => {
-      return crumbScrollContainer.clientWidth;
-    });
-    if (this.#overflowing) {
-      if (scrollContainerWidth < crumbWindowWidth) {
-        this.#overflowing = false;
-      }
-    } else if (scrollContainerWidth > crumbWindowWidth) {
-      this.#overflowing = true;
+    const amount = crumbsWindow.clientWidth / 2;
+    crumbsWindow.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" });
+  };
+  return html8`
+    <button
+      class=${classMap2({ overflow: true, [direction]: true, hidden: !overflowing })}
+      @click=${onClick}
+      ?disabled=${disabled}
+      aria-label=${tooltipString}
+      title=${tooltipString}>
+      <devtools-icon name=${"triangle-" + direction} style="width: var(--sys-size-6); height: 10px;">
+      </devtools-icon>
+    </button>
+  `;
+}
+var DEFAULT_VIEW7 = (input, _output, target) => {
+  render8(html8`
+    <style>${elementsBreadcrumbs_css_default}</style>
+    <nav class="crumbs" aria-label=${i18nString6(UIStrings6.breadcrumbs)} jslog=${VisualLogging4.elementsBreadcrumbs()}>
+      ${renderOverflowButton("left", !input.canScrollLeft, input.overflowing, target)}
+
+      <div class="crumbs-window"
+        @scroll=${(event) => {
+    const viewport2 = event.currentTarget instanceof Element && measureViewport(event.currentTarget);
+    if (viewport2) {
+      input.onViewportChange(viewport2);
     }
-    void this.#ensureSelectedNodeIsVisible();
-    void this.#updateScrollState(crumbWindow);
+  }}>
+        <ul class="crumbs-scroll-container">
+          ${input.crumbs.map((crumb) => {
+    return html8`
+              <li class=${classMap2({ crumb: true, selected: crumb.selected })}
+                data-node-id=${crumb.node.id}
+                data-crumb="true"
+              >
+                <a href="#" draggable=false class="crumb-link"
+                  jslog=${VisualLogging4.item().track({ click: true, resize: true })}
+                  @click=${(event) => {
+      event.preventDefault();
+      input.onCrumbClick(crumb.node);
+    }}
+                  @mousemove=${() => input.onCrumbMouseMove(crumb.node)}
+                  @mouseleave=${input.onCrumbMouseLeave}
+                  @focus=${() => input.onCrumbFocus(crumb.node)}
+                  @blur=${input.onCrumbBlur}
+                >
+                  <devtools-node-text data-node-title=${crumb.title.main} .data=${{
+      nodeTitle: crumb.title.main,
+      nodeId: crumb.title.extras.id,
+      nodeClasses: crumb.title.extras.classes
+    }}>
+                  </devtools-node-text>
+                </a>
+              </li>`;
+  })}
+        </ul>
+      </div>
+      ${renderOverflowButton("right", !input.canScrollRight, input.overflowing, target)}
+    </nav>
+  `, target, { container: { classes: ["elements-breadcrumbs"] } });
+  const crumbsWindow = target.querySelector(".crumbs-window");
+  if (!crumbsWindow) {
+    return;
+  }
+  if (input.scrollSelectedCrumbIntoView) {
+    target.querySelector(".crumb.selected")?.scrollIntoView({
+      // Jump straight to the selected crumb; smooth scrolling is only for the overflow buttons.
+      behavior: "auto",
+      // Only scroll the crumbs horizontally; never scroll ancestors vertically.
+      block: "nearest",
+      inline: "nearest"
+    });
+  }
+  const viewport = measureViewport(crumbsWindow);
+  if (viewport) {
+    input.onViewportChange(viewport);
+  }
+};
+var ElementsBreadcrumbs = class extends UI8.Widget.Widget {
+  #view;
+  #resizeObserver = new ResizeObserver(() => this.requestUpdate());
+  #selectedDOMNode = null;
+  #overflowing = false;
+  #canScrollLeft = false;
+  #canScrollRight = false;
+  // Only auto-scroll when the selection changes or the crumbs start to overflow,
+  // so that DOM tree updates never override a manual scroll by the user.
+  #scrollSelectedCrumbIntoView = false;
+  constructor(element, view = DEFAULT_VIEW7) {
+    super(element);
+    this.#view = view;
+  }
+  /**
+   * The crumbs are derived from the selected node and its ancestors. Call
+   * `requestUpdate()` to re-render them when the DOM tree changes while the
+   * selection stays the same.
+   */
+  set selectedNode(selectedNode) {
+    if (this.#selectedDOMNode === selectedNode) {
+      return;
+    }
+    this.#selectedDOMNode = selectedNode;
+    this.#scrollSelectedCrumbIntoView = true;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.#resizeObserver.observe(this.contentElement);
+    this.requestUpdate();
+  }
+  willHide() {
+    this.#resizeObserver.disconnect();
+    super.willHide();
+  }
+  onDetach() {
+    super.onDetach();
+    this.#overflowing = false;
+  }
+  #onCrumbClick(node) {
+    this.element.dispatchEvent(new NodeSelectedEvent(node));
   }
   #onCrumbMouseMove(node) {
-    return () => node.highlight();
+    node.highlight();
   }
   #onCrumbMouseLeave() {
     SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK3.TargetManager.TargetManager.instance());
   }
   #onCrumbFocus(node) {
-    return () => node.highlight();
+    node.highlight();
   }
   #onCrumbBlur() {
     SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK3.TargetManager.TargetManager.instance());
   }
-  #engageResizeObserver() {
-    if (!this.#resizeObserver || this.#isObservingResize === true) {
+  #onViewportChange({ windowWidth, contentWidth, scrollLeft }) {
+    const overflowing = contentWidth > windowWidth;
+    const maxScrollLeft = contentWidth - windowWidth;
+    const canScrollLeft = overflowing && scrollLeft > 0;
+    const canScrollRight = overflowing && Math.ceil(scrollLeft) < maxScrollLeft;
+    if (overflowing === this.#overflowing && canScrollLeft === this.#canScrollLeft && canScrollRight === this.#canScrollRight) {
       return;
     }
-    const crumbs = this.#shadow.querySelector(".crumbs");
-    if (!crumbs) {
-      return;
+    if (overflowing && !this.#overflowing) {
+      this.#scrollSelectedCrumbIntoView = true;
     }
-    this.#resizeObserver.observe(crumbs);
-    this.#isObservingResize = true;
+    this.#overflowing = overflowing;
+    this.#canScrollLeft = canScrollLeft;
+    this.#canScrollRight = canScrollRight;
+    this.requestUpdate();
   }
-  /**
-   * This method runs after render or resize and checks if the crumbs are too large
-   * for their container and therefore we need to render the overflow buttons at
-   * either end which the user can use to scroll back and forward through the crumbs.
-   * If it finds that we are overflowing, it sets the instance variable and
-   * triggers a re-render. If we are not overflowing, this method returns and
-   * does nothing.
-   */
-  async #checkForOverflow() {
-    const crumbScrollContainer = this.#shadow.querySelector(".crumbs-scroll-container");
-    const crumbWindow = this.#shadow.querySelector(".crumbs-window");
-    if (!crumbScrollContainer || !crumbWindow) {
-      return;
+  performUpdate() {
+    const nodes = [];
+    for (let node = this.#selectedDOMNode; node; node = node.parentNode) {
+      nodes.push(node);
     }
-    const crumbWindowWidth = await RenderCoordinator.read(() => {
-      return crumbWindow.clientWidth;
-    });
-    const scrollContainerWidth = await RenderCoordinator.read(() => {
-      return crumbScrollContainer.clientWidth;
-    });
-    if (this.#overflowing) {
-      if (scrollContainerWidth < crumbWindowWidth) {
-        this.#overflowing = false;
-        void this.#render();
-      }
-    } else if (scrollContainerWidth > crumbWindowWidth) {
-      this.#overflowing = true;
-      void this.#render();
-    }
-  }
-  #onCrumbsWindowScroll(event) {
-    if (!event.target) {
-      return;
-    }
-    const scrollWindow = event.target;
-    this.#updateScrollState(scrollWindow);
-  }
-  #updateScrollState(scrollWindow) {
-    const maxScrollLeft = scrollWindow.scrollWidth - scrollWindow.clientWidth;
-    const currentScroll = scrollWindow.scrollLeft;
-    const scrollBeginningAndEndPadding = 10;
-    if (currentScroll < scrollBeginningAndEndPadding) {
-      this.#userScrollPosition = "start";
-    } else if (currentScroll >= maxScrollLeft - scrollBeginningAndEndPadding) {
-      this.#userScrollPosition = "end";
-    } else {
-      this.#userScrollPosition = "middle";
-    }
-    void this.#render();
-  }
-  #onOverflowClick(direction) {
-    return () => {
-      this.#userHasManuallyScrolled = true;
-      const scrollWindow = this.#shadow.querySelector(".crumbs-window");
-      if (!scrollWindow) {
-        return;
-      }
-      const amountToScrollOnClick = scrollWindow.clientWidth / 2;
-      const newScrollAmount = direction === "left" ? Math.max(Math.floor(scrollWindow.scrollLeft - amountToScrollOnClick), 0) : scrollWindow.scrollLeft + amountToScrollOnClick;
-      scrollWindow.scrollTo({
-        behavior: "smooth",
-        left: newScrollAmount
-      });
+    const input = {
+      crumbs: crumbsToRender(nodes, this.#selectedDOMNode),
+      overflowing: this.#overflowing,
+      canScrollLeft: this.#canScrollLeft,
+      canScrollRight: this.#canScrollRight,
+      scrollSelectedCrumbIntoView: this.#scrollSelectedCrumbIntoView,
+      onCrumbClick: (node) => this.#onCrumbClick(node),
+      onCrumbMouseMove: (node) => this.#onCrumbMouseMove(node),
+      onCrumbMouseLeave: () => this.#onCrumbMouseLeave(),
+      onCrumbFocus: (node) => this.#onCrumbFocus(node),
+      onCrumbBlur: () => this.#onCrumbBlur(),
+      onViewportChange: (viewport) => this.#onViewportChange(viewport)
     };
-  }
-  #renderOverflowButton(direction, disabled) {
-    const buttonStyles = Lit3.Directives.classMap({
-      overflow: true,
-      [direction]: true,
-      hidden: !this.#overflowing
-    });
-    const tooltipString = direction === "left" ? i18nString6(UIStrings6.scrollLeft) : i18nString6(UIStrings6.scrollRight);
-    return html8`
-      <button
-        class=${buttonStyles}
-        @click=${this.#onOverflowClick(direction)}
-        ?disabled=${disabled}
-        aria-label=${tooltipString}
-        title=${tooltipString}>
-        <devtools-icon name=${"triangle-" + direction} style="width: var(--sys-size-6); height: 10px;">
-        </devtools-icon>
-      </button>
-      `;
-  }
-  #render() {
-    const crumbs = crumbsToRender(this.#crumbsData, this.#selectedDOMNode);
-    Lit3.render(html8`
-      <style>${elementsBreadcrumbs_css_default}</style>
-      <nav class="crumbs" aria-label=${i18nString6(UIStrings6.breadcrumbs)} jslog=${VisualLogging4.elementsBreadcrumbs()}>
-        ${this.#renderOverflowButton("left", this.#userScrollPosition === "start")}
-
-        <div class="crumbs-window" @scroll=${this.#onCrumbsWindowScroll}>
-          <ul class="crumbs-scroll-container">
-            ${crumbs.map((crumb) => {
-      const crumbClasses = {
-        crumb: true,
-        selected: crumb.selected
-      };
-      return html8`
-                <li class=${Lit3.Directives.classMap(crumbClasses)}
-                  data-node-id=${crumb.node.id}
-                  data-crumb="true"
-                >
-                  <a href="#" draggable=false class="crumb-link"
-                    jslog=${VisualLogging4.item().track({ click: true, resize: true })}
-                    @click=${this.#onCrumbClick(crumb.node)}
-                    @mousemove=${this.#onCrumbMouseMove(crumb.node)}
-                    @mouseleave=${this.#onCrumbMouseLeave}
-                    @focus=${this.#onCrumbFocus(crumb.node)}
-                    @blur=${this.#onCrumbBlur}
-                  >
-                    <devtools-node-text data-node-title=${crumb.title.main} .data=${{
-        nodeTitle: crumb.title.main,
-        nodeId: crumb.title.extras.id,
-        nodeClasses: crumb.title.extras.classes
-      }}>
-                    </devtools-node-text>
-                  </a>
-                </li>`;
-    })}
-          </ul>
-        </div>
-        ${this.#renderOverflowButton("right", this.#userScrollPosition === "end")}
-      </nav>
-    `, this.#shadow, { host: this });
-    void this.#checkForOverflow();
-    this.#engageResizeObserver();
-    void this.#ensureSelectedNodeIsVisible();
-  }
-  async #ensureSelectedNodeIsVisible() {
-    if (!this.#selectedDOMNode || !this.#shadow || !this.#overflowing || this.#userHasManuallyScrolled) {
-      return;
-    }
-    const activeCrumbId = this.#selectedDOMNode.id;
-    const activeCrumb = this.#shadow.querySelector(`.crumb[data-node-id="${activeCrumbId}"]`);
-    if (activeCrumb) {
-      await RenderCoordinator.scroll(() => {
-        activeCrumb.scrollIntoView({
-          // We only want to scroll smoothly when the user is clicking the
-          // buttons manually. If we are automatically scrolling, we could be
-          // scrolling a long distance, so just jump there right away. This
-          // most commonly occurs when the user first opens DevTools on a
-          // deeply nested element, and the slow scrolling of the breadcrumbs
-          // is just a distraction and not useful.
-          behavior: "auto"
-        });
-      });
-    }
+    this.#scrollSelectedCrumbIntoView = false;
+    this.#view(input, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-elements-breadcrumbs", ElementsBreadcrumbs);
 
 // ../../front_end/panels/elements/components/ElementsTreeExpandButton.ts
 var ElementsTreeExpandButton_exports = {};
 __export(ElementsTreeExpandButton_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   ElementsTreeExpandButton: () => ElementsTreeExpandButton
 });
 import "../../../ui/kit/kit.js";
 import * as i18n13 from "../../../core/i18n/i18n.js";
-import * as UI8 from "../../../ui/legacy/legacy.js";
+import * as UI9 from "../../../ui/legacy/legacy.js";
 import { html as html9, render as render9 } from "../../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -2307,7 +2300,7 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/elements/components/ElementsTreeExpandButton.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   render9(
     html9`
       <style>${elementsTreeExpandButton_css_default}</style>
@@ -2321,11 +2314,11 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     { container: { classes: ["elements-tree-expand-button"] } }
   );
 };
-var ElementsTreeExpandButton = class extends UI8.Widget.Widget {
+var ElementsTreeExpandButton = class extends UI9.Widget.Widget {
   #clickHandler = () => {
   };
   #view;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
@@ -2348,15 +2341,15 @@ var ElementsTreeExpandButton = class extends UI8.Widget.Widget {
 // ../../front_end/panels/elements/components/QueryContainer.ts
 var QueryContainer_exports = {};
 __export(QueryContainer_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   QueriedSizeRequestedEvent: () => QueriedSizeRequestedEvent,
   QueryContainer: () => QueryContainer
 });
 import "../../../ui/kit/kit.js";
 import "../../../ui/components/node_text/node_text.js";
 import * as SDK4 from "../../../core/sdk/sdk.js";
-import * as UI9 from "../../../ui/legacy/legacy.js";
-import * as Lit4 from "../../../ui/lit/lit.js";
+import * as UI10 from "../../../ui/legacy/legacy.js";
+import * as Lit3 from "../../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/queryContainer.css.js
@@ -2399,7 +2392,7 @@ var queryContainer_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./queryContainer.css")} */`;
 
 // ../../front_end/panels/elements/components/QueryContainer.ts
-var { render: render10, html: html10 } = Lit4;
+var { render: render10, html: html10 } = Lit3;
 var { PhysicalAxis, QueryAxis } = SDK4.CSSContainerQuery;
 var QueriedSizeRequestedEvent = class _QueriedSizeRequestedEvent extends Event {
   static eventName = "queriedsizerequested";
@@ -2407,13 +2400,13 @@ var QueriedSizeRequestedEvent = class _QueriedSizeRequestedEvent extends Event {
     super(_QueriedSizeRequestedEvent.eventName, {});
   }
 };
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   const renderQueriedSizeDetails = () => {
     if (!input.queriedSizeDetails || input.queriedSizeDetails.queryAxis === QueryAxis.NONE) {
-      return Lit4.nothing;
+      return Lit3.nothing;
     }
     const areBothAxesQueried = input.queriedSizeDetails.queryAxis === QueryAxis.BOTH;
-    const axisIconClasses = Lit4.Directives.classMap({
+    const axisIconClasses = Lit3.Directives.classMap({
       "axis-icon": true,
       hidden: areBothAxesQueried,
       vertical: input.queriedSizeDetails.physicalAxis === PhysicalAxis.VERTICAL
@@ -2423,10 +2416,10 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
         (${input.queriedSizeDetails.queryAxis}
         <devtools-icon
           class=${axisIconClasses} name="width"></devtools-icon>
-        ) ${areBothAxesQueried && input.queriedSizeDetails.width ? " width: " : Lit4.nothing}
-        ${input.queriedSizeDetails.width || Lit4.nothing}
-        ${areBothAxesQueried && input.queriedSizeDetails.height ? " height: " : Lit4.nothing}
-        ${input.queriedSizeDetails.height || Lit4.nothing}
+        ) ${areBothAxesQueried && input.queriedSizeDetails.width ? " width: " : Lit3.nothing}
+        ${input.queriedSizeDetails.width || Lit3.nothing}
+        ${areBothAxesQueried && input.queriedSizeDetails.height ? " height: " : Lit3.nothing}
+        ${input.queriedSizeDetails.height || Lit3.nothing}
       </span>
     `;
   };
@@ -2448,17 +2441,17 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
   }}>
       </devtools-node-text>
     </a>
-    ${input.isContainerLinkHovered ? renderQueriedSizeDetails() : Lit4.nothing}
+    ${input.isContainerLinkHovered ? renderQueriedSizeDetails() : Lit3.nothing}
   `, target);
 };
-var QueryContainer = class extends UI9.Widget.Widget {
+var QueryContainer = class extends UI10.Widget.Widget {
   #view;
   #queryName;
   #container;
   #onContainerLinkClick;
   #isContainerLinkHovered = false;
   #queriedSizeDetails;
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW9) {
     super(element);
     this.#view = view;
   }
@@ -2516,7 +2509,7 @@ var QueryContainer = class extends UI9.Widget.Widget {
 // ../../front_end/panels/elements/components/StylePropertyEditor.ts
 var StylePropertyEditor_exports = {};
 __export(StylePropertyEditor_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   FlexboxEditableProperties: () => FlexboxEditableProperties,
   FlexboxEditor: () => FlexboxEditor,
   GridEditableProperties: () => GridEditableProperties,
@@ -2529,7 +2522,7 @@ __export(StylePropertyEditor_exports, {
 });
 import "../../../ui/kit/kit.js";
 import * as i18n15 from "../../../core/i18n/i18n.js";
-import * as UI10 from "../../../ui/legacy/legacy.js";
+import * as UI11 from "../../../ui/legacy/legacy.js";
 import { Directives as Directives5, html as html11, render as render11 } from "../../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -2638,7 +2631,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/elements/components/StylePropertyEditor.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { classMap: classMap2 } = Directives5;
+var { classMap: classMap3 } = Directives5;
 var PropertySelectedEvent = class _PropertySelectedEvent extends Event {
   static eventName = "propertyselected";
   data;
@@ -2662,7 +2655,7 @@ function renderButton(input, propertyValue, propertyName, selected = false) {
     throw new Error(`Icon for ${query} is not found`);
   }
   const transform = `transform: rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX}, ${iconInfo.scaleY})`;
-  const classes = classMap2({
+  const classes = classMap3({
     button: true,
     selected
   });
@@ -2703,7 +2696,7 @@ function renderProperty(input, prop) {
   const authoredValue = input.authoredProperties.get(prop.propertyName);
   const notAuthored = !authoredValue;
   const shownValue = authoredValue || input.computedProperties.get(prop.propertyName);
-  const classes = classMap2({
+  const classes = classMap3({
     "property-value": true,
     "not-authored": notAuthored
   });
@@ -2719,7 +2712,7 @@ function renderProperty(input, prop) {
     </div>
   </div>`;
 }
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW10 = (input, _output, target) => {
   render11(html11`
     <style>${stylePropertyEditor_css_default}</style>
     <div class="container">
@@ -2727,7 +2720,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
     </div>
   `, target, { container: { classes: input.containerClass ? [input.containerClass] : [] } });
 };
-var StylePropertyEditor = class extends UI10.Widget.VBox {
+var StylePropertyEditor = class extends UI11.Widget.VBox {
   static get editableProperties() {
     return [];
   }
@@ -2735,7 +2728,7 @@ var StylePropertyEditor = class extends UI10.Widget.VBox {
   #view;
   #authoredProperties = /* @__PURE__ */ new Map();
   #computedProperties = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW9) {
+  constructor(element, view = DEFAULT_VIEW10) {
     super(element);
     this.#view = view;
   }

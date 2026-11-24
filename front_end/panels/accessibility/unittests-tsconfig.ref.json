@@ -16,6 +16,7 @@
     "../../../../../../front_end/panels/accessibility/ARIAAttributesView.test.ts",
     "../../../../../../front_end/panels/accessibility/AccessibilityAnnouncementRecordingListView.test.ts",
     "../../../../../../front_end/panels/accessibility/AccessibilityAnnouncementRecordingView.test.ts",
+    "../../../../../../front_end/panels/accessibility/AccessibilityNodeView.test.ts",
     "../../../../../../front_end/panels/accessibility/AccessibilitySidebarView.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -52,6 +53,9 @@
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
     }
   ]
 }

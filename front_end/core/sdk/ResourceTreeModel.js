@@ -102,10 +102,13 @@ export class ResourceTreeModel extends SDKModel {
         }
         return null;
     }
-    static reloadAllPages(targetManager, bypassCache, scriptToEvaluateOnLoad) {
+    /**
+     * @param checkForRepost Set to `true` if the reload is a response to a user action. See `reloadPage`.
+     */
+    static reloadAllPages(targetManager, bypassCache, scriptToEvaluateOnLoad, checkForRepost) {
         for (const resourceTreeModel of targetManager.models(ResourceTreeModel)) {
             if (resourceTreeModel.target().parentTarget()?.type() !== Type.FRAME) {
-                resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
+                resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad, checkForRepost);
             }
         }
     }
@@ -368,7 +371,7 @@ export class ResourceTreeModel extends SDKModel {
         this.#reloadSuspensionCount--;
         console.assert(this.#reloadSuspensionCount >= 0, 'Unbalanced call to ResourceTreeModel.resumeReload()');
         if (!this.#reloadSuspensionCount && this.#pendingReloadOptions) {
-            const { ignoreCache, scriptToEvaluateOnLoad, loaderId } = this.#pendingReloadOptions;
+            const { ignoreCache, scriptToEvaluateOnLoad, checkForRepost, loaderId } = this.#pendingReloadOptions;
             // A deferred reload (and its scriptToEvaluateOnLoad) only applies to the
             // document it was requested against. If the main frame has since
             // navigated to another document, drop the stale request instead of
@@ -377,10 +380,15 @@ export class ResourceTreeModel extends SDKModel {
                 this.#pendingReloadOptions = null;
                 return;
             }
-            this.reloadPage(ignoreCache, scriptToEvaluateOnLoad);
+            this.reloadPage(ignoreCache, scriptToEvaluateOnLoad, checkForRepost);
         }
     }
-    reloadPage(ignoreCache, scriptToEvaluateOnLoad) {
+    /**
+     * @param checkForRepost Set to `true` if the reload is a response to a user action. If the page has POST
+     * data, the browser then shows the form resubmission dialog before the reload. The browser does not
+     * reload the page if the user cancels the dialog.
+     */
+    reloadPage(ignoreCache, scriptToEvaluateOnLoad, checkForRepost) {
         const loaderId = this.mainFrame?.loaderId;
         if (!loaderId) {
             return;
@@ -390,7 +398,7 @@ export class ResourceTreeModel extends SDKModel {
             this.dispatchEventToListeners(Events.PageReloadRequested, this);
         }
         if (this.#reloadSuspensionCount) {
-            this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad, loaderId };
+            this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad, checkForRepost, loaderId };
             return;
         }
         this.#pendingReloadOptions = null;
@@ -399,7 +407,7 @@ export class ResourceTreeModel extends SDKModel {
             networkManager.clearRequests();
         }
         this.dispatchEventToListeners(Events.WillReloadPage);
-        void this.agent.invoke_reload({ ignoreCache, scriptToEvaluateOnLoad, loaderId });
+        void this.agent.invoke_reload({ ignoreCache, scriptToEvaluateOnLoad, loaderId, checkForRepost });
     }
     navigate(url) {
         return this.agent.invoke_navigate({ url });

@@ -19,6 +19,7 @@ export const NetworkRequestTypes = {
     Ping: 'Ping',
     Preflight: 'Preflight',
     CSPViolationReport: 'CSPViolationReport',
+    EmailVerification: 'EmailVerification',
     Prefetch: 'Prefetch',
     FedCM: 'FedCM',
 };

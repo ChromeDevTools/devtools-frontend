@@ -45,7 +45,7 @@ export default `/*
 }
 
 .blocked-url-checkbox {
-  margin-left: var(--sys-size-5);
+  margin-left: var(--sys-size-2);
   flex: none;
 }
 

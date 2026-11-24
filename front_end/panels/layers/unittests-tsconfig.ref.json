@@ -13,6 +13,7 @@
     "skipLibCheck": true
   },
   "files": [
+    "../../../../../../front_end/panels/layers/LayerTreeModel.test.ts",
     "../../../../../../front_end/panels/layers/LayersPanel.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -25,6 +26,9 @@
     },
     {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"

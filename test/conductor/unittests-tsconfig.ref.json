@@ -13,6 +13,7 @@
     "skipLibCheck": true
   },
   "files": [
+    "../../../../../test/conductor/paths.test.ts",
     "../../../../../test/conductor/test_config.test.ts",
     "../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../front_end/global_typings/global_defs.d.ts",

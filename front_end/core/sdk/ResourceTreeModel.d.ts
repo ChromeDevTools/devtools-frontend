@@ -31,7 +31,10 @@ export declare class ResourceTreeModel extends SDKModel<EventTypes> {
      */
     static frameForOrigin(primaryPageTarget: Target, origin: SecurityOrigin): ResourceTreeFrame | null;
     static resourceForURL(targetManager: TargetManager, url: Platform.DevToolsPath.UrlString): Resource | null;
-    static reloadAllPages(targetManager: TargetManager, bypassCache?: boolean, scriptToEvaluateOnLoad?: string): void;
+    /**
+     * @param checkForRepost Set to `true` if the reload is a response to a user action. See `reloadPage`.
+     */
+    static reloadAllPages(targetManager: TargetManager, bypassCache?: boolean, scriptToEvaluateOnLoad?: string, checkForRepost?: boolean): void;
     storageKeyForFrame(frameId: Protocol.Page.FrameId): Promise<string | null>;
     domModel(): DOMModel;
     private processCachedResources;
@@ -53,7 +56,12 @@ export declare class ResourceTreeModel extends SDKModel<EventTypes> {
     private createResourceFromFramePayload;
     suspendReload(): void;
     resumeReload(): void;
-    reloadPage(ignoreCache?: boolean, scriptToEvaluateOnLoad?: string): void;
+    /**
+     * @param checkForRepost Set to `true` if the reload is a response to a user action. If the page has POST
+     * data, the browser then shows the form resubmission dialog before the reload. The browser does not
+     * reload the page if the user cancels the dialog.
+     */
+    reloadPage(ignoreCache?: boolean, scriptToEvaluateOnLoad?: string, checkForRepost?: boolean): void;
     navigate(url: Platform.DevToolsPath.UrlString): Promise<Protocol.Page.NavigateResponse>;
     navigationHistory(): Promise<{
         currentIndex: number;

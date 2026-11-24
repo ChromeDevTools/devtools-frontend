@@ -1,5 +1,4 @@
 import type * as SDK from '../../../core/sdk/sdk.js';
-export type UserScrollPosition = 'start' | 'middle' | 'end';
 export interface Crumb {
     title: CrumbTitle;
     selected: boolean;

@@ -75,6 +75,7 @@ export interface TraceFrame {
     parent?: string;
     isOutermostMainFrame?: boolean;
     isInPrimaryMainFrame?: boolean;
+    isOpaqueOrigin?: boolean;
 }
 export interface Sample extends Event {
     ph: Phase.SAMPLE;

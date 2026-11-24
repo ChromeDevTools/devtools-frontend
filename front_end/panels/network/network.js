@@ -394,7 +394,7 @@ var requestConditionsDrawer_css_default = `/*
 }
 
 .blocked-url-checkbox {
-  margin-left: var(--sys-size-5);
+  margin-left: var(--sys-size-2);
   flex: none;
 }
 
@@ -635,13 +635,12 @@ function renderItem({
     }
   };
   return html2`
-    <input class=blocked-url-checkbox
+    <devtools-checkbox class=blocked-url-checkbox
       @change=${toggle4}
-      type=checkbox
       title=${i18nString2(UIStrings2.enableThrottlingToggleLabel, { PH1: constructorStringOrWildcardURL })}
       .checked=${live(enabled)}
-      .disabled=${!editable || !originalOrUpgradedURLPattern}
-      jslog=${VisualLogging2.toggle().track({ change: true })}>
+      ?disabled=${!editable || !originalOrUpgradedURLPattern}
+      jslog=${VisualLogging2.toggle().track({ change: true })}></devtools-checkbox>
     <devtools-button
       .iconName=${"arrow-up"}
       .variant=${Buttons2.Button.Variant.ICON}
@@ -2232,6 +2231,7 @@ var Network;
     ResourceType12["CSPViolationReport"] = "CSPViolationReport";
     ResourceType12["Preflight"] = "Preflight";
     ResourceType12["FedCM"] = "FedCM";
+    ResourceType12["EmailVerification"] = "EmailVerification";
     ResourceType12["Other"] = "Other";
   })(ResourceType11 = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -2409,6 +2409,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;
@@ -3996,21 +3997,39 @@ var RequestDeviceBoundSessionsView = class extends UI3.Widget.VBox {
   #request;
   #view;
   constructor(request, view = DEFAULT_VIEW3) {
-    super();
-    this.#request = request;
+    super(request instanceof HTMLElement ? request : void 0);
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     this.#view = view;
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK2.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.#request.addEventListener(SDK2.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+      this.requestUpdate();
+    }
   }
   wasShown() {
     super.wasShown();
-    this.#request.addEventListener(SDK2.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.performUpdate, this);
-    this.performUpdate();
+    this.#request?.addEventListener(SDK2.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
   }
   willHide() {
     super.willHide();
-    this.#request.removeEventListener(SDK2.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.performUpdate, this);
+    this.#request?.removeEventListener(SDK2.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
   }
   performUpdate() {
-    if (!this.isShowing()) {
+    if (!this.isShowing() || !this.#request) {
       return;
     }
     this.#view({ deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages() }, void 0, this.contentElement);
@@ -4161,26 +4180,44 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
   `, target, { container: { attributes: { jslog: `${VisualLogging4.pane("event-stream").track({ resize: true })}` } } });
 };
 var EventSourceMessagesView = class extends UI4.Widget.VBox {
-  request;
+  #request;
   messageFilterSetting;
   filterRegex = null;
   #view;
   constructor(request, view = DEFAULT_VIEW4) {
-    super();
+    super(request instanceof HTMLElement ? request : void 0);
     this.#view = view;
-    this.request = request;
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     this.messageFilterSetting = Common3.Settings.Settings.instance().createSetting("network-event-source-message-filter", "");
     const filter = this.messageFilterSetting.get();
     this.setFilter(filter);
   }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK3.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+      request.addEventListener(SDK3.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
+  }
   wasShown() {
     super.wasShown();
-    this.request.addEventListener(SDK3.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+    this.#request?.addEventListener(SDK3.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
     this.requestUpdate();
   }
   willHide() {
     super.willHide();
-    this.request.removeEventListener(SDK3.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+    this.#request?.removeEventListener(SDK3.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
   }
   messageAdded(event) {
     const message = event.data;
@@ -4226,6 +4263,9 @@ var EventSourceMessagesView = class extends UI4.Widget.VBox {
     void contextMenu.show();
   }
   performUpdate() {
+    if (!this.request) {
+      return;
+    }
     let messages = this.request.eventSourceMessages();
     const offset = clearMessageOffsets.get(this.request) || 0;
     messages = messages.slice(offset);
@@ -6795,15 +6835,18 @@ var NetworkGroupNode = class extends NetworkNode {
 // ../../front_end/panels/network/NetworkItemView.ts
 var NetworkItemView_exports = {};
 __export(NetworkItemView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW20,
   NetworkItemView: () => NetworkItemView
 });
+import "../../ui/kit/kit.js";
+import "../../ui/legacy/legacy.js";
 import * as Common22 from "../../core/common/common.js";
 import * as i18n49 from "../../core/i18n/i18n.js";
 import * as Platform14 from "../../core/platform/platform.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as NetworkForward6 from "./forward/forward.js";
-import { Icon as Icon2 } from "../../ui/kit/kit.js";
 import * as UI24 from "../../ui/legacy/legacy.js";
+import { Directives as Directives15, html as html22, nothing as nothing13, render as render22 } from "../../ui/lit/lit.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents2 from "./components/components.js";
 
@@ -6996,18 +7039,38 @@ function getMalformedCookieTooltip(malformedCookie) {
   return SDK6.NetworkRequest.setCookieBlockedReasonToUiString(Network.SetCookieBlockedReason.SyntaxError);
 }
 var RequestCookiesView = class extends UI7.Widget.Widget {
-  request;
+  #request;
   showFilteredOutCookiesSetting;
   view;
   constructor(request, view = DEFAULT_VIEW6) {
-    super();
-    this.request = request;
+    super(request instanceof HTMLElement ? request : void 0);
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     this.showFilteredOutCookiesSetting = Common6.Settings.Settings.instance().createSetting(
       "show-filtered-out-request-cookies",
       /* defaultValue */
       false
     );
     this.view = view;
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK6.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+      this.#request?.removeEventListener(SDK6.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+      request.addEventListener(SDK6.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+      request.addEventListener(SDK6.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
   }
   getRequestCookies() {
     const requestCookieToBlockedReasons = /* @__PURE__ */ new Map();
@@ -7074,7 +7137,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
     return { responseCookies, responseCookieToBlockedReasons, responseCookieToExemptionReason, malformedResponseCookies };
   }
   performUpdate() {
-    if (!this.isShowing()) {
+    if (!this.isShowing() || !this.#request) {
       return;
     }
     const { requestCookies, requestCookieToBlockedReasons, requestCookieToExemptionReason } = this.getRequestCookies();
@@ -7104,14 +7167,14 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    this.request.addEventListener(SDK6.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
-    this.request.addEventListener(SDK6.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    this.#request?.addEventListener(SDK6.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+    this.#request?.addEventListener(SDK6.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
     this.requestUpdate();
   }
   willHide() {
     super.willHide();
-    this.request.removeEventListener(SDK6.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
-    this.request.removeEventListener(SDK6.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    this.#request?.removeEventListener(SDK6.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+    this.#request?.removeEventListener(SDK6.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
   }
 };
 
@@ -10630,9 +10693,23 @@ var RequestInitiatorView = class extends UI12.Widget.VBox {
   #request;
   #view;
   constructor(request, view = DEFAULT_VIEW10) {
-    super();
-    this.#request = request;
+    super(request instanceof HTMLElement ? request : void 0);
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     this.#view = view;
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
   }
   static async createStackTracePreview(request, linkifier, focusableLink) {
     const initiator = request.initiator();
@@ -10652,6 +10729,9 @@ var RequestInitiatorView = class extends UI12.Widget.VBox {
     return { preview, stackTrace };
   }
   async performUpdate() {
+    if (!this.#request) {
+      return;
+    }
     const initiatorGraph = Logs4.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
     const targetManager = SDK10.TargetManager.TargetManager.instance();
     const networkManager = SDK10.NetworkManager.NetworkManager.forRequest(this.#request);
@@ -10942,8 +11022,8 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.#dataGrid.setHeaderContextMenuCallback(this.#headerContextMenu.bind(this));
     this.activeWaterfallSortId = "startTime" /* StartTime */;
     this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid2.DataGrid.Order.Ascending);
-    const widget9 = this.#dataGrid.asWidget();
-    widget9.setMinimumSize(150, 0);
+    const widget10 = this.#dataGrid.asWidget();
+    widget10.setMinimumSize(150, 0);
   }
   setupWaterfall() {
     this.waterfallColumn = new NetworkWaterfallColumn(this.networkLogView.calculator());
@@ -13786,8 +13866,8 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     if (!consoleViewWrapper) {
       return;
     }
-    const widget9 = await consoleViewWrapper.widget();
-    const consoleView = widget9;
+    const widget10 = await consoleViewWrapper.widget();
+    const consoleView = widget10;
     if (typeof consoleView.insertIntoPrompt !== "function") {
       return;
     }
@@ -15100,7 +15180,6 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
   #settingsPaneOutput = {};
   #groupByFrameSetting;
   detailsWidget;
-  closeButtonElement;
   preserveLogSetting;
   recordLogSetting;
   throttlingSelect;
@@ -15185,12 +15264,6 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     this.detailsWidget = new UI15.Widget.VBox();
     this.detailsWidget.element.classList.add("network-details-view");
     this.splitWidget.setMainWidget(this.detailsWidget);
-    this.closeButtonElement = document.createElement("dt-close-button");
-    this.closeButtonElement.addEventListener("click", async () => {
-      const action3 = UI15.ActionRegistry.ActionRegistry.instance().getAction("network.hide-request-details");
-      await action3.execute();
-    }, false);
-    this.closeButtonElement.style.margin = "0 5px";
     this.#networkLogShowOverviewSetting.addChangeListener(this.#toggleShowOverview, this);
     this.#networkLogLargeRowsSetting.addChangeListener(this.#toggleLargerRequests, this);
     this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
@@ -15583,7 +15656,6 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
       return;
     }
     this.networkItemView = new NetworkItemView(this.currentRequest, this.networkLogView.timeCalculator(), initialTab);
-    this.networkItemView.leftToolbar().appendToolbarItem(new UI15.Toolbar.ToolbarItem(this.closeButtonElement));
     this.networkItemView.show(this.detailsWidget.element);
     this.splitWidget.showBoth();
     return this.networkItemView;
@@ -18064,8 +18136,8 @@ var DEFAULT_VIEW18 = (input, output, target) => {
       input.mimeType,
       element
     ))}
-                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget9) => {
-      output.revealPosition = widget9.revealPosition.bind(widget9);
+                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget10) => {
+      output.revealPosition = widget10.revealPosition.bind(widget10);
     })}></devtools-widget>`;
   } else {
     widgetTemplate = html19`${widget8((element) => new BinaryResourceView(
@@ -18078,19 +18150,36 @@ var DEFAULT_VIEW18 = (input, output, target) => {
   render20(widgetTemplate, target);
 };
 var RequestResponseView = class extends UI22.Widget.VBox {
-  request;
+  #request;
   #view;
   #revealPosition;
   constructor(request, view = DEFAULT_VIEW18) {
-    super();
-    this.request = request;
+    super(request instanceof HTMLElement ? request : void 0);
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     this.#view = view;
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
   }
   wasShown() {
     super.wasShown();
     this.requestUpdate();
   }
   async performUpdate() {
+    if (!this.request) {
+      return;
+    }
     const contentData = await this.request.requestStreamingContent();
     let renderAsText = false;
     const mimeType = this.getMimeTypeForDisplay();
@@ -18374,7 +18463,7 @@ var ResourceChunkView = class extends UI23.Widget.VBox {
   filterRegex = null;
   selectedChunk = null;
   currentSelectedNode;
-  request;
+  #request;
   messageFilterSetting;
   sidebarWidget = null;
   splitWidgetSettingKey;
@@ -18384,16 +18473,30 @@ var ResourceChunkView = class extends UI23.Widget.VBox {
     return defaultHeaderTemplate();
   }
   constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW19) {
-    super(opts);
+    super(request instanceof HTMLElement ? request : void 0, opts);
     this.#view = view;
     this.messageFilterSetting = Common19.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");
     this.splitWidgetSettingKey = splitWidgetSettingKey;
     this.dataGridDisplayName = dataGridDisplayName;
     this.filterUsingRegexHint = filterUsingRegexHint;
-    this.request = request;
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     const initialFilter = this.messageFilterSetting.get();
     if (initialFilter) {
       this.applyFilter(initialFilter);
+    }
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
     }
   }
   onRowContextMenu(contextMenu, node) {
@@ -18512,6 +18615,9 @@ var ResourceChunkView = class extends UI23.Widget.VBox {
     this.requestUpdate();
   }
   performUpdate() {
+    if (!this.isShowing() || !this.#request) {
+      return;
+    }
     let chunks = this.getRequestChunks();
     const offset = clearChunkOffsets.get(this.request) || 0;
     chunks = chunks.slice(offset).filter(this.chunkFilter.bind(this));
@@ -18636,6 +18742,29 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
       { jslog: `${VisualLogging16.pane("direct-socket-messages").track({ resize: true })}` }
     );
   }
+  get request() {
+    return super.request;
+  }
+  set request(request) {
+    if (super.request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      super.request?.removeEventListener(
+        SDK15.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
+        this.#onDirectSocketChunkAdded,
+        this
+      );
+    }
+    super.request = request;
+    if (this.isShowing()) {
+      super.request?.addEventListener(
+        SDK15.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
+        this.#onDirectSocketChunkAdded,
+        this
+      );
+    }
+  }
   getRequestChunks() {
     return this.request.directSocketChunks();
   }
@@ -18654,7 +18783,7 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
   wasShown() {
     super.wasShown();
     this.requestUpdate();
-    this.request.addEventListener(
+    this.request?.addEventListener(
       SDK15.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
       this.#onDirectSocketChunkAdded,
       this
@@ -18662,7 +18791,7 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
   }
   willHide() {
     super.willHide();
-    this.request.removeEventListener(
+    this.request?.removeEventListener(
       SDK15.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
       this.#onDirectSocketChunkAdded,
       this
@@ -18852,6 +18981,29 @@ var ResourceWebSocketFrameView = class extends ResourceChunkView {
       { jslog: `${VisualLogging17.pane("web-socket-messages").track({ resize: true })}` }
     );
   }
+  get request() {
+    return super.request;
+  }
+  set request(request) {
+    if (super.request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      super.request?.removeEventListener(
+        SDK16.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED,
+        this.#onWebSocketFrameAdded,
+        this
+      );
+    }
+    super.request = request;
+    if (this.isShowing()) {
+      super.request?.addEventListener(
+        SDK16.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED,
+        this.#onWebSocketFrameAdded,
+        this
+      );
+    }
+  }
   getRequestChunks() {
     return this.request.frames();
   }
@@ -18867,11 +19019,11 @@ var ResourceWebSocketFrameView = class extends ResourceChunkView {
   wasShown() {
     super.wasShown();
     this.requestUpdate();
-    this.request.addEventListener(SDK16.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
+    this.request?.addEventListener(SDK16.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
   }
   willHide() {
     super.willHide();
-    this.request.removeEventListener(
+    this.request?.removeEventListener(
       SDK16.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED,
       this.#onWebSocketFrameAdded,
       this
@@ -18964,95 +19116,117 @@ var ResourceFrameNode = class extends DataGridItem {
 };
 
 // ../../front_end/panels/network/NetworkItemView.ts
+var { widget: widget9, widgetRef: widgetRef2 } = UI24.Widget;
 var UIStrings25 = {
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing HTTP request/response headers.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing HTTP request/response headers.
    */
   headers: "Headers",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing DirectSocket connection info.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing DirectSocket connection info.
    */
   connectionInfo: "Connection info",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing request payload parameters and form data.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing request payload parameters and form data.
    */
   payload: "Payload",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing WebSocket or DirectSocket messages.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing WebSocket or DirectSocket messages.
    */
   messages: "Messages",
   /**
-   * @description Accessible tooltip for the WebSocket messages tab in network item view of the Network panel.
+   * @description Accessible tooltip for the WebSocket messages tab in network
+   * item view of the Network panel.
    */
   websocketMessages: "WebSocket messages",
   /**
-   * @description Accessible tooltip for the DirectSocket messages tab in network item view of the Network panel.
+   * @description Accessible tooltip for the DirectSocket messages tab in
+   * network item view of the Network panel.
    */
   directsocketMessages: "DirectSocket messages",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing Server-Sent Event (EventStream) messages.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing Server-Sent Event (EventStream) messages.
    */
   eventstream: "EventStream",
   /**
-   * @description Title of a tab in network item view of the Network panel for previewing response content.
+   * @description Title of a tab in network item view of the Network panel for
+   * previewing response content.
    */
   preview: "Preview",
   /**
-   * @description Accessible tooltip for the response preview tab in network item view of the Network panel.
+   * @description Accessible tooltip for the response preview tab in network
+   * item view of the Network panel.
    */
   responsePreview: "Response preview",
   /**
-   * @description Tooltip for error icon on preview tab in network item view of the Network panel when signed exchange has errors.
+   * @description Tooltip for error icon on preview tab in network item view of
+   * the Network panel when signed exchange has errors.
    */
   signedexchangeError: "SignedExchange error",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing raw response content.
-   * A Network response refers to the act of acknowledging a network request. Should not be confused with answer.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing raw response content. A Network response refers to the act of
+   * acknowledging a network request. Should not be confused with answer.
    */
   response: "Response",
   /**
-   * @description Accessible tooltip for the raw response data tab in network item view of the Network panel.
+   * @description Accessible tooltip for the raw response data tab in network
+   * item view of the Network panel.
    */
   rawResponseData: "Raw response data",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing request initiator stack trace and chain.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing request initiator stack trace and chain.
    */
   initiator: "Initiator",
   /**
-   * @description Accessible tooltip for the request initiator tab in network item view of the Network panel.
-   * An initiator is a piece of code/entity in the code that initiated/started the network request, i.e. caused
-   * the network request. The 'call stack' is the location in the code where the initiation happened.
+   * @description Accessible tooltip for the request initiator tab in network
+   * item view of the Network panel. An initiator is a piece of code/entity in
+   * the code that initiated/started the network request, i.e. caused the
+   * network request. The 'call stack' is the location in the code where the
+   * initiation happened.
    */
   requestInitiatorCallStack: "Request initiator call stack",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing request timing breakdown.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing request timing breakdown.
    */
   timing: "Timing",
   /**
-   * @description Accessible tooltip for the request timing tab in network item view of the Network panel.
+   * @description Accessible tooltip for the request timing tab in network item
+   * view of the Network panel.
    */
   requestAndResponseTimeline: "Request and response timeline",
   /**
-   * @description Tooltip text for warning icon on cookies tab in network item view of the Network panel when third-party cookies are blocked.
+   * @description Tooltip text for warning icon on cookies tab in network item
+   * view of the Network panel when third-party cookies are blocked.
    */
   thirdPartyPhaseout: "Cookies blocked due to third-party cookie phaseout",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing Private State Tokens operation details.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing Private State Tokens operation details.
    */
   trustTokens: "Private state tokens",
   /**
-   * @description Accessible tooltip for the Private State Tokens tab in network item view of the Network panel.
+   * @description Accessible tooltip for the Private State Tokens tab in network
+   * item view of the Network panel.
    */
   trustTokenOperationDetails: "Private State Token operation details",
   /**
-   * @description Title of a tab in network item view of the Network panel for viewing request and response cookies.
+   * @description Title of a tab in network item view of the Network panel for
+   * viewing request and response cookies.
    */
   cookies: "Cookies",
   /**
    * @description Title of the Device Bound Sessions tab in the Network panel. A
-   * website may decide to create a session for a user, for example when the user
-   * logs in. They can use a protocol to make it a "device bound session". That
-   * means that when the session expires, it is only possible for it to be
+   * website may decide to create a session for a user, for example when the
+   * user logs in. They can use a protocol to make it a "device bound session".
+   * That means that when the session expires, it is only possible for it to be
    * extended on the device it was created on. Thus the session is considered
    * to be bound to that device. For more details on the protocol, see
    * https://github.com/w3c/webappsec-dbsc/blob/main/README.md and
@@ -19060,152 +19234,232 @@ var UIStrings25 = {
    */
   deviceBoundSessions: "Device bound sessions",
   /**
-   * @description Accessible tooltip for the cookies tab in network item view of the Network panel.
+   * @description Accessible tooltip for the cookies tab in network item view of
+   * the Network panel.
    */
   requestAndResponseCookies: "Request and response cookies",
   /**
-   * @description Tooltip text for status indicator dot on headers tab in network item view of the Network panel when headers are overridden by DevTools.
+   * @description Tooltip text for status indicator dot on headers tab in
+   * network item view of the Network panel when headers are overridden by
+   * DevTools.
    */
   containsOverriddenHeaders: "This response contains headers which are overridden by DevTools",
   /**
-   * @description Tooltip text for status indicator dot on response tab in network item view of the Network panel when response content is overridden by DevTools.
+   * @description Tooltip text for status indicator dot on response tab in
+   * network item view of the Network panel when response content is overridden
+   * by DevTools.
    */
   responseIsOverridden: "This response is overridden by DevTools"
 };
 var str_25 = i18n49.i18n.registerUIStrings("panels/network/NetworkItemView.ts", UIStrings25);
 var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
-var requestToResponseView = /* @__PURE__ */ new WeakMap();
-var requestToPreviewView = /* @__PURE__ */ new WeakMap();
-var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
+var DEFAULT_VIEW20 = (input, output, target) => {
+  render22(html22`
+    <devtools-tabbed-pane
+      class="network-item-view flex-auto vbox"
+      .headerJslog=${`${VisualLogging18.toolbar("request-details").track({
+    keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
+  })}`}
+      @select=${(e) => {
+    if (e.detail.isUserGesture) {
+      input.onTabSelect(e.detail.tabId);
+    }
+  }}>
+      <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left">
+        <dt-close-button style="margin: 0 5px;" @click=${input.onClose}></dt-close-button>
+      </devtools-toolbar>
+      ${input.isDirectSocket ? html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.connectionInfo)}
+          tab-tooltip=${i18nString24(UIStrings25.connectionInfo)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION ? widget9(NetworkComponents2.DirectSocketConnectionView.DirectSocketConnectionView, { request: input.request }) : nothing13}
+        </div>
+      ` : html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.headers)}
+          tab-tooltip=${i18nString24(UIStrings25.headers)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT ? html22`
+            <devtools-widget
+              ${widget9(RequestHeadersView, { request: input.request })}
+              ${widgetRef2(RequestHeadersView, (w) => {
+    output.revealHeader = w.revealHeader.bind(w);
+  })}>
+            </devtools-widget>
+          ` : nothing13}
+        </div>
+        ${input.hasOverriddenHeaders ? html22`
+          <div slot=${`suffix-${NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT}`} class="status-dot"
+               title=${i18nString24(UIStrings25.containsOverriddenHeaders)}></div>
+        ` : nothing13}
+      `}
+      ${input.hasPayload ? html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.payload)}
+          tab-tooltip=${i18nString24(UIStrings25.payload)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD ? widget9(RequestPayloadView, { request: input.request }) : nothing13}
+        </div>
+      ` : nothing13}
+      ${input.isWebSocket ? html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.messages)}
+          tab-tooltip=${i18nString24(UIStrings25.websocketMessages)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES ? widget9(ResourceWebSocketFrameView, { request: input.request }) : nothing13}
+        </div>
+      ` : input.isDirectSocket ? html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.messages)}
+          tab-tooltip=${i18nString24(UIStrings25.directsocketMessages)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS ? widget9(ResourceDirectSocketChunkView, { request: input.request }) : nothing13}
+        </div>
+      ` : input.isEventStream ? html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.eventstream)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE ? widget9(EventSourceMessagesView, { request: input.request }) : nothing13}
+        </div>
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.response)}
+          tab-tooltip=${i18nString24(UIStrings25.rawResponseData)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE ? html22`
+            <devtools-widget
+              ${widget9(RequestResponseView, { request: input.request })}
+              ${widgetRef2(RequestResponseView, (w) => {
+    output.revealResponseBody = w.revealPosition.bind(w);
+  })}>
+            </devtools-widget>
+          ` : nothing13}
+        </div>
+      ` : html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.preview)}
+          tab-tooltip=${i18nString24(UIStrings25.responsePreview)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW ? widget9(RequestPreviewView, { request: input.request }) : nothing13}
+        </div>
+        ${input.hasSignedExchangeErrors ? html22`
+          <devtools-icon slot=${`icon-${NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW}`} class="small" name="cross-circle-filled"
+                         title=${i18nString24(UIStrings25.signedexchangeError)}></devtools-icon>
+        ` : nothing13}
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.response)}
+          tab-tooltip=${i18nString24(UIStrings25.rawResponseData)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE ? html22`
+            <devtools-widget
+              ${widget9(RequestResponseView, { request: input.request })}
+              ${widgetRef2(RequestResponseView, (w) => {
+    output.revealResponseBody = w.revealPosition.bind(w);
+  })}>
+            </devtools-widget>
+          ` : nothing13}
+        </div>
+        ${input.hasOverriddenContent ? html22`
+          <div slot=${`suffix-${NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE}`} class="status-dot"
+               title=${i18nString24(UIStrings25.responseIsOverridden)}></div>
+        ` : nothing13}
+      `}
+      <div
+        id=${NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR}
+        class="vbox flex-auto"
+        label=${i18nString24(UIStrings25.initiator)}
+        tab-tooltip=${i18nString24(UIStrings25.requestInitiatorCallStack)}
+        ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR)}>
+        ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR ? widget9(RequestInitiatorView, { request: input.request }) : nothing13}
+      </div>
+      <div
+        id=${NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING}
+        class="vbox flex-auto"
+        label=${i18nString24(UIStrings25.timing)}
+        tab-tooltip=${i18nString24(UIStrings25.requestAndResponseTimeline)}
+        ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING)}>
+        ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING ? widget9(RequestTimingView, { request: input.request, calculator: input.calculator }) : nothing13}
+      </div>
+      ${input.hasTrustTokens ? html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.trustTokens)}
+          tab-tooltip=${i18nString24(UIStrings25.trustTokenOperationDetails)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS ? widget9(NetworkComponents2.RequestTrustTokensView.RequestTrustTokensView, { request: input.request }) : nothing13}
+        </div>
+        ${input.hasUnsuccessfulTrustToken ? html22`
+          <devtools-icon slot=${`icon-${NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS}`} class="small" name="cross-circle-filled"></devtools-icon>
+        ` : nothing13}
+      ` : nothing13}
+      ${input.hasCookies ? html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.cookies)}
+          tab-tooltip=${i18nString24(UIStrings25.requestAndResponseCookies)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES ? widget9(RequestCookiesView, { request: input.request }) : nothing13}
+        </div>
+        ${input.hasThirdPartyCookiePhaseoutIssue ? html22`
+          <devtools-icon slot=${`suffix-${NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES}`} class="small" name="warning-filled"
+                         title=${i18nString24(UIStrings25.thirdPartyPhaseout)}></devtools-icon>
+        ` : nothing13}
+      ` : nothing13}
+      ${input.hasDeviceBoundSessions ? html22`
+        <div
+          id=${NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS}
+          class="vbox flex-auto"
+          label=${i18nString24(UIStrings25.deviceBoundSessions)}
+          tab-tooltip=${i18nString24(UIStrings25.deviceBoundSessions)}
+          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS ? widget9(RequestDeviceBoundSessionsView, { request: input.request }) : nothing13}
+        </div>
+      ` : nothing13}
+    </devtools-tabbed-pane>
+  `, target);
+  target.querySelector("devtools-tabbed-pane")?.tabs;
+};
+var NetworkItemView = class extends UI24.Widget.VBox {
   #request;
+  #calculator;
   #resourceViewTabSetting;
-  #headersViewComponent;
-  #payloadView = null;
-  #responseView;
-  #cookiesView = null;
-  #deviceBoundSessionsView = null;
-  #initialTab;
-  #firstTab;
-  constructor(request, calculator, initialTab) {
+  #view;
+  #viewOutput = {};
+  #selectedTab;
+  #hasPayload = false;
+  constructor(request, calculator, initialTab, view = DEFAULT_VIEW20) {
     super();
     this.#request = request;
-    this.element.classList.add("network-item-view");
-    this.headerElement().setAttribute("jslog", `${VisualLogging18.toolbar("request-details").track({
-      keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
-    })}`);
-    if (request.resourceType() === Common22.ResourceType.resourceTypes.DirectSocket) {
-      this.#firstTab = NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION;
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION,
-        i18nString24(UIStrings25.connectionInfo),
-        new NetworkComponents2.DirectSocketConnectionView.DirectSocketConnectionView(request),
-        i18nString24(UIStrings25.headers)
-      );
-    } else {
-      this.#firstTab = NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
-      this.#headersViewComponent = new RequestHeadersView();
-      this.#headersViewComponent.request = request;
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
-        i18nString24(UIStrings25.headers),
-        this.#headersViewComponent,
-        i18nString24(UIStrings25.headers)
-      );
-    }
-    this.#resourceViewTabSetting = Common22.Settings.Settings.instance().createSetting("resource-view-tab", this.#firstTab);
-    if (this.#request.hasOverriddenHeaders()) {
-      const statusDot = document.createElement("div");
-      statusDot.className = "status-dot";
-      statusDot.title = i18nString24(UIStrings25.containsOverriddenHeaders);
-      this.setSuffixElement(NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT, statusDot);
-    }
-    void this.#maybeAppendPayloadPanel();
-    this.addEventListener(UI24.TabbedPane.Events.TabSelected, this.#tabSelected, this);
-    if (request.resourceType() === Common22.ResourceType.resourceTypes.WebSocket) {
-      const frameView = new ResourceWebSocketFrameView(request);
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES,
-        i18nString24(UIStrings25.messages),
-        frameView,
-        i18nString24(UIStrings25.websocketMessages)
-      );
-    } else if (request.resourceType() === Common22.ResourceType.resourceTypes.DirectSocket) {
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS,
-        i18nString24(UIStrings25.messages),
-        new ResourceDirectSocketChunkView(request),
-        i18nString24(UIStrings25.directsocketMessages)
-      );
-    } else if (request.mimeType === Platform14.MimeType.MimeType.EVENTSTREAM) {
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE,
-        i18nString24(UIStrings25.eventstream),
-        new EventSourceMessagesView(request)
-      );
-      this.#responseView = requestToResponseView.get(request) ?? new RequestResponseView(request);
-      requestToResponseView.set(request, this.#responseView);
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE,
-        i18nString24(UIStrings25.response),
-        this.#responseView,
-        i18nString24(UIStrings25.rawResponseData)
-      );
-    } else {
-      this.#responseView = requestToResponseView.get(request) ?? new RequestResponseView(request);
-      requestToResponseView.set(request, this.#responseView);
-      const previewView = requestToPreviewView.get(request) ?? new RequestPreviewView(request);
-      requestToPreviewView.set(request, previewView);
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW,
-        i18nString24(UIStrings25.preview),
-        previewView,
-        i18nString24(UIStrings25.responsePreview)
-      );
-      const signedExchangeInfo = request.signedExchangeInfo();
-      if (signedExchangeInfo?.errors?.length) {
-        const icon = new Icon2();
-        icon.name = "cross-circle-filled";
-        icon.classList.add("small");
-        UI24.Tooltip.Tooltip.install(icon, i18nString24(UIStrings25.signedexchangeError));
-        this.setTabIcon(NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW, icon);
-      }
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE,
-        i18nString24(UIStrings25.response),
-        this.#responseView,
-        i18nString24(UIStrings25.rawResponseData)
-      );
-      if (this.#request.hasOverriddenContent) {
-        const statusDot = document.createElement("div");
-        statusDot.className = "status-dot";
-        statusDot.title = i18nString24(UIStrings25.responseIsOverridden);
-        this.setSuffixElement(NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE, statusDot);
-      }
-    }
-    this.appendTab(
-      NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR,
-      i18nString24(UIStrings25.initiator),
-      new RequestInitiatorView(request),
-      i18nString24(UIStrings25.requestInitiatorCallStack)
-    );
-    this.appendTab(
-      NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING,
-      i18nString24(UIStrings25.timing),
-      RequestTimingView.create(request, calculator),
-      i18nString24(UIStrings25.requestAndResponseTimeline)
-    );
-    if (request.trustTokenParams()) {
-      const trustTokensView = new NetworkComponents2.RequestTrustTokensView.RequestTrustTokensView();
-      trustTokensView.request = request;
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS,
-        i18nString24(UIStrings25.trustTokens),
-        trustTokensView,
-        i18nString24(UIStrings25.trustTokenOperationDetails)
-      );
-    }
-    this.#initialTab = initialTab || this.#resourceViewTabSetting.get();
-    this.setAutoSelectFirstItemOnShow(false);
+    this.#calculator = calculator;
+    this.#view = view;
+    const firstTab = request.resourceType() === Common22.ResourceType.resourceTypes.DirectSocket ? NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION : NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
+    this.#resourceViewTabSetting = Common22.Settings.Settings.instance().createSetting("resource-view-tab", firstTab);
+    this.#selectedTab = initialTab || this.#resourceViewTabSetting.get();
+    this.#hasPayload = Boolean(request.queryParameters);
+    void this.#updateHasPayload();
+  }
+  shouldHideOnDetach() {
+    return false;
   }
   wasShown() {
     super.wasShown();
@@ -19214,22 +19468,9 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
       this.#requestHeadersChanged,
       this
     );
-    this.#request.addEventListener(
-      SDK17.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
-      this.#maybeAppendCookieResponsePanels,
-      this
-    );
-    this.#request.addEventListener(
-      SDK17.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED,
-      this.#maybeShowErrorIconInTrustTokenTabHeader,
-      this
-    );
-    this.#maybeAppendCookieResponsePanels();
-    this.#maybeShowErrorIconInTrustTokenTabHeader();
-    if (this.#initialTab) {
-      this.#selectTab(this.#initialTab);
-      this.#initialTab = void 0;
-    }
+    this.#request.addEventListener(SDK17.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    this.#request.addEventListener(SDK17.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
+    this.requestUpdate();
   }
   willHide() {
     super.willHide();
@@ -19238,117 +19479,106 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
       this.#requestHeadersChanged,
       this
     );
-    this.#request.removeEventListener(
-      SDK17.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
-      this.#maybeAppendCookieResponsePanels,
-      this
-    );
-    this.#request.removeEventListener(
-      SDK17.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED,
-      this.#maybeShowErrorIconInTrustTokenTabHeader,
-      this
-    );
+    this.#request.removeEventListener(SDK17.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    this.#request.removeEventListener(SDK17.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.requestUpdate, this);
   }
-  async #requestHeadersChanged() {
-    this.#maybeAppendCookiesPanel();
-    void this.#maybeAppendPayloadPanel();
-  }
-  #maybeAppendCookieResponsePanels() {
-    this.#maybeAppendCookiesPanel();
-    this.#maybeAppendDeviceBoundSessionsPanel();
-  }
-  #maybeAppendCookiesPanel() {
-    const cookiesPresent = this.#request.hasRequestCookies() || this.#request.responseCookies.length > 0;
-    console.assert(cookiesPresent || !this.#cookiesView, "Cookies were introduced in headers and then removed!");
-    if (cookiesPresent && !this.#cookiesView) {
-      this.#cookiesView = new RequestCookiesView(this.#request);
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES,
-        i18nString24(UIStrings25.cookies),
-        this.#cookiesView,
-        i18nString24(UIStrings25.requestAndResponseCookies)
-      );
+  performUpdate() {
+    const isDirectSocket = this.#request.resourceType() === Common22.ResourceType.resourceTypes.DirectSocket;
+    const isWebSocket = this.#request.resourceType() === Common22.ResourceType.resourceTypes.WebSocket;
+    const isEventStream = !isDirectSocket && !isWebSocket && this.#request.mimeType === Platform14.MimeType.MimeType.EVENTSTREAM;
+    const firstTab = isDirectSocket ? NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION : NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
+    const hasTrustTokens = Boolean(this.#request.trustTokenParams());
+    const hasCookies = this.#request.hasRequestCookies() || this.#request.responseCookies.length > 0;
+    const hasDeviceBoundSessions = this.#request.getDeviceBoundSessionUsages().length > 0;
+    const availableTabs = /* @__PURE__ */ new Set([
+      firstTab,
+      NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR,
+      NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING
+    ]);
+    if (this.#hasPayload) {
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD);
     }
-    if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
-      const icon = new Icon2();
-      icon.name = "warning-filled";
-      icon.classList.add("small");
-      icon.title = i18nString24(UIStrings25.thirdPartyPhaseout);
-      this.setTrailingTabIcon(NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES, icon);
+    if (isWebSocket) {
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES);
+    } else if (isDirectSocket) {
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS);
+    } else if (isEventStream) {
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE);
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE);
+    } else {
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW);
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE);
     }
-  }
-  #maybeAppendDeviceBoundSessionsPanel() {
-    const deviceBoundSessionsPresent = this.#request.getDeviceBoundSessionUsages().length > 0;
-    if (deviceBoundSessionsPresent && !this.#deviceBoundSessionsView) {
-      this.#deviceBoundSessionsView = new RequestDeviceBoundSessionsView(this.#request);
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS,
-        i18nString24(UIStrings25.deviceBoundSessions),
-        this.#deviceBoundSessionsView,
-        i18nString24(UIStrings25.deviceBoundSessions)
-      );
+    if (hasTrustTokens) {
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS);
     }
-  }
-  async #maybeAppendPayloadPanel() {
-    if (this.hasTab("payload")) {
-      return;
+    if (hasCookies) {
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES);
     }
-    if (this.#request.queryParameters || await this.#request.requestFormData()) {
-      this.#payloadView = new RequestPayloadView();
-      this.#payloadView.request = this.#request;
-      this.appendTab(
-        NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD,
-        i18nString24(UIStrings25.payload),
-        this.#payloadView,
-        i18nString24(UIStrings25.payload),
-        /* userGesture=*/
-        void 0,
-        /* isCloseable=*/
-        void 0,
-        /* isPreviewFeature=*/
-        void 0,
-        /* index=*/
-        1
-      );
+    if (hasDeviceBoundSessions) {
+      availableTabs.add(NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS);
     }
-  }
-  #maybeShowErrorIconInTrustTokenTabHeader() {
+    const selectedTab = availableTabs.has(this.#selectedTab) ? this.#selectedTab : firstTab;
     const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
-    if (trustTokenResult && !NetworkComponents2.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
-      const icon = new Icon2();
-      icon.name = "cross-circle-filled";
-      icon.classList.add("small");
-      this.setTabIcon(NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS, icon);
-    }
-  }
-  #selectTab(tabId) {
-    if (!this.selectTab(tabId)) {
-      window.setTimeout(() => {
-        if (!this.selectTab(tabId)) {
-          this.selectTab(this.#firstTab);
+    this.#view(
+      {
+        request: this.#request,
+        calculator: this.#calculator,
+        selectedTab,
+        isDirectSocket,
+        isWebSocket,
+        isEventStream,
+        hasPayload: this.#hasPayload,
+        hasTrustTokens,
+        hasUnsuccessfulTrustToken: Boolean(trustTokenResult && !NetworkComponents2.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)),
+        hasCookies,
+        hasThirdPartyCookiePhaseoutIssue: this.#request.hasThirdPartyCookiePhaseoutIssue(),
+        hasDeviceBoundSessions,
+        hasOverriddenHeaders: this.#request.hasOverriddenHeaders(),
+        hasSignedExchangeErrors: Boolean(this.#request.signedExchangeInfo()?.errors?.length),
+        hasOverriddenContent: this.#request.hasOverriddenContent,
+        onTabSelect: (tabId) => {
+          if (this.#selectedTab !== tabId) {
+            this.#selectedTab = tabId;
+            this.#resourceViewTabSetting.set(tabId);
+            this.requestUpdate();
+          }
+        },
+        onClose: () => {
+          if (UI24.ActionRegistry.ActionRegistry.instance().hasAction("network.hide-request-details")) {
+            void UI24.ActionRegistry.ActionRegistry.instance().getAction("network.hide-request-details").execute();
+          }
         }
-      }, 0);
-    }
+      },
+      this.#viewOutput,
+      this.contentElement
+    );
   }
-  #tabSelected(event) {
-    if (!event.data.isUserGesture) {
-      return;
+  #requestHeadersChanged() {
+    void this.#updateHasPayload();
+    this.requestUpdate();
+  }
+  async #updateHasPayload() {
+    const hasPayload = Boolean(this.#request.queryParameters || await this.#request.requestFormData());
+    if (this.#hasPayload !== hasPayload) {
+      this.#hasPayload = hasPayload;
+      if (this.isShowing()) {
+        this.requestUpdate();
+      }
     }
-    this.#resourceViewTabSetting.set(event.data.tabId);
   }
   request() {
     return this.#request;
   }
   async revealResponseBody(position) {
-    this.#selectTab(NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE);
-    await this.#responseView?.revealPosition(position);
+    this.#selectedTab = NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE;
+    this.performUpdate();
+    await this.#viewOutput.revealResponseBody?.(position);
   }
   revealHeader(section4, header) {
-    this.#selectTab(NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
-    this.#headersViewComponent?.revealHeader(section4, header);
-  }
-  getHeadersViewComponent() {
-    return this.#headersViewComponent;
+    this.#selectedTab = NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
+    this.performUpdate();
+    this.#viewOutput.revealHeader?.(section4, header);
   }
 };
 

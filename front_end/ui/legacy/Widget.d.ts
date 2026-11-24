@@ -134,6 +134,7 @@ export declare class Widget<ContentTypeT extends HTMLElement | DocumentFragment 
      */
     static get(node: Node): Widget | undefined;
     static get allUpdatesComplete(): Promise<void>;
+    static flushPendingUpdatesForTesting(): Promise<void>;
     static getOrCreateWidget(element: HTMLElement): Widget;
     get contentElement(): ContentTypeT;
     protected set contentElement(contentElement: ContentTypeT);

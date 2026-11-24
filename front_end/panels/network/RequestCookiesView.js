@@ -137,14 +137,34 @@ function getMalformedCookieTooltip(malformedCookie) {
     return SDK.NetworkRequest.setCookieBlockedReasonToUiString("SyntaxError" /* Protocol.Network.SetCookieBlockedReason.SyntaxError */);
 }
 export class RequestCookiesView extends UI.Widget.Widget {
-    request;
+    #request;
     showFilteredOutCookiesSetting;
     view;
     constructor(request, view = DEFAULT_VIEW) {
-        super();
-        this.request = request;
+        super(request instanceof HTMLElement ? request : undefined);
+        if (request && !(request instanceof HTMLElement)) {
+            this.#request = request;
+        }
         this.showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting('show-filtered-out-request-cookies', /* defaultValue */ false);
         this.view = view;
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        if (this.isShowing()) {
+            this.#request?.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+            this.#request?.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+            request.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+            request.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+        }
+        this.#request = request;
+        if (this.isShowing()) {
+            this.requestUpdate();
+        }
     }
     getRequestCookies() {
         const requestCookieToBlockedReasons = new Map();
@@ -215,7 +235,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
         return { responseCookies, responseCookieToBlockedReasons, responseCookieToExemptionReason, malformedResponseCookies };
     }
     performUpdate() {
-        if (!this.isShowing()) {
+        if (!this.isShowing() || !this.#request) {
             return;
         }
         const { requestCookies, requestCookieToBlockedReasons, requestCookieToExemptionReason } = this.getRequestCookies();
@@ -245,14 +265,14 @@ export class RequestCookiesView extends UI.Widget.Widget {
     }
     wasShown() {
         super.wasShown();
-        this.request.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
-        this.request.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
         this.requestUpdate();
     }
     willHide() {
         super.willHide();
-        this.request.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
-        this.request.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestUpdate, this);
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
     }
 }
 //# sourceMappingURL=RequestCookiesView.js.map

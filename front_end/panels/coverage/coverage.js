@@ -1938,7 +1938,12 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
     await this.updateComplete;
     this.#output.focusResults();
     if (reload && resourceTreeModel) {
-      resourceTreeModel.reloadPage();
+      resourceTreeModel.reloadPage(
+        void 0,
+        void 0,
+        /* checkForRepost */
+        true
+      );
     } else {
       void this.#model.startPolling();
     }

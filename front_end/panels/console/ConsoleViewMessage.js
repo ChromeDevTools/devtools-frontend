@@ -62,6 +62,98 @@ import consoleViewStyles from './consoleView.css.js';
 import { SymbolizedErrorWidget } from './SymbolizedErrorWidget.js';
 const { ifDefined, until } = Directives;
 const { widget, widgetRef } = UI.Widget;
+/**
+ * Used with `widgetRef` to create a widget as soon as its element is rendered,
+ * even if the message is not attached yet (the viewport renders lazily).
+ */
+function ensureWidgetCreated() {
+}
+/**
+ * Marks an element that keyboard navigation inside a console message can move
+ * focus to. The value is a `SelectableKind`, or empty for a focusable element.
+ */
+const SELECTABLE_ATTRIBUTE = 'data-console-selectable';
+var SelectableKind;
+(function (SelectableKind) {
+    /** The element hosts a widget whose `linkElements` are selectable. */
+    SelectableKind["LINKS"] = "links";
+    /** The element hosts a `DOMTreeWidget`; selecting it selects the root node. */
+    SelectableKind["DOM_TREE"] = "dom-tree";
+    /** The element hosts an object properties section; selecting it focuses its tree. */
+    SelectableKind["OBJECT"] = "object";
+})(SelectableKind || (SelectableKind = {}));
+/**
+ * The order in which the parts of a message are visited: the message text, then
+ * the source location anchor (which comes first in the DOM, but is shown at the
+ * end of the line), then everything else, such as the stack trace.
+ */
+function selectableRank(element) {
+    if (element.closest('.console-message-text')) {
+        return 0;
+    }
+    if (element.closest('.console-message-anchor')) {
+        return 1;
+    }
+    return 2;
+}
+function collectSelectableElements(root, rank, result) {
+    for (const element of root.querySelectorAll('*')) {
+        const elementRank = rank ?? selectableRank(element);
+        if (element.hasAttribute(SELECTABLE_ATTRIBUTE)) {
+            result.push({ element, rank: elementRank });
+        }
+        if (element.shadowRoot) {
+            collectSelectableElements(element.shadowRoot, elementRank, result);
+        }
+    }
+}
+function selectableChildrenOf(element) {
+    switch (element.getAttribute(SELECTABLE_ATTRIBUTE)) {
+        case "links" /* SelectableKind.LINKS */: {
+            const linkWidget = UI.Widget.Widget.get(element);
+            if (!(linkWidget instanceof SymbolizedErrorWidget) &&
+                !(linkWidget instanceof Components.JSPresentationUtils.StackTracePreviewContent)) {
+                return [];
+            }
+            return linkWidget.linkElements.map(link => ({ element: link, forceSelect: () => link.focus() }));
+        }
+        case "dom-tree" /* SelectableKind.DOM_TREE */: {
+            const domTree = UI.Widget.Widget.get(element);
+            const node = domTree instanceof Elements.DOMTreeWidget.DOMTreeWidget ? domTree.rootDOMNode : null;
+            if (!node || !(domTree instanceof Elements.DOMTreeWidget.DOMTreeWidget)) {
+                return [];
+            }
+            return [{ element, forceSelect: () => domTree.selectDOMNode(node, /* focus= */ true) }];
+        }
+        case "object" /* SelectableKind.OBJECT */:
+            return [{
+                    element,
+                    forceSelect: () => {
+                        const tree = element.querySelector('devtools-tree');
+                        tree?.focus();
+                        if (tree && !tree.hasFocus()) {
+                            tree.focus();
+                        }
+                    },
+                }];
+        default:
+            return [{ element, forceSelect: () => element.focus() }];
+    }
+}
+/**
+ * Collects what keyboard navigation can focus inside `root` from the rendered
+ * DOM, so that asynchronously rendered parts (DOM trees, symbolized errors,
+ * stack traces) are picked up without bookkeeping.
+ */
+function collectSelectableChildren(root) {
+    if (!root) {
+        return [];
+    }
+    const elements = [];
+    collectSelectableElements(root, undefined, elements);
+    elements.sort((a, b) => a.rank - b.rank);
+    return elements.flatMap(({ element }) => selectableChildrenOf(element));
+}
 const UIStrings = {
     /**
      * @description Message element text content in Console view message of the Console panel. Shown
@@ -275,21 +367,303 @@ function appendOrShow(parent, child) {
         parent.appendChild(child);
     }
 }
+export const NODE_PARAM_VIEW = (input, _output, target) => {
+    if (input.fallback) {
+        render(input.fallback, target);
+        return;
+    }
+    // clang-format off
+    render(html `<devtools-widget
+    data-console-selectable=${"dom-tree" /* SelectableKind.DOM_TREE */}
+    ${widget((element) => new Elements.DOMTreeWidget.DOMTreeWidget(element), {
+        omitRootDOMNode: false,
+        selectEnabled: true,
+        hideGutter: true,
+        deindentSingleNode: true,
+        showSelectionOnKeyboardFocus: true,
+        // Long lines wrap like the rest of the message.
+        wrap: true,
+        rootDOMNode: input.node,
+        onElementsTreeUpdated: input.onTreeResized,
+        onElementExpanded: input.onTreeResized,
+        onElementCollapsed: input.onTreeResized,
+    })}
+    ${widgetRef(Elements.DOMTreeWidget.DOMTreeWidget, input.onDOMTreeCreated)}></devtools-widget>`, target);
+    // clang-format on
+};
+/**
+ * A logged DOM node. Resolves the node itself and shows it as a DOM tree, or
+ * falls back to `renderFallback` if the node can't be resolved.
+ */
+export class ConsoleNodeParam extends UI.Widget.Widget {
+    #remoteObject = null;
+    #node = null;
+    #unresolvable = false;
+    #visible = false;
+    #domTree = null;
+    #view;
+    renderFallback = () => nothing;
+    onDimensionChange = () => { };
+    onNodeResolved = () => { };
+    constructor(element, view = NODE_PARAM_VIEW) {
+        super(element);
+        this.element.classList.remove('widget');
+        this.#view = view;
+    }
+    set remoteObject(remoteObject) {
+        if (this.#remoteObject === remoteObject) {
+            return;
+        }
+        this.#remoteObject = remoteObject;
+        this.#node = null;
+        this.#unresolvable = false;
+        this.requestUpdate();
+        void this.#resolveNode(remoteObject);
+    }
+    /**
+     * Whether the message is visible. The DOM tree registers global listeners
+     * while it is shown, so it only stays shown while the message is visible.
+     */
+    set visible(visible) {
+        if (this.#visible === visible) {
+            return;
+        }
+        this.#visible = visible;
+        this.#updateDOMTreeVisibility();
+    }
+    async #resolveNode(remoteObject) {
+        const domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel.DOMModel);
+        const node = domModel ? await domModel.pushObjectAsNodeToFrontend(remoteObject) : null;
+        if (remoteObject !== this.#remoteObject) {
+            return;
+        }
+        this.#node = node;
+        this.#unresolvable = !node;
+        this.requestUpdate();
+        await this.updateComplete;
+        // The node arrives asynchronously, after the message was measured.
+        if (this.#domTree) {
+            this.onDimensionChange(this.#domTree.element);
+        }
+        this.onNodeResolved();
+    }
+    #updateDOMTreeVisibility() {
+        if (!this.#domTree) {
+            return;
+        }
+        if (!this.#visible) {
+            this.#domTree.hideWidget();
+        }
+        else if (this.#domTree.element.isConnected) {
+            this.#domTree.showWidget();
+        }
+    }
+    #onDOMTreeCreated = (domTree) => {
+        if (this.#domTree === domTree) {
+            return;
+        }
+        this.#domTree = domTree;
+        // @ts-expect-error used in console_test_runner
+        domTree.element.domTreeWidgetForTest = domTree;
+    };
+    #onTreeResized = () => {
+        if (this.#domTree) {
+            this.onDimensionChange(this.#domTree.element);
+        }
+    };
+    performUpdate() {
+        if (!this.#remoteObject) {
+            return;
+        }
+        if (this.#unresolvable) {
+            this.#domTree?.hideWidget();
+            this.#domTree = null;
+        }
+        this.#view({
+            node: this.#node,
+            fallback: this.#unresolvable ? this.renderFallback(this.#remoteObject) : null,
+            onTreeResized: this.#onTreeResized,
+            onDOMTreeCreated: this.#onDOMTreeCreated,
+        }, undefined, this.contentElement);
+        this.#updateDOMTreeVisibility();
+    }
+}
+export const ERROR_PARAM_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `<devtools-widget
+    data-console-selectable=${"links" /* SelectableKind.LINKS */}
+    ${input.error
+        ? widget(SymbolizedErrorWidget, { ignoreListManager: input.ignoreListManager, error: input.error })
+        : widget(SymbolizedErrorWidget, { ignoreListManager: input.ignoreListManager })}
+    ${widgetRef(SymbolizedErrorWidget, ensureWidgetCreated)}></devtools-widget>`, target);
+    // clang-format on
+};
+/** A logged error, symbolized against its source maps before it is shown. */
+export class ConsoleErrorParam extends UI.Widget.Widget {
+    #remoteObject = null;
+    #exceptionDetails;
+    #error = null;
+    #symbolizeScheduled = false;
+    #symbolized = Promise.resolve();
+    #view;
+    constructor(element, view = ERROR_PARAM_VIEW) {
+        super(element);
+        this.element.classList.remove('widget');
+        this.#view = view;
+    }
+    set remoteObject(remoteObject) {
+        if (this.#remoteObject === remoteObject) {
+            return;
+        }
+        this.#remoteObject = remoteObject;
+        this.#scheduleSymbolize();
+    }
+    set exceptionDetails(exceptionDetails) {
+        if (this.#exceptionDetails === exceptionDetails) {
+            return;
+        }
+        this.#exceptionDetails = exceptionDetails;
+        this.#scheduleSymbolize();
+    }
+    /** Resolves once the error is symbolized and rendered. */
+    get symbolizedForTest() {
+        return this.#symbolized;
+    }
+    #scheduleSymbolize() {
+        this.#error = null;
+        this.requestUpdate();
+        // Both properties are usually set together; symbolize once for both.
+        if (this.#symbolizeScheduled) {
+            return;
+        }
+        this.#symbolizeScheduled = true;
+        this.#symbolized = Promise.resolve().then(() => {
+            this.#symbolizeScheduled = false;
+            return this.#symbolize();
+        });
+    }
+    async #symbolize() {
+        const remoteObject = this.#remoteObject;
+        if (!remoteObject) {
+            return;
+        }
+        const error = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(remoteObject, this.#exceptionDetails);
+        if (remoteObject !== this.#remoteObject || !error) {
+            return;
+        }
+        this.#error = error;
+        this.requestUpdate();
+        await this.updateComplete;
+        await UI.Widget.Widget.allUpdatesComplete;
+    }
+    performUpdate() {
+        this.#view({ error: this.#error, ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance() }, undefined, this.contentElement);
+    }
+}
+function invokeGetter(arrayStr) {
+    let result = this;
+    const properties = JSON.parse(arrayStr);
+    for (let i = 0, n = properties.length; i < n; ++i) {
+        // @ts-expect-error callFunction expects this to be a generic Object, so while this works we can't be more specific on types.
+        result = result[properties[i]];
+    }
+    return result;
+}
+export const ACCESSOR_PARAM_VIEW = (input, _output, target) => {
+    if (input.result) {
+        render(html `<span>${input.result}</span>`, target);
+        return;
+    }
+    const onInvoke = input.onInvoke;
+    if (!onInvoke) {
+        render(html `<span><span>${i18nString(UIStrings.dots)}</span></span>`, target);
+        return;
+    }
+    const onClick = (event) => {
+        event.consume(true);
+        onInvoke();
+    };
+    // clang-format off
+    render(html `<span><span
+    class="object-value-calculate-value-button"
+    role="button"
+    tabindex="0"
+    title=${i18nString(UIStrings.invokePropertyGetter)}
+    aria-label=${i18nString(UIStrings.invokePropertyGetter)}
+    @click=${onClick}
+    @keydown=${(event) => {
+        if (!event.isComposing && Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+            onClick(event);
+        }
+    }}>${i18nString(UIStrings.dots)}</span></span>`, target);
+    // clang-format on
+};
+/** An accessor property whose value is shown once the user invokes its getter. */
+export class ConsoleAccessorParam extends UI.Widget.Widget {
+    #object = null;
+    #propertyPath = [];
+    #renderResult = () => null;
+    #result = null;
+    #view;
+    constructor(element, view = ACCESSOR_PARAM_VIEW) {
+        super(element);
+        this.element.classList.remove('widget');
+        this.#view = view;
+    }
+    set object(object) {
+        if (this.#object === object) {
+            return;
+        }
+        this.#object = object;
+        this.#result = null;
+        this.requestUpdate();
+    }
+    set propertyPath(propertyPath) {
+        if (this.#propertyPath.length === propertyPath.length &&
+            this.#propertyPath.every((value, index) => value === propertyPath[index])) {
+            return;
+        }
+        this.#propertyPath = propertyPath;
+        this.#result = null;
+        this.requestUpdate();
+    }
+    /** Renders the getter's result, or returns null to keep showing the invoke button. */
+    set renderResult(renderResult) {
+        this.#renderResult = renderResult;
+    }
+    async #invokeGetter() {
+        const object = this.#object;
+        const propertyPath = this.#propertyPath;
+        if (!object) {
+            return;
+        }
+        const result = await object.callFunction(invokeGetter, [{ value: JSON.stringify(propertyPath) }]);
+        if (object !== this.#object || propertyPath !== this.#propertyPath) {
+            return;
+        }
+        const template = this.#renderResult(result);
+        if (!template) {
+            return;
+        }
+        this.#result = template;
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const onInvoke = this.#object ? () => void this.#invokeGetter() : null;
+        this.#view({ result: this.#result, onInvoke }, undefined, this.contentElement);
+    }
+}
 export class ConsoleViewMessage {
     message;
     linkifier;
     repeatCountInternal;
     closeGroupDecorationCount;
     consoleGroupInternal;
-    selectableChildren;
     // Re-formatting reuses these, so that the rendered parameters keep their
     // identity and async content isn't requested and rendered again.
     #remoteObjects = new WeakMap();
-    #objectSelectableItems = new WeakMap();
     #objectFunctionTitlePromises = new WeakMap();
     #functionParameterPromises = new WeakMap();
-    // Trees rendering logged DOM nodes; they follow the message visibility.
-    domTreeWidgets = [];
     // Stack trace previews are also root widgets and follow the message visibility.
     stackTracePreviews = [];
     messageResized;
@@ -330,7 +704,6 @@ export class ConsoleViewMessage {
         this.issueResolver = issueResolver;
         this.repeatCountInternal = 1;
         this.closeGroupDecorationCount = 0;
-        this.selectableChildren = [];
         this.messageResized = onResize;
         this.elementInternal = null;
         this.previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
@@ -375,8 +748,8 @@ export class ConsoleViewMessage {
     }
     wasShown() {
         this.isVisibleInternal = true;
-        for (const domTree of this.domTreeWidgets) {
-            domTree.wasShown();
+        for (const nodeParam of this.#nodeParams()) {
+            nodeParam.visible = true;
         }
         for (const stackTracePreview of this.stackTracePreviews) {
             stackTracePreview.wasShown();
@@ -387,11 +760,15 @@ export class ConsoleViewMessage {
     }
     onResize() {
     }
+    #nodeParams() {
+        const hosts = this.elementInternal?.querySelectorAll('.console-node-param') ?? [];
+        return [...hosts].map(host => UI.Widget.Widget.get(host)).filter(param => param instanceof ConsoleNodeParam);
+    }
     willHide() {
         this.isVisibleInternal = false;
         this.cachedHeight = this.element().offsetHeight;
-        for (const domTree of this.domTreeWidgets) {
-            domTree.willHide();
+        for (const nodeParam of this.#nodeParams()) {
+            nodeParam.visible = false;
         }
         for (const stackTracePreview of this.stackTracePreviews) {
             stackTracePreview.willHide();
@@ -466,7 +843,8 @@ export class ConsoleViewMessage {
                                 const remoteObj = parameter instanceof SDK.RemoteObject.RemoteObject ?
                                     parameter :
                                     runtimeModel.createRemoteObject(parameter);
-                                messageElement = this.renderSymbolizedError(remoteObj);
+                                messageElement = document.createElement('span');
+                                render(this.renderSymbolizedError(remoteObj), messageElement);
                             }
                         }
                     }
@@ -517,7 +895,7 @@ export class ConsoleViewMessage {
             const linkElement = Components.Linkifier.Linkifier.linkifyRevealable(request, request.url(), request.url(), undefined, undefined, 'network-request');
             // Focus is handled by the viewport.
             linkElement.tabIndex = -1;
-            this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
+            linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
             messageElement.appendChild(linkElement);
             if (request.failed) {
                 UI.UIUtils.createTextChildren(messageElement, ' ', request.localizedFailDescription || '');
@@ -538,7 +916,7 @@ export class ConsoleViewMessage {
                     Components.Linkifier.Linkifier.linkifyRevealable((request), url, request.url(), undefined, undefined, 'network-request') :
                     Components.Linkifier.Linkifier.linkifyURL(url, { text, lineNumber, columnNumber, initiatorId });
                 linkElement.tabIndex = -1;
-                this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
+                linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
                 return linkElement;
             });
             appendOrShow(messageElement, fragment);
@@ -602,10 +980,7 @@ export class ConsoleViewMessage {
         // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.
         if (anchorElement) {
             anchorElement.tabIndex = -1;
-            this.selectableChildren.push({
-                element: anchorElement,
-                forceSelect: () => anchorElement.focus(),
-            });
+            anchorElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
             const anchorWrapperElement = document.createElement('span');
             anchorWrapperElement.classList.add('console-message-anchor');
             anchorWrapperElement.appendChild(anchorElement);
@@ -696,20 +1071,16 @@ export class ConsoleViewMessage {
         const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent();
         stackTracePreview.options = { widthConstrained: true };
         if (stackTraceTarget && stackTrace) {
-            const selectableChildIndex = this.selectableChildren.length;
             const stackTracePromise = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                 .createStackTraceFromProtocolRuntime(stackTrace, stackTraceTarget)
                 .then(stackTrace => {
                 stackTracePreview.stackTrace = stackTrace;
                 return stackTracePreview.updateComplete;
-            })
-                .then(() => {
-                const selectableLinks = stackTracePreview.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
-                this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
             });
             this.#formatErrorStackPromiseForTest =
                 Promise.all([this.#formatErrorStackPromiseForTest, stackTracePromise]).then(() => { });
         }
+        stackTracePreview.element.setAttribute(SELECTABLE_ATTRIBUTE, "links" /* SelectableKind.LINKS */);
         stackTracePreview.markAsRoot();
         stackTracePreview.show(stackTraceElement);
         // The stack trace preview is a root widget, so it does not learn about the
@@ -772,11 +1143,9 @@ export class ConsoleViewMessage {
         }
         const outputType = forceObjectFormat ? 'object' : (output.subtype || output.type);
         const typeClasses = `object-value-${outputType} source-code`;
-        let element;
         switch (outputType) {
             case 'error':
-                element = this.renderSymbolizedError(output);
-                break;
+                return this.renderSymbolizedError(output, typeClasses);
             case 'function':
                 return this.formatParameterAsFunction(output, includePreview, typeClasses);
             case 'array':
@@ -797,11 +1166,8 @@ export class ConsoleViewMessage {
             case 'webassemblymemory':
                 return this.formatParameterAsObject(output, includePreview, typeClasses);
             case 'node':
-                if (!output.isNode()) {
-                    return this.formatParameterAsObject(output, false, typeClasses);
-                }
-                element = this.formatParameterAsNode(output);
-                break;
+                return output.isNode() ? this.formatParameterAsNode(output, typeClasses) :
+                    this.formatParameterAsObject(output, false, typeClasses);
             case 'trustedtype':
                 return this.formatParameterAsObject(output, false, typeClasses);
             case 'string':
@@ -819,9 +1185,6 @@ export class ConsoleViewMessage {
                 console.error(`Tried to format remote object of unknown type ${outputType}.`);
                 return this.formatParameterAsValue(output, typeClasses);
         }
-        element.classList.add(`object-value-${outputType}`);
-        element.classList.add('source-code');
-        return element;
     }
     formatParameterAsValue(obj, extraClasses = '') {
         const description = obj.description || '';
@@ -873,17 +1236,6 @@ export class ConsoleViewMessage {
         if (!isExpandable) {
             return renderTitleSpan(extraClasses, true);
         }
-        let selectableItem = this.#objectSelectableItems.get(obj);
-        if (!selectableItem) {
-            selectableItem = {
-                element: document.createElement('span'),
-                forceSelect: () => { },
-            };
-            this.#objectSelectableItems.set(obj, selectableItem);
-        }
-        if (!this.selectableChildren.includes(selectableItem)) {
-            this.selectableChildren.push(selectableItem);
-        }
         const noteTitle = this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult ?
             i18nString(UIStrings.thisValueWillNotBeCollectedUntil) :
             i18nString(UIStrings.thisValueWasEvaluatedUponFirst);
@@ -894,22 +1246,14 @@ export class ConsoleViewMessage {
         // clang-format off
         return html `<span class=${ifDefined(extraClasses || undefined)}><devtools-widget
       class="console-view-object-properties-section"
+      data-console-selectable=${"object" /* SelectableKind.OBJECT */}
       ${widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
             root: obj,
             title: sectionTitle,
             linkifier: this.linkifier,
             onTreeResized: this.#onTreeResized,
         })}
-      ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, section => {
-            selectableItem.element = section.element;
-            selectableItem.forceSelect = () => {
-                const tree = section.element.querySelector('devtools-tree');
-                tree?.focus();
-                if (tree && !tree.hasFocus()) {
-                    tree.focus();
-                }
-            };
-        })}></devtools-widget></span>`;
+      ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, ensureWidgetCreated)}></devtools-widget></span>`;
         // clang-format on
     }
     formatParameterAsFunction(originalFunction, includePreview, extraClasses = '') {
@@ -975,66 +1319,31 @@ export class ConsoleViewMessage {
     }
     renderPropertyPreviewOrAccessor(object, property, propertyPath) {
         if (property.type === 'accessor') {
-            return this.formatAsAccessorProperty(object, propertyPath.map(property => property.name.toString()), false);
+            return this.formatAsAccessorProperty(object, propertyPath.map(prop => prop.name.toString()));
         }
         return this.renderPropertyPreview(property.type, 'subtype' in property ? property.subtype : undefined, null, property.value);
     }
-    formatParameterAsNode(remoteObject) {
-        const result = document.createElement('span');
-        const domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel.DOMModel);
-        if (!domModel) {
-            return result;
-        }
-        // Show the widget into the still detached container right away (like the
-        // object properties section) so that widget bookkeeping does not spill
-        // into the message element, which is rebuilt with plain DOM methods.
-        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
-        domTree.omitRootDOMNode = false;
-        domTree.selectEnabled = true;
-        domTree.hideGutter = true;
-        domTree.deindentSingleNode = true;
-        domTree.showSelectionOnKeyboardFocus = true;
-        // Long lines wrap like the rest of the message (the legacy outline wrapped
-        // by default; DOMTreeWidget does not).
-        domTree.wrap = true;
-        // FIXME: this should not be needed once ConsoleViewMessage is rendering
-        // declaratively and the tree auto-resizes itself.
-        const dispatchDimensionChange = () => {
-            this.messageResized({ data: domTree.element });
-        };
-        domTree.onElementsTreeUpdated = dispatchDimensionChange;
-        domTree.onElementExpanded = dispatchDimensionChange;
-        domTree.onElementCollapsed = dispatchDimensionChange;
-        domTree.markAsRoot();
-        domTree.show(result);
-        // The tree is a root widget, so it does not learn about the message
-        // visibility from the widget hierarchy. Follow the message instead (see
-        // wasShown/willHide) so that the tree does not stay alive through the
-        // global listeners it registers while showing.
-        this.domTreeWidgets.push(domTree);
-        if (!this.isVisibleInternal) {
-            domTree.willHide();
-        }
-        // @ts-expect-error used in console_test_runner
-        result.domTreeWidgetForTest = domTree;
-        void domModel.pushObjectAsNodeToFrontend(remoteObject).then((node) => {
-            if (!node) {
-                this.domTreeWidgets.splice(this.domTreeWidgets.indexOf(domTree), 1);
-                domTree.detach();
-                render(this.formatParameterAsObject(remoteObject, false), result);
-                return;
-            }
-            domTree.rootDOMNode = node;
-            this.selectableChildren.push({
-                element: domTree.element,
-                forceSelect: () => domTree.selectDOMNode(node, /* focus= */ true),
-            });
-            // The node arrives asynchronously, after the message was measured.
-            dispatchDimensionChange();
-            this.formattedParameterAsNodeForTest();
-        });
-        return result;
+    formatParameterAsNode(remoteObject, extraClasses = '') {
+        // clang-format off
+        return html `<devtools-widget class=${`console-node-param ${extraClasses}`}
+      ${widget(ConsoleNodeParam, {
+            remoteObject,
+            visible: this.isVisibleInternal,
+            renderFallback: this.#renderNodeParamFallback,
+            onDimensionChange: this.#onNodeParamResized,
+            onNodeResolved: this.#onNodeParamResolved,
+        })}
+      ${widgetRef(ConsoleNodeParam, ensureWidgetCreated)}></devtools-widget>`;
+        // clang-format on
     }
+    #renderNodeParamFallback = (object) => this.formatParameterAsObject(object, false);
+    #onNodeParamResized = (element) => {
+        this.messageResized({ data: element });
+    };
+    #onNodeParamResolved = () => {
+        this.formattedParameterAsNodeForTest();
+    };
+    // Sniffed in web_tests.
     formattedParameterAsNodeForTest() {
     }
     formatParameterAsString(output, extraClasses = '') {
@@ -1046,96 +1355,49 @@ export class ConsoleViewMessage {
       @contextmenu=${this.contextMenuEventFired.bind(this, output)}>${this.linkifyStringAsFragment(text)}</span>`;
         // clang-format on
     }
-    renderSymbolizedError(errorRemoteObject) {
-        const container = document.createElement('span');
-        const widget = new SymbolizedErrorWidget();
-        widget.ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
-        const selectableChildIndex = this.selectableChildren.length;
-        const format = async () => {
-            const error = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(errorRemoteObject, this.message.exceptionDetails);
-            if (error) {
-                widget.error = error;
-            }
-            await widget.updateComplete;
-            const selectableLinks = widget.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
-            this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
-        };
-        this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, format()]).then(() => { });
-        widget.markAsRoot();
-        widget.show(container);
-        return container;
-    }
-    formatAsArrayEntry(output) {
-        return this.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
+    renderSymbolizedError(errorRemoteObject, extraClasses = '') {
+        // clang-format off
+        return html `<devtools-widget class=${ifDefined(extraClasses || undefined)}
+      ${widget(ConsoleErrorParam, { exceptionDetails: this.message.exceptionDetails, remoteObject: errorRemoteObject })}
+      ${widgetRef(ConsoleErrorParam, errorParam => {
+            this.#formatErrorStackPromiseForTest =
+                Promise.all([this.#formatErrorStackPromiseForTest, errorParam.symbolizedForTest]).then(() => { });
+        })}></devtools-widget>`;
+        // clang-format on
     }
     renderPropertyPreview(type, subtype, className, description) {
-        const fragment = document.createDocumentFragment();
-        render(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
-        return fragment;
+        return this.previewFormatter.renderPropertyPreview(type, subtype, className, description);
     }
-    createRemoteObjectAccessorPropertySpan(object, propertyPath, callback) {
-        const rootElement = document.createElement('span');
-        const element = rootElement.createChild('span');
-        element.textContent = i18nString(UIStrings.dots);
-        if (!object) {
-            return rootElement;
-        }
-        element.classList.add('object-value-calculate-value-button');
-        UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.invokePropertyGetter));
-        element.addEventListener('click', onInvokeGetterClick, false);
-        function onInvokeGetterClick(event) {
-            event.consume();
-            if (object) {
-                void object.callFunction(invokeGetter, [{ value: JSON.stringify(propertyPath) }]).then(callback);
-            }
-        }
-        function invokeGetter(arrayStr) {
-            let result = this;
-            const properties = JSON.parse(arrayStr);
-            for (let i = 0, n = properties.length; i < n; ++i) {
-                // @ts-expect-error callFunction expects this to be a generic Object, so while this works we can't be more specific on types.
-                result = result[properties[i]];
-            }
-            return result;
-        }
-        return rootElement;
+    formatAsAccessorProperty(object, propertyPath) {
+        // clang-format off
+        return html `<devtools-widget
+      ${widget(ConsoleAccessorParam, { object, propertyPath, renderResult: this.#renderAccessorResult })}
+      ${widgetRef(ConsoleAccessorParam, ensureWidgetCreated)}></devtools-widget>`;
+        // clang-format on
     }
-    formatAsAccessorProperty(object, propertyPath, isArrayEntry) {
-        const rootElement = this.createRemoteObjectAccessorPropertySpan(object, propertyPath, onInvokeGetterClick.bind(this));
-        function onInvokeGetterClick(result) {
-            const wasThrown = result.wasThrown;
-            const object = result.object;
-            if (!object) {
-                return;
-            }
-            rootElement.removeChildren();
-            if (wasThrown) {
-                const element = rootElement.createChild('span');
-                element.textContent = i18nString(UIStrings.exception);
-                UI.Tooltip.Tooltip.install(element, object.description);
-            }
-            else if (isArrayEntry) {
-                rootElement.appendChild(this.formatAsArrayEntry(object));
+    #renderAccessorResult = (result) => {
+        const resultObj = result.object;
+        if (!resultObj) {
+            return null;
+        }
+        if (result.wasThrown) {
+            return html `<span title=${ifDefined(resultObj.description)}>${i18nString(UIStrings.exception)}</span>`;
+        }
+        // Make a PropertyPreview from the RemoteObject similar to the backend logic.
+        const maxLength = 100;
+        const type = resultObj.type;
+        const subtype = resultObj.subtype;
+        let description = '';
+        if (type !== 'function' && resultObj.description) {
+            if (type === 'string' || subtype === 'regexp' || subtype === 'trustedtype') {
+                description = Platform.StringUtilities.trimMiddle(resultObj.description, maxLength);
             }
             else {
-                // Make a PropertyPreview from the RemoteObject similar to the backend logic.
-                const maxLength = 100;
-                const type = object.type;
-                const subtype = object.subtype;
-                let description = '';
-                if (type !== 'function' && object.description) {
-                    if (type === 'string' || subtype === 'regexp' || subtype === 'trustedtype') {
-                        description = Platform.StringUtilities.trimMiddle(object.description, maxLength);
-                    }
-                    else {
-                        description = Platform.StringUtilities.trimEndWithMaxLength(object.description, maxLength);
-                    }
-                }
-                rootElement.appendChild(this.renderPropertyPreview(type, subtype, object.className, description));
+                description = Platform.StringUtilities.trimEndWithMaxLength(resultObj.description, maxLength);
             }
         }
-        return rootElement;
-    }
+        return this.renderPropertyPreview(type, subtype, resultObj.className, description);
+    };
     formatWithSubstitutionString(formatString, parameters, parts) {
         const currentStyle = new Map();
         const { tokens, args } = format(formatString, parameters);
@@ -1277,10 +1539,10 @@ export class ConsoleViewMessage {
             marker.classList.toggle('group-closed', n - i <= this.closeGroupDecorationCount);
         }
     }
+    get selectableChildren() {
+        return collectSelectableChildren(this.elementInternal);
+    }
     focusedChildIndex() {
-        if (!this.selectableChildren.length) {
-            return -1;
-        }
         return this.selectableChildren.findIndex(child => child.element.hasFocus());
     }
     onKeyDown(event) {
@@ -1316,7 +1578,7 @@ export class ConsoleViewMessage {
         }
         if (event.key === 'ArrowUp') {
             const firstVisibleChild = this.nearestVisibleChild(0);
-            if (this.selectableChildren[focusedChildIndex] === firstVisibleChild && firstVisibleChild) {
+            if (firstVisibleChild && this.selectableChildren[focusedChildIndex]?.element === firstVisibleChild.element) {
                 this.elementInternal?.focus();
                 return true;
             }
@@ -1343,19 +1605,20 @@ export class ConsoleViewMessage {
         return false;
     }
     nearestVisibleChild(fromIndex, backwards) {
-        const childCount = this.selectableChildren.length;
+        const children = this.selectableChildren;
+        const childCount = children.length;
         if (fromIndex < 0 || fromIndex >= childCount) {
             return null;
         }
         const direction = backwards ? -1 : 1;
         let index = fromIndex;
-        while (!this.selectableChildren[index].element.offsetParent) {
+        while (!children[index].element.offsetParent) {
             index += direction;
             if (index < 0 || index >= childCount) {
                 return null;
             }
         }
-        return this.selectableChildren[index];
+        return children[index];
     }
     focusLastChildOrSelf() {
         if (this.elementInternal &&
@@ -1828,7 +2091,7 @@ export class ConsoleViewMessage {
             const options = { text, lineNumber, columnNumber, initiatorId };
             const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
             linkElement.tabIndex = -1;
-            this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
+            linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
             return linkElement;
         });
     }
@@ -2109,9 +2372,8 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
                     columnNames.push(cellProperty.name);
                 }
                 if (columnRendered) {
-                    const cellElement = this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty])
-                        .firstElementChild;
-                    cellElement.classList.add('console-message-nowrap-below');
+                    const cellElement = document.createElement('span');
+                    render(this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]), cellElement, { container: { classes: ['console-message-nowrap-below'] } });
                     rowValue.set(cellProperty.name, cellElement);
                 }
             }

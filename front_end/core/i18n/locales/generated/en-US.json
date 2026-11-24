@@ -7160,6 +7160,9 @@
   "panels/console/ConsoleView.ts | doNotClearLogOnPageReload": {
     "message": "Don’t clear log on page reload / navigation"
   },
+  "panels/console/ConsoleView.ts | eagerEvaluation": {
+    "message": "Eager evaluation"
+  },
   "panels/console/ConsoleView.ts | eagerlyEvaluateTextInThePrompt": {
     "message": "Eagerly evaluate text in the prompt"
   },
@@ -7168,6 +7171,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Errors"
+  },
+  "panels/console/ConsoleView.ts | evaluateTriggersUserActivation": {
+    "message": "Treat code evaluation as user action"
   },
   "panels/console/ConsoleView.ts | expandAll": {
     "message": "Expand all"
@@ -17176,6 +17182,9 @@
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Hide heaviest stack"
+  },
+  "panels/timeline/TimelineTreeView.ts | levelS": {
+    "message": "Level {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
     "message": "Match case"

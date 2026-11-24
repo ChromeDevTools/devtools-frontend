@@ -5,8 +5,8 @@ import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { ResourcesPanel } from './ResourcesPanel.js';
 export declare class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
+    #private;
     protected readonly resourcesPanel: ResourcesPanel;
-    private customItemURL?;
     protected aiButtonContainer?: HTMLElement;
     constructor(resourcesPanel: ResourcesPanel, title: string, expandable: boolean, jslogContext: string);
     deselect(): void;
@@ -24,13 +24,13 @@ export declare class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElem
     protected createAiButton(storageItemProvider: () => AiAssistance.StorageItem.StorageItem | null): void;
 }
 export declare class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeElement {
+    #private;
     protected readonly expandedSetting: Common.Settings.Setting<boolean>;
     protected readonly categoryName: string;
     protected categoryLink: Platform.DevToolsPath.UrlString | null;
     protected emptyCategoryHeadline: string;
     protected categoryDescription: string;
     protected readonly settingsKey: string;
-    private wasDescendantSelected;
     constructor(resourcesPanel: ResourcesPanel, categoryName: string, emptyCategoryHeadline: string, categoryDescription: string, settingsKey: string, settingsDefault?: boolean);
     createGenericStorageAiContext(): AiAssistance.StorageItem.StorageItem | null;
     get itemURL(): Platform.DevToolsPath.UrlString;
@@ -38,10 +38,6 @@ export declare class ExpandableApplicationPanelTreeElement extends ApplicationPa
     setLink(link: Platform.DevToolsPath.UrlString): void;
     select(omitFocus?: boolean, selectedByUser?: boolean): boolean;
     onselect(selectedByUser: boolean | undefined): boolean;
-    private isOriginStorageCategory;
-    private getMainPageOrigin;
-    private findChildToAutoSelect;
-    private updateCategoryView;
     appendChild(child: UI.TreeOutline.TreeElement, comparator?: ((arg0: UI.TreeOutline.TreeElement, arg1: UI.TreeOutline.TreeElement) => number) | undefined): void;
     removeChild(child: UI.TreeOutline.TreeElement): void;
     onattach(): void;

@@ -1,4 +1,5 @@
 import '../../ui/legacy/legacy.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -12,6 +13,30 @@ import { TimelineFlameChartView } from './TimelineFlameChartView.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 import type * as Utils from './utils/utils.js';
 declare const TimelinePanelBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Panel.Panel>;
+export interface SettingsPaneViewInput {
+    isNode: boolean;
+    canRecord: boolean;
+    uiControlsEnabled: boolean;
+    showSettingsPane: boolean;
+    showScreenshots: boolean;
+    captureSelectorStatsSetting: Common.Settings.Setting<boolean>;
+    captureSelectorStatsTitle: string;
+    captureLayersAndPicturesSetting: Common.Settings.Setting<boolean>;
+    captureLayersAndPicturesTitle: string;
+    disableCaptureJSProfileSetting: Common.Settings.Setting<boolean>;
+    disableCaptureJSProfileTitle: string;
+    screenshotCaptureModeTitle: string;
+    selectedScreenshotCaptureMode: string;
+    thirdPartyTracksSetting: Common.Settings.Setting<boolean>;
+    thirdPartyTracksTitle: string;
+    onScreenshotPresetChange: (value: string) => void;
+    onLoadFromFile: (file: File) => void;
+}
+export interface SettingsPaneViewOutput {
+    openFileSelector?: () => void;
+}
+export type SettingsPaneView = (input: SettingsPaneViewInput, output: SettingsPaneViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_SETTINGS_PANE_VIEW: SettingsPaneView;
 export declare class TimelinePanel extends TimelinePanelBase implements Client, TimelineModeViewDelegate {
     #private;
     private readonly dropTarget;
@@ -31,9 +56,8 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
     private readonly timelinePane;
     private readonly statusPaneContainer;
     private readonly flameChart;
-    private showSettingsPaneButton;
+    private showSettingsPaneButton?;
     private showSettingsPaneSetting;
-    private settingsPane?;
     private controller;
     private cpuProfiler;
     private clearButton;
@@ -46,11 +70,11 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
     private loader?;
     private showScreenshotsToolbarCheckbox?;
     private showMemoryToolbarCheckbox?;
-    private cpuThrottlingSelect?;
-    private fileSelectorElement?;
     private selection;
     private traceLoadStart;
-    constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, targetManager: SDK.TargetManager.TargetManager, isolateManager: SDK.IsolateManager.IsolateManager, commentManager: CommentManager.CommentManager.CommentManager, traceModel?: Trace.TraceModel.Model);
+    constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, targetManager: SDK.TargetManager.TargetManager, isolateManager: SDK.IsolateManager.IsolateManager, commentManager: CommentManager.CommentManager.CommentManager, traceModel?: Trace.TraceModel.Model, settingsPaneView?: SettingsPaneView);
+    get settingsPane(): HTMLElement | null;
+    performUpdate(): void;
     zoomEvent(event: Trace.Types.Events.Event): void;
     /**
      * This disables the 3P checkbox in the toolbar.
@@ -103,7 +127,6 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
     private populateToolbar;
     private createSettingsPane;
     private prepareToLoadTimeline;
-    private createFileSelector;
     private contextMenu;
     saveToFile(config: {
         includeResourceContent: boolean;

@@ -15,8 +15,9 @@ type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class RequestResponseView extends UI.Widget.VBox {
     #private;
-    request: SDK.NetworkRequest.NetworkRequest;
-    constructor(request: SDK.NetworkRequest.NetworkRequest, view?: View);
+    constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement, view?: View);
+    get request(): SDK.NetworkRequest.NetworkRequest;
+    set request(request: SDK.NetworkRequest.NetworkRequest);
     wasShown(): void;
     performUpdate(): Promise<void>;
     getMimeTypeForDisplay(): string;

@@ -5,7 +5,9 @@ import { DataGridItem, ResourceChunkView } from './ResourceChunkView.js';
 export declare class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.NetworkRequest.DirectSocketChunk> {
     #private;
     get headerTemplate(): Lit.TemplateResult;
-    constructor(request: SDK.NetworkRequest.NetworkRequest);
+    constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement);
+    get request(): SDK.NetworkRequest.NetworkRequest;
+    set request(request: SDK.NetworkRequest.NetworkRequest);
     getRequestChunks(): SDK.NetworkRequest.DirectSocketChunk[];
     chunkFilter(chunk: SDK.NetworkRequest.DirectSocketChunk): boolean;
     createGridItem(chunk: SDK.NetworkRequest.DirectSocketChunk): DataGridItem;

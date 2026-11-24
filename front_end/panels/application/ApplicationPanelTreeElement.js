@@ -11,7 +11,7 @@ import * as Lit from '../../ui/lit/lit.js';
 const { html } = Lit;
 export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     resourcesPanel;
-    customItemURL;
+    #customItemURL;
     aiButtonContainer;
     constructor(resourcesPanel, title, expandable, jslogContext) {
         super(title, expandable, jslogContext);
@@ -24,13 +24,13 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
         this.listItemElement.tabIndex = -1;
     }
     get itemURL() {
-        if (this.customItemURL) {
-            return this.customItemURL;
+        if (this.#customItemURL) {
+            return this.#customItemURL;
         }
         throw new Error('Unimplemented Method');
     }
     set itemURL(value) {
-        this.customItemURL = value;
+        this.#customItemURL = value;
     }
     onselect(selectedByUser) {
         if (!selectedByUser) {
@@ -98,7 +98,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     emptyCategoryHeadline;
     categoryDescription;
     settingsKey;
-    wasDescendantSelected = false;
+    #wasDescendantSelected = false;
     constructor(resourcesPanel, categoryName, emptyCategoryHeadline, categoryDescription, settingsKey, settingsDefault = false) {
         super(resourcesPanel, categoryName, false, settingsKey);
         this.settingsKey = settingsKey;
@@ -138,43 +138,43 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     select(omitFocus, selectedByUser) {
         if (this.selected && selectedByUser && !this.expanded && this.childCount() > 0) {
             this.expand();
-            const childToSelect = this.findChildToAutoSelect();
+            const childToSelect = this.#findChildToAutoSelect();
             if (childToSelect) {
                 childToSelect.select(omitFocus, true);
             }
             return false;
         }
         const previousSelected = this.treeOutline?.selectedTreeElement ?? null;
-        this.wasDescendantSelected = Boolean(previousSelected?.hasAncestor(this));
+        this.#wasDescendantSelected = Boolean(previousSelected?.hasAncestor(this));
         try {
             return super.select(omitFocus, selectedByUser);
         }
         finally {
-            this.wasDescendantSelected = false;
+            this.#wasDescendantSelected = false;
         }
     }
     onselect(selectedByUser) {
         super.onselect(selectedByUser);
-        if (selectedByUser && !this.wasDescendantSelected && this.childCount() > 0) {
+        if (selectedByUser && !this.#wasDescendantSelected && this.childCount() > 0) {
             if (!this.expanded) {
                 this.expand();
             }
-            const childToSelect = this.findChildToAutoSelect();
+            const childToSelect = this.#findChildToAutoSelect();
             if (childToSelect) {
                 childToSelect.select(/* omitFocus= */ false, /* selectedByUser= */ true);
                 return false;
             }
         }
-        this.updateCategoryView();
+        this.#updateCategoryView();
         const item = this.createGenericStorageAiContext();
         UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item);
         return false;
     }
-    isOriginStorageCategory() {
+    #isOriginStorageCategory() {
         return this.settingsKey === 'cookies' || this.settingsKey === 'local-storage' ||
             this.settingsKey === 'session-storage';
     }
-    getMainPageOrigin() {
+    #getMainPageOrigin() {
         const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!target) {
             return '';
@@ -183,15 +183,15 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
         const url = mainFrame?.unreachableUrl() || mainFrame?.url || target.inspectedURL();
         return url ? Common.ParsedURL.ParsedURL.extractOrigin(url) : '';
     }
-    findChildToAutoSelect() {
-        if (!this.isOriginStorageCategory()) {
+    #findChildToAutoSelect() {
+        if (!this.#isOriginStorageCategory()) {
             return null;
         }
         const selectableChildren = this.children().filter(child => child.selectable && !child.isExpandable());
         if (selectableChildren.length === 0) {
             return null;
         }
-        const mainPageOrigin = this.getMainPageOrigin();
+        const mainPageOrigin = this.#getMainPageOrigin();
         if (mainPageOrigin) {
             const matchingChild = selectableChildren.find(child => child.titleAsText() === mainPageOrigin);
             if (matchingChild) {
@@ -200,7 +200,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
         }
         return selectableChildren.length === 1 ? selectableChildren[0] : null;
     }
-    updateCategoryView() {
+    #updateCategoryView() {
         const headline = this.childCount() === 0 ? this.emptyCategoryHeadline : this.categoryName;
         this.resourcesPanel.showCategoryView(this.categoryName, headline, this.categoryDescription, this.categoryLink);
     }
@@ -208,14 +208,14 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
         super.appendChild(child, comparator);
         // Only update if relevant (changing from 0 to 1 child).
         if (this.selected && this.childCount() === 1) {
-            this.updateCategoryView();
+            this.#updateCategoryView();
         }
     }
     removeChild(child) {
         super.removeChild(child);
         // Only update if relevant (changing to 0 children).
         if (this.selected && this.childCount() === 0) {
-            this.updateCategoryView();
+            this.#updateCategoryView();
         }
     }
     onattach() {

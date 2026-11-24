@@ -69,7 +69,9 @@ export class CSSQuery extends UI.Widget.Widget {
     #view;
     #queryPrefix = '';
     #queryName;
+    #rawQueryText = '';
     #queryText = [];
+    #styleQueryContext;
     #onQueryTextClick;
     #onLinkActivate;
     #getRegisteredPropertyDetails;
@@ -85,11 +87,38 @@ export class CSSQuery extends UI.Widget.Widget {
     set data(data) {
         this.#queryPrefix = data.queryPrefix;
         this.#queryName = data.queryName;
+        this.#rawQueryText = data.queryText;
         this.#queryText = [{ text: data.queryText, isVariable: false }];
         this.#onQueryTextClick = data.onQueryTextClick;
         this.#onLinkActivate = data.onLinkActivate;
         this.#getRegisteredPropertyDetails = data.getRegisteredPropertyDetails;
         this.#jslogContext = data.jslogContext;
+        if (this.#styleQueryContext) {
+            this.#applyStyleQueryContext(this.#styleQueryContext);
+        }
+        // Synchronous update required by ElementsTestRunner.printStyleSection and CSSQuery tests.
+        this.performUpdate();
+    }
+    /**
+     * Resolves custom properties in a container style query so parent Lit views
+     * can configure `CSSQuery` declaratively via `widget()` regardless of setter order.
+     */
+    set styleQueryContext(context) {
+        if (this.#styleQueryContext === context) {
+            return;
+        }
+        this.#styleQueryContext = context;
+        if (context) {
+            this.#applyStyleQueryContext(context);
+        }
+        else {
+            this.#matchedStyles = undefined;
+            this.#style = undefined;
+            this.#containerNode = undefined;
+            this.#tooltipPrefix = undefined;
+            this.#queryText = [{ text: this.#rawQueryText, isVariable: false }];
+        }
+        // Synchronous update required by ElementsTestRunner.printStyleSection and CSSQuery tests.
         this.performUpdate();
     }
     wasShown() {
@@ -97,11 +126,15 @@ export class CSSQuery extends UI.Widget.Widget {
         this.performUpdate();
     }
     parseStyleQueries(matchedStyles, style, containerNode, tooltipPrefix) {
+        this.styleQueryContext = { matchedStyles, style, containerNode, tooltipPrefix };
+    }
+    #applyStyleQueryContext(context) {
+        const { matchedStyles, style, containerNode, tooltipPrefix } = context;
         this.#matchedStyles = matchedStyles;
         this.#style = style;
         this.#containerNode = containerNode;
         this.#tooltipPrefix = tooltipPrefix;
-        const queryText = this.#queryText[0]?.text;
+        const queryText = this.#rawQueryText;
         if (!queryText) {
             return;
         }
@@ -142,7 +175,6 @@ export class CSSQuery extends UI.Widget.Widget {
             });
         }
         this.#queryText = sections;
-        this.performUpdate();
     }
     performUpdate() {
         this.#view({

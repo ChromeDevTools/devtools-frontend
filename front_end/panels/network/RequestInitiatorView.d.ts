@@ -13,7 +13,9 @@ export type View = (input: ViewInput, output: undefined, target: HTMLElement) =>
 export declare const DEFAULT_VIEW: View;
 export declare class RequestInitiatorView extends UI.Widget.VBox {
     #private;
-    constructor(request: SDK.NetworkRequest.NetworkRequest, view?: View);
+    constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement, view?: View);
+    get request(): SDK.NetworkRequest.NetworkRequest | undefined;
+    set request(request: SDK.NetworkRequest.NetworkRequest);
     static createStackTracePreview(request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): Promise<{
         preview: Components.JSPresentationUtils.StackTracePreviewContent;
         stackTrace: StackTrace.StackTrace.StackTrace | null;

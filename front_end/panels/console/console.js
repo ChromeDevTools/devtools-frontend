@@ -1629,6 +1629,7 @@ var Network;
     ResourceType2["CSPViolationReport"] = "CSPViolationReport";
     ResourceType2["Preflight"] = "Preflight";
     ResourceType2["FedCM"] = "FedCM";
+    ResourceType2["EmailVerification"] = "EmailVerification";
     ResourceType2["Other"] = "Other";
   })(ResourceType = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -1806,6 +1807,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;
@@ -3727,11 +3729,17 @@ var consoleInsightTeaser_css_default = `/*
 // ../../front_end/panels/console/ConsoleViewMessage.ts
 var ConsoleViewMessage_exports = {};
 __export(ConsoleViewMessage_exports, {
+  ACCESSOR_PARAM_VIEW: () => ACCESSOR_PARAM_VIEW,
+  ConsoleAccessorParam: () => ConsoleAccessorParam,
   ConsoleCommand: () => ConsoleCommand,
   ConsoleCommandResult: () => ConsoleCommandResult,
+  ConsoleErrorParam: () => ConsoleErrorParam,
   ConsoleGroupViewMessage: () => ConsoleGroupViewMessage,
+  ConsoleNodeParam: () => ConsoleNodeParam,
   ConsoleTableMessageView: () => ConsoleTableMessageView,
   ConsoleViewMessage: () => ConsoleViewMessage,
+  ERROR_PARAM_VIEW: () => ERROR_PARAM_VIEW,
+  NODE_PARAM_VIEW: () => NODE_PARAM_VIEW,
   getLongStringVisibleLength: () => getLongStringVisibleLength,
   getMaxTokenizableStringLength: () => getMaxTokenizableStringLength,
   getMessageForElement: () => getMessageForElement,
@@ -4753,6 +4761,74 @@ var SymbolizedErrorWidget = class extends UI2.Widget.Widget {
 // ../../front_end/panels/console/ConsoleViewMessage.ts
 var { ifDefined, until } = Directives;
 var { widget: widget2, widgetRef } = UI3.Widget;
+function ensureWidgetCreated() {
+}
+var SELECTABLE_ATTRIBUTE = "data-console-selectable";
+function selectableRank(element) {
+  if (element.closest(".console-message-text")) {
+    return 0;
+  }
+  if (element.closest(".console-message-anchor")) {
+    return 1;
+  }
+  return 2;
+}
+function collectSelectableElements(root, rank, result) {
+  for (const element of root.querySelectorAll("*")) {
+    const elementRank = rank ?? selectableRank(element);
+    if (element.hasAttribute(SELECTABLE_ATTRIBUTE)) {
+      result.push({ element, rank: elementRank });
+    }
+    if (element.shadowRoot) {
+      collectSelectableElements(element.shadowRoot, elementRank, result);
+    }
+  }
+}
+function selectableChildrenOf(element) {
+  switch (element.getAttribute(SELECTABLE_ATTRIBUTE)) {
+    case "links" /* LINKS */: {
+      const linkWidget = UI3.Widget.Widget.get(element);
+      if (!(linkWidget instanceof SymbolizedErrorWidget) && !(linkWidget instanceof Components2.JSPresentationUtils.StackTracePreviewContent)) {
+        return [];
+      }
+      return linkWidget.linkElements.map((link) => ({ element: link, forceSelect: () => link.focus() }));
+    }
+    case "dom-tree" /* DOM_TREE */: {
+      const domTree = UI3.Widget.Widget.get(element);
+      const node = domTree instanceof Elements.DOMTreeWidget.DOMTreeWidget ? domTree.rootDOMNode : null;
+      if (!node || !(domTree instanceof Elements.DOMTreeWidget.DOMTreeWidget)) {
+        return [];
+      }
+      return [{ element, forceSelect: () => domTree.selectDOMNode(
+        node,
+        /* focus= */
+        true
+      ) }];
+    }
+    case "object" /* OBJECT */:
+      return [{
+        element,
+        forceSelect: () => {
+          const tree = element.querySelector("devtools-tree");
+          tree?.focus();
+          if (tree && !tree.hasFocus()) {
+            tree.focus();
+          }
+        }
+      }];
+    default:
+      return [{ element, forceSelect: () => element.focus() }];
+  }
+}
+function collectSelectableChildren(root) {
+  if (!root) {
+    return [];
+  }
+  const elements = [];
+  collectSelectableElements(root, void 0, elements);
+  elements.sort((a, b) => a.rank - b.rank);
+  return elements.flatMap(({ element }) => selectableChildrenOf(element));
+}
 var UIStrings2 = {
   /**
    * @description Message element text content in Console view message of the Console panel. Shown
@@ -4968,21 +5044,296 @@ function appendOrShow(parent, child) {
     parent.appendChild(child);
   }
 }
+var NODE_PARAM_VIEW = (input, _output, target) => {
+  if (input.fallback) {
+    render3(input.fallback, target);
+    return;
+  }
+  render3(html3`<devtools-widget
+    data-console-selectable=${"dom-tree" /* DOM_TREE */}
+    ${widget2((element) => new Elements.DOMTreeWidget.DOMTreeWidget(element), {
+    omitRootDOMNode: false,
+    selectEnabled: true,
+    hideGutter: true,
+    deindentSingleNode: true,
+    showSelectionOnKeyboardFocus: true,
+    // Long lines wrap like the rest of the message.
+    wrap: true,
+    rootDOMNode: input.node,
+    onElementsTreeUpdated: input.onTreeResized,
+    onElementExpanded: input.onTreeResized,
+    onElementCollapsed: input.onTreeResized
+  })}
+    ${widgetRef(Elements.DOMTreeWidget.DOMTreeWidget, input.onDOMTreeCreated)}></devtools-widget>`, target);
+};
+var ConsoleNodeParam = class extends UI3.Widget.Widget {
+  #remoteObject = null;
+  #node = null;
+  #unresolvable = false;
+  #visible = false;
+  #domTree = null;
+  #view;
+  renderFallback = () => nothing3;
+  onDimensionChange = () => {
+  };
+  onNodeResolved = () => {
+  };
+  constructor(element, view = NODE_PARAM_VIEW) {
+    super(element);
+    this.element.classList.remove("widget");
+    this.#view = view;
+  }
+  set remoteObject(remoteObject) {
+    if (this.#remoteObject === remoteObject) {
+      return;
+    }
+    this.#remoteObject = remoteObject;
+    this.#node = null;
+    this.#unresolvable = false;
+    this.requestUpdate();
+    void this.#resolveNode(remoteObject);
+  }
+  /**
+   * Whether the message is visible. The DOM tree registers global listeners
+   * while it is shown, so it only stays shown while the message is visible.
+   */
+  set visible(visible) {
+    if (this.#visible === visible) {
+      return;
+    }
+    this.#visible = visible;
+    this.#updateDOMTreeVisibility();
+  }
+  async #resolveNode(remoteObject) {
+    const domModel = remoteObject.runtimeModel().target().model(SDK3.DOMModel.DOMModel);
+    const node = domModel ? await domModel.pushObjectAsNodeToFrontend(remoteObject) : null;
+    if (remoteObject !== this.#remoteObject) {
+      return;
+    }
+    this.#node = node;
+    this.#unresolvable = !node;
+    this.requestUpdate();
+    await this.updateComplete;
+    if (this.#domTree) {
+      this.onDimensionChange(this.#domTree.element);
+    }
+    this.onNodeResolved();
+  }
+  #updateDOMTreeVisibility() {
+    if (!this.#domTree) {
+      return;
+    }
+    if (!this.#visible) {
+      this.#domTree.hideWidget();
+    } else if (this.#domTree.element.isConnected) {
+      this.#domTree.showWidget();
+    }
+  }
+  #onDOMTreeCreated = (domTree) => {
+    if (this.#domTree === domTree) {
+      return;
+    }
+    this.#domTree = domTree;
+    domTree.element.domTreeWidgetForTest = domTree;
+  };
+  #onTreeResized = () => {
+    if (this.#domTree) {
+      this.onDimensionChange(this.#domTree.element);
+    }
+  };
+  performUpdate() {
+    if (!this.#remoteObject) {
+      return;
+    }
+    if (this.#unresolvable) {
+      this.#domTree?.hideWidget();
+      this.#domTree = null;
+    }
+    this.#view(
+      {
+        node: this.#node,
+        fallback: this.#unresolvable ? this.renderFallback(this.#remoteObject) : null,
+        onTreeResized: this.#onTreeResized,
+        onDOMTreeCreated: this.#onDOMTreeCreated
+      },
+      void 0,
+      this.contentElement
+    );
+    this.#updateDOMTreeVisibility();
+  }
+};
+var ERROR_PARAM_VIEW = (input, _output, target) => {
+  render3(html3`<devtools-widget
+    data-console-selectable=${"links" /* LINKS */}
+    ${input.error ? widget2(SymbolizedErrorWidget, { ignoreListManager: input.ignoreListManager, error: input.error }) : widget2(SymbolizedErrorWidget, { ignoreListManager: input.ignoreListManager })}
+    ${widgetRef(SymbolizedErrorWidget, ensureWidgetCreated)}></devtools-widget>`, target);
+};
+var ConsoleErrorParam = class extends UI3.Widget.Widget {
+  #remoteObject = null;
+  #exceptionDetails;
+  #error = null;
+  #symbolizeScheduled = false;
+  #symbolized = Promise.resolve();
+  #view;
+  constructor(element, view = ERROR_PARAM_VIEW) {
+    super(element);
+    this.element.classList.remove("widget");
+    this.#view = view;
+  }
+  set remoteObject(remoteObject) {
+    if (this.#remoteObject === remoteObject) {
+      return;
+    }
+    this.#remoteObject = remoteObject;
+    this.#scheduleSymbolize();
+  }
+  set exceptionDetails(exceptionDetails) {
+    if (this.#exceptionDetails === exceptionDetails) {
+      return;
+    }
+    this.#exceptionDetails = exceptionDetails;
+    this.#scheduleSymbolize();
+  }
+  /** Resolves once the error is symbolized and rendered. */
+  get symbolizedForTest() {
+    return this.#symbolized;
+  }
+  #scheduleSymbolize() {
+    this.#error = null;
+    this.requestUpdate();
+    if (this.#symbolizeScheduled) {
+      return;
+    }
+    this.#symbolizeScheduled = true;
+    this.#symbolized = Promise.resolve().then(() => {
+      this.#symbolizeScheduled = false;
+      return this.#symbolize();
+    });
+  }
+  async #symbolize() {
+    const remoteObject = this.#remoteObject;
+    if (!remoteObject) {
+      return;
+    }
+    const error = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(
+      remoteObject,
+      this.#exceptionDetails
+    );
+    if (remoteObject !== this.#remoteObject || !error) {
+      return;
+    }
+    this.#error = error;
+    this.requestUpdate();
+    await this.updateComplete;
+    await UI3.Widget.Widget.allUpdatesComplete;
+  }
+  performUpdate() {
+    this.#view(
+      { error: this.#error, ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance() },
+      void 0,
+      this.contentElement
+    );
+  }
+};
+function invokeGetter(arrayStr) {
+  let result = this;
+  const properties = JSON.parse(arrayStr);
+  for (let i = 0, n = properties.length; i < n; ++i) {
+    result = result[properties[i]];
+  }
+  return result;
+}
+var ACCESSOR_PARAM_VIEW = (input, _output, target) => {
+  if (input.result) {
+    render3(html3`<span>${input.result}</span>`, target);
+    return;
+  }
+  const onInvoke = input.onInvoke;
+  if (!onInvoke) {
+    render3(html3`<span><span>${i18nString2(UIStrings2.dots)}</span></span>`, target);
+    return;
+  }
+  const onClick = (event) => {
+    event.consume(true);
+    onInvoke();
+  };
+  render3(html3`<span><span
+    class="object-value-calculate-value-button"
+    role="button"
+    tabindex="0"
+    title=${i18nString2(UIStrings2.invokePropertyGetter)}
+    aria-label=${i18nString2(UIStrings2.invokePropertyGetter)}
+    @click=${onClick}
+    @keydown=${(event) => {
+    if (!event.isComposing && Platform2.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      onClick(event);
+    }
+  }}>${i18nString2(UIStrings2.dots)}</span></span>`, target);
+};
+var ConsoleAccessorParam = class extends UI3.Widget.Widget {
+  #object = null;
+  #propertyPath = [];
+  #renderResult = () => null;
+  #result = null;
+  #view;
+  constructor(element, view = ACCESSOR_PARAM_VIEW) {
+    super(element);
+    this.element.classList.remove("widget");
+    this.#view = view;
+  }
+  set object(object) {
+    if (this.#object === object) {
+      return;
+    }
+    this.#object = object;
+    this.#result = null;
+    this.requestUpdate();
+  }
+  set propertyPath(propertyPath) {
+    if (this.#propertyPath.length === propertyPath.length && this.#propertyPath.every((value, index) => value === propertyPath[index])) {
+      return;
+    }
+    this.#propertyPath = propertyPath;
+    this.#result = null;
+    this.requestUpdate();
+  }
+  /** Renders the getter's result, or returns null to keep showing the invoke button. */
+  set renderResult(renderResult2) {
+    this.#renderResult = renderResult2;
+  }
+  async #invokeGetter() {
+    const object = this.#object;
+    const propertyPath = this.#propertyPath;
+    if (!object) {
+      return;
+    }
+    const result = await object.callFunction(invokeGetter, [{ value: JSON.stringify(propertyPath) }]);
+    if (object !== this.#object || propertyPath !== this.#propertyPath) {
+      return;
+    }
+    const template = this.#renderResult(result);
+    if (!template) {
+      return;
+    }
+    this.#result = template;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const onInvoke = this.#object ? () => void this.#invokeGetter() : null;
+    this.#view({ result: this.#result, onInvoke }, void 0, this.contentElement);
+  }
+};
 var ConsoleViewMessage = class _ConsoleViewMessage {
   message;
   linkifier;
   repeatCountInternal;
   closeGroupDecorationCount;
   consoleGroupInternal;
-  selectableChildren;
   // Re-formatting reuses these, so that the rendered parameters keep their
   // identity and async content isn't requested and rendered again.
   #remoteObjects = /* @__PURE__ */ new WeakMap();
-  #objectSelectableItems = /* @__PURE__ */ new WeakMap();
   #objectFunctionTitlePromises = /* @__PURE__ */ new WeakMap();
   #functionParameterPromises = /* @__PURE__ */ new WeakMap();
-  // Trees rendering logged DOM nodes; they follow the message visibility.
-  domTreeWidgets = [];
   // Stack trace previews are also root widgets and follow the message visibility.
   stackTracePreviews = [];
   messageResized;
@@ -5023,7 +5374,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     this.issueResolver = issueResolver;
     this.repeatCountInternal = 1;
     this.closeGroupDecorationCount = 0;
-    this.selectableChildren = [];
     this.messageResized = onResize;
     this.elementInternal = null;
     this.previewFormatter = new ObjectUI3.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
@@ -5068,8 +5418,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   wasShown() {
     this.isVisibleInternal = true;
-    for (const domTree of this.domTreeWidgets) {
-      domTree.wasShown();
+    for (const nodeParam of this.#nodeParams()) {
+      nodeParam.visible = true;
     }
     for (const stackTracePreview of this.stackTracePreviews) {
       stackTracePreview.wasShown();
@@ -5080,11 +5430,15 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   onResize() {
   }
+  #nodeParams() {
+    const hosts = this.elementInternal?.querySelectorAll(".console-node-param") ?? [];
+    return [...hosts].map((host) => UI3.Widget.Widget.get(host)).filter((param) => param instanceof ConsoleNodeParam);
+  }
   willHide() {
     this.isVisibleInternal = false;
     this.cachedHeight = this.element().offsetHeight;
-    for (const domTree of this.domTreeWidgets) {
-      domTree.willHide();
+    for (const nodeParam of this.#nodeParams()) {
+      nodeParam.visible = false;
     }
     for (const stackTracePreview of this.stackTracePreviews) {
       stackTracePreview.willHide();
@@ -5159,7 +5513,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
               const runtimeModel = this.message.runtimeModel();
               if (runtimeModel && Bindings2.SymbolizedError.isErrorLike(value)) {
                 const remoteObj = parameter instanceof SDK3.RemoteObject.RemoteObject ? parameter : runtimeModel.createRemoteObject(parameter);
-                messageElement = this.renderSymbolizedError(remoteObj);
+                messageElement = document.createElement("span");
+                render3(this.renderSymbolizedError(remoteObj), messageElement);
               }
             }
           }
@@ -5211,7 +5566,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         "network-request"
       );
       linkElement.tabIndex = -1;
-      this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
+      linkElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
       messageElement.appendChild(linkElement);
       if (request.failed) {
         UI3.UIUtils.createTextChildren(messageElement, " ", request.localizedFailDescription || "");
@@ -5239,7 +5594,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
           { text, lineNumber, columnNumber, initiatorId }
         );
         linkElement.tabIndex = -1;
-        this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
+        linkElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
         return linkElement;
       });
       appendOrShow(messageElement, fragment);
@@ -5315,10 +5670,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const anchorElement = linkify(this.message);
     if (anchorElement) {
       anchorElement.tabIndex = -1;
-      this.selectableChildren.push({
-        element: anchorElement,
-        forceSelect: () => anchorElement.focus()
-      });
+      anchorElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
       const anchorWrapperElement = document.createElement("span");
       anchorWrapperElement.classList.add("console-message-anchor");
       anchorWrapperElement.appendChild(anchorElement);
@@ -5401,19 +5753,14 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const stackTracePreview = new Components2.JSPresentationUtils.StackTracePreviewContent();
     stackTracePreview.options = { widthConstrained: true };
     if (stackTraceTarget && stackTrace) {
-      const selectableChildIndex = this.selectableChildren.length;
       const stackTracePromise = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(stackTrace, stackTraceTarget).then((stackTrace2) => {
         stackTracePreview.stackTrace = stackTrace2;
         return stackTracePreview.updateComplete;
-      }).then(() => {
-        const selectableLinks = stackTracePreview.linkElements.map(
-          (element) => ({ element, forceSelect: () => element.focus() })
-        );
-        this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
       });
       this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, stackTracePromise]).then(() => {
       });
     }
+    stackTracePreview.element.setAttribute(SELECTABLE_ATTRIBUTE, "links" /* LINKS */);
     stackTracePreview.markAsRoot();
     stackTracePreview.show(stackTraceElement);
     this.stackTracePreviews.push(stackTracePreview);
@@ -5466,11 +5813,9 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     const outputType = forceObjectFormat ? "object" : output.subtype || output.type;
     const typeClasses = `object-value-${outputType} source-code`;
-    let element;
     switch (outputType) {
       case "error":
-        element = this.renderSymbolizedError(output);
-        break;
+        return this.renderSymbolizedError(output, typeClasses);
       case "function":
         return this.formatParameterAsFunction(output, includePreview, typeClasses);
       case "array":
@@ -5491,11 +5836,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       case "webassemblymemory":
         return this.formatParameterAsObject(output, includePreview, typeClasses);
       case "node":
-        if (!output.isNode()) {
-          return this.formatParameterAsObject(output, false, typeClasses);
-        }
-        element = this.formatParameterAsNode(output);
-        break;
+        return output.isNode() ? this.formatParameterAsNode(output, typeClasses) : this.formatParameterAsObject(output, false, typeClasses);
       case "trustedtype":
         return this.formatParameterAsObject(output, false, typeClasses);
       case "string":
@@ -5513,9 +5854,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         console.error(`Tried to format remote object of unknown type ${outputType}.`);
         return this.formatParameterAsValue(output, typeClasses);
     }
-    element.classList.add(`object-value-${outputType}`);
-    element.classList.add("source-code");
-    return element;
   }
   formatParameterAsValue(obj, extraClasses = "") {
     const description = obj.description || "";
@@ -5558,18 +5896,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!isExpandable) {
       return renderTitleSpan(extraClasses, true);
     }
-    let selectableItem = this.#objectSelectableItems.get(obj);
-    if (!selectableItem) {
-      selectableItem = {
-        element: document.createElement("span"),
-        forceSelect: () => {
-        }
-      };
-      this.#objectSelectableItems.set(obj, selectableItem);
-    }
-    if (!this.selectableChildren.includes(selectableItem)) {
-      this.selectableChildren.push(selectableItem);
-    }
     const noteTitle = this.message.type === SDK3.ConsoleModel.FrontendMessageType.QueryObjectResult ? i18nString2(UIStrings2.thisValueWillNotBeCollectedUntil) : i18nString2(UIStrings2.thisValueWasEvaluatedUponFirst);
     const sectionTitle = ({
       filterChanged,
@@ -5580,22 +5906,14 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     };
     return html3`<span class=${ifDefined(extraClasses || void 0)}><devtools-widget
       class="console-view-object-properties-section"
+      data-console-selectable=${"object" /* OBJECT */}
       ${widget2(ObjectUI3.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
       root: obj,
       title: sectionTitle,
       linkifier: this.linkifier,
       onTreeResized: this.#onTreeResized
     })}
-      ${widgetRef(ObjectUI3.ObjectPropertiesSection.ObjectPropertiesSectionWidget, (section) => {
-      selectableItem.element = section.element;
-      selectableItem.forceSelect = () => {
-        const tree = section.element.querySelector("devtools-tree");
-        tree?.focus();
-        if (tree && !tree.hasFocus()) {
-          tree.focus();
-        }
-      };
-    })}></devtools-widget></span>`;
+      ${widgetRef(ObjectUI3.ObjectPropertiesSection.ObjectPropertiesSectionWidget, ensureWidgetCreated)}></devtools-widget></span>`;
   }
   formatParameterAsFunction(originalFunction, includePreview, extraClasses = "") {
     const previewKey = Boolean(includePreview);
@@ -5658,7 +5976,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   renderPropertyPreviewOrAccessor(object, property, propertyPath) {
     if (property.type === "accessor") {
-      return this.formatAsAccessorProperty(object, propertyPath.map((property2) => property2.name.toString()), false);
+      return this.formatAsAccessorProperty(object, propertyPath.map((prop) => prop.name.toString()));
     }
     return this.renderPropertyPreview(
       property.type,
@@ -5667,53 +5985,25 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       property.value
     );
   }
-  formatParameterAsNode(remoteObject) {
-    const result = document.createElement("span");
-    const domModel = remoteObject.runtimeModel().target().model(SDK3.DOMModel.DOMModel);
-    if (!domModel) {
-      return result;
-    }
-    const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
-    domTree.omitRootDOMNode = false;
-    domTree.selectEnabled = true;
-    domTree.hideGutter = true;
-    domTree.deindentSingleNode = true;
-    domTree.showSelectionOnKeyboardFocus = true;
-    domTree.wrap = true;
-    const dispatchDimensionChange = () => {
-      this.messageResized({ data: domTree.element });
-    };
-    domTree.onElementsTreeUpdated = dispatchDimensionChange;
-    domTree.onElementExpanded = dispatchDimensionChange;
-    domTree.onElementCollapsed = dispatchDimensionChange;
-    domTree.markAsRoot();
-    domTree.show(result);
-    this.domTreeWidgets.push(domTree);
-    if (!this.isVisibleInternal) {
-      domTree.willHide();
-    }
-    result.domTreeWidgetForTest = domTree;
-    void domModel.pushObjectAsNodeToFrontend(remoteObject).then((node) => {
-      if (!node) {
-        this.domTreeWidgets.splice(this.domTreeWidgets.indexOf(domTree), 1);
-        domTree.detach();
-        render3(this.formatParameterAsObject(remoteObject, false), result);
-        return;
-      }
-      domTree.rootDOMNode = node;
-      this.selectableChildren.push({
-        element: domTree.element,
-        forceSelect: () => domTree.selectDOMNode(
-          node,
-          /* focus= */
-          true
-        )
-      });
-      dispatchDimensionChange();
-      this.formattedParameterAsNodeForTest();
-    });
-    return result;
+  formatParameterAsNode(remoteObject, extraClasses = "") {
+    return html3`<devtools-widget class=${`console-node-param ${extraClasses}`}
+      ${widget2(ConsoleNodeParam, {
+      remoteObject,
+      visible: this.isVisibleInternal,
+      renderFallback: this.#renderNodeParamFallback,
+      onDimensionChange: this.#onNodeParamResized,
+      onNodeResolved: this.#onNodeParamResolved
+    })}
+      ${widgetRef(ConsoleNodeParam, ensureWidgetCreated)}></devtools-widget>`;
   }
+  #renderNodeParamFallback = (object) => this.formatParameterAsObject(object, false);
+  #onNodeParamResized = (element) => {
+    this.messageResized({ data: element });
+  };
+  #onNodeParamResolved = () => {
+    this.formattedParameterAsNodeForTest();
+  };
+  // Sniffed in web_tests.
   formattedParameterAsNodeForTest() {
   }
   formatParameterAsString(output, extraClasses = "") {
@@ -5723,95 +6013,43 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       class=${ifDefined(extraClasses || void 0)}
       @contextmenu=${this.contextMenuEventFired.bind(this, output)}>${this.linkifyStringAsFragment(text)}</span>`;
   }
-  renderSymbolizedError(errorRemoteObject) {
-    const container = document.createElement("span");
-    const widget5 = new SymbolizedErrorWidget();
-    widget5.ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
-    const selectableChildIndex = this.selectableChildren.length;
-    const format2 = async () => {
-      const error = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(
-        errorRemoteObject,
-        this.message.exceptionDetails
-      );
-      if (error) {
-        widget5.error = error;
-      }
-      await widget5.updateComplete;
-      const selectableLinks = widget5.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
-      this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
-    };
-    this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, format2()]).then(() => {
-    });
-    widget5.markAsRoot();
-    widget5.show(container);
-    return container;
-  }
-  formatAsArrayEntry(output) {
-    return this.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
+  renderSymbolizedError(errorRemoteObject, extraClasses = "") {
+    return html3`<devtools-widget class=${ifDefined(extraClasses || void 0)}
+      ${widget2(ConsoleErrorParam, { exceptionDetails: this.message.exceptionDetails, remoteObject: errorRemoteObject })}
+      ${widgetRef(ConsoleErrorParam, (errorParam) => {
+      this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, errorParam.symbolizedForTest]).then(() => {
+      });
+    })}></devtools-widget>`;
   }
   renderPropertyPreview(type, subtype, className, description) {
-    const fragment = document.createDocumentFragment();
-    render3(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
-    return fragment;
+    return this.previewFormatter.renderPropertyPreview(type, subtype, className, description);
   }
-  createRemoteObjectAccessorPropertySpan(object, propertyPath, callback) {
-    const rootElement = document.createElement("span");
-    const element = rootElement.createChild("span");
-    element.textContent = i18nString2(UIStrings2.dots);
-    if (!object) {
-      return rootElement;
-    }
-    element.classList.add("object-value-calculate-value-button");
-    UI3.Tooltip.Tooltip.install(element, i18nString2(UIStrings2.invokePropertyGetter));
-    element.addEventListener("click", onInvokeGetterClick, false);
-    function onInvokeGetterClick(event) {
-      event.consume();
-      if (object) {
-        void object.callFunction(invokeGetter, [{ value: JSON.stringify(propertyPath) }]).then(callback);
-      }
-    }
-    function invokeGetter(arrayStr) {
-      let result = this;
-      const properties = JSON.parse(arrayStr);
-      for (let i = 0, n = properties.length; i < n; ++i) {
-        result = result[properties[i]];
-      }
-      return result;
-    }
-    return rootElement;
+  formatAsAccessorProperty(object, propertyPath) {
+    return html3`<devtools-widget
+      ${widget2(ConsoleAccessorParam, { object, propertyPath, renderResult: this.#renderAccessorResult })}
+      ${widgetRef(ConsoleAccessorParam, ensureWidgetCreated)}></devtools-widget>`;
   }
-  formatAsAccessorProperty(object, propertyPath, isArrayEntry) {
-    const rootElement = this.createRemoteObjectAccessorPropertySpan(object, propertyPath, onInvokeGetterClick.bind(this));
-    function onInvokeGetterClick(result) {
-      const wasThrown = result.wasThrown;
-      const object2 = result.object;
-      if (!object2) {
-        return;
-      }
-      rootElement.removeChildren();
-      if (wasThrown) {
-        const element = rootElement.createChild("span");
-        element.textContent = i18nString2(UIStrings2.exception);
-        UI3.Tooltip.Tooltip.install(element, object2.description);
-      } else if (isArrayEntry) {
-        rootElement.appendChild(this.formatAsArrayEntry(object2));
+  #renderAccessorResult = (result) => {
+    const resultObj = result.object;
+    if (!resultObj) {
+      return null;
+    }
+    if (result.wasThrown) {
+      return html3`<span title=${ifDefined(resultObj.description)}>${i18nString2(UIStrings2.exception)}</span>`;
+    }
+    const maxLength = 100;
+    const type = resultObj.type;
+    const subtype = resultObj.subtype;
+    let description = "";
+    if (type !== "function" && resultObj.description) {
+      if (type === "string" || subtype === "regexp" || subtype === "trustedtype") {
+        description = Platform2.StringUtilities.trimMiddle(resultObj.description, maxLength);
       } else {
-        const maxLength = 100;
-        const type = object2.type;
-        const subtype = object2.subtype;
-        let description = "";
-        if (type !== "function" && object2.description) {
-          if (type === "string" || subtype === "regexp" || subtype === "trustedtype") {
-            description = Platform2.StringUtilities.trimMiddle(object2.description, maxLength);
-          } else {
-            description = Platform2.StringUtilities.trimEndWithMaxLength(object2.description, maxLength);
-          }
-        }
-        rootElement.appendChild(this.renderPropertyPreview(type, subtype, object2.className, description));
+        description = Platform2.StringUtilities.trimEndWithMaxLength(resultObj.description, maxLength);
       }
     }
-    return rootElement;
-  }
+    return this.renderPropertyPreview(type, subtype, resultObj.className, description);
+  };
   formatWithSubstitutionString(formatString, parameters, parts) {
     const currentStyle = /* @__PURE__ */ new Map();
     const { tokens, args } = format(formatString, parameters);
@@ -5954,10 +6192,10 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       marker.classList.toggle("group-closed", n - i <= this.closeGroupDecorationCount);
     }
   }
+  get selectableChildren() {
+    return collectSelectableChildren(this.elementInternal);
+  }
   focusedChildIndex() {
-    if (!this.selectableChildren.length) {
-      return -1;
-    }
     return this.selectableChildren.findIndex((child) => child.element.hasFocus());
   }
   onKeyDown(event) {
@@ -5991,7 +6229,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     if (event.key === "ArrowUp") {
       const firstVisibleChild = this.nearestVisibleChild(0);
-      if (this.selectableChildren[focusedChildIndex] === firstVisibleChild && firstVisibleChild) {
+      if (firstVisibleChild && this.selectableChildren[focusedChildIndex]?.element === firstVisibleChild.element) {
         this.elementInternal?.focus();
         return true;
       }
@@ -6022,19 +6260,20 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return false;
   }
   nearestVisibleChild(fromIndex, backwards) {
-    const childCount = this.selectableChildren.length;
+    const children = this.selectableChildren;
+    const childCount = children.length;
     if (fromIndex < 0 || fromIndex >= childCount) {
       return null;
     }
     const direction = backwards ? -1 : 1;
     let index = fromIndex;
-    while (!this.selectableChildren[index].element.offsetParent) {
+    while (!children[index].element.offsetParent) {
       index += direction;
       if (index < 0 || index >= childCount) {
         return null;
       }
     }
-    return this.selectableChildren[index];
+    return children[index];
   }
   focusLastChildOrSelf() {
     if (this.elementInternal && !this.selectNearestVisibleChild(
@@ -6485,7 +6724,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       const options = { text, lineNumber, columnNumber, initiatorId };
       const linkElement = Components2.Linkifier.Linkifier.linkifyURL(url, options);
       linkElement.tabIndex = -1;
-      this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
+      linkElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
       return linkElement;
     });
   }
@@ -6756,8 +6995,12 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
           columnNames.push(cellProperty.name);
         }
         if (columnRendered) {
-          const cellElement = this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]).firstElementChild;
-          cellElement.classList.add("console-message-nowrap-below");
+          const cellElement = document.createElement("span");
+          render3(
+            this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]),
+            cellElement,
+            { container: { classes: ["console-message-nowrap-below"] } }
+          );
           rowValue.set(cellProperty.name, cellElement);
         }
       }
@@ -8679,7 +8922,8 @@ var Events = /* @__PURE__ */ ((Events3) => {
 // ../../front_end/panels/console/ConsoleViewport.ts
 var ConsoleViewport_exports = {};
 __export(ConsoleViewport_exports, {
-  ConsoleViewport: () => ConsoleViewport
+  ConsoleViewport: () => ConsoleViewport,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6
 });
 import * as Platform4 from "../../core/platform/platform.js";
 import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
@@ -8688,6 +8932,100 @@ import * as UI8 from "../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html7, render as render7 } from "../../ui/lit/lit.js";
 var { ref: ref3, repeat: repeat2, styleMap } = Directives3;
 var EXPANDED_CONTENT_HEIGHT = "10000000px";
+var DEFAULT_VIEW6 = (input, output, target) => {
+  const gaps = /* @__PURE__ */ new Map();
+  let contentElement;
+  const setGap = (gap, element) => {
+    if (element instanceof HTMLElement) {
+      gaps.set(gap, element);
+    } else {
+      gaps.delete(gap);
+    }
+  };
+  const isOutsideContent = (element) => element !== null && (!contentElement || !element.isSelfOrDescendant(contentElement));
+  const onCopy = (event) => {
+    const result = input.onCopy();
+    if (!result) {
+      return;
+    }
+    event.preventDefault();
+    if (result.plainText !== void 0) {
+      event.clipboardData?.setData("text/plain", result.plainText);
+    }
+  };
+  const onDragStart = (event) => {
+    const text = input.onDragStart();
+    const { dataTransfer } = event;
+    if (text && dataTransfer) {
+      dataTransfer.clearData();
+      dataTransfer.setData("text/plain", text);
+      dataTransfer.effectAllowed = "copy";
+    }
+  };
+  const onKeyDown = (event) => {
+    if (input.onKeyDown(event.key, event.shiftKey)) {
+      event.consume(true);
+    }
+  };
+  render7(
+    html7`
+    <div style=${styleMap({ height: `${input.topGapHeight}px`, color: "transparent" })} aria-hidden="true"
+         ${ref3((e) => setGap("top", e))}>&#xFEFF;</div>
+    <div tabindex=${input.contentTabIndex}
+         style=${styleMap({ height: input.expandContent ? EXPANDED_CONTENT_HEIGHT : void 0 })}
+         @focusin=${(event) => {
+      const eventTarget = event.target;
+      const itemIndex = input.items.findIndex((item2) => item2.element().isSelfOrAncestor(eventTarget));
+      input.onFocusIn(
+        itemIndex,
+        eventTarget === contentElement,
+        isOutsideContent(event.relatedTarget)
+      );
+    }}
+         @focusout=${(event) => input.onFocusOut(isOutsideContent(event.relatedTarget))}
+         @keydown=${onKeyDown}
+         ${ref3((e) => {
+      contentElement = e instanceof HTMLElement ? e : void 0;
+    })}>
+      ${repeat2(input.items, (item2) => item2, (item2) => item2.element())}
+    </div>
+    <div style=${styleMap({ height: `${input.bottomGapHeight}px`, color: "transparent" })} aria-hidden="true"
+         ${ref3((e) => setGap("bottom", e))}>&#xFEFF;</div>`,
+    target,
+    {
+      container: {
+        attributes: { style: "overflow: auto" },
+        listeners: { scroll: input.onScroll, copy: onCopy, dragstart: onDragStart }
+      }
+    }
+  );
+  output.observeContent = (observer, options) => {
+    assertNotNullOrUndefined(contentElement);
+    observer.observe(contentElement, options);
+  };
+  output.focusContent = () => {
+    contentElement?.focus();
+  };
+  output.hasContentFocus = () => Boolean(contentElement?.hasFocus());
+  output.isContentActiveElement = () => Boolean(contentElement && contentElement === UI8.DOMUtilities.deepActiveElement(contentElement.ownerDocument));
+  output.rangeIntersectsGap = (range, gap) => {
+    const element = gaps.get(gap);
+    return Boolean(element && range.intersectsNode(element));
+  };
+  output.setSelectionBaseAndExtent = (selection, anchor, head) => {
+    const resolve = (point) => {
+      if ("node" in point) {
+        return point;
+      }
+      const element = gaps.get(point.gap);
+      assertNotNullOrUndefined(element);
+      return { node: element, offset: point.atEnd ? element.childNodes.length : 0 };
+    };
+    const a = resolve(anchor);
+    const h = resolve(head);
+    selection.setBaseAndExtent(a.node, a.offset, h.node, h.offset);
+  };
+};
 var ConsoleViewport = class {
   element;
   topGapElementActive;
@@ -8708,18 +9046,28 @@ var ConsoleViewport = class {
   selectionIsBackward;
   lastSelectedElement;
   cachedProviderElements;
-  #gaps = /* @__PURE__ */ new Map();
-  #contentElementRef;
+  #view;
+  #output = {};
+  #callbacks;
   #topGapHeight = 0;
   #bottomGapHeight = 0;
   #expandContent = false;
   #contentTabIndex = -1;
   #rendering = false;
   #renderRequested = false;
-  constructor(provider) {
+  constructor(provider, view = DEFAULT_VIEW6) {
     this.element = document.createElement("div");
     this.topGapElementActive = false;
     this.bottomGapElementActive = false;
+    this.#view = view;
+    this.#callbacks = {
+      onScroll: this.onScroll.bind(this),
+      onCopy: this.onCopy.bind(this),
+      onDragStart: this.onDragStart.bind(this),
+      onFocusIn: this.onFocusIn.bind(this),
+      onFocusOut: this.onFocusOut.bind(this),
+      onKeyDown: this.onKeyDown.bind(this)
+    };
     this.provider = provider;
     this.virtualSelectedIndex = -1;
     this.firstActiveIndex = -1;
@@ -8745,72 +9093,19 @@ var ConsoleViewport = class {
     try {
       do {
         this.#renderRequested = false;
-        const setGap = (gap, element) => {
-          if (element instanceof HTMLElement) {
-            this.#gaps.set(gap, element);
-          } else {
-            this.#gaps.delete(gap);
-          }
+        const input = {
+          topGapHeight: this.#topGapHeight,
+          bottomGapHeight: this.#bottomGapHeight,
+          expandContent: this.#expandContent,
+          contentTabIndex: this.#contentTabIndex,
+          items: [...this.renderedItems],
+          ...this.#callbacks
         };
-        const onCopy = (event) => {
-          const result = this.onCopy();
-          if (!result) {
-            return;
-          }
-          event.preventDefault();
-          if (result.plainText !== void 0) {
-            event.clipboardData?.setData("text/plain", result.plainText);
-          }
-        };
-        const onDragStart = (event) => {
-          const text = this.onDragStart();
-          const { dataTransfer } = event;
-          if (text && dataTransfer) {
-            dataTransfer.clearData();
-            dataTransfer.setData("text/plain", text);
-            dataTransfer.effectAllowed = "copy";
-          }
-        };
-        const onKeyDown = (event) => {
-          if (this.onKeyDown(event.key, event.shiftKey)) {
-            event.consume(true);
-          }
-        };
-        render7(
-          html7`
-          <div style=${styleMap({ height: `${this.#topGapHeight}px`, color: "transparent" })} aria-hidden="true"
-               ${ref3((e) => setGap("top", e))}>&#xFEFF;</div>
-          <div tabindex=${this.#contentTabIndex}
-               style=${styleMap({ height: this.#expandContent ? EXPANDED_CONTENT_HEIGHT : void 0 })}
-               @focusin=${(event) => this.onFocusIn(
-            event.target,
-            event.relatedTarget
-          )}
-               @focusout=${(event) => this.onFocusOut(event.relatedTarget)}
-               @keydown=${onKeyDown}
-               ${ref3((e) => {
-            this.#contentElementRef = e instanceof HTMLElement ? e : void 0;
-          })}>
-            ${repeat2(this.renderedItems, (item2) => item2, (item2) => item2.element())}
-          </div>
-          <div style=${styleMap({ height: `${this.#bottomGapHeight}px`, color: "transparent" })} aria-hidden="true"
-               ${ref3((e) => setGap("bottom", e))}>&#xFEFF;</div>`,
-          this.element,
-          {
-            container: {
-              attributes: { style: "overflow: auto" },
-              listeners: { scroll: () => this.onScroll(), copy: onCopy, dragstart: onDragStart }
-            }
-          }
-        );
+        this.#view(input, this.#output, this.element);
       } while (this.#renderRequested);
     } finally {
       this.#rendering = false;
     }
-  }
-  get #contentElement() {
-    assertNotNullOrUndefined(this.#contentElementRef);
-    return this.#contentElementRef;
   }
   #setContentTabIndex(tabIndex) {
     if (this.#contentTabIndex !== tabIndex) {
@@ -8824,7 +9119,7 @@ var ConsoleViewport = class {
   setStickToBottom(value) {
     this.#stickToBottom = value;
     if (this.#stickToBottom) {
-      this.observer.observe(this.#contentElement, this.observerConfig);
+      this.#output.observeContent?.(this.observer, this.observerConfig);
     } else {
       this.observer.disconnect();
     }
@@ -8851,13 +9146,12 @@ var ConsoleViewport = class {
     }
     return { plainText: text };
   }
-  onFocusIn(target, relatedTarget) {
-    const renderedIndex = this.renderedItems.findIndex((item2) => item2.element().isSelfOrAncestor(target));
-    if (renderedIndex !== -1) {
-      this.virtualSelectedIndex = this.firstActiveIndex + renderedIndex;
+  onFocusIn(targetItemIndex, isContainerTarget, relatedTargetOutside) {
+    if (targetItemIndex !== -1) {
+      this.virtualSelectedIndex = this.firstActiveIndex + targetItemIndex;
     }
     let focusLastChild = false;
-    if (this.virtualSelectedIndex === -1 && this.isOutsideViewport(relatedTarget) && target === this.#contentElement && this.itemCount) {
+    if (this.virtualSelectedIndex === -1 && relatedTargetOutside && isContainerTarget && this.itemCount) {
       focusLastChild = true;
       this.virtualSelectedIndex = this.itemCount - 1;
       this.refresh();
@@ -8865,14 +9159,11 @@ var ConsoleViewport = class {
     }
     this.updateFocusedItem(focusLastChild);
   }
-  onFocusOut(relatedTarget) {
-    if (this.isOutsideViewport(relatedTarget)) {
+  onFocusOut(relatedTargetOutside) {
+    if (relatedTargetOutside) {
       this.virtualSelectedIndex = -1;
     }
     this.updateFocusedItem();
-  }
-  isOutsideViewport(element) {
-    return element !== null && !element.isSelfOrDescendant(this.#contentElement);
   }
   onDragStart() {
     return this.selectedText() || null;
@@ -8914,7 +9205,7 @@ var ConsoleViewport = class {
   updateFocusedItem(focusLastChild) {
     const selectedElement = this.renderedElementAt(this.virtualSelectedIndex);
     const changed = this.lastSelectedElement !== selectedElement;
-    const containerHasFocus = this.#contentElement === UI8.DOMUtilities.deepActiveElement(this.element.ownerDocument);
+    const containerHasFocus = this.#output.isContentActiveElement?.() ?? false;
     if (this.lastSelectedElement && changed) {
       this.lastSelectedElement.classList.remove("console-selected");
     }
@@ -8931,7 +9222,7 @@ var ConsoleViewport = class {
         selectedElement.focus({ preventScroll: true });
       }
     }
-    if (this.itemCount && !this.#contentElement.hasFocus()) {
+    if (this.itemCount && !(this.#output.hasContentFocus?.() ?? false)) {
       this.#setContentTabIndex(0);
     } else {
       this.#setContentTabIndex(-1);
@@ -8939,7 +9230,8 @@ var ConsoleViewport = class {
     this.lastSelectedElement = selectedElement;
   }
   contentElement() {
-    return this.#contentElement;
+    assertNotNullOrUndefined(this.element.children[1]);
+    return this.element.children[1];
   }
   invalidate() {
     delete this.cachedProviderElements;
@@ -9026,10 +9318,8 @@ var ConsoleViewport = class {
         hasVisibleSelection = true;
       }
     }
-    const topGap = this.#gaps.get("top");
-    const bottomGap = this.#gaps.get("bottom");
-    const topOverlap = Boolean(topGap && range.intersectsNode(topGap)) && this.topGapElementActive;
-    const bottomOverlap = Boolean(bottomGap && range.intersectsNode(bottomGap)) && this.bottomGapElementActive;
+    const topOverlap = Boolean(this.#output.rangeIntersectsGap?.(range, "top")) && this.topGapElementActive;
+    const bottomOverlap = Boolean(this.#output.rangeIntersectsGap?.(range, "bottom")) && this.bottomGapElementActive;
     if (!topOverlap && !bottomOverlap && !hasVisibleSelection) {
       this.headSelection = null;
       this.anchorSelection = null;
@@ -9076,15 +9366,13 @@ var ConsoleViewport = class {
     }
     const clampSelection = (selection2, isSelectionBackwards) => {
       if (this.firstActiveIndex <= selection2.item && selection2.item <= this.lastActiveIndex) {
-        return { element: selection2.node, offset: selection2.offset };
+        return { node: selection2.node, offset: selection2.offset };
       }
-      const gapElement = this.#gaps.get(selection2.item < this.firstActiveIndex ? "top" : "bottom");
-      assertNotNullOrUndefined(gapElement);
-      return { element: gapElement, offset: isSelectionBackwards ? gapElement.childNodes.length : 0 };
+      return { gap: selection2.item < this.firstActiveIndex ? "top" : "bottom", atEnd: isSelectionBackwards };
     };
-    const { element: anchorElement, offset: anchorOffset } = clampSelection(this.anchorSelection, Boolean(this.selectionIsBackward));
-    const { element: headElement, offset: headOffset } = clampSelection(this.headSelection, !this.selectionIsBackward);
-    selection.setBaseAndExtent(anchorElement, anchorOffset, headElement, headOffset);
+    const anchor = clampSelection(this.anchorSelection, Boolean(this.selectionIsBackward));
+    const head = clampSelection(this.headSelection, !this.selectionIsBackward);
+    this.#output.setSelectionBaseAndExtent?.(selection, anchor, head);
   }
   selectionContainsTable() {
     if (!this.anchorSelection || !this.headSelection) {
@@ -9104,7 +9392,7 @@ var ConsoleViewport = class {
     this.observer.disconnect();
     this.#refresh();
     if (this.#stickToBottom) {
-      this.observer.observe(this.#contentElement, this.observerConfig);
+      this.#output.observeContent?.(this.observer, this.observerConfig);
     }
   }
   #refresh() {
@@ -9195,7 +9483,7 @@ var ConsoleViewport = class {
       wasShown[i].wasShown();
     }
     if (hadFocus) {
-      this.#contentElement.focus();
+      this.#output.focusContent?.();
     }
     this.updateFocusedItem();
   }
@@ -9382,7 +9670,7 @@ var ConsoleViewport = class {
 var ConsolePrompt_exports = {};
 __export(ConsolePrompt_exports, {
   ConsolePrompt: () => ConsolePrompt,
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   Events: () => Events2
 });
 import "../../ui/kit/kit.js";
@@ -9409,7 +9697,7 @@ var ConsolePanel_exports = {};
 __export(ConsolePanel_exports, {
   ConsolePanel: () => ConsolePanel,
   ConsoleRevealer: () => ConsoleRevealer,
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   WrapperView: () => WrapperView
 });
 import * as UI10 from "../../ui/legacy/legacy.js";
@@ -9586,6 +9874,11 @@ var UIStrings5 = {
    */
   eagerlyEvaluateTextInThePrompt: "Eagerly evaluate text in the prompt",
   /**
+   * @description Label for a checkbox in the Console settings section that enables evaluating expressions as you type
+   * in the prompt.
+   */
+  eagerEvaluation: "Eager evaluation",
+  /**
    * @description Description of a setting that controls whether text typed in the console should be autocompleted from commands executed in the local console history.
    */
   autocompleteFromHistory: "Autocomplete from history",
@@ -9593,6 +9886,11 @@ var UIStrings5 = {
    * @description Description of a setting that controls whether user activation is triggered by evaluation'.
    */
   treatEvaluationAsUserActivation: "Treat evaluation as user activation",
+  /**
+   * @description Label for a checkbox in the Console settings section that allows code executed in the Console to
+   * trigger user activation.
+   */
+  evaluateTriggersUserActivation: "Treat code evaluation as user action",
   /**
    * @description Text in Console view of the Console panel, indicating that a number of console
    * messages have been hidden.
@@ -9722,7 +10020,7 @@ function renderSettingsPane(input) {
       role="group"
       aria-label=${i18nString5(UIStrings5.consoleSettings)}>
     <devtools-checkbox
-        title=${input.networkMessagesTitle}
+        title=${i18nString5(UIStrings5.networkMessages)}
         ${bindToSetting(input.networkMessagesSetting)}>
       ${i18nString5(UIStrings5.networkMessages)}
     </devtools-checkbox>
@@ -9739,7 +10037,7 @@ function renderSettingsPane(input) {
     <devtools-checkbox
         title=${i18nString5(UIStrings5.eagerlyEvaluateTextInThePrompt)}
         ${bindToSetting(input.consoleEagerEvalSetting)}>
-      ${input.consoleEagerEvalLabel}
+      ${i18nString5(UIStrings5.eagerEvaluation)}
     </devtools-checkbox>
     <devtools-checkbox
         title=${i18nString5(UIStrings5.onlyShowMessagesFromTheCurrentContext)}
@@ -9749,22 +10047,22 @@ function renderSettingsPane(input) {
     <devtools-checkbox
         title=${i18nString5(UIStrings5.autocompleteFromHistory)}
         ${bindToSetting(input.consoleHistoryAutocompleteSetting)}>
-      ${input.consoleHistoryAutocompleteLabel}
+      ${i18nString5(UIStrings5.autocompleteFromHistory)}
     </devtools-checkbox>
     <devtools-checkbox
         title=${i18nString5(UIStrings5.groupSimilarMessagesInConsole)}
         ${bindToSetting(input.groupSimilarSetting)}>
-      ${input.groupSimilarLabel}
+      ${i18nString5(UIStrings5.groupSimilarMessagesInConsole)}
     </devtools-checkbox>
     <devtools-checkbox
         title=${i18nString5(UIStrings5.treatEvaluationAsUserActivation)}
         ${bindToSetting(input.userActivationEvalSetting)}>
-      ${input.userActivationEvalLabel}
+      ${i18nString5(UIStrings5.evaluateTriggersUserActivation)}
     </devtools-checkbox>
     <devtools-checkbox
         title=${i18nString5(UIStrings5.showCorsErrorsInConsole)}
         ${bindToSetting(input.showCorsErrorsSetting)}>
-      ${input.showCorsErrorsLabel}
+      ${i18nString5(UIStrings5.showCorsErrorsInConsole)}
     </devtools-checkbox>
   </div>`;
 }
@@ -10151,20 +10449,14 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       {
         showSettingsPane: this.showSettingsPaneSetting.get(),
         networkMessagesSetting: this.filter.networkMessagesSetting,
-        networkMessagesTitle: Settings8.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title,
         monitoringXHREnabledSetting: this.#monitoringXHREnabledSetting,
         preserveConsoleLogSetting: this.#preserveConsoleLogSetting,
         consoleEagerEvalSetting: this.#consoleEagerEvalSetting,
-        consoleEagerEvalLabel: Settings8.SettingUIRegistration.resolve(this.#consoleEagerEvalSetting.descriptor()).title,
         filterByExecutionContextSetting: this.filter.filterByExecutionContextSetting,
         consoleHistoryAutocompleteSetting: this.consoleHistoryAutocompleteSetting,
-        consoleHistoryAutocompleteLabel: Settings8.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title,
         groupSimilarSetting: this.groupSimilarSetting,
-        groupSimilarLabel: Settings8.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
         userActivationEvalSetting: this.#userActivationEvalSetting,
-        userActivationEvalLabel: Settings8.SettingUIRegistration.resolve(this.#userActivationEvalSetting.descriptor()).title,
-        showCorsErrorsSetting: this.showCorsErrorsSetting,
-        showCorsErrorsLabel: Settings8.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title
+        showCorsErrorsSetting: this.showCorsErrorsSetting
       },
       void 0,
       this.#settingsPaneContainer
@@ -11555,7 +11847,7 @@ var consoleMessageToViewMessage = /* @__PURE__ */ new WeakMap();
 
 // ../../front_end/panels/console/ConsolePanel.ts
 var { widget: widget4 } = UI10.Widget;
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   render9(html9`
     ${widget4(UI10.Widget.WrapperWidget, {
     widget: input.showConsoleView ? ConsoleView.instance() : null
@@ -11573,7 +11865,7 @@ var ConsolePanel = class _ConsolePanel extends UI10.Panel.Panel {
   #view;
   #drawerWasMinimized = false;
   #ownsConsoleView = false;
-  constructor(view = DEFAULT_VIEW6) {
+  constructor(view = DEFAULT_VIEW7) {
     super("console");
     this.#view = view;
   }
@@ -11633,7 +11925,7 @@ var wrapperViewInstance = null;
 var WrapperView = class _WrapperView extends UI10.Widget.VBox {
   #view;
   #ownsConsoleView = false;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
   }
@@ -11765,7 +12057,7 @@ var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_6);
 var ConsolePromptBase = Common7.ObjectWrapper.eventMixin(
   UI11.Widget.Widget
 );
-var DEFAULT_VIEW7 = (input, output, target) => {
+var DEFAULT_VIEW8 = (input, output, target) => {
   render10(html10`
     <style>${consolePrompt_css_default}</style>
     <div class="console-prompt-editor-container">
@@ -11844,7 +12136,7 @@ var ConsolePrompt = class extends ConsolePromptBase {
     const effects = this.#javaScriptCompletionCompartment.reconfigure(extensions);
     this.editor?.dispatch({ effects });
   }
-  constructor(aiCodeCompletionConfig, view = DEFAULT_VIEW7) {
+  constructor(aiCodeCompletionConfig, view = DEFAULT_VIEW8) {
     super();
     this.#view = view;
     this.addCompletionsFromHistory = true;

@@ -186,20 +186,38 @@ export class DirectSocketConnectionView extends UI.Widget.Widget {
     #request;
     #view;
     constructor(request, view = DEFAULT_VIEW) {
-        super({
+        super(request instanceof HTMLElement ? request : undefined, {
             useShadowDom: 'pure',
         });
-        this.#request = request;
         this.#view = view;
-        this.performUpdate();
+        if (request && !(request instanceof HTMLElement)) {
+            this.#request = request;
+        }
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        if (this.isShowing()) {
+            this.#request?.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+            request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+        }
+        this.#request = request;
+        if (this.isShowing()) {
+            this.requestUpdate();
+        }
     }
     wasShown() {
         super.wasShown();
-        this.#request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+        this.requestUpdate();
     }
     willHide() {
         super.willHide();
-        this.#request.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
     }
     performUpdate() {
         if (!this.#request || !this.#request.directSocketInfo) {
@@ -246,12 +264,16 @@ export class DirectSocketConnectionView extends UI.Widget.Widget {
         this.#view(viewInput, undefined, this.contentElement);
     }
     #setIsOpen(categoryName, open) {
+        if (!Common.Settings.Settings.hasInstance()) {
+            return;
+        }
         const setting = this.#getCategorySetting(categoryName);
         setting.set(open);
         this.requestUpdate();
     }
     #getCategorySetting(name) {
-        return Common.Settings.Settings.instance().createSetting(`connection-info-${name}-category-expanded`, /* defaultValue= */ true);
+        return Common.Settings.Settings.instance().createSetting(`connection-info-${name}-category-expanded`, 
+        /* defaultValue= */ true);
     }
 }
 //# sourceMappingURL=DirectSocketConnectionView.js.map

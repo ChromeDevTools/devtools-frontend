@@ -13,7 +13,8 @@ import { type TimelineSelection } from './TimelineSelection.js';
  */
 declare const TimelineTreeViewBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>;
 export declare const enum CellKind {
-    NAME = "name"
+    NAME = "name",
+    VALUE = "value"
 }
 /** Parameters needed to linkify the top call frame of an event in the view layer. */
 export interface TopCallFrameLinkInput {
@@ -26,6 +27,8 @@ export interface TopCallFrameLinkInput {
 /** Presentation data for the activity (or 1st / 3rd party) name cell of a timeline tree row. */
 export interface NameCellViewInput {
     columnId: string;
+    disclosure?: boolean;
+    leftPadding?: number;
     kind: CellKind.NAME;
     name: string;
     iconColor?: string;
@@ -37,10 +40,43 @@ export interface NameCellViewInput {
 export interface GridRowViewOutput {
     appendContextMenuItems?: (contextMenu: UI.ContextMenu.ContextMenu) => void;
 }
+/** Presentation data for a numeric (time or size) cell of a timeline tree row. */
+export interface ValueCellViewInput {
+    columnId: string;
+    disclosure?: boolean;
+    leftPadding?: number;
+    kind: CellKind.VALUE;
+    text: string;
+    title: string;
+    percent?: string;
+    /** The width of the background bar, for example `'42.0%'`. */
+    barWidth?: string;
+    onBottomUpButtonClick?: () => void;
+}
+export type CellViewInput = NameCellViewInput | ValueCellViewInput;
+export interface GridRowViewInput {
+    cells: readonly CellViewInput[];
+}
+export type GridRowView = (input: GridRowViewInput, output: GridRowViewOutput | undefined, target: HTMLElement) => void;
+/**
+ * Renders the cells of a timeline tree data grid row into the `<tr>` that the
+ * `DataGridNode` creates for the row.
+ */
+export declare const GRID_ROW_VIEW: GridRowView;
+export interface CellScale {
+    grandTotalTime: number;
+    maxSelfTime: number;
+    maxTotalTime: number;
+}
 /**
  * Computes the presentation data of the name cell for `profileNode`.
  */
-export declare function nameCellViewInput(treeView: TimelineTreeView, profileNode: Trace.Extras.TraceTree.Node, columnId: string): NameCellViewInput;
+export declare function nameCellViewInput(treeView: TimelineTreeView, profileNode: Trace.Extras.TraceTree.Node, columnId: string, disclosure?: boolean, leftPadding?: number): NameCellViewInput;
+/**
+ * Computes the presentation data of a numeric cell for `profileNode`, or
+ * returns `null` if `columnId` is not a numeric column.
+ */
+export declare function valueCellViewInput(treeView: TimelineTreeView, profileNode: Trace.Extras.TraceTree.Node, columnId: string, scale: CellScale, onBottomUpButtonClick: () => void, disclosure?: boolean, leftPadding?: number): ValueCellViewInput | null;
 export declare class TimelineTreeView extends TimelineTreeViewBase implements UI.SearchableView.Searchable {
     #private;
     private searchResults;
@@ -174,18 +210,16 @@ export declare class GridNode extends DataGrid.SortableDataGrid.SortableDataGrid
     protected grandTotalTime: number;
     protected maxSelfTime: number;
     protected maxTotalTime: number;
-    constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number, maxTotalTime: number, treeView: TimelineTreeView);
+    protected readonly rowView: GridRowView;
+    constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number, maxTotalTime: number, treeView: TimelineTreeView, rowView?: GridRowView);
     appendLinkContextMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void;
-    createCell(columnId: string): HTMLElement;
-    private createNameCell;
-    private createValueCell;
-    private generateBottomUpButton;
+    createCells(element: Element): void;
 }
 /**
  * `TreeGridNode` lets a `GridNode` (row) populate based on its tree children.
  */
 export declare class TreeGridNode extends GridNode {
-    constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number, maxTotalTime: number, treeView: TimelineTreeView);
+    constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number, maxTotalTime: number, treeView: TimelineTreeView, rowView?: GridRowView);
     populate(): void;
 }
 export declare class AggregatedTimelineTreeView extends TimelineTreeView {

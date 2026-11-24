@@ -140,6 +140,9 @@
       "path": "../../ui/components/report_view/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/kit/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
     },
     {

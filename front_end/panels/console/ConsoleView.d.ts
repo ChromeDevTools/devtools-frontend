@@ -11,20 +11,14 @@ import { type ConsoleViewportElement, type ConsoleViewportProvider } from './Con
 export interface SettingsPaneInput {
     showSettingsPane: boolean;
     networkMessagesSetting: Common.Settings.Setting<boolean>;
-    networkMessagesTitle: Common.UIString.LocalizedString;
     monitoringXHREnabledSetting: Common.Settings.Setting<boolean>;
     preserveConsoleLogSetting: Common.Settings.Setting<boolean>;
     consoleEagerEvalSetting: Common.Settings.Setting<boolean>;
-    consoleEagerEvalLabel: Common.UIString.LocalizedString;
     filterByExecutionContextSetting: Common.Settings.Setting<boolean>;
     consoleHistoryAutocompleteSetting: Common.Settings.Setting<boolean>;
-    consoleHistoryAutocompleteLabel: Common.UIString.LocalizedString;
     groupSimilarSetting: Common.Settings.Setting<boolean>;
-    groupSimilarLabel: Common.UIString.LocalizedString;
     userActivationEvalSetting: Common.Settings.Setting<boolean>;
-    userActivationEvalLabel: Common.UIString.LocalizedString;
     showCorsErrorsSetting: Common.Settings.Setting<boolean>;
-    showCorsErrorsLabel: Common.UIString.LocalizedString;
 }
 export type SettingsPaneView = (input: SettingsPaneInput, output: undefined, target: HTMLElement) => void;
 export declare const SETTINGS_PANE_VIEW: SettingsPaneView;

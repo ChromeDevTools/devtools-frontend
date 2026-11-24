@@ -99,27 +99,45 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class EventSourceMessagesView extends UI.Widget.VBox {
-    request;
+    #request;
     messageFilterSetting;
     filterRegex = null;
     #view;
     constructor(request, view = DEFAULT_VIEW) {
-        super();
+        super(request instanceof HTMLElement ? request : undefined);
         this.#view = view;
-        this.request = request;
+        if (request && !(request instanceof HTMLElement)) {
+            this.#request = request;
+        }
         this.messageFilterSetting =
             Common.Settings.Settings.instance().createSetting('network-event-source-message-filter', '');
         const filter = this.messageFilterSetting.get();
         this.setFilter(filter);
     }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        if (this.isShowing()) {
+            this.#request?.removeEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+            request.addEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+        }
+        this.#request = request;
+        if (this.isShowing()) {
+            this.requestUpdate();
+        }
+    }
     wasShown() {
         super.wasShown();
-        this.request.addEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
         this.requestUpdate();
     }
     willHide() {
         super.willHide();
-        this.request.removeEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
     }
     messageAdded(event) {
         const message = event.data;
@@ -161,6 +179,9 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
         void contextMenu.show();
     }
     performUpdate() {
+        if (!this.request) {
+            return;
+        }
         let messages = this.request.eventSourceMessages();
         const offset = clearMessageOffsets.get(this.request) || 0;
         messages = messages.slice(offset);

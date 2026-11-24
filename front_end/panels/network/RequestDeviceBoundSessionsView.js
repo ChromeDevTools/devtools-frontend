@@ -96,21 +96,39 @@ export class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
     #request;
     #view;
     constructor(request, view = DEFAULT_VIEW) {
-        super();
-        this.#request = request;
+        super(request instanceof HTMLElement ? request : undefined);
+        if (request && !(request instanceof HTMLElement)) {
+            this.#request = request;
+        }
         this.#view = view;
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        if (this.isShowing()) {
+            this.#request?.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+        }
+        this.#request = request;
+        if (this.isShowing()) {
+            this.#request.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+            this.requestUpdate();
+        }
     }
     wasShown() {
         super.wasShown();
-        this.#request.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.performUpdate, this);
-        this.performUpdate();
+        this.#request?.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+        this.requestUpdate();
     }
     willHide() {
         super.willHide();
-        this.#request.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.performUpdate, this);
+        this.#request?.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
     }
     performUpdate() {
-        if (!this.isShowing()) {
+        if (!this.isShowing() || !this.#request) {
             return;
         }
         this.#view({ deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages() }, undefined, this.contentElement);

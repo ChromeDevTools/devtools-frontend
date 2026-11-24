@@ -1430,6 +1430,7 @@ var Network;
     ResourceType2["CSPViolationReport"] = "CSPViolationReport";
     ResourceType2["Preflight"] = "Preflight";
     ResourceType2["FedCM"] = "FedCM";
+    ResourceType2["EmailVerification"] = "EmailVerification";
     ResourceType2["Other"] = "Other";
   })(ResourceType = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -1607,6 +1608,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;
@@ -3846,7 +3848,7 @@ import "../../ui/legacy/legacy.js";
 import * as Common6 from "../../core/common/common.js";
 import * as i18n12 from "../../core/i18n/i18n.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
-import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/lighthouse/lighthousePanel.css.js
 var lighthousePanel_css_default = `/*
@@ -4664,9 +4666,9 @@ var ReportSelector = class {
     this.#comboBox.select(this.newLighthouseItem);
   }
   handleChange(_event) {
-    const item2 = this.selectedItem();
-    if (item2) {
-      item2.select();
+    const item3 = this.selectedItem();
+    if (item3) {
+      item3.select();
     } else {
       this.renderNewLighthouseView();
     }
@@ -4681,14 +4683,14 @@ var ReportSelector = class {
   comboBox() {
     return this.#comboBox;
   }
-  prepend(item2) {
-    const optionEl = item2.optionElement();
+  prepend(item3) {
+    const optionEl = item3.optionElement();
     const selectEl = this.#comboBox.element;
-    this.itemByOptionElement.set(optionEl, item2);
+    this.itemByOptionElement.set(optionEl, item3);
     selectEl.insertBefore(optionEl, selectEl.firstElementChild);
     this.#comboBox.setEnabled(true);
     this.#comboBox.select(optionEl);
-    item2.select();
+    item3.select();
   }
   clearAll() {
     for (const elem of this.#comboBox.options()) {
@@ -4704,10 +4706,10 @@ var ReportSelector = class {
     this.#comboBox.select(this.newLighthouseItem);
   }
   selectReport(report) {
-    for (const [optionElement, item2] of this.itemByOptionElement) {
-      if (item2.report === report) {
+    for (const [optionElement, item3] of this.itemByOptionElement) {
+      if (item3.report === report) {
         this.#comboBox.select(optionElement);
-        item2.select();
+        item3.select();
         return;
       }
     }
@@ -4744,14 +4746,22 @@ var Item = class {
 // ../../front_end/panels/lighthouse/LighthouseStartView.ts
 var LighthouseStartView_exports = {};
 __export(LighthouseStartView_exports, {
-  StartView: () => StartView
+  StartView: () => StartView,
+  TOOLBAR_CHECKBOX_SETTINGS: () => TOOLBAR_CHECKBOX_SETTINGS,
+  TOOLBAR_DROPDOWN_SETTINGS: () => TOOLBAR_DROPDOWN_SETTINGS,
+  getRuntimeSetting: () => getRuntimeSetting,
+  getToolbarCheckboxInput: () => getToolbarCheckboxInput,
+  getToolbarDropdownInput: () => getToolbarDropdownInput,
+  renderSettingsToolbarInto: () => renderSettingsToolbarInto
 });
 import "../../ui/legacy/legacy.js";
 import * as i18n6 from "../../core/i18n/i18n.js";
+import * as Platform2 from "../../core/platform/platform.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
 import { Link } from "../../ui/kit/kit.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html3, render as render3 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html3, nothing as nothing2, render as render3 } from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/lighthouse/lighthouseStartView.css.js
 var lighthouseStartView_css_default = `/*
@@ -5033,6 +5043,8 @@ var RadioSetting = class extends UI4.Widget.Widget {
 };
 
 // ../../front_end/panels/lighthouse/LighthouseStartView.ts
+var { ifDefined: ifDefined2 } = Directives2;
+var { bindToSetting } = UI5.UIUtils;
 var UIStrings3 = {
   /**
    * @description Text displayed as the title of a panel that can be used to audit a web page with Lighthouse.
@@ -5128,10 +5140,22 @@ var renderStartView = (_input, output, target) => {
     target
   );
 };
+function renderLearnMoreLink(url, style) {
+  return html3`<devtools-link class="lighthouse-learn-more devtools-link" style=${ifDefined2(style)}
+      href=${url} jslogcontext="learn-more">${i18nString3(UIStrings3.learnMore)}</devtools-link>`;
+}
+function getRuntimeSetting(settingName) {
+  const runtimeSetting = getRuntimeSettings().find((item3) => item3.setting.name === settingName);
+  if (!runtimeSetting) {
+    throw new Error(`${settingName} is not a runtime setting`);
+  }
+  return runtimeSetting;
+}
 var StartView = class extends UI5.Widget.Widget {
   controller;
   panel;
-  #settingsToolbar;
+  #settingsToolbar = document.createElement("devtools-toolbar");
+  #onDropdownSettingChanged = () => this.#renderSettingsToolbar();
   startButton;
   helpText;
   warningText;
@@ -5142,12 +5166,11 @@ var StartView = class extends UI5.Widget.Widget {
     this.registerRequiredCSS(lighthouseStartView_css_default);
     this.controller = controller;
     this.panel = panel;
-    this.#settingsToolbar = document.createElement("devtools-toolbar");
-    this.#settingsToolbar.classList.add("lighthouse-settings-toolbar");
+    this.#renderSettingsToolbar();
     this.render();
   }
   populateRuntimeSettingAsRadio(settingName, label, parentElement) {
-    const runtimeSetting = getRuntimeSettings().find((item2) => item2.setting.name === settingName);
+    const runtimeSetting = getRuntimeSettings().find((item3) => item3.setting.name === settingName);
     if (!runtimeSetting?.options) {
       throw new Error(`${settingName} is not a setting with options`);
     }
@@ -5166,44 +5189,6 @@ var StartView = class extends UI5.Widget.Widget {
     control.label = label;
     control.show(parentElement);
   }
-  populateRuntimeSettingAsToolbarCheckbox(settingName, toolbar2) {
-    const runtimeSetting = getRuntimeSettings().find((item2) => item2.setting.name === settingName);
-    if (!runtimeSetting?.title) {
-      throw new Error(`${settingName} is not a setting with a title`);
-    }
-    const control = new UI5.Toolbar.ToolbarSettingCheckbox(
-      runtimeSetting.setting,
-      runtimeSetting.description(),
-      runtimeSetting.title()
-    );
-    toolbar2.appendToolbarItem(control);
-    if (runtimeSetting.learnMore) {
-      const link = Link.create(runtimeSetting.learnMore, i18nString3(UIStrings3.learnMore), "lighthouse-learn-more", "learn-more");
-      link.style.margin = "5px";
-      control.element.appendChild(link);
-    }
-  }
-  populateRuntimeSettingAsToolbarDropdown(settingName, toolbar2) {
-    const runtimeSetting = getRuntimeSettings().find((item2) => item2.setting.name === settingName);
-    if (!runtimeSetting?.title) {
-      throw new Error(`${settingName} is not a setting with a title`);
-    }
-    const options = runtimeSetting.options?.map((option) => ({ label: option.label(), value: option.value })) || [];
-    const control = new UI5.Toolbar.ToolbarSettingComboBox(
-      options,
-      runtimeSetting.setting,
-      runtimeSetting.title()
-    );
-    control.setTitle(runtimeSetting.description());
-    toolbar2.appendToolbarItem(control);
-    if (runtimeSetting.learnMore) {
-      const link = Link.create(runtimeSetting.learnMore, i18nString3(UIStrings3.learnMore), "lighthouse-learn-more", "learn-more");
-      link.style.marginLeft = "5px";
-      link.style.display = "inline-flex";
-      link.style.height = "revert";
-      toolbar2.appendToolbarItem(new UI5.Toolbar.ToolbarItem(link));
-    }
-  }
   populateFormControls(deviceTypeFormElements, categoryFormElements, mode) {
     this.populateRuntimeSettingAsRadio("lighthouse.device-type", i18nString3(UIStrings3.device), deviceTypeFormElements);
     this.checkboxes = [];
@@ -5220,9 +5205,6 @@ var StartView = class extends UI5.Widget.Widget {
     }
   }
   render() {
-    this.populateRuntimeSettingAsToolbarCheckbox("lighthouse.clear-storage", this.#settingsToolbar);
-    this.populateRuntimeSettingAsToolbarCheckbox("lighthouse.enable-sampling", this.#settingsToolbar);
-    this.populateRuntimeSettingAsToolbarDropdown("lighthouse.throttling", this.#settingsToolbar);
     const { mode } = this.controller.getFlags();
     const output = {
       helpText: void 0,
@@ -5330,12 +5312,93 @@ var StartView = class extends UI5.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
+    for (const settingName of TOOLBAR_DROPDOWN_SETTINGS) {
+      getRuntimeSetting(settingName).setting.addChangeListener(this.#onDropdownSettingChanged);
+    }
+    this.#renderSettingsToolbar();
     this.controller.recomputePageAuditability();
+  }
+  willHide() {
+    for (const settingName of TOOLBAR_DROPDOWN_SETTINGS) {
+      getRuntimeSetting(settingName).setting.removeChangeListener(this.#onDropdownSettingChanged);
+    }
+    super.willHide();
+  }
+  #renderSettingsToolbar() {
+    renderSettingsToolbarInto(
+      {
+        checkboxes: TOOLBAR_CHECKBOX_SETTINGS.map(getToolbarCheckboxInput),
+        dropdowns: TOOLBAR_DROPDOWN_SETTINGS.map(getToolbarDropdownInput)
+      },
+      void 0,
+      this.#settingsToolbar
+    );
   }
   settingsToolbar() {
     return this.#settingsToolbar;
   }
 };
+function renderToolbarCheckbox(input) {
+  return html3`
+    <devtools-checkbox title=${input.description} ${bindToSetting(input.setting)}>
+      ${input.title}
+    </devtools-checkbox>
+    ${input.learnMore ? renderLearnMoreLink(input.learnMore, "margin: 5px") : nothing2}`;
+}
+function renderToolbarDropdown(input) {
+  return html3`
+    <select
+      title=${input.description}
+      aria-label=${input.title}
+      jslog=${VisualLogging2.dropDown().track({ change: true }).context(input.name)}
+      @change=${(event) => input.onChange(event.target.value)}
+    >
+      ${input.options.map((option) => html3`
+        <option
+          value=${option.value}
+          .selected=${option.value === input.value}
+          jslog=${VisualLogging2.item(Platform2.StringUtilities.toKebabCase(option.value)).track({ click: true })}
+        >${option.label}</option>`)}
+    </select>
+    ${input.learnMore ? renderLearnMoreLink(input.learnMore, "margin-left: 5px; display: inline-flex; height: revert") : nothing2}`;
+}
+function renderSettingsToolbarInto(input, _output, target) {
+  render3(
+    html3`${input.checkboxes.map(renderToolbarCheckbox)}${input.dropdowns.map(renderToolbarDropdown)}`,
+    target,
+    { container: { classes: ["lighthouse-settings-toolbar"] } }
+  );
+}
+var TOOLBAR_CHECKBOX_SETTINGS = ["lighthouse.clear-storage", "lighthouse.enable-sampling"];
+var TOOLBAR_DROPDOWN_SETTINGS = ["lighthouse.throttling"];
+function getToolbarCheckboxInput(settingName) {
+  const runtimeSetting = getRuntimeSetting(settingName);
+  if (!runtimeSetting.title) {
+    throw new Error(`${settingName} is not a setting with a title`);
+  }
+  return {
+    setting: runtimeSetting.setting,
+    title: runtimeSetting.title(),
+    description: runtimeSetting.description(),
+    learnMore: runtimeSetting.learnMore
+  };
+}
+function getToolbarDropdownInput(settingName) {
+  const runtimeSetting = getRuntimeSetting(settingName);
+  if (!runtimeSetting.title) {
+    throw new Error(`${settingName} is not a setting with a title`);
+  }
+  const setting = runtimeSetting.setting;
+  return {
+    name: setting.name,
+    title: runtimeSetting.title(),
+    description: runtimeSetting.description(),
+    options: runtimeSetting.options?.map((option) => ({ label: option.label(), value: option.value })) ?? [],
+    value: setting.get(),
+    learnMore: runtimeSetting.learnMore,
+    onChange: (value) => setting.set(value)
+  };
+}
 
 // ../../front_end/panels/lighthouse/LighthouseStatusView.ts
 var LighthouseStatusView_exports = {};
@@ -5807,12 +5870,12 @@ var StatusView = class {
     if (phase.message()) {
       return phase.message();
     }
-    const deviceTypeSetting = getRuntimeSettings().find((item2) => item2.setting.name === "lighthouse.device-type");
-    const throttleSetting = getRuntimeSettings().find((item2) => item2.setting.name === "lighthouse.throttling");
+    const deviceTypeSetting = getRuntimeSettings().find((item3) => item3.setting.name === "lighthouse.device-type");
+    const throttleSetting = getRuntimeSettings().find((item3) => item3.setting.name === "lighthouse.throttling");
     const deviceType = deviceTypeSetting ? deviceTypeSetting.setting.get() : "";
     const throttling = throttleSetting ? throttleSetting.setting.get() : "";
-    const match = LoadingMessages.find((item2) => {
-      return item2.deviceType === deviceType && item2.throttling === throttling;
+    const match = LoadingMessages.find((item3) => {
+      return item3.deviceType === deviceType && item3.throttling === throttling;
     });
     return match ? match.message() : i18nString4(UIStrings4.lighthouseIsLoadingYourPage);
   }
@@ -6241,7 +6304,7 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
   }
   renderToolbar() {
     const lighthouseToolbarContainer = this.element.createChild("div", "lighthouse-toolbar-container");
-    lighthouseToolbarContainer.setAttribute("jslog", `${VisualLogging2.toolbar()}`);
+    lighthouseToolbarContainer.setAttribute("jslog", `${VisualLogging3.toolbar()}`);
     lighthouseToolbarContainer.role = "toolbar";
     const toolbar2 = lighthouseToolbarContainer.createChild("devtools-toolbar");
     toolbar2.role = "presentation";
@@ -6362,8 +6425,8 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
     if (!items.length) {
       return;
     }
-    const item2 = items[0];
-    if (item2.kind === "file") {
+    const item3 = items[0];
+    if (item3.kind === "file") {
       const file = items[0].getAsFile();
       if (!file) {
         return;

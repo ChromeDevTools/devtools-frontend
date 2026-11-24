@@ -10,5 +10,6 @@ foundation/Universe.test.api.js
 models/persistence/NetworkPersistenceManager.test.api.js
 models/source_map_scopes/NamesResolver.test.api.js
 models/source_map_scopes/ScopeChainResolver.test.api.js
+models/workspace/IgnoreListManager.test.api.js
 models/workspace/WorkspaceImpl.test.api.js
 panels/recorder/models/NavigationGuard.test.api.js

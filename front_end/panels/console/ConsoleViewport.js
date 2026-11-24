@@ -1,7 +1,6 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Platform from '../../core/platform/platform.js';
 import { assertNotNullOrUndefined } from '../../core/platform/platform.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -10,6 +9,101 @@ import { Directives, html, render } from '../../ui/lit/lit.js';
 import { ConsoleViewMessage, getMessageForElement } from './ConsoleViewMessage.js';
 const { ref, repeat, styleMap } = Directives;
 const EXPANDED_CONTENT_HEIGHT = '10000000px';
+export const DEFAULT_VIEW = (input, output, target) => {
+    // The gap elements contain a ZERO WIDTH NO-BREAK SPACE (U+FEFF): text content is needed for the range
+    // intersection checks in updateSelectionModel, and this character doesn't add any height to the layout overflow.
+    //
+    // The items are keyed by their elements, so that the elements which stay in the viewport are never moved
+    // (moving them would reset focus and selection).
+    //
+    // The template must stay the same across renders: the owner of the viewport appends its own children
+    // (e.g. the console prompt) to the target after the rendered content.
+    const gaps = new Map();
+    let contentElement;
+    const setGap = (gap, element) => {
+        if (element instanceof HTMLElement) {
+            gaps.set(gap, element);
+        }
+        else {
+            gaps.delete(gap);
+        }
+    };
+    const isOutsideContent = (element) => element !== null && (!contentElement || !element.isSelfOrDescendant(contentElement));
+    const onCopy = (event) => {
+        const result = input.onCopy();
+        if (!result) {
+            return;
+        }
+        event.preventDefault();
+        if (result.plainText !== undefined) {
+            event.clipboardData?.setData('text/plain', result.plainText);
+        }
+    };
+    const onDragStart = (event) => {
+        const text = input.onDragStart();
+        const { dataTransfer } = event;
+        if (text && dataTransfer) {
+            dataTransfer.clearData();
+            dataTransfer.setData('text/plain', text);
+            dataTransfer.effectAllowed = 'copy';
+        }
+    };
+    const onKeyDown = (event) => {
+        if (input.onKeyDown(event.key, event.shiftKey)) {
+            event.consume(true);
+        }
+    };
+    // clang-format off
+    render(html `
+    <div style=${styleMap({ height: `${input.topGapHeight}px`, color: 'transparent' })} aria-hidden="true"
+         ${ref(e => setGap('top', e))}>&#xFEFF;</div>
+    <div tabindex=${input.contentTabIndex}
+         style=${styleMap({ height: input.expandContent ? EXPANDED_CONTENT_HEIGHT : undefined })}
+         @focusin=${(event) => {
+        const eventTarget = event.target;
+        const itemIndex = input.items.findIndex(item => item.element().isSelfOrAncestor(eventTarget));
+        input.onFocusIn(itemIndex, eventTarget === contentElement, isOutsideContent(event.relatedTarget));
+    }}
+         @focusout=${(event) => input.onFocusOut(isOutsideContent(event.relatedTarget))}
+         @keydown=${onKeyDown}
+         ${ref(e => { contentElement = e instanceof HTMLElement ? e : undefined; })}>
+      ${repeat(input.items, item => item, item => item.element())}
+    </div>
+    <div style=${styleMap({ height: `${input.bottomGapHeight}px`, color: 'transparent' })} aria-hidden="true"
+         ${ref(e => setGap('bottom', e))}>&#xFEFF;</div>`, target, {
+        container: {
+            attributes: { style: 'overflow: auto' },
+            listeners: { scroll: input.onScroll, copy: onCopy, dragstart: onDragStart },
+        },
+    });
+    // clang-format on
+    output.observeContent = (observer, options) => {
+        assertNotNullOrUndefined(contentElement);
+        observer.observe(contentElement, options);
+    };
+    output.focusContent = () => {
+        contentElement?.focus();
+    };
+    output.hasContentFocus = () => Boolean(contentElement?.hasFocus());
+    output.isContentActiveElement = () => Boolean(contentElement && contentElement === UI.DOMUtilities.deepActiveElement(contentElement.ownerDocument));
+    output.rangeIntersectsGap = (range, gap) => {
+        const element = gaps.get(gap);
+        return Boolean(element && range.intersectsNode(element));
+    };
+    output.setSelectionBaseAndExtent = (selection, anchor, head) => {
+        const resolve = (point) => {
+            if ('node' in point) {
+                return point;
+            }
+            const element = gaps.get(point.gap);
+            assertNotNullOrUndefined(element);
+            return { node: element, offset: point.atEnd ? element.childNodes.length : 0 };
+        };
+        const a = resolve(anchor);
+        const h = resolve(head);
+        selection.setBaseAndExtent(a.node, a.offset, h.node, h.offset);
+    };
+};
 export class ConsoleViewport {
     element;
     topGapElementActive;
@@ -30,18 +124,28 @@ export class ConsoleViewport {
     selectionIsBackward;
     lastSelectedElement;
     cachedProviderElements;
-    #gaps = new Map();
-    #contentElementRef;
+    #view;
+    #output = {};
+    #callbacks;
     #topGapHeight = 0;
     #bottomGapHeight = 0;
     #expandContent = false;
     #contentTabIndex = -1;
     #rendering = false;
     #renderRequested = false;
-    constructor(provider) {
+    constructor(provider, view = DEFAULT_VIEW) {
         this.element = document.createElement('div');
         this.topGapElementActive = false;
         this.bottomGapElementActive = false;
+        this.#view = view;
+        this.#callbacks = {
+            onScroll: this.onScroll.bind(this),
+            onCopy: this.onCopy.bind(this),
+            onDragStart: this.onDragStart.bind(this),
+            onFocusIn: this.onFocusIn.bind(this),
+            onFocusOut: this.onFocusOut.bind(this),
+            onKeyDown: this.onKeyDown.bind(this),
+        };
         this.provider = provider;
         this.virtualSelectedIndex = -1;
         this.firstActiveIndex = -1;
@@ -72,67 +176,20 @@ export class ConsoleViewport {
         try {
             do {
                 this.#renderRequested = false;
-                const setGap = (gap, element) => {
-                    if (element instanceof HTMLElement) {
-                        this.#gaps.set(gap, element);
-                    }
-                    else {
-                        this.#gaps.delete(gap);
-                    }
+                const input = {
+                    topGapHeight: this.#topGapHeight,
+                    bottomGapHeight: this.#bottomGapHeight,
+                    expandContent: this.#expandContent,
+                    contentTabIndex: this.#contentTabIndex,
+                    items: [...this.renderedItems],
+                    ...this.#callbacks,
                 };
-                const onCopy = (event) => {
-                    const result = this.onCopy();
-                    if (!result) {
-                        return;
-                    }
-                    event.preventDefault();
-                    if (result.plainText !== undefined) {
-                        event.clipboardData?.setData('text/plain', result.plainText);
-                    }
-                };
-                const onDragStart = (event) => {
-                    const text = this.onDragStart();
-                    const { dataTransfer } = event;
-                    if (text && dataTransfer) {
-                        dataTransfer.clearData();
-                        dataTransfer.setData('text/plain', text);
-                        dataTransfer.effectAllowed = 'copy';
-                    }
-                };
-                const onKeyDown = (event) => {
-                    if (this.onKeyDown(event.key, event.shiftKey)) {
-                        event.consume(true);
-                    }
-                };
-                // clang-format off
-                render(html `
-          <div style=${styleMap({ height: `${this.#topGapHeight}px`, color: 'transparent' })} aria-hidden="true"
-               ${ref(e => setGap('top', e))}>&#xFEFF;</div>
-          <div tabindex=${this.#contentTabIndex}
-               style=${styleMap({ height: this.#expandContent ? EXPANDED_CONTENT_HEIGHT : undefined })}
-               @focusin=${(event) => this.onFocusIn(event.target, event.relatedTarget)}
-               @focusout=${(event) => this.onFocusOut(event.relatedTarget)}
-               @keydown=${onKeyDown}
-               ${ref(e => { this.#contentElementRef = e instanceof HTMLElement ? e : undefined; })}>
-            ${repeat(this.renderedItems, item => item, item => item.element())}
-          </div>
-          <div style=${styleMap({ height: `${this.#bottomGapHeight}px`, color: 'transparent' })} aria-hidden="true"
-               ${ref(e => setGap('bottom', e))}>&#xFEFF;</div>`, this.element, {
-                    container: {
-                        attributes: { style: 'overflow: auto' },
-                        listeners: { scroll: () => this.onScroll(), copy: onCopy, dragstart: onDragStart },
-                    },
-                });
-                // clang-format on
+                this.#view(input, this.#output, this.element);
             } while (this.#renderRequested);
         }
         finally {
             this.#rendering = false;
         }
-    }
-    get #contentElement() {
-        assertNotNullOrUndefined(this.#contentElementRef);
-        return this.#contentElementRef;
     }
     #setContentTabIndex(tabIndex) {
         if (this.#contentTabIndex !== tabIndex) {
@@ -146,7 +203,7 @@ export class ConsoleViewport {
     setStickToBottom(value) {
         this.#stickToBottom = value;
         if (this.#stickToBottom) {
-            this.observer.observe(this.#contentElement, this.observerConfig);
+            this.#output.observeContent?.(this.observer, this.observerConfig);
         }
         else {
             this.observer.disconnect();
@@ -174,15 +231,13 @@ export class ConsoleViewport {
         }
         return { plainText: text };
     }
-    onFocusIn(target, relatedTarget) {
-        const renderedIndex = this.renderedItems.findIndex(item => item.element().isSelfOrAncestor(target));
-        if (renderedIndex !== -1) {
-            this.virtualSelectedIndex = this.firstActiveIndex + renderedIndex;
+    onFocusIn(targetItemIndex, isContainerTarget, relatedTargetOutside) {
+        if (targetItemIndex !== -1) {
+            this.virtualSelectedIndex = this.firstActiveIndex + targetItemIndex;
         }
         let focusLastChild = false;
         // Make default selection when moving from external (e.g. prompt) to the container.
-        if (this.virtualSelectedIndex === -1 && this.isOutsideViewport(relatedTarget) && target === this.#contentElement &&
-            this.itemCount) {
+        if (this.virtualSelectedIndex === -1 && relatedTargetOutside && isContainerTarget && this.itemCount) {
             focusLastChild = true;
             this.virtualSelectedIndex = this.itemCount - 1;
             // Update stick to bottom before scrolling into view.
@@ -191,14 +246,11 @@ export class ConsoleViewport {
         }
         this.updateFocusedItem(focusLastChild);
     }
-    onFocusOut(relatedTarget) {
-        if (this.isOutsideViewport(relatedTarget)) {
+    onFocusOut(relatedTargetOutside) {
+        if (relatedTargetOutside) {
             this.virtualSelectedIndex = -1;
         }
         this.updateFocusedItem();
-    }
-    isOutsideViewport(element) {
-        return element !== null && !element.isSelfOrDescendant(this.#contentElement);
     }
     onDragStart() {
         return this.selectedText() || null;
@@ -242,7 +294,7 @@ export class ConsoleViewport {
     updateFocusedItem(focusLastChild) {
         const selectedElement = this.renderedElementAt(this.virtualSelectedIndex);
         const changed = this.lastSelectedElement !== selectedElement;
-        const containerHasFocus = this.#contentElement === UI.DOMUtilities.deepActiveElement(this.element.ownerDocument);
+        const containerHasFocus = this.#output.isContentActiveElement?.() ?? false;
         if (this.lastSelectedElement && changed) {
             this.lastSelectedElement.classList.remove('console-selected');
         }
@@ -261,7 +313,7 @@ export class ConsoleViewport {
                 selectedElement.focus({ preventScroll: true });
             }
         }
-        if (this.itemCount && !this.#contentElement.hasFocus()) {
+        if (this.itemCount && !(this.#output.hasContentFocus?.() ?? false)) {
             this.#setContentTabIndex(0);
         }
         else {
@@ -270,7 +322,8 @@ export class ConsoleViewport {
         this.lastSelectedElement = selectedElement;
     }
     contentElement() {
-        return this.#contentElement;
+        assertNotNullOrUndefined(this.element.children[1]);
+        return this.element.children[1];
     }
     invalidate() {
         delete this.cachedProviderElements;
@@ -360,10 +413,8 @@ export class ConsoleViewport {
                 hasVisibleSelection = true;
             }
         }
-        const topGap = this.#gaps.get('top');
-        const bottomGap = this.#gaps.get('bottom');
-        const topOverlap = Boolean(topGap && range.intersectsNode(topGap)) && this.topGapElementActive;
-        const bottomOverlap = Boolean(bottomGap && range.intersectsNode(bottomGap)) && this.bottomGapElementActive;
+        const topOverlap = Boolean(this.#output.rangeIntersectsGap?.(range, 'top')) && this.topGapElementActive;
+        const bottomOverlap = Boolean(this.#output.rangeIntersectsGap?.(range, 'bottom')) && this.bottomGapElementActive;
         if (!topOverlap && !bottomOverlap && !hasVisibleSelection) {
             this.headSelection = null;
             this.anchorSelection = null;
@@ -414,15 +465,13 @@ export class ConsoleViewport {
         }
         const clampSelection = (selection, isSelectionBackwards) => {
             if (this.firstActiveIndex <= selection.item && selection.item <= this.lastActiveIndex) {
-                return { element: selection.node, offset: selection.offset };
+                return { node: selection.node, offset: selection.offset };
             }
-            const gapElement = this.#gaps.get(selection.item < this.firstActiveIndex ? 'top' : 'bottom');
-            assertNotNullOrUndefined(gapElement);
-            return { element: gapElement, offset: isSelectionBackwards ? gapElement.childNodes.length : 0 };
+            return { gap: selection.item < this.firstActiveIndex ? 'top' : 'bottom', atEnd: isSelectionBackwards };
         };
-        const { element: anchorElement, offset: anchorOffset } = clampSelection(this.anchorSelection, Boolean(this.selectionIsBackward));
-        const { element: headElement, offset: headOffset } = clampSelection(this.headSelection, !this.selectionIsBackward);
-        selection.setBaseAndExtent(anchorElement, anchorOffset, headElement, headOffset);
+        const anchor = clampSelection(this.anchorSelection, Boolean(this.selectionIsBackward));
+        const head = clampSelection(this.headSelection, !this.selectionIsBackward);
+        this.#output.setSelectionBaseAndExtent?.(selection, anchor, head);
     }
     selectionContainsTable() {
         if (!this.anchorSelection || !this.headSelection) {
@@ -442,7 +491,7 @@ export class ConsoleViewport {
         this.observer.disconnect();
         this.#refresh();
         if (this.#stickToBottom) {
-            this.observer.observe(this.#contentElement, this.observerConfig);
+            this.#output.observeContent?.(this.observer, this.observerConfig);
         }
     }
     #refresh() {
@@ -532,7 +581,7 @@ export class ConsoleViewport {
             wasShown[i].wasShown();
         }
         if (hadFocus) {
-            this.#contentElement.focus();
+            this.#output.focusContent?.();
         }
         this.updateFocusedItem();
     }

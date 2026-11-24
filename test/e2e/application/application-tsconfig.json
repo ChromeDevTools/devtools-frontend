@@ -50,6 +50,7 @@
     "../../../../../../test/e2e/application/cookies.test.ts",
     "../../../../../../test/e2e/application/crash-report-context.test.ts",
     "../../../../../../test/e2e/application/frame-tree.test.ts",
+    "../../../../../../test/e2e/application/local-storage.test.ts",
     "../../../../../../test/e2e/application/manifest.test.ts",
     "../../../../../../test/e2e/application/reporting-api.test.ts",
     "../../../../../../test/e2e/application/resource-tree.test.ts",

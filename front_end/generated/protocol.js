@@ -1414,6 +1414,7 @@ export var Network;
         ResourceType["CSPViolationReport"] = "CSPViolationReport";
         ResourceType["Preflight"] = "Preflight";
         ResourceType["FedCM"] = "FedCM";
+        ResourceType["EmailVerification"] = "EmailVerification";
         ResourceType["Other"] = "Other";
     })(ResourceType = Network.ResourceType || (Network.ResourceType = {}));
     /**
@@ -1634,6 +1635,7 @@ export var Network;
         InitiatorType["SignedExchange"] = "SignedExchange";
         InitiatorType["Preflight"] = "preflight";
         InitiatorType["FedCM"] = "FedCM";
+        InitiatorType["EmailVerification"] = "EmailVerification";
         InitiatorType["Other"] = "other";
     })(InitiatorType = Network.InitiatorType || (Network.InitiatorType = {}));
     /**

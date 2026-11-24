@@ -74,6 +74,12 @@
       "path": "../../../core/platform/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../services/puppeteer/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../testing/testing-tsconfig.ref.json"
     },
     {

@@ -1121,6 +1121,9 @@ class SCCRecord {
 }
 function* forEach(array, startAfter) {
     const startIdx = startAfter !== undefined ? array.indexOf(startAfter) + 1 : 0;
+    if (startAfter !== undefined && startIdx === 0) {
+        return;
+    }
     for (let i = startIdx; i < array.length; ++i) {
         yield array[i];
     }
@@ -1302,12 +1305,8 @@ class DOMInheritanceCascade {
             if (!value || !CSSMetadata.isCSSWideKeyword(value)) {
                 break;
             }
-            const resolvedProperty = this.resolveGlobalKeyword(definedValue.declaration.declaration, value);
-            if (!resolvedProperty) {
-                return definedValue;
-            }
-            const declaration = new CSSValueSource(resolvedProperty);
-            if (!declaration.value) {
+            const declaration = this.#matchedStyles.resolveGlobalKeyword(definedValue.declaration.declaration, value);
+            if (!declaration?.value) {
                 return definedValue;
             }
             definedValue = { declaration, value: declaration.value };

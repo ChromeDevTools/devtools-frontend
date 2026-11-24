@@ -140,8 +140,8 @@ import * as Trace37 from "../../models/trace/trace.js";
 import * as SourceMapsResolver9 from "../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace8 from "../../models/workspace/workspace.js";
 import * as ThemeSupport25 from "../../ui/legacy/theme_support/theme_support.js";
-import { html as html14, render as render12 } from "../../ui/lit/lit.js";
-import * as SettingsUI7 from "../../ui/settings/settings.js";
+import { html as html15, render as render13 } from "../../ui/lit/lit.js";
+import * as SettingsUI5 from "../../ui/settings/settings.js";
 import * as TimelineComponents7 from "./components/components.js";
 
 // ../../front_end/panels/timeline/ExtensionTrackAppender.ts
@@ -916,8 +916,8 @@ function ariaAnnouncementForModifiedEvent(event) {
   if (event.muteAriaNotifications) {
     return null;
   }
-  const { overlay, action: action2 } = event;
-  switch (action2) {
+  const { overlay, action: action3 } = event;
+  switch (action3) {
     case "Remove": {
       const text = ariaDescriptionForOverlay(overlay);
       if (text) {
@@ -972,7 +972,7 @@ function ariaAnnouncementForModifiedEvent(event) {
       break;
     }
     default:
-      Platform.assertNever(action2, "Unsupported action for AnnotationModifiedEvent");
+      Platform.assertNever(action3, "Unsupported action for AnnotationModifiedEvent");
   }
   return null;
 }
@@ -1071,12 +1071,12 @@ var EntriesFilter = class {
    * Applies an action to hide entries or removes entries
    * from hidden entries array depending on the action.
    */
-  applyFilterAction(action2) {
+  applyFilterAction(action3) {
     const entriesToHide = /* @__PURE__ */ new Set();
-    switch (action2.type) {
+    switch (action3.type) {
       case PerfUI6.FlameChart.FilterAction.MERGE_FUNCTION: {
-        entriesToHide.add(action2.entry);
-        const actionNode = this.#getEntryNode(action2.entry) || null;
+        entriesToHide.add(action3.entry);
+        const actionNode = this.#getEntryNode(action3.entry) || null;
         const parentNode = actionNode && this.#firstVisibleParentNodeForEntryNode(actionNode);
         if (parentNode) {
           this.#addExpandableEntry(parentNode.entry);
@@ -1084,24 +1084,24 @@ var EntriesFilter = class {
         break;
       }
       case PerfUI6.FlameChart.FilterAction.COLLAPSE_FUNCTION: {
-        const entryNode = this.#getEntryNode(action2.entry);
+        const entryNode = this.#getEntryNode(action3.entry);
         if (!entryNode) {
           break;
         }
         const allDescendants = this.#findAllDescendantsOfNode(entryNode);
         allDescendants.forEach((descendant) => entriesToHide.add(descendant));
-        this.#addExpandableEntry(action2.entry);
+        this.#addExpandableEntry(action3.entry);
         break;
       }
       case PerfUI6.FlameChart.FilterAction.COLLAPSE_REPEATING_DESCENDANTS: {
-        const entryNode = this.#getEntryNode(action2.entry);
+        const entryNode = this.#getEntryNode(action3.entry);
         if (!entryNode) {
           break;
         }
         const allRepeatingDescendants = this.#findAllRepeatingDescendantsOfNext(entryNode);
         allRepeatingDescendants.forEach((descendant) => entriesToHide.add(descendant));
         if (entriesToHide.size > 0) {
-          this.#addExpandableEntry(action2.entry);
+          this.#addExpandableEntry(action3.entry);
         }
         break;
       }
@@ -1111,11 +1111,11 @@ var EntriesFilter = class {
         break;
       }
       case PerfUI6.FlameChart.FilterAction.RESET_CHILDREN: {
-        this.#makeEntryChildrenVisible(action2.entry);
+        this.#makeEntryChildrenVisible(action3.entry);
         break;
       }
       default:
-        Platform2.assertNever(action2.type, `Unknown EntriesFilter action: ${action2.type}`);
+        Platform2.assertNever(action3.type, `Unknown EntriesFilter action: ${action3.type}`);
     }
     this.#invisibleEntries.push(...entriesToHide);
     return this.#invisibleEntries;
@@ -1255,10 +1255,10 @@ var EntriesFilter = class {
 var modificationsManagerByTraceIndex = [];
 var activeManager;
 var AnnotationModifiedEvent = class _AnnotationModifiedEvent extends Event {
-  constructor(overlay, action2, muteAriaNotifications = false) {
+  constructor(overlay, action3, muteAriaNotifications = false) {
     super(_AnnotationModifiedEvent.eventName);
     this.overlay = overlay;
-    this.action = action2;
+    this.action = action3;
     this.muteAriaNotifications = muteAriaNotifications;
   }
   overlay;
@@ -2026,7 +2026,7 @@ import * as Workspace6 from "../../models/workspace/workspace.js";
 import * as PerfUI16 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "../../ui/legacy/theme_support/theme_support.js";
-import { html as html13 } from "../../ui/lit/lit.js";
+import { html as html14 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/timeline/Initiators.ts
 var Initiators_exports = {};
@@ -3269,8 +3269,8 @@ import * as TraceBounds13 from "../../services/trace_bounds/trace_bounds.js";
 import * as Tracing6 from "../../services/tracing/tracing.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI16 from "../../ui/legacy/legacy.js";
-import { Directive, Directives as Directives5, html as html11, noChange, nothing as nothing6, render as render11 } from "../../ui/lit/lit.js";
-import * as SettingsUI6 from "../../ui/settings/settings.js";
+import { Directive, Directives as Directives7, html as html12, noChange, nothing as nothing8, render as render12 } from "../../ui/lit/lit.js";
+import * as SettingsUI4 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as TimelineComponents5 from "./components/components.js";
 
@@ -3285,7 +3285,7 @@ import * as i18n39 from "../../core/i18n/i18n.js";
 import * as Trace27 from "../../models/trace/trace.js";
 import * as DataGrid3 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
-import { html as html7, nothing as nothing5, render as render7 } from "../../ui/lit/lit.js";
+import { html as html8, nothing as nothing7, render as render8 } from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/timeline/TimelineFilters.ts
@@ -3300,6 +3300,7 @@ import * as Trace25 from "../../models/trace/trace.js";
 // ../../front_end/panels/timeline/TimelineUIUtils.ts
 var TimelineUIUtils_exports = {};
 __export(TimelineUIUtils_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   EventDispatchTypeDescriptor: () => EventDispatchTypeDescriptor,
   TimelineDetailsContentHelper: () => TimelineDetailsContentHelper,
   TimelineUIUtils: () => TimelineUIUtils,
@@ -3406,7 +3407,13 @@ var imagePreview_css_default = `/*
 import * as LegacyComponents from "../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport15 from "../../ui/legacy/theme_support/theme_support.js";
-import { html as html5, render as render5 } from "../../ui/lit/lit.js";
+import {
+  Directives as Directives4,
+  html as html6,
+  i18nTemplate,
+  nothing as nothing5,
+  render as render6
+} from "../../ui/lit/lit.js";
 import * as SettingUIRegistration4 from "../../ui/settings/settings.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
@@ -3419,6 +3426,7 @@ __export(TimelinePanel_exports, {
   ActionDelegate: () => ActionDelegate,
   BottomUpProfileRevealer: () => BottomUpProfileRevealer,
   CoreVitalsRevealer: () => CoreVitalsRevealer,
+  DEFAULT_SETTINGS_PANE_VIEW: () => DEFAULT_SETTINGS_PANE_VIEW,
   EventRevealer: () => EventRevealer,
   Events: () => Events3,
   InsightRevealer: () => InsightRevealer,
@@ -3435,6 +3443,7 @@ __export(TimelinePanel_exports, {
   rowHeight: () => rowHeight
 });
 import "../../ui/legacy/legacy.js";
+import "../../ui/kit/kit.js";
 import * as Common10 from "../../core/common/common.js";
 import * as Host2 from "../../core/host/host.js";
 import * as i18n33 from "../../core/i18n/i18n.js";
@@ -4638,6 +4647,7 @@ var Network;
     ResourceType2["CSPViolationReport"] = "CSPViolationReport";
     ResourceType2["Preflight"] = "Preflight";
     ResourceType2["FedCM"] = "FedCM";
+    ResourceType2["EmailVerification"] = "EmailVerification";
     ResourceType2["Other"] = "Other";
   })(ResourceType = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -4815,6 +4825,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;
@@ -6297,11 +6308,10 @@ import * as Workspace2 from "../../models/workspace/workspace.js";
 import * as TraceBounds9 from "../../services/trace_bounds/trace_bounds.js";
 import * as Tracing3 from "../../services/tracing/tracing.js";
 import * as Dialogs from "../../ui/components/dialogs/dialogs.js";
-import { Link } from "../../ui/kit/kit.js";
 import * as PerfUI11 from "../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI4 from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport13 from "../../ui/legacy/theme_support/theme_support.js";
+import { Directives as Directives3, html as html5, nothing as nothing4, render as render5 } from "../../ui/lit/lit.js";
 import * as SettingUIRegistration2 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "../mobile_throttling/mobile_throttling.js";
@@ -6468,9 +6478,9 @@ function* arrayOfObjectsJsonGenerator(arrayOfObjects) {
     yield `  ${JSON.stringify(firstItem)}`;
     let itemsRemaining = ITEMS_PER_ITERATION;
     let itemsJSON = "";
-    for (const item4 of itemsIterator) {
+    for (const item5 of itemsIterator) {
       itemsJSON += `,
-  ${JSON.stringify(item4)}`;
+  ${JSON.stringify(item5)}`;
       itemsRemaining--;
       if (itemsRemaining === 0) {
         yield itemsJSON;
@@ -6935,10 +6945,10 @@ var StatusChecker = class {
   #listener = null;
   #currentStatus = null;
   add(title, promise) {
-    const item4 = { title, complete: false };
-    this.#checkers.push(item4);
+    const item5 = { title, complete: false };
+    this.#checkers.push(item5);
     void promise.finally(() => {
-      item4.complete = true;
+      item5.complete = true;
       this.#evaluate();
     });
   }
@@ -8202,15 +8212,15 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
   navigateToLandingPage() {
     this.#setActiveTrace({ type: "LANDING_PAGE" });
   }
-  #setActiveTrace(item4) {
-    if (item4.type === "TRACE_INDEX") {
-      const data = _TimelineHistoryManager.#dataForTraceIndex(item4.parsedTraceIndex);
+  #setActiveTrace(item5) {
+    if (item5.type === "TRACE_INDEX") {
+      const data = _TimelineHistoryManager.#dataForTraceIndex(item5.parsedTraceIndex);
       if (!data) {
         throw new Error("Unable to find data for model");
       }
       data.lastUsed = Date.now();
     }
-    this.#lastActiveTrace = item4;
+    this.#lastActiveTrace = item5;
     this.#updateButton();
   }
   #updateButton() {
@@ -8227,11 +8237,11 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
   #updateState() {
     this.#action.setEnabled(this.#recordings.length >= 1 && this.#enabled);
   }
-  #title(item4) {
-    if (item4.type === "LANDING_PAGE") {
+  #title(item5) {
+    if (item5.type === "LANDING_PAGE") {
       return this.#landingPageTitle;
     }
-    const data = _TimelineHistoryManager.#dataForTraceIndex(item4.parsedTraceIndex);
+    const data = _TimelineHistoryManager.#dataForTraceIndex(item5.parsedTraceIndex);
     if (!data) {
       throw new Error("Unable to find data for model");
     }
@@ -8292,11 +8302,11 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
     return parsedTraceIndexToPerformancePreviewData.get(index) || null;
   }
 };
-function itemId(item4) {
-  if (item4.type === "LANDING_PAGE") {
+function itemId(item5) {
+  if (item5.type === "LANDING_PAGE") {
     return "history-dropdown-item-landing-page";
   }
-  return `history-dropdown-item-${item4.parsedTraceIndex}`;
+  return `history-dropdown-item-${item5.parsedTraceIndex}`;
 }
 var thumbnailAspectRatio = 3 / 2;
 function renderScreenshotThumbnail(screenshotEvent, height) {
@@ -8321,10 +8331,10 @@ function renderOverview(overview, height) {
     </div>
   `;
 }
-function renderLandingPageContent(item4) {
+function renderLandingPageContent(item5) {
   return html3`
     <devtools-icon class="back-arrow" title=${i18nString13(UIStrings13.backButtonTooltip)} name="arrow-back"></devtools-icon>
-    <span>${item4.title}</span>
+    <span>${item5.title}</span>
   `;
 }
 function renderRecordingContent(data) {
@@ -8339,28 +8349,28 @@ function renderRecordingContent(data) {
     </div>
   `;
 }
-function renderEntry(item4, isSelected, posInSet, setSize, onHover, onActivate) {
+function renderEntry(item5, isSelected, posInSet, setSize, onHover, onActivate) {
   const classes = { "preview-item": true, selected: isSelected };
   let jslog;
   let content;
-  switch (item4.type) {
+  switch (item5.type) {
     case "LANDING_PAGE":
       jslog = VisualLogging4.item().track({ click: true, resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown|Home|End" });
-      content = renderLandingPageContent(item4);
+      content = renderLandingPageContent(item5);
       classes["landing-page-item"] = true;
       break;
     case "RECORDING":
       jslog = VisualLogging4.dropDown("timeline.history-item").track({ click: true });
-      content = renderRecordingContent(item4.preview);
+      content = renderRecordingContent(item5.preview);
       classes["vbox"] = true;
       break;
     default:
-      Platform8.assertNever(item4, "Unknown history dropdown item");
+      Platform8.assertNever(item5, "Unknown history dropdown item");
   }
   return html3`
     <div class=${classMap(classes)}
         role="menuitem"
-        id=${itemId(item4)}
+        id=${itemId(item5)}
         aria-posinset=${posInSet}
         aria-setsize=${setSize}
         aria-selected=${ifDefined2(isSelected ? "true" : void 0)}
@@ -8411,15 +8421,15 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
               style="overflow-y: auto"
               aria-activedescendant=${activeDescendantId}
               @keydown=${onKeyDown}>
-            ${input.items.map((item4, index) => {
-      const isSelected = item4 === input.selectedItem;
+            ${input.items.map((item5, index) => {
+      const isSelected = item5 === input.selectedItem;
       return renderEntry(
-        item4,
+        item5,
         isSelected,
         index + 1,
         input.items.length,
-        () => input.onHover(item4),
-        () => input.onActivate(item4)
+        () => input.onHover(item5),
+        () => input.onActivate(item5)
       );
     })}
           </div>
@@ -8455,11 +8465,11 @@ var DropDown = class _DropDown extends UI6.Widget.Widget {
   get selectedItem() {
     return this.#selectedItem;
   }
-  set selectedItem(item4) {
-    if (this.#selectedItem === item4) {
+  set selectedItem(item5) {
+    if (this.#selectedItem === item5) {
       return;
     }
-    this.#selectedItem = item4;
+    this.#selectedItem = item5;
     this.requestUpdate();
   }
   wasShown() {
@@ -8470,8 +8480,8 @@ var DropDown = class _DropDown extends UI6.Widget.Widget {
     const input = {
       items: this.#items,
       selectedItem: this.#selectedItem,
-      onHover: (item4) => this.#hover(item4),
-      onActivate: (item4) => this.#activate(item4),
+      onHover: (item5) => this.#hover(item5),
+      onActivate: (item5) => this.#activate(item5),
       onNavigate: (target) => this.#navigate(target),
       onActivateSelected: () => this.#activateSelected(),
       onCancel: () => this.#close(null)
@@ -8508,11 +8518,11 @@ var DropDown = class _DropDown extends UI6.Widget.Widget {
     _DropDown.instance.#close(null);
   }
   #show(anchor, activeparsedTraceIndex) {
-    const activeItem = this.#items.find((item4) => {
-      if (item4.type === "LANDING_PAGE") {
+    const activeItem = this.#items.find((item5) => {
+      if (item5.type === "LANDING_PAGE") {
         return activeparsedTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE;
       }
-      return item4.parsedTraceIndex === activeparsedTraceIndex;
+      return item5.parsedTraceIndex === activeparsedTraceIndex;
     });
     this.selectedItem = activeItem ?? null;
     this.#previousFocus = UI6.DOMUtilities.deepActiveElement(document);
@@ -8560,11 +8570,11 @@ var DropDown = class _DropDown extends UI6.Widget.Widget {
   #selectAt(index) {
     this.selectedItem = this.#items[index];
   }
-  #hover(item4) {
-    this.selectedItem = item4;
+  #hover(item5) {
+    this.selectedItem = item5;
   }
-  #activate(item4) {
-    const choice = item4.type === "LANDING_PAGE" ? LANDING_PAGE_INDEX_DROPDOWN_CHOICE : item4.parsedTraceIndex;
+  #activate(item5) {
+    const choice = item5.type === "LANDING_PAGE" ? LANDING_PAGE_INDEX_DROPDOWN_CHOICE : item5.parsedTraceIndex;
     this.#close(choice);
   }
   #activateSelected() {
@@ -10001,6 +10011,9 @@ var UIDevtoolsController = class extends TimelineController {
 };
 
 // ../../front_end/panels/timeline/TimelinePanel.ts
+var { bindToSetting } = UI9.UIUtils;
+var { widget: widget2 } = UI9.Widget;
+var { ref: ref3 } = Directives3;
 var UIStrings17 = {
   /**
    * @description Text shown on the drag-and-drop overlay in the Performance panel.
@@ -10238,6 +10251,87 @@ var SOURCE_MAP_LOAD_TIMEOUT_MS = 5e3;
 var TimelinePanelBase = Common10.ObjectWrapper.eventMixin(
   UI9.Panel.Panel
 );
+var GlobalNetworkThrottlingSelect = class extends MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect {
+  constructor(element) {
+    super(element, {
+      title: i18nString17(UIStrings17.network),
+      jslogContext: SDK7.NetworkManager.activeNetworkThrottlingKeySetting(Common10.Settings.Settings.instance()).name
+    });
+    this.bindToGlobalConditions = true;
+  }
+};
+function renderSettingsPane(input, output) {
+  return html5`
+    ${!input.isNode && input.canRecord ? html5`
+      <div class="timeline-settings-pane" ?hidden=${!input.showSettingsPane}
+          jslog=${VisualLogging5.pane("timeline-settings-pane").track({ resize: true })}>
+        <div>
+          ${i18nString17(UIStrings17.cpu)}
+          <select ${widget2(MobileThrottling2.CPUThrottlingSelector.CPUThrottlingSelector)}></select>
+        </div>
+        <devtools-checkbox title=${i18nString17(UIStrings17.capturesSelectorStats)}
+            .ariaLabel=${input.captureSelectorStatsTitle || i18nString17(UIStrings17.capturesSelectorStats)}
+            ${bindToSetting(input.captureSelectorStatsSetting)}>
+          ${input.captureSelectorStatsTitle}
+        </devtools-checkbox>
+        <div>
+          ${i18nString17(UIStrings17.network)}
+          <select ${widget2(GlobalNetworkThrottlingSelect)}></select>
+        </div>
+        <devtools-checkbox title=${i18nString17(UIStrings17.capturesAdvancedPaint)}
+            .ariaLabel=${input.captureLayersAndPicturesTitle || i18nString17(UIStrings17.capturesAdvancedPaint)}
+            ${bindToSetting(input.captureLayersAndPicturesSetting)}>
+          ${input.captureLayersAndPicturesTitle}
+        </devtools-checkbox>
+        <devtools-checkbox title=${i18nString17(UIStrings17.disablesJavascriptSampling)}
+            .ariaLabel=${input.disableCaptureJSProfileTitle || i18nString17(UIStrings17.disablesJavascriptSampling)}
+            ${bindToSetting(input.disableCaptureJSProfileSetting)}>
+          ${input.disableCaptureJSProfileTitle}
+        </devtools-checkbox>
+        <div ?hidden=${!input.showScreenshots}>
+          ${input.screenshotCaptureModeTitle}
+          <select title=${input.screenshotCaptureModeTitle} aria-label=${input.screenshotCaptureModeTitle}
+              jslog=${VisualLogging5.dropDown("screenshot-capture-mode").track({ change: true })}
+              @change=${(e) => input.onScreenshotPresetChange(e.target.value)}>
+            ${SCREENSHOT_CAPTURE_PRESETS.map((preset) => html5`
+              <option value=${preset.key} .selected=${preset.key === input.selectedScreenshotCaptureMode}
+                  jslog=${VisualLogging5.item(`tracing.screenshot-size.${preset.key}`).track({ click: true })}>
+                ${preset.label()}
+              </option>`)}
+          </select>
+        </div>
+        <span class="hbox" style="align-items: center;">
+          <devtools-checkbox title=${i18nString17(UIStrings17.showDataAddedByExtensions)}
+              .ariaLabel=${input.thirdPartyTracksTitle || i18nString17(UIStrings17.showDataAddedByExtensions)}
+              ?disabled=${!input.uiControlsEnabled}
+              ${bindToSetting(input.thirdPartyTracksSetting)}>
+            ${input.thirdPartyTracksTitle}
+          </devtools-checkbox>
+          <devtools-link class="devtools-link"
+              href="https://developer.chrome.com/docs/devtools/performance/extension"
+              style="margin-left: 5px;">
+            ${i18nString17(UIStrings17.learnMore)}
+          </devtools-link>
+        </span>
+      </div>` : nothing4}
+    <input type="file" accept=".json,.gz,.gzip,.cpuprofile" hidden tabindex="-1"
+        ${ref3((el) => {
+    output.openFileSelector = el instanceof HTMLInputElement ? () => el.click() : void 0;
+  })}
+        @click=${(event) => {
+    if (event.target instanceof HTMLInputElement) {
+      event.target.value = "";
+    }
+  }}
+        @change=${(event) => {
+    if (event.target instanceof HTMLInputElement && event.target.files?.length) {
+      input.onLoadFromFile(event.target.files[0]);
+    }
+  }}>`;
+}
+var DEFAULT_SETTINGS_PANE_VIEW = (input, output, target) => {
+  render5(renderSettingsPane(input, output), target);
+};
 var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
   dropTarget;
   recordingOptionUIControls;
@@ -10287,7 +10381,10 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
   #searchableView;
   showSettingsPaneButton;
   showSettingsPaneSetting;
-  settingsPane;
+  #showSettingsPane = false;
+  #uiControlsEnabled = true;
+  #settingsPaneContainer = document.createElement("div");
+  #settingsPaneOutput = {};
   controller;
   cpuProfiler;
   clearButton;
@@ -10300,8 +10397,6 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
   loader;
   showScreenshotsToolbarCheckbox;
   showMemoryToolbarCheckbox;
-  cpuThrottlingSelect;
-  fileSelectorElement;
   selection = null;
   traceLoadStart;
   #traceEngineModel;
@@ -10362,8 +10457,10 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
   #resourceLoader;
   #targetManager;
   #isolateManager;
-  constructor(resourceLoader, targetManager, isolateManager, commentManager, traceModel) {
+  #settingsPaneView;
+  constructor(resourceLoader, targetManager, isolateManager, commentManager, traceModel, settingsPaneView = DEFAULT_SETTINGS_PANE_VIEW) {
     super("timeline");
+    this.#settingsPaneView = settingsPaneView;
     this.#resourceLoader = resourceLoader;
     this.#targetManager = targetManager;
     this.#isolateManager = isolateManager;
@@ -10399,6 +10496,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       SettingUIRegistration2.TimelineSettings.timelineShowScreenshotsSettingDescriptor
     );
     this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
+    this.showScreenshotsSetting.addChangeListener(this.requestUpdate, this);
     this.showMemorySetting = Common10.Settings.Settings.instance().resolve(
       SettingUIRegistration2.TimelineSettings.timelineShowMemorySettingDescriptor
     );
@@ -10422,6 +10520,8 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       this.createSettingsPane();
       this.updateShowSettingsToolbarButton();
     }
+    this.#settingsPaneContainer.style.display = "contents";
+    this.element.appendChild(this.#settingsPaneContainer);
     this.timelinePane = new UI9.Widget.VBox();
     const topPaneElement = this.timelinePane.element.createChild("div", "hbox");
     topPaneElement.id = "timeline-overview-panel";
@@ -10433,7 +10533,6 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       await this.flameChart.removeTimestampMarkerOverlay();
     });
     this.statusPaneContainer = this.timelinePane.element.createChild("div", "status-pane-container fill");
-    this.createFileSelector();
     this.flameChart = new TimelineFlameChartView(this, commentManager);
     this.element.addEventListener(
       "toggle-popover",
@@ -10544,6 +10643,38 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       SDK7.TargetManager.Events.SUSPEND_STATE_CHANGED,
       this.onSuspendStateChanged,
       this
+    );
+    this.performUpdate();
+  }
+  // Accessed in web_tests.
+  get settingsPane() {
+    return this.element.querySelector(".timeline-settings-pane");
+  }
+  performUpdate() {
+    this.#settingsPaneView(
+      {
+        isNode: this.#isNode,
+        canRecord: this.canRecord(),
+        uiControlsEnabled: this.#uiControlsEnabled,
+        showSettingsPane: this.#showSettingsPane,
+        showScreenshots: this.showScreenshotsSetting.get(),
+        captureSelectorStatsSetting: this.captureSelectorStatsSetting,
+        captureSelectorStatsTitle: SettingUIRegistration2.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title,
+        captureLayersAndPicturesSetting: this.captureLayersAndPicturesSetting,
+        captureLayersAndPicturesTitle: SettingUIRegistration2.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor()).title,
+        disableCaptureJSProfileSetting: this.disableCaptureJSProfileSetting,
+        disableCaptureJSProfileTitle: SettingUIRegistration2.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor()).title,
+        screenshotCaptureModeTitle: SettingUIRegistration2.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title,
+        selectedScreenshotCaptureMode: this.screenshotCaptureModeSetting.get(),
+        thirdPartyTracksSetting: this.#thirdPartyTracksSetting,
+        thirdPartyTracksTitle: SettingUIRegistration2.SettingUIRegistration.resolve(this.#thirdPartyTracksSetting.descriptor()).title,
+        onScreenshotPresetChange: (value) => this.screenshotCaptureModeSetting.set(value),
+        onLoadFromFile: (file) => {
+          void this.loadFromFile(file);
+        }
+      },
+      this.#settingsPaneOutput,
+      this.#settingsPaneContainer
     );
   }
   zoomEvent(event) {
@@ -10906,7 +11037,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       this.panelToolbar.appendSeparator();
       this.panelToolbar.appendToolbarItem(isolateSelector);
     }
-    if (!this.#isNode && canRecord) {
+    if (!this.#isNode && canRecord && this.showSettingsPaneButton) {
       this.panelRightToolbar.appendSeparator();
       this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
     }
@@ -11057,80 +11188,13 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     this.disableCaptureJSProfileSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureLayersAndPicturesSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureSelectorStatsSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
-    this.settingsPane = this.element.createChild("div", "timeline-settings-pane");
-    this.settingsPane.setAttribute("jslog", `${VisualLogging5.pane("timeline-settings-pane").track({ resize: true })}`);
-    const cpuThrottlingPane = this.settingsPane.createChild("div");
-    cpuThrottlingPane.append(i18nString17(UIStrings17.cpu));
-    this.cpuThrottlingSelect = MobileThrottling2.CPUThrottlingSelector.CPUThrottlingSelector.createForGlobalConditions(cpuThrottlingPane);
-    this.settingsPane.append(SettingsUI4.SettingsUI.createSettingCheckbox(
-      SettingUIRegistration2.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title,
-      this.captureSelectorStatsSetting,
-      i18nString17(UIStrings17.capturesSelectorStats)
-    ));
-    const networkThrottlingPane = this.settingsPane.createChild("div");
-    networkThrottlingPane.append(i18nString17(UIStrings17.network));
-    MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
-      networkThrottlingPane,
-      i18nString17(UIStrings17.network)
-    );
-    this.settingsPane.append(SettingsUI4.SettingsUI.createSettingCheckbox(
-      SettingUIRegistration2.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor()).title,
-      this.captureLayersAndPicturesSetting,
-      i18nString17(UIStrings17.capturesAdvancedPaint)
-    ));
-    this.settingsPane.append(SettingsUI4.SettingsUI.createSettingCheckbox(
-      SettingUIRegistration2.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor()).title,
-      this.disableCaptureJSProfileSetting,
-      i18nString17(UIStrings17.disablesJavascriptSampling)
-    ));
-    const screenshotPresetSelect = new UI9.Toolbar.ToolbarComboBox(
-      () => this.screenshotCaptureModeSetting.set(screenshotPresetSelect.selectedOption().value),
-      SettingUIRegistration2.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title,
-      "",
-      "screenshot-capture-mode"
-    );
-    let selectedScreenshotPresetIndex = 0;
-    for (let i = 0; i < SCREENSHOT_CAPTURE_PRESETS.length; ++i) {
-      const preset = SCREENSHOT_CAPTURE_PRESETS[i];
-      screenshotPresetSelect.addOption(
-        screenshotPresetSelect.createOption(preset.label(), preset.key, `tracing.screenshot-size.${preset.key}`)
-      );
-      if (preset.key === this.screenshotCaptureModeSetting.get()) {
-        selectedScreenshotPresetIndex = i;
-      }
-    }
-    screenshotPresetSelect.setSelectedIndex(selectedScreenshotPresetIndex);
-    const screenshotPresetPane = this.settingsPane.createChild("div");
-    screenshotPresetPane.append(
-      SettingUIRegistration2.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title
-    );
-    screenshotPresetPane.append(screenshotPresetSelect.element);
-    const updateScreenshotPresetVisibility = () => {
-      screenshotPresetPane.hidden = !this.showScreenshotsSetting.get();
-    };
-    this.showScreenshotsSetting.addChangeListener(updateScreenshotPresetVisibility);
-    updateScreenshotPresetVisibility();
-    const thirdPartyCheckbox = this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString17(UIStrings17.showDataAddedByExtensions));
-    const localLink = Link.create(
-      "https://developer.chrome.com/docs/devtools/performance/extension",
-      i18nString17(UIStrings17.learnMore)
-    );
-    localLink.style.marginLeft = "5px";
-    thirdPartyCheckbox.element.shadowRoot?.appendChild(localLink);
-    this.settingsPane.append(thirdPartyCheckbox.element);
-    this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
-    this.updateSettingsPaneVisibility();
+    this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility, this);
+    this.#showSettingsPane = this.showSettingsPaneSetting.get();
+    this.showSettingsPaneButton.setToggled(this.#showSettingsPane);
   }
   prepareToLoadTimeline() {
     console.assert(this.state === "Idle" /* IDLE */);
     this.setState("Loading" /* LOADING */);
-  }
-  createFileSelector() {
-    if (this.fileSelectorElement) {
-      this.fileSelectorElement.remove();
-    }
-    this.fileSelectorElement = UI9.UIUtils.createFileSelectorElement(this.loadFromFile.bind(this), ".json,.gz,.gzip,.cpuprofile");
-    this.timelinePane.element.appendChild(this.fileSelectorElement);
   }
   contextMenu(event) {
     if (this.state === "StartPending" /* START_PENDING */ || this.state === "Recording" /* RECORDING */ || this.state === "StopPending" /* STOP_PENDING */) {
@@ -11391,9 +11455,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     }
   }
   selectFileToLoad() {
-    if (this.fileSelectorElement) {
-      this.fileSelectorElement.click();
-    }
+    this.#settingsPaneOutput.openFileSelector?.();
   }
   async loadFromFile(file) {
     if (this.state !== "Idle" /* IDLE */) {
@@ -11406,7 +11468,6 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       this.loader = TimelineLoader.loadFromParsedJsonFile(JSON.parse(content), this);
       this.prepareToLoadTimeline();
     }
-    this.createFileSelector();
   }
   #launchRehydratedSession(traceJson) {
     let pathToLaunch = null;
@@ -11487,15 +11548,18 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     if (this.#isNode || !this.canRecord()) {
       return;
     }
-    if (this.showSettingsPaneSetting.get()) {
-      this.showSettingsPaneButton.setToggled(true);
-      this.settingsPane?.classList.remove("hidden");
-    } else {
-      this.showSettingsPaneButton.setToggled(false);
-      this.settingsPane?.classList.add("hidden");
+    const showSettingsPane = this.showSettingsPaneSetting.get();
+    if (this.#showSettingsPane === showSettingsPane) {
+      return;
     }
+    this.#showSettingsPane = showSettingsPane;
+    this.showSettingsPaneButton?.setToggled(showSettingsPane);
+    this.requestUpdate();
   }
   updateShowSettingsToolbarButton() {
+    if (!this.showSettingsPaneButton) {
+      return;
+    }
     const messages = [];
     if (SDK7.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate() !== 1) {
       messages.push(i18nString17(UIStrings17.CpuThrottlingIsEnabled));
@@ -11516,17 +11580,15 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     this.showSettingsPaneButton.element.style.setProperty("--dot-toggle-top", "16px");
     this.showSettingsPaneButton.element.style.setProperty("--dot-toggle-left", "15px");
     if (messages.length) {
-      const tooltipElement = document.createElement("div");
-      messages.forEach((message) => {
-        tooltipElement.createChild("div").textContent = message;
-      });
-      this.showSettingsPaneButton.setTitle(tooltipElement.textContent || "");
+      this.showSettingsPaneButton.setTitle(messages.join("\n"));
     } else {
       this.showSettingsPaneButton.setTitle(i18nString17(UIStrings17.captureSettings));
     }
   }
   setUIControlsEnabled(enabled) {
+    this.#uiControlsEnabled = enabled;
     this.recordingOptionUIControls.forEach((control) => control.setEnabled(enabled));
+    this.requestUpdate();
   }
   async #evaluateInspectedURL() {
     if (!this.controller) {
@@ -11873,22 +11935,22 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     if (announcementText) {
       UI9.ARIAUtils.LiveAnnouncer.alert(announcementText);
     }
-    const { overlay, action: action2 } = event;
-    if (action2 === "Add") {
+    const { overlay, action: action3 } = event;
+    if (action3 === "Add") {
       this.flameChart.addOverlay(overlay);
-    } else if (action2 === "Remove") {
+    } else if (action3 === "Remove") {
       this.flameChart.removeOverlay(overlay);
-    } else if (action2 === "UpdateTimeRange" && isTimeRangeLabel(overlay)) {
+    } else if (action3 === "UpdateTimeRange" && isTimeRangeLabel(overlay)) {
       this.flameChart.updateExistingOverlay(overlay, {
         bounds: overlay.bounds
       });
-    } else if (action2 === "UpdateLinkToEntry" && isEntriesLink(overlay)) {
+    } else if (action3 === "UpdateLinkToEntry" && isEntriesLink(overlay)) {
       this.flameChart.updateExistingOverlay(overlay, {
         entryTo: overlay.entryTo
       });
-    } else if (action2 === "EnterLabelEditState" && isEntryLabel(overlay)) {
+    } else if (action3 === "EnterLabelEditState" && isEntryLabel(overlay)) {
       this.flameChart.enterLabelEditMode(overlay);
-    } else if (action2 === "LabelBringForward" && isEntryLabel(overlay)) {
+    } else if (action3 === "LabelBringForward" && isEntryLabel(overlay)) {
       this.flameChart.bringLabelForward(overlay);
     }
     const currentManager = ModificationsManager.activeManager();
@@ -12026,7 +12088,8 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
   #hideLandingPage() {
     this.landingPage.detach();
     this.showSettingsPaneButton?.setToggled(false);
-    this.settingsPane?.classList.add("hidden");
+    this.#showSettingsPane = false;
+    this.requestUpdate();
   }
   async loadingStarted() {
     this.#changeView({ mode: "STATUS_PANE_OVERLAY" });
@@ -12497,14 +12560,14 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     if (!items.length) {
       return;
     }
-    const item4 = items[0];
+    const item5 = items[0];
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.PerfPanelTraceImported);
-    if (item4.kind === "string") {
+    if (item5.kind === "string") {
       const url = dataTransfer.getData("text/uri-list");
       if (new Common10.ParsedURL.ParsedURL(url).isValid) {
         void this.loadFromURL(url);
       }
-    } else if (item4.kind === "file") {
+    } else if (item5.kind === "file") {
       const file = items[0].getAsFile();
       if (!file) {
         return;
@@ -13156,6 +13219,7 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/TimelineUIUtils.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var { classMap: classMap2, styleMap: styleMap2, until } = Directives4;
 var URL_REGEX = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
 var ALWAYS_LINKIFIED_SCHEMES = /* @__PURE__ */ new Set(["http", "https"]);
 var eventDispatchDesciptors;
@@ -13293,6 +13357,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     let detailsText;
     const unsafeEventArgs = event.args;
     const unsafeEventData = unsafeEventArgs?.data;
+    const linkifiedTemplate = (element) => element ? html6`${element}` : null;
     switch (event.name) {
       case Trace24.Types.Events.Name.PAINT_IMAGE:
       case Trace24.Types.Events.Name.DECODE_IMAGE:
@@ -13310,21 +13375,15 @@ var TimelineUIUtils = class _TimelineUIUtils {
             tabStop: true,
             showColumnNumber: false
           };
-          details = LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options);
+          details = linkifiedTemplate(LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
         }
         break;
       }
       case Trace24.Types.Events.Name.FUNCTION_CALL: {
-        details = document.createElement("span");
         const callFrame = Trace24.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.at(0);
-        if (Trace24.Types.Events.isFunctionCall(event) && callFrame) {
-          UI10.UIUtils.createTextChild(
-            details,
-            _TimelineUIUtils.frameDisplayName(
-              { ...callFrame, scriptId: String(callFrame.scriptId) }
-            )
-          );
-        }
+        const functionName = Trace24.Types.Events.isFunctionCall(event) && callFrame ? _TimelineUIUtils.frameDisplayName(
+          { ...callFrame, scriptId: String(callFrame.scriptId) }
+        ) : nothing5;
         const location = this.linkifyLocation({
           scriptId: unsafeEventData["scriptId"],
           url: unsafeEventData["url"],
@@ -13335,15 +13394,12 @@ var TimelineUIUtils = class _TimelineUIUtils {
           linkifier,
           omitOrigin: true
         });
-        if (location) {
-          UI10.UIUtils.createTextChild(details, " @ ");
-          details.appendChild(location);
-        }
+        details = html6`<span>${functionName}${location ? html6` @ ${location}` : nothing5}</span>`;
         break;
       }
       case Trace24.Types.Events.Name.COMPILE_MODULE:
       case Trace24.Types.Events.Name.CACHE_MODULE: {
-        details = this.linkifyLocation({
+        details = linkifiedTemplate(this.linkifyLocation({
           scriptId: null,
           url: unsafeEventArgs["fileName"],
           lineNumber: 0,
@@ -13351,14 +13407,14 @@ var TimelineUIUtils = class _TimelineUIUtils {
           target,
           isFreshOrEnhanced,
           linkifier
-        });
+        }));
         break;
       }
       case Trace24.Types.Events.Name.BACKGROUND_DESERIALIZE:
       case Trace24.Types.Events.Name.STREAMING_COMPILE_SCRIPT: {
         const url = unsafeEventData["url"];
         if (url) {
-          details = this.linkifyLocation({
+          details = linkifiedTemplate(this.linkifyLocation({
             scriptId: null,
             url,
             lineNumber: 0,
@@ -13367,7 +13423,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
             isFreshOrEnhanced,
             linkifier,
             omitOrigin: true
-          });
+          }));
         }
         break;
       }
@@ -13375,13 +13431,13 @@ var TimelineUIUtils = class _TimelineUIUtils {
         if (Trace24.Helpers.Trace.eventHasCategory(event, Trace24.Types.Events.Categories.Console) || Trace24.Types.Events.isUserTiming(event) || Trace24.Types.Extensions.isSyntheticExtensionEntry(event) || Trace24.Types.Events.isProfileCall(event)) {
           detailsText = null;
         } else {
-          details = this.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced) ?? null;
+          details = linkifiedTemplate(this.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced));
         }
         break;
       }
     }
     if (!details && detailsText) {
-      details = document.createTextNode(detailsText);
+      details = html6`${detailsText}`;
     }
     return details;
   }
@@ -13428,35 +13484,33 @@ var TimelineUIUtils = class _TimelineUIUtils {
     return LegacyComponents.Linkifier.Linkifier.linkifyURL(frame.url, options);
   }
   static buildDetailsNodeForMarkerEvents(event) {
-    let link = "https://web.dev/user-centric-performance-metrics/";
+    let link2 = "https://web.dev/user-centric-performance-metrics/";
     let name = "page performance metrics";
     switch (event.name) {
       case Trace24.Types.Events.Name.MARK_LCP_CANDIDATE:
-        link = "https://web.dev/lcp/";
+        link2 = "https://web.dev/lcp/";
         name = "Largest Contentful Paint";
         break;
       case Trace24.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION:
-        link = "https://developer.chrome.com/docs/web-platform/soft-navigations";
+        link2 = "https://developer.chrome.com/docs/web-platform/soft-navigations";
         name = "Soft Largest Contentful Paint";
         break;
       case Trace24.Types.Events.Name.SOFT_NAVIGATION_START:
-        link = "https://developer.chrome.com/docs/web-platform/soft-navigations";
+        link2 = "https://developer.chrome.com/docs/web-platform/soft-navigations";
         name = "Soft Navigations";
         break;
       case Trace24.Types.Events.Name.MARK_FCP:
-        link = "https://web.dev/first-contentful-paint/";
+        link2 = "https://web.dev/first-contentful-paint/";
         name = "First Contentful Paint";
         break;
       case Trace24.Types.Events.Name.MARK_SOFT_FCP:
-        link = "https://developer.chrome.com/docs/web-platform/soft-navigations";
+        link2 = "https://developer.chrome.com/docs/web-platform/soft-navigations";
         name = "Soft First Contentful Paint";
         break;
       default:
         break;
     }
-    const div = document.createElement("div");
-    render5(html5`<devtools-link href=${link}>${i18nString18(UIStrings18.learnMore)}</devtools-link> about ${name}.`, div);
-    return div;
+    return html6`<div><devtools-link href=${link2}>${i18nString18(UIStrings18.learnMore)}</devtools-link> about ${name}.</div>`;
   }
   static buildConsumeCacheDetails(eventData, contentHelper) {
     if (typeof eventData.consumedCacheSize === "number") {
@@ -13516,7 +13570,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   /**
    * Takes an input string and parses it to look for links. It does this by
-   * looking for URLs in the input string. The returned fragment will contain
+   * looking for URLs in the input string. The returned template will contain
    * the same string but with any links wrapped in clickable links. The text
    * of the link is the URL, so the visible string to the user is unchanged.
    */
@@ -13528,9 +13582,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       }
       return _TimelineUIUtils.maybeCreateLinkElement(result.value) ?? result.value;
     });
-    const frag = document.createDocumentFragment();
-    frag.append(...nodes);
-    return frag;
+    return html6`${nodes}`;
   }
   static async buildTraceEventDetails(parsedTrace, event, linkifier, canShowPieChart, entityMapper) {
     const maybeTarget = targetForEvent(parsedTrace, event);
@@ -13543,17 +13595,19 @@ var TimelineUIUtils = class _TimelineUIUtils {
     let entityAppended = false;
     if (maybeTarget) {
       if (!previewElementCache.has(event)) {
-        let previewElement2 = null;
+        let preview2 = null;
         const url2 = Trace24.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
         if (url2) {
-          previewElement2 = await LegacyComponents.ImagePreview.ImagePreview.build(url2, false, {
+          const previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(url2, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url2),
             align: LegacyComponents.ImagePreview.Align.START
           });
+          preview2 = previewElement ? html6`${previewElement}` : null;
         } else if (Trace24.Types.Events.isPaint(event)) {
-          previewElement2 = await _TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
+          const previewElement = await _TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
+          preview2 = previewElement ? html6`${previewElement}` : null;
         }
-        previewElementCache.set(event, previewElement2);
+        previewElementCache.set(event, preview2);
       }
     }
     let relatedNodeLabel;
@@ -13878,11 +13932,10 @@ var TimelineUIUtils = class _TimelineUIUtils {
           SettingUIRegistration4.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor
         );
         if (!selectorStatsSetting.get()) {
-          const note = document.createElement("span");
-          note.textContent = i18nString18(UIStrings18.sSelectorStatsInfo, {
+          const note = i18nString18(UIStrings18.sSelectorStatsInfo, {
             PH1: SettingUIRegistration4.SettingUIRegistration.resolve(selectorStatsSetting.descriptor()).title
           });
-          contentHelper.appendElementRow(i18nString18(UIStrings18.selectorStatsTitle), note);
+          contentHelper.appendElementRow(i18nString18(UIStrings18.selectorStatsTitle), html6`<span>${note}</span>`);
         }
         break;
       }
@@ -14108,15 +14161,17 @@ var TimelineUIUtils = class _TimelineUIUtils {
     const relatedNodes = relatedNodesMap?.values() || [];
     for (const relatedNode of relatedNodes) {
       if (relatedNode) {
-        const nodeSpan = document.createElement("span");
-        render5(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode), nodeSpan);
-        contentHelper.appendElementRow(relatedNodeLabel || i18nString18(UIStrings18.relatedNode), nodeSpan);
+        const nodeLink = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode);
+        contentHelper.appendElementRow(
+          relatedNodeLabel || i18nString18(UIStrings18.relatedNode),
+          html6`<span>${nodeLink}</span>`
+        );
       }
     }
-    const previewElement = previewElementCache.get(event);
-    if (previewElement) {
+    const preview = previewElementCache.get(event);
+    if (preview) {
       contentHelper.addSection(i18nString18(UIStrings18.preview));
-      contentHelper.appendElementRow("", previewElement);
+      contentHelper.appendElementRow("", preview);
     }
     if (!entityAppended) {
       const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
@@ -14147,30 +14202,23 @@ var TimelineUIUtils = class _TimelineUIUtils {
       ...{ args: event.args },
       ...event
     };
-    const highlightContainer = _TimelineUIUtils.renderObjectJson(eventWithArgsFirst);
-    contentHelper.appendElementRow("", highlightContainer);
+    const highlightedJson = _TimelineUIUtils.renderObjectJson(eventWithArgsFirst);
+    contentHelper.appendElementRow("", highlightedJson);
   }
   static renderObjectJson(obj) {
     const indentLength = Common11.Settings.Settings.instance().resolve(SDK8.SDKSettings.textEditorIndentSettingDescriptor).get().length;
     const eventStr = JSON.stringify(obj, null, indentLength).slice(0, 1e4).replace(/{\n  /, "{ ");
-    const highlightContainer = document.createElement("div");
-    const shadowRoot = UI10.UIUtils.createShadowRootWithCoreStyles(highlightContainer, { cssFile: CodeHighlighter.codeHighlighterStyles });
-    const elem = shadowRoot.createChild("div");
-    elem.classList.add("monospace", "source-code");
-    elem.textContent = eventStr;
-    void CodeHighlighter.CodeHighlighter.highlightNode(elem, "text/javascript").then(() => {
-      function* iterateTreeWalker(walker2) {
-        while (walker2.nextNode()) {
-          yield walker2.currentNode;
-        }
-      }
-      const walker = document.createTreeWalker(elem, NodeFilter.SHOW_TEXT);
-      for (const node of Array.from(iterateTreeWalker(walker))) {
-        const frag = _TimelineUIUtils.parseStringForLinks(node.textContent || "");
-        node.parentNode?.replaceChild(frag, node);
-      }
+    const highlightedTokens = CodeHighlighter.CodeHighlighter.create(eventStr, "text/javascript").then((highlighter) => {
+      const tokens = [];
+      highlighter.highlight((text, style) => {
+        const linkified = _TimelineUIUtils.parseStringForLinks(text);
+        tokens.push(style ? html6`<span class=${style}>${linkified}</span>` : linkified);
+      });
+      return tokens;
     });
-    return highlightContainer;
+    return html6`
+      <style>@scope to (devtools-widget > *) { ${CodeHighlighter.codeHighlighterStyles} }</style>
+      <div class="monospace source-code">${until(highlightedTokens, eventStr)}</div>`;
   }
   static stackTraceFromCallFrames(callFrames) {
     return { callFrames };
@@ -14210,20 +14258,16 @@ var TimelineUIUtils = class _TimelineUIUtils {
         );
         contentHelper.appendSectionWithBodyIfExists(initiatorStackLabel, { body: traceElement });
       }
-      const link = this.createEntryLink(initiator);
-      contentHelper.appendElementRow(i18nString18(UIStrings18.initiatedBy), link);
+      const link2 = this.createEntryLink(initiator);
+      contentHelper.appendElementRow(i18nString18(UIStrings18.initiatedBy), link2);
       const { startTime: initiatorStartTime } = Trace24.Helpers.Timing.eventTimingsMilliSeconds(initiator);
       const delay = startTime - initiatorStartTime;
       contentHelper.appendTextRow(i18nString18(UIStrings18.pendingFor), i18n35.TimeUtilities.preciseMillisToString(delay, 1));
     }
     if (initiatorFor) {
-      const links = document.createElement("div");
-      initiatorFor.map((initiator2, i) => {
-        links.appendChild(this.createEntryLink(initiator2));
-        if (i < initiatorFor.length - 1) {
-          links.append(" ");
-        }
-      });
+      const links = html6`<div>${initiatorFor.map(
+        (initiator2, i) => html6`${this.createEntryLink(initiator2)}${i < initiatorFor.length - 1 ? " " : nothing5}`
+      )}</div>`;
       contentHelper.appendElementRow(UIStrings18.initiatorFor, links);
     }
     if (invalidations?.length) {
@@ -14233,36 +14277,35 @@ var TimelineUIUtils = class _TimelineUIUtils {
     }
   }
   static createEntryLink(entry) {
-    const link = document.createElement("span");
     const traceBoundsState = TraceBounds11.TraceBounds.BoundsManager.instance().state();
     if (!traceBoundsState) {
       console.error("Tried to link to an entry without any traceBoundsState. This should never happen.");
-      return link;
+      return html6`<span></span>`;
     }
     const isEntryOutsideBreadcrumb = traceBoundsState.micro.minimapTraceBounds.min > entry.ts + (entry.dur || 0) || traceBoundsState.micro.minimapTraceBounds.max < entry.ts;
     const isEntryHidden = ModificationsManager.activeManager()?.getEntriesFilter().entryIsInvisible(entry);
-    if (!isEntryOutsideBreadcrumb) {
-      link.classList.add("timeline-link");
-      UI10.ARIAUtils.markAsLink(link);
-      link.tabIndex = 0;
-      link.addEventListener("click", () => {
-        TimelinePanel.instance().select(selectionFromEvent(entry));
-      });
-      link.addEventListener("keydown", (event) => {
-        if (event.key === Platform12.KeyboardUtilities.ENTER_KEY) {
-          TimelinePanel.instance().select(selectionFromEvent(entry));
-          event.consume(true);
-        }
-      });
-    }
+    let text;
     if (isEntryHidden) {
-      link.textContent = this.eventTitle(entry) + " " + i18nString18(UIStrings18.entryIsHidden);
+      text = this.eventTitle(entry) + " " + i18nString18(UIStrings18.entryIsHidden);
     } else if (isEntryOutsideBreadcrumb) {
-      link.textContent = this.eventTitle(entry) + " " + i18nString18(UIStrings18.outsideBreadcrumbRange);
+      text = this.eventTitle(entry) + " " + i18nString18(UIStrings18.outsideBreadcrumbRange);
     } else {
-      link.textContent = this.eventTitle(entry);
+      text = this.eventTitle(entry);
     }
-    return link;
+    if (isEntryOutsideBreadcrumb) {
+      return html6`<span>${text}</span>`;
+    }
+    const selectEntry = () => {
+      TimelinePanel.instance().select(selectionFromEvent(entry));
+    };
+    return html6`<button
+        type="button"
+        class="timeline-link link-style"
+        role="link"
+        jslog=${VisualLogging6.link("reveal").track({
+      click: true
+    })}
+        @click=${selectEntry}>${text}</button>`;
   }
   static async generateInvalidationsList(invalidations, contentHelper) {
     const { groupedByReason, backendNodeIds } = TimelineComponents4.DetailsView.generateInvalidationsList(invalidations);
@@ -14277,21 +14320,18 @@ var TimelineUIUtils = class _TimelineUIUtils {
     });
   }
   static generateInvalidationsForReason(reason, invalidations, relatedNodesMap, contentHelper) {
+    function nodeForInvalidation(invalidation) {
+      return invalidation.args.data.nodeId && relatedNodesMap ? relatedNodesMap.get(invalidation.args.data.nodeId) ?? null : null;
+    }
     function createLinkForInvalidationNode(invalidation) {
-      const node = invalidation.args.data.nodeId && relatedNodesMap ? relatedNodesMap.get(invalidation.args.data.nodeId) : null;
+      const node = nodeForInvalidation(invalidation);
       if (node) {
-        const nodeSpan2 = document.createElement("span");
-        render5(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node), nodeSpan2);
-        return nodeSpan2;
+        return html6`<span>${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node)}</span>`;
       }
       if (invalidation.args.data.nodeName) {
-        const nodeSpan2 = document.createElement("span");
-        nodeSpan2.textContent = invalidation.args.data.nodeName;
-        return nodeSpan2;
+        return html6`<span>${invalidation.args.data.nodeName}</span>`;
       }
-      const nodeSpan = document.createElement("span");
-      UI10.UIUtils.createTextChild(nodeSpan, i18nString18(UIStrings18.UnknownNode));
-      return nodeSpan;
+      return html6`<span>${i18nString18(UIStrings18.UnknownNode)}</span>`;
     }
     const generatedItems = /* @__PURE__ */ new Set();
     for (const invalidation of invalidations) {
@@ -14307,16 +14347,15 @@ var TimelineUIUtils = class _TimelineUIUtils {
         ) || null;
       }
       const niceNodeLink = createLinkForInvalidationNode(invalidation);
-      const text = scriptLink ? uiI18n.getFormatLocalizedString(
-        str_18,
-        UIStrings18.invalidationWithCallFrame,
-        { PH1: niceNodeLink, PH2: scriptLink }
-      ) : niceNodeLink;
-      const generatedText = typeof text === "string" ? text : text.innerText;
-      if (generatedItems.has(generatedText)) {
+      const text = scriptLink ? i18nTemplate(str_18, UIStrings18.invalidationWithCallFrame, { PH1: niceNodeLink, PH2: html6`${scriptLink}` }) : niceNodeLink;
+      const node = nodeForInvalidation(invalidation);
+      const nodeKey = node ? `node:${node.backendNodeId()}` : `name:${invalidation.args.data.nodeName ?? ""}`;
+      const locationKey = scriptLink && callFrame ? `${callFrame.url}:${callFrame.lineNumber}` : "";
+      const generatedKey = `${nodeKey} ${locationKey}`;
+      if (generatedItems.has(generatedKey)) {
         continue;
       }
-      generatedItems.add(generatedText);
+      generatedItems.add(generatedKey);
       contentHelper.appendElementRow(reason, text);
     }
   }
@@ -14670,50 +14709,81 @@ function stripScriptIds(stackTrace) {
     parent
   };
 }
+function renderDetailsRow(row) {
+  switch (row.type) {
+    case "text":
+      return html6`
+        <div class="timeline-details-view-row" jslog=${VisualLogging6.item("detail-row")}>
+          <div class="timeline-details-view-row-title">${row.title}</div>
+          <div class="timeline-details-view-row-value">${row.value}</div>
+        </div>`;
+    // clang-format on
+    case "element": {
+      const classes = {
+        "timeline-details-view-row": true,
+        "timeline-details-warning": row.isWarning,
+        "timeline-details-stack-values": row.isStacked
+      };
+      return html6`
+        <div class=${classMap2(classes)} jslog=${VisualLogging6.item("detail-row")} data-row-title=${row.title}>
+          <div class="timeline-details-view-row-title">${row.title}</div>
+          <div class="timeline-details-view-row-value">${row.value}</div>
+        </div>`;
+    }
+    case "body":
+      return row.body;
+    default:
+      Platform12.assertNever(row, `Unknown details row: ${JSON.stringify(row)}`);
+  }
+}
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render6(html6`${input.sections.map((section4) => html6`
+    <div class="timeline-details-view-block" jslog=${VisualLogging6.section("timeline.event-details")}>
+      ${section4.title ? html6`
+        <div class="timeline-details-chip-title">
+          ${section4.swatchColor ? html6`
+            <div style=${styleMap2({ "background-color": section4.swatchColor })}></div>` : nothing5}
+          ${section4.onRevealEntry ? html6`
+            <button type="button" class="timeline-details-chip-title-reveal-entry"
+                jslog=${VisualLogging6.action("reveal").track({ click: true })}
+                @click=${section4.onRevealEntry}>${section4.title}</button>` : html6`<span>${section4.title}</span>`}
+        </div>` : nothing5}
+      <div class="vbox timeline-details-chip-body">${section4.rows.map(renderDetailsRow)}</div>
+    </div>`)}`, target);
+};
 var TimelineDetailsContentHelper = class {
-  fragment;
+  #view;
   #linkifier;
-  target;
-  element;
-  tableElement;
-  constructor(target, linkifier) {
-    this.fragment = document.createDocumentFragment();
+  #target;
+  #sections = [];
+  #currentSection = { title: "", rows: [] };
+  constructor(target, linkifier, view = DEFAULT_VIEW4) {
     this.#linkifier = linkifier;
-    this.target = target;
-    this.element = document.createElement("div");
-    this.element.classList.add("timeline-details-view-block");
-    this.element.setAttribute("jslog", `${VisualLogging6.section("timeline.event-details")}`);
-    this.tableElement = this.element.createChild("div", "vbox timeline-details-chip-body");
-    this.fragment.appendChild(this.element);
+    this.#target = target;
+    this.#view = view;
+    this.#sections.push(this.#currentSection);
+  }
+  get fragment() {
+    const fragment = document.createDocumentFragment();
+    this.#view({ sections: this.#sections }, void 0, fragment);
+    return fragment;
   }
   addSection(title, swatchColor, event) {
-    if (!this.tableElement.hasChildNodes()) {
-      this.element.removeChildren();
+    const section4 = {
+      title,
+      swatchColor,
+      onRevealEntry: event ? () => TimelinePanel.instance().zoomEvent(event) : void 0,
+      rows: []
+    };
+    if (this.#currentSection.rows.length) {
+      this.#sections.push(section4);
     } else {
-      this.element = document.createElement("div");
-      this.element.classList.add("timeline-details-view-block");
-      this.element.setAttribute("jslog", `${VisualLogging6.section("timeline.event-details")}`);
-      this.fragment.appendChild(this.element);
+      this.#sections[this.#sections.length - 1] = section4;
     }
-    if (title) {
-      const titleElement = this.element.createChild("div", "timeline-details-chip-title");
-      if (swatchColor) {
-        titleElement.createChild("div").style.backgroundColor = swatchColor;
-      }
-      const textChild = titleElement.createChild("span");
-      textChild.textContent = title;
-      if (event) {
-        textChild.classList.add("timeline-details-chip-title-reveal-entry");
-        textChild.addEventListener("click", function() {
-          TimelinePanel.instance().zoomEvent(event);
-        });
-      }
-    }
-    this.tableElement = this.element.createChild("div", "vbox timeline-details-chip-body");
-    this.fragment.appendChild(this.element);
+    this.#currentSection = section4;
   }
   /**
-   * Creates a new section, but only if the provided `body` element is present,
+   * Creates a new section, but only if the provided `body` template is present,
    * otherwise it does nothing.
    */
   appendSectionWithBodyIfExists(title, options) {
@@ -14721,7 +14791,9 @@ var TimelineDetailsContentHelper = class {
       return;
     }
     this.addSection(title, options.swatchColor, options.event);
-    this.tableElement.appendChild(options.body);
+    this.#currentSection.rows.push(
+      { type: "body", body: options.body instanceof Node ? html6`${options.body}` : options.body }
+    );
   }
   /**
    * Generates a stack trace for the given event. If there is no stack data,
@@ -14741,29 +14813,15 @@ var TimelineDetailsContentHelper = class {
     return this.#linkifier;
   }
   appendTextRow(title, value) {
-    const rowElement = this.tableElement.createChild("div", "timeline-details-view-row");
-    rowElement.setAttribute("jslog", `${VisualLogging6.item("detail-row")}`);
-    rowElement.createChild("div", "timeline-details-view-row-title").textContent = title;
-    rowElement.createChild("div", "timeline-details-view-row-value").textContent = value.toString();
+    this.#currentSection.rows.push({ type: "text", title, value: value.toString() });
   }
-  appendElementRow(title, content, isWarning, isStacked) {
-    const rowElement = this.tableElement.createChild("div", "timeline-details-view-row");
-    rowElement.setAttribute("jslog", `${VisualLogging6.item("detail-row")}`);
-    rowElement.setAttribute("data-row-title", title);
-    if (isWarning) {
-      rowElement.classList.add("timeline-details-warning");
-    }
-    if (isStacked) {
-      rowElement.classList.add("timeline-details-stack-values");
-    }
-    const titleElement = rowElement.createChild("div", "timeline-details-view-row-title");
-    titleElement.textContent = title;
-    const valueElement = rowElement.createChild("div", "timeline-details-view-row-value");
-    if (content instanceof Node) {
-      valueElement.appendChild(content);
-    } else {
-      UI10.UIUtils.createTextChild(valueElement, content || "");
-    }
+  /**
+   * `content` can be a DOM node created by a legacy rendering engine (such as
+   * the Linkifier or ImagePreview); it is embedded into the row as-is.
+   */
+  appendElementRow(title, content, isWarning = false, isStacked = false) {
+    const value = content instanceof Node ? html6`${content}` : content || "";
+    this.#currentSection.rows.push({ type: "element", title, value, isWarning, isStacked });
   }
   appendLocationRow(title, url, startLine, startColumn, text, omitOrigin) {
     if (!this.#linkifier) {
@@ -14776,28 +14834,28 @@ var TimelineDetailsContentHelper = class {
       text,
       omitOrigin
     };
-    const link = this.#linkifier.maybeLinkifyScriptLocation(
-      this.target,
+    const link2 = this.#linkifier.maybeLinkifyScriptLocation(
+      this.#target,
       null,
       url,
       startLine,
       options
     );
-    if (!link) {
+    if (!link2) {
       return;
     }
-    this.appendElementRow(title, link);
+    this.appendElementRow(title, link2);
   }
   appendLocationRange(title, url, startLine, endLine) {
-    if (!this.#linkifier || !this.target) {
+    if (!this.#linkifier || !this.#target) {
       return;
     }
     const locationContent = document.createElement("span");
-    const link = this.#linkifier.maybeLinkifyScriptLocation(this.target, null, url, startLine, { tabStop: true });
-    if (!link) {
+    const link2 = this.#linkifier.maybeLinkifyScriptLocation(this.#target, null, url, startLine, { tabStop: true });
+    if (!link2) {
       return;
     }
-    locationContent.appendChild(link);
+    locationContent.appendChild(link2);
     UI10.UIUtils.createTextChild(
       locationContent,
       Platform12.StringUtilities.sprintf(" [%s\u2026%s]", startLine + 1, (endLine || 0) + 1 || "")
@@ -14810,7 +14868,7 @@ var TimelineDetailsContentHelper = class {
    */
   async createChildStackTraceElement(runtimeStackTrace, isFreshOrEnhanced) {
     const targetManager = SDK8.TargetManager.TargetManager.instance();
-    const target = this.target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+    const target = this.#target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
     if (!target) {
       return null;
     }
@@ -14925,11 +14983,13 @@ __export(TimelineTreeView_exports, {
   BottomUpTimelineTreeView: () => BottomUpTimelineTreeView,
   CallTreeTimelineTreeView: () => CallTreeTimelineTreeView,
   CellKind: () => CellKind,
+  GRID_ROW_VIEW: () => GRID_ROW_VIEW,
   GridNode: () => GridNode,
   TimelineStackView: () => TimelineStackView,
   TimelineTreeView: () => TimelineTreeView,
   TreeGridNode: () => TreeGridNode,
-  nameCellViewInput: () => nameCellViewInput
+  nameCellViewInput: () => nameCellViewInput,
+  valueCellViewInput: () => valueCellViewInput
 });
 import "../../ui/legacy/legacy.js";
 import * as Common12 from "../../core/common/common.js";
@@ -14942,7 +15002,7 @@ import * as DataGrid from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport17 from "../../ui/legacy/theme_support/theme_support.js";
-import { Directives as Directives3, html as html6, nothing as nothing4, render as render6 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html7, nothing as nothing6, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 import * as Extensions4 from "./extensions/extensions.js";
 
@@ -14994,6 +15054,14 @@ var timelineDetailsView_css_default = `/*
     padding: var(--sys-size-5);
     display: flex;
     align-items: center;
+  }
+
+  button.timeline-details-chip-title-reveal-entry {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
   }
 
   .timeline-details-chip-title-reveal-entry:hover {
@@ -15360,7 +15428,12 @@ var UIStrings19 = {
   /**
    * @description Badge text for an extension entity in timeline tree views.
    */
-  extension: "Extension"
+  extension: "Extension",
+  /**
+   * @description Accessible text indicating the depth level of a row in a hierarchical datagrid.
+   * @example {1} PH1
+   */
+  levelS: "Level {PH1}"
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/timeline/TimelineTreeView.ts", UIStrings19);
 var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
@@ -15368,18 +15441,19 @@ var TimelineTreeViewBase = Common12.ObjectWrapper.eventMixin(
   UI11.Widget.VBox
 );
 function renderDetailsPlaceholder(input, _output, target) {
-  render6(
-    input.showPlaceholder ? html6`<div class="empty-state">${i18nString19(UIStrings19.selectItemForDetails)}</div>` : nothing4,
+  render7(
+    input.showPlaceholder ? html7`<div class="empty-state">${i18nString19(UIStrings19.selectItemForDetails)}</div>` : nothing6,
     target
   );
 }
-var { ifDefined: ifDefined3, styleMap: styleMap2 } = Directives3;
+var { classMap: classMap3, ifDefined: ifDefined3, repeat, styleMap: styleMap3 } = Directives5;
 var CellKind = /* @__PURE__ */ ((CellKind2) => {
   CellKind2["NAME"] = "name";
+  CellKind2["VALUE"] = "value";
   return CellKind2;
 })(CellKind || {});
 function renderNameCell(input, output) {
-  const link = input.topCallFrameLink ? TimelineUIUtils.linkifyTopCallFrame(
+  const link2 = input.topCallFrameLink ? TimelineUIUtils.linkifyTopCallFrame(
     input.topCallFrameLink.event,
     input.topCallFrameLink.target,
     input.topCallFrameLink.linkifier,
@@ -15387,25 +15461,77 @@ function renderNameCell(input, output) {
     input.topCallFrameLink.maxLength
   ) : null;
   if (output) {
-    output.appendContextMenuItems = link ? (contextMenu) => contextMenu.appendApplicableItems(link) : void 0;
+    output.appendContextMenuItems = link2 ? (contextMenu) => contextMenu.appendApplicableItems(link2) : void 0;
   }
-  return html6`
+  return html7`
     <div class="name-container">
       <div class="activity-icon-container">
         <div class="activity-icon"
             aria-label=${ifDefined3(input.iconLabel)}
-            style=${styleMap2({ backgroundColor: input.iconColor })}></div>
+            style=${styleMap3({ backgroundColor: input.iconColor })}></div>
       </div>
       <div class="activity-name">${input.name}</div>
-      ${input.badge ? html6`
-        <div class="entity-badge" aria-label=${input.badge}>${input.badge}</div>` : nothing4}
-      ${link ? html6`<div class="activity-link">${link}</div>` : nothing4}
+      ${input.badge ? html7`
+        <div class="entity-badge" aria-label=${input.badge}>${input.badge}</div>` : nothing6}
+      ${link2 ? html7`<div class="activity-link">${link2}</div>` : nothing6}
     </div>`;
 }
-function renderNameCellIntoTd(input, output, target) {
-  render6(renderNameCell(input, output), target);
+function renderBottomUpButton(onClick) {
+  return html7`<devtools-button
+      .data=${{
+    variant: Buttons3.Button.Variant.ICON,
+    iconName: "account-tree",
+    size: Buttons3.Button.Size.SMALL,
+    title: i18nString19(UIStrings19.bottomUp),
+    accessibleLabel: i18nString19(UIStrings19.viewBottomUp),
+    jslogContext: "bottom-up"
+  }}
+      @click=${onClick}></devtools-button>`;
 }
-function nameCellViewInput(treeView, profileNode, columnId) {
+function renderValueCell(input) {
+  return html7`
+    <div class=${classMap3({ "background-bar-text": Boolean(input.barWidth) })}>
+      <span>${input.text}</span>
+      ${input.percent ? html7`<span class="percent-column">${input.percent}</span>` : nothing6}
+      ${input.onBottomUpButtonClick ? renderBottomUpButton(input.onBottomUpButtonClick) : nothing6}
+    </div>
+    ${input.barWidth ? html7`
+      <div class="background-bar-container">
+        <div class="background-bar" style=${styleMap3({ width: input.barWidth })}></div>
+      </div>` : nothing6}`;
+}
+function renderCell(cell, output) {
+  const classes = {
+    [`${cell.columnId}-column`]: true,
+    disclosure: Boolean(cell.disclosure),
+    "numeric-column": cell.kind === "value" /* VALUE */
+  };
+  const style = cell.leftPadding ? styleMap3({ "padding-left": `${cell.leftPadding}px` }) : nothing6;
+  const jslog = VisualLogging7.tableCell().track({ click: true }).context(Platform13.StringUtilities.toKebabCase(cell.columnId));
+  switch (cell.kind) {
+    case "name" /* NAME */:
+      return html7`<td class=${classMap3(classes)} style=${style} jslog=${jslog}>
+        ${renderNameCell(cell, output)}
+      </td>`;
+    // clang-format on
+    case "value" /* VALUE */:
+      return html7`<td class=${classMap3(classes)} style=${style} title=${cell.title} jslog=${jslog}>
+        ${renderValueCell(cell)}
+      </td>`;
+    // clang-format on
+    default:
+      Platform13.assertNever(cell, `Unknown cell kind: ${JSON.stringify(cell)}`);
+  }
+}
+var GRID_ROW_VIEW = (input, output, target) => {
+  render7(
+    html7`
+    ${repeat(input.cells, (cell) => cell.columnId, (cell) => renderCell(cell, output))}
+    <td class="corner" aria-hidden="true"></td>`,
+    target
+  );
+};
+function nameCellViewInput(treeView, profileNode, columnId, disclosure, leftPadding) {
   const event = profileNode.event;
   if (profileNode.isGroupNode()) {
     const info = treeView.displayInfoForGroupNode(profileNode);
@@ -15419,6 +15545,8 @@ function nameCellViewInput(treeView, profileNode, columnId) {
     }
     return {
       columnId,
+      disclosure,
+      leftPadding,
       kind: "name" /* NAME */,
       name: info.name,
       iconColor: info.color,
@@ -15426,7 +15554,7 @@ function nameCellViewInput(treeView, profileNode, columnId) {
     };
   }
   if (!event) {
-    return { columnId, kind: "name" /* NAME */, name: "" };
+    return { columnId, disclosure, leftPadding, kind: "name" /* NAME */, name: "" };
   }
   const parsedTrace = treeView.parsedTrace;
   const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
@@ -15434,6 +15562,8 @@ function nameCellViewInput(treeView, profileNode, columnId) {
   const iconColor = Trace26.Types.Extensions.isSyntheticExtensionEntry(event) ? Extensions4.ExtensionUI.extensionEntryColor(event) : TimelineUIUtils.eventColor(event);
   return {
     columnId,
+    disclosure,
+    leftPadding,
     kind: "name" /* NAME */,
     name: TimelineUIUtils.eventTitle(event),
     iconColor,
@@ -15445,6 +15575,59 @@ function nameCellViewInput(treeView, profileNode, columnId) {
       isFreshOrEnhanced,
       maxLength: treeView.maxLinkLength
     }
+  };
+}
+function valueCellViewInput(treeView, profileNode, columnId, scale, onBottomUpButtonClick, disclosure, leftPadding) {
+  if (columnId === "transfer-size") {
+    const formattedSize = i18n37.ByteUtilities.formatBytesToKb(profileNode.transferSize);
+    return {
+      columnId,
+      disclosure,
+      leftPadding,
+      kind: "value" /* VALUE */,
+      text: formattedSize,
+      title: formattedSize
+    };
+  }
+  let showPercents = false;
+  let value;
+  let maxTime;
+  let showBottomUpButton = false;
+  switch (columnId) {
+    case "start-time": {
+      const parsedTrace = treeView.parsedTrace;
+      if (!parsedTrace) {
+        throw new Error("Unable to load trace data for tree view");
+      }
+      const startTime = profileNode.event?.ts ?? Trace26.Types.Timing.Micro(0);
+      value = Trace26.Types.Timing.Micro(startTime - parsedTrace.data.Meta.traceBounds.min);
+      break;
+    }
+    case "self":
+      value = profileNode.selfTime;
+      maxTime = scale.maxSelfTime;
+      showPercents = true;
+      showBottomUpButton = treeView.isThirdPartyTreeView();
+      break;
+    case "total":
+      value = profileNode.totalTime;
+      maxTime = scale.maxTotalTime;
+      showPercents = true;
+      break;
+    default:
+      return null;
+  }
+  const valueMs = Trace26.Helpers.Timing.microToMilli(value);
+  return {
+    columnId,
+    disclosure,
+    leftPadding,
+    kind: "value" /* VALUE */,
+    text: i18n37.TimeUtilities.preciseMillisToString(valueMs, 1),
+    title: i18n37.TimeUtilities.preciseMillisToString(valueMs, 4),
+    percent: showPercents && treeView.exposePercentages() ? i18nString19(UIStrings19.percentPlaceholder, { PH1: (value / scale.grandTotalTime * 100).toFixed(1) }) : void 0,
+    barWidth: maxTime ? (value * 100 / maxTime).toFixed(1) + "%" : void 0,
+    onBottomUpButtonClick: showBottomUpButton ? onBottomUpButtonClick : void 0
   };
 }
 var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
@@ -16107,8 +16290,9 @@ var GridNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
   grandTotalTime;
   maxSelfTime;
   maxTotalTime;
+  rowView;
   #viewOutput = {};
-  constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView) {
+  constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView, rowView = GRID_ROW_VIEW) {
     super(null, false);
     this.populated = false;
     this.profileNode = profileNode;
@@ -16116,89 +16300,56 @@ var GridNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
     this.grandTotalTime = grandTotalTime;
     this.maxSelfTime = maxSelfTime;
     this.maxTotalTime = maxTotalTime;
+    this.rowView = rowView;
   }
   appendLinkContextMenuItems(contextMenu) {
     this.#viewOutput.appendContextMenuItems?.(contextMenu);
   }
-  createCell(columnId) {
-    if (columnId === "activity" || columnId === "site") {
-      return this.createNameCell(columnId);
+  createCells(element) {
+    if (!this.dataGrid || !this.parent) {
+      return;
     }
-    return this.createValueCell(columnId) || super.createCell(columnId);
-  }
-  createNameCell(columnId) {
-    const cell = this.createTD(columnId);
-    renderNameCellIntoTd(nameCellViewInput(this.treeView, this.profileNode, columnId), this.#viewOutput, cell);
-    return cell;
-  }
-  createValueCell(columnId) {
-    if (columnId !== "self" && columnId !== "total" && columnId !== "start-time" && columnId !== "transfer-size") {
-      return null;
-    }
-    const cell = this.createTD(columnId);
-    cell.className = "numeric-column";
-    if (columnId === "transfer-size") {
-      const formattedSize = i18n37.ByteUtilities.formatBytesToKb(this.profileNode.transferSize);
-      cell.setAttribute("title", formattedSize);
-      cell.createChild("div").createChild("span").textContent = formattedSize;
-      return cell;
-    }
-    let showPercents = false;
-    let value;
-    let maxTime;
-    let showBottomUpButton = false;
-    switch (columnId) {
-      case "start-time": {
-        const parsedTrace = this.treeView.parsedTrace;
-        if (!parsedTrace) {
-          throw new Error("Unable to load trace data for tree view");
+    const columnsArray = this.dataGrid.visibleColumnsArray;
+    const cells = [];
+    for (const column of columnsArray) {
+      const disclosure = column.id === this.dataGrid.disclosureColumnId;
+      const leftPadding = disclosure && this.leftPadding ? this.leftPadding : void 0;
+      if (column.id === "activity" || column.id === "site") {
+        cells.push(nameCellViewInput(this.treeView, this.profileNode, column.id, disclosure, leftPadding));
+      } else {
+        const input = valueCellViewInput(
+          this.treeView,
+          this.profileNode,
+          column.id,
+          {
+            grandTotalTime: this.grandTotalTime,
+            maxSelfTime: this.maxSelfTime,
+            maxTotalTime: this.maxTotalTime
+          },
+          () => this.#bottomUpButtonClicked(),
+          disclosure,
+          leftPadding
+        );
+        if (input) {
+          cells.push(input);
         }
-        const startTime = this.profileNode.event?.ts ?? Trace26.Types.Timing.Micro(0);
-        value = Trace26.Types.Timing.Micro(startTime - parsedTrace.data.Meta.traceBounds.min);
-        break;
       }
-      case "self":
-        value = this.profileNode.selfTime;
-        maxTime = this.maxSelfTime;
-        showPercents = true;
-        showBottomUpButton = this.treeView.isThirdPartyTreeView();
-        break;
-      case "total":
-        value = this.profileNode.totalTime;
-        maxTime = this.maxTotalTime;
-        showPercents = true;
-        break;
     }
-    const valueMs = Trace26.Helpers.Timing.microToMilli(value);
-    cell.setAttribute("title", i18n37.TimeUtilities.preciseMillisToString(valueMs, 4));
-    const textDiv = cell.createChild("div");
-    textDiv.createChild("span").textContent = i18n37.TimeUtilities.preciseMillisToString(valueMs, 1);
-    if (showPercents && this.treeView.exposePercentages()) {
-      textDiv.createChild("span", "percent-column").textContent = i18nString19(UIStrings19.percentPlaceholder, { PH1: (value / this.grandTotalTime * 100).toFixed(1) });
+    this.#viewOutput.appendContextMenuItems = void 0;
+    this.rowView({ cells }, this.#viewOutput, element);
+    const accessibleTextArray = [];
+    if (this.hasChildren() || !this.parent.isRoot) {
+      accessibleTextArray.push(i18nString19(UIStrings19.levelS, { PH1: this.depth + 1 }));
     }
-    if (maxTime) {
-      textDiv.classList.add("background-bar-text");
-      cell.createChild("div", "background-bar-container").createChild("div", "background-bar").style.width = (value * 100 / maxTime).toFixed(1) + "%";
+    const tdElements = element.querySelectorAll(":scope > td:not(.corner)");
+    for (let i = 0; i < columnsArray.length; ++i) {
+      const column = columnsArray[i];
+      const cell = tdElements[i];
+      if (cell) {
+        accessibleTextArray.push(`${column.title}: ${this.cellAccessibleTextMap.get(column.id) || cell.textContent}`);
+      }
     }
-    if (showBottomUpButton) {
-      this.generateBottomUpButton(textDiv);
-    }
-    return cell;
-  }
-  // Generates bottom up tree hover button and appends it to the provided cell
-  // element.
-  generateBottomUpButton(textDiv) {
-    const button = new Buttons3.Button.Button();
-    button.data = {
-      variant: Buttons3.Button.Variant.ICON,
-      iconName: "account-tree",
-      size: Buttons3.Button.Size.SMALL,
-      toggledIconName: i18nString19(UIStrings19.bottomUp)
-    };
-    UI11.ARIAUtils.setLabel(button, i18nString19(UIStrings19.viewBottomUp));
-    button.addEventListener("click", () => this.#bottomUpButtonClicked());
-    UI11.Tooltip.Tooltip.install(button, i18nString19(UIStrings19.bottomUp));
-    textDiv.appendChild(button);
+    this.nodeAccessibleText = accessibleTextArray.join(", ");
   }
   #bottomUpButtonClicked() {
     this.treeView.dispatchEventToListeners("TreeRowHovered" /* TREE_ROW_HOVERED */, { node: null });
@@ -16206,8 +16357,8 @@ var GridNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
   }
 };
 var TreeGridNode = class _TreeGridNode extends GridNode {
-  constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView) {
-    super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
+  constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView, rowView = GRID_ROW_VIEW) {
+    super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView, rowView);
     this.setHasChildren(this.profileNode.hasChildren());
     treeNodeToGridNode.set(profileNode, this);
     treeView.indexTreeNode(profileNode);
@@ -16221,7 +16372,7 @@ var TreeGridNode = class _TreeGridNode extends GridNode {
       return;
     }
     for (const node of this.profileNode.children().values()) {
-      const gridNode = new _TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView);
+      const gridNode = new _TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView, this.rowView);
       this.insertChildOrdered(gridNode);
     }
   }
@@ -16640,10 +16791,10 @@ var TimelineStackView = class _TimelineStackView extends TimelineStackViewBase {
 
 // ../../front_end/panels/timeline/EventsTimelineTreeView.ts
 function renderNodeDetails(input, _output, target) {
-  render7(html7`${input}`, target);
+  render8(html8`${input}`, target);
 }
 function renderFilterToolbar(input, _output, target) {
-  render7(html7`
+  render8(html8`
     <select title=${i18nString20(UIStrings20.durationFilter)}
         aria-label=${i18nString20(UIStrings20.durationFilter)}
         jslog=${VisualLogging8.dropDown("duration").track({ change: true })}
@@ -16651,14 +16802,14 @@ function renderFilterToolbar(input, _output, target) {
     const duration = event.target.value;
     input.onDurationChange(parseInt(duration, 10));
   }}>
-      ${input.durationPresetsMs.map((durationMs) => html7`
+      ${input.durationPresetsMs.map((durationMs) => html8`
         <option value=${String(durationMs)}
             jslog=${VisualLogging8.item(String(durationMs)).track({ click: true })}>
           ${durationMs ? `\u2265 ${i18n39.TimeUtilities.millisToString(durationMs)}` : i18nString20(UIStrings20.all)}
         </option>
       `)}
     </select>
-    ${Object.entries(input.categories).map(([categoryName, category]) => category.visible ? html7`
+    ${Object.entries(input.categories).map(([categoryName, category]) => category.visible ? html8`
       <devtools-checkbox
           checked
           jslog=${VisualLogging8.toggle().track({ change: true }).context(categoryName)}
@@ -16668,7 +16819,7 @@ function renderFilterToolbar(input, _output, target) {
   }}>
         ${category.title}
       </devtools-checkbox>
-    ` : nothing5)}
+    ` : nothing7)}
   `, target);
 }
 var UIStrings20 = {
@@ -17222,15 +17373,15 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
 // ../../front_end/panels/timeline/TimelineLayersView.ts
 var TimelineLayersView_exports = {};
 __export(TimelineLayersView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   TimelineLayersView: () => TimelineLayersView
 });
 import * as UI13 from "../../ui/legacy/legacy.js";
-import { html as html8, render as render8 } from "../../ui/lit/lit.js";
+import { html as html9, render as render9 } from "../../ui/lit/lit.js";
 import * as LayerViewer from "../layer_viewer/layer_viewer.js";
-var { widget: widget2, widgetRef: widgetRef2 } = UI13.Widget;
-var DEFAULT_VIEW4 = (input, output, target) => {
-  render8(html8`
+var { widget: widget3, widgetRef: widgetRef2 } = UI13.Widget;
+var DEFAULT_VIEW5 = (input, output, target) => {
+  render9(html9`
     <devtools-split-view
         class="timeline-layers-view"
         direction="column"
@@ -17244,7 +17395,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           name="timeline-layers-view-details">
         <devtools-widget
             slot="main"
-            ${widget2(LayerViewer.Layers3DView.Layers3DView, { layerViewHost: input.layerViewHost })}
+            ${widget3(LayerViewer.Layers3DView.Layers3DView, { layerViewHost: input.layerViewHost })}
             ${widgetRef2(LayerViewer.Layers3DView.Layers3DView, (view) => {
     output.snapshotForSelection = (selection) => view.snapshotForSelection(selection);
   })}
@@ -17254,7 +17405,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
         </devtools-widget>
         <devtools-widget
             slot="sidebar"
-            ${widget2(LayerViewer.LayerDetailsView.LayerDetailsView, { layerViewHost: input.layerViewHost })}
+            ${widget3(LayerViewer.LayerDetailsView.LayerDetailsView, { layerViewHost: input.layerViewHost })}
             @PaintProfilerRequested=${(event) => {
     input.onPaintProfilerRequested(event.detail);
   }}>
@@ -17262,7 +17413,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
       </devtools-split-view>
       <devtools-widget
           slot="sidebar"
-          ${widget2(LayerViewer.LayerTreeOutline.LayerTreeOutline, { layerViewHost: input.layerViewHost })}>
+          ${widget3(LayerViewer.LayerTreeOutline.LayerTreeOutline, { layerViewHost: input.layerViewHost })}>
       </devtools-widget>
     </devtools-split-view>
   `, target);
@@ -17275,7 +17426,7 @@ var TimelineLayersView = class extends UI13.Widget.VBox {
   #onPaintProfilerRequestedBound = this.#onPaintProfilerRequested.bind(this);
   #frameLayerTree;
   #updateWhenVisible;
-  constructor(showPaintProfilerCallback, view = DEFAULT_VIEW4) {
+  constructor(showPaintProfilerCallback, view = DEFAULT_VIEW5) {
     super(showPaintProfilerCallback instanceof HTMLElement ? showPaintProfilerCallback : void 0);
     this.#view = view;
     if (typeof showPaintProfilerCallback === "function") {
@@ -17331,7 +17482,7 @@ var TimelineLayersView = class extends UI13.Widget.VBox {
 // ../../front_end/panels/timeline/TimelinePaintProfilerView.ts
 var TimelinePaintProfilerView_exports = {};
 __export(TimelinePaintProfilerView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   IMAGE_VIEW_DEFAULT_VIEW: () => IMAGE_VIEW_DEFAULT_VIEW,
   TimelinePaintImageView: () => TimelinePaintImageView,
   TimelinePaintProfilerView: () => TimelinePaintProfilerView
@@ -17340,7 +17491,7 @@ import * as SDK10 from "../../core/sdk/sdk.js";
 import * as Trace29 from "../../models/trace/trace.js";
 import * as Geometry2 from "../../ui/geometry/geometry.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html9, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html10, render as render10 } from "../../ui/lit/lit.js";
 import * as LayerViewer2 from "../layer_viewer/layer_viewer.js";
 
 // gen/front_end/panels/timeline/timelinePaintProfiler.css.js
@@ -17665,8 +17816,8 @@ var TracingLayer = class {
       if (!fragments.length || !this.paintProfilerModel) {
         return null;
       }
-      const x0 = fragments.reduce((min, item4) => Math.min(min, item4.x), Infinity);
-      const y0 = fragments.reduce((min, item4) => Math.min(min, item4.y), Infinity);
+      const x0 = fragments.reduce((min, item5) => Math.min(min, item5.x), Infinity);
+      const y0 = fragments.reduce((min, item5) => Math.min(min, item5.y), Infinity);
       const rect = { x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3] };
       return this.paintProfilerModel.loadSnapshotFromFragments(fragments).then(
         (snapshot) => snapshot ? { rect, snapshot } : null
@@ -17734,15 +17885,15 @@ async function getPaintProfilerSnapshot(paintProfilerModel, paint) {
 }
 
 // ../../front_end/panels/timeline/TimelinePaintProfilerView.ts
-var { ifDefined: ifDefined4, styleMap: styleMap3 } = Directives4;
-var { widget: widget3 } = UI14.Widget;
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  render9(
-    html9`
+var { ifDefined: ifDefined4, styleMap: styleMap4 } = Directives6;
+var { widget: widget4 } = UI14.Widget;
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render10(
+    html10`
     <style>${timelinePaintProfiler_css_default}</style>
     <div class="timeline-paint-profiler-view vbox flex-auto">
       <devtools-widget class="timeline-paint-profiler-bar"
-          ${widget3(LayerViewer2.PaintProfilerView.PaintProfilerView, {
+          ${widget4(LayerViewer2.PaintProfilerView.PaintProfilerView, {
       showImageCallback: input.onShowImage,
       snapshotAndLog: { snapshot: input.snapshot, log: input.log, clipRect: input.clipRect }
     })}
@@ -17750,13 +17901,13 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
       </devtools-widget>
       <devtools-split-view direction="column" sidebar-position="first" name="timeline-paint-profiler-log-split">
         <devtools-widget slot="sidebar"
-            ${widget3(LayerViewer2.PaintProfilerView.PaintProfilerCommandLogView, {
+            ${widget4(LayerViewer2.PaintProfilerView.PaintProfilerCommandLogView, {
       commandLog: input.log,
       selectionWindow: input.selectionWindow
     })}>
         </devtools-widget>
         <devtools-widget slot="main"
-            ${widget3(TimelinePaintImageView, {
+            ${widget4(TimelinePaintImageView, {
       imageURL: input.imageURL,
       maskRectangle: input.clipRect
     })}>
@@ -17779,7 +17930,7 @@ var TimelinePaintProfilerView = class extends UI14.Widget.VBox {
   #clipRect = null;
   #selectionWindow = null;
   #imageURL = void 0;
-  constructor(element, parsedTrace, view = DEFAULT_VIEW5) {
+  constructor(element, parsedTrace, view = DEFAULT_VIEW6) {
     super(element);
     this.#parsedTrace = parsedTrace;
     this.#view = view;
@@ -17931,15 +18082,15 @@ var IMAGE_VIEW_DEFAULT_VIEW = (input, _output, target) => {
       input.onImageLoaded(event.target.naturalWidth, event.target.naturalHeight);
     }
   };
-  render9(
-    html9`
+  render10(
+    html10`
         <style>${timelinePaintProfiler_css_default}</style>
         <div class="paint-profiler-image-view fill">
           <div class="paint-profiler-image-container"
               ?hidden=${input.imageContainerHidden}
-              style=${styleMap3({ "-webkit-transform": input.imageContainerWebKitTransform })}>
+              style=${styleMap4({ "-webkit-transform": input.imageContainerWebKitTransform })}>
             <img src=${ifDefined4(input.imageURL || void 0)} @load=${onLoad}>
-            <div style=${styleMap3({
+            <div style=${styleMap4({
       display: input.maskElementHidden ? "none" : "block",
       ...input.maskElementStyle
     })}>
@@ -18066,7 +18217,7 @@ import * as i18n43 from "../../core/i18n/i18n.js";
 import * as SDK11 from "../../core/sdk/sdk.js";
 import * as Trace30 from "../../models/trace/trace.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
-import { html as html10, render as render10 } from "../../ui/lit/lit.js";
+import { html as html11, render as render11 } from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/timelineSelectorStatsView.css.js
@@ -18176,9 +18327,9 @@ var UIStrings22 = {
 var str_22 = i18n43.i18n.registerUIStrings("panels/timeline/TimelineSelectorStatsView.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var SelectorTimingsKey = Trace30.Types.Events.SelectorTimingsKey;
-var DEFAULT_VIEW6 = (input, _output, target) => {
-  render10(
-    html10`
+var DEFAULT_VIEW7 = (input, _output, target) => {
+  render11(
+    html11`
       <style>${timelineSelectorStatsView_css_default}</style>
       <devtools-data-grid striped name=${i18nString22(UIStrings22.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
@@ -18217,7 +18368,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
       const locations = timing.locations;
       const locationMessage = locations ? null : locations === null ? "" : i18nString22(UIStrings22.unableToLinkViaStyleSheetId, { PH1: styleSheetId });
-      return html10`<tr>
+      return html11`<tr>
             <td data-value=${timing[SelectorTimingsKey.Elapsed]}>
               ${(timing[SelectorTimingsKey.Elapsed] / 1e3).toFixed(3)}
             </td>
@@ -18232,7 +18383,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
             <td title=${timing[SelectorTimingsKey.Selector]}>
              ${timing[SelectorTimingsKey.Selector]}
             </td>
-            <td data-value=${styleSheetId}>${locations ? html10`${locations.map((location, itemIndex) => html10`
+            <td data-value=${styleSheetId}>${locations ? html11`${locations.map((location, itemIndex) => html11`
                 <devtools-linkifier .data=${location}></devtools-linkifier
                 >${itemIndex !== locations.length - 1 ? "," : ""}`)}` : locationMessage}
             </td>
@@ -18258,7 +18409,7 @@ var TimelineSelectorStatsView = class extends UI15.Widget.VBox {
   #lastStatsSourceEventOrEvents = null;
   #view;
   #timings = [];
-  constructor(element, parsedTrace = null, view = DEFAULT_VIEW6) {
+  constructor(element, parsedTrace = null, view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
     this.#selectorLocations = /* @__PURE__ */ new Map();
@@ -18557,7 +18708,7 @@ var UIStrings23 = {
 };
 var str_23 = i18n45.i18n.registerUIStrings("panels/timeline/TimelineDetailsView.ts", UIStrings23);
 var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
-var { widget: widget4 } = UI16.Widget;
+var { widget: widget5 } = UI16.Widget;
 var Tab = /* @__PURE__ */ ((Tab2) => {
   Tab2["Details"] = "details";
   Tab2["EventLog"] = "event-log";
@@ -18611,11 +18762,11 @@ var SUMMARY_TAB_VIEW = (input, _output, target) => {
       onBottomUpButtonClicked: input.onBottomUpButtonClicked,
       onTreeRowClicked: input.onTreeRowClicked
     };
-    return html11`
+    return html12`
           <style>${timelineDetailsView_css_default}</style>
-          ${Directives5.until(renderSelectedEventDetails(summaryInput))}
-          ${input.summary.selectedRange ? generateRangeSummaryDetails(summaryInput) : nothing6}
-          <devtools-widget data-related-insight-chips ${widget4(
+          ${Directives7.until(renderSelectedEventDetails(summaryInput))}
+          ${input.summary.selectedRange ? generateRangeSummaryDetails(summaryInput) : nothing8}
+          <devtools-widget data-related-insight-chips ${widget5(
       TimelineComponents5.RelatedInsightChips.RelatedInsightChips,
       {
         activeEvent: input.summary.selectedEvent,
@@ -18623,7 +18774,7 @@ var SUMMARY_TAB_VIEW = (input, _output, target) => {
       }
     )}></devtools-widget>`;
   };
-  render11(html11`
+  render12(html12`
         <div
             id=${"details" /* Details */}
             label=${i18nString23(UIStrings23.summary)}
@@ -19181,7 +19332,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
       selection: this.#selection
     };
     await this.updateSummaryPane();
-    const isSelectorStatsEnabled = Common15.Settings.Settings.instance().resolve(SettingsUI6.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor).get();
+    const isSelectorStatsEnabled = Common15.Settings.Settings.instance().resolve(SettingsUI4.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor).get();
     if (this.#selectedEvents && isSelectorStatsEnabled) {
       const eventsInRange = Trace31.Helpers.Trace.findRecalcStyleEvents(
         this.#selectedEvents,
@@ -19195,13 +19346,13 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
   }
 };
 function generateRangeSummaryDetails(input) {
-  return html11`${widget4(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+  return html12`${widget5(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
     data: {
       parsedTrace: input.parsedTrace,
       events: input.selectedRange?.events,
       startTime: input.selectedRange?.startTime,
       endTime: input.selectedRange?.endTime,
-      thirdPartyTreeTemplate: input.selectedRange ? html11`${widget4(ThirdPartyTreeViewWidget, {
+      thirdPartyTreeTemplate: input.selectedRange ? html12`${widget5(ThirdPartyTreeViewWidget, {
         model: {
           parsedTrace: input.parsedTrace,
           entityMapper: input.entityMapper,
@@ -19211,19 +19362,19 @@ function generateRangeSummaryDetails(input) {
         onRowHovered: input.onTreeRowHovered,
         onBottomUpButtonClicked: input.onBottomUpButtonClicked,
         onRowClicked: input.onTreeRowClicked
-      })}` : nothing6
+      })}` : nothing8
     }
   })}`;
 }
 async function renderSelectedEventDetails(input) {
   const { selectedEvent, parsedTrace, linkifier } = input;
   if (!selectedEvent || !parsedTrace || !linkifier) {
-    return nothing6;
+    return nothing8;
   }
   const traceRecordingIsFresh = parsedTrace ? Tracing6.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
   if (Trace31.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace31.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
-    return html11`
-      <devtools-widget data-layout-shift-details ${widget4(
+    return html12`
+      <devtools-widget data-layout-shift-details ${widget5(
       TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails,
       {
         event: selectedEvent,
@@ -19234,8 +19385,8 @@ async function renderSelectedEventDetails(input) {
       ></devtools-widget>`;
   }
   if (Trace31.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
-    return html11`
-      <devtools-widget data-network-request-details ${widget4(
+    return html12`
+      <devtools-widget data-network-request-details ${widget5(
       TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails,
       {
         request: selectedEvent,
@@ -19251,10 +19402,10 @@ async function renderSelectedEventDetails(input) {
   if (Trace31.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
     const matchedFilmStripFrame = getFilmStripFrame(input.filmStrip, selectedEvent);
     const content = TimelineUIUtils.generateDetailsContentForFrame(selectedEvent, input.filmStrip, matchedFilmStripFrame);
-    return html11`${content}`;
+    return html12`${content}`;
   }
   const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(parsedTrace, selectedEvent, linkifier, true, input.entityMapper);
-  return html11`${traceEventDetails}`;
+  return html12`${traceEventDetails}`;
 }
 var filmStripFrameCache = /* @__PURE__ */ new WeakMap();
 function getFilmStripFrame(filmStrip, frame) {
@@ -19520,7 +19671,7 @@ function keyForTraceConfig(trace) {
 }
 
 // ../../front_end/panels/timeline/TimelineFlameChartNetworkDataProvider.ts
-var { html: html12 } = Lit;
+var { html: html13 } = Lit;
 var TimelineFlameChartNetworkDataProvider = class {
   #minimumBoundary = 0;
   #timeSpan = 0;
@@ -19786,7 +19937,7 @@ var TimelineFlameChartNetworkDataProvider = class {
     if (!event || !Trace33.Types.Events.isSyntheticNetworkRequest(event)) {
       return null;
     }
-    return html12`
+    return html13`
       <div class="timeline-flamechart-popover">
         ${TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(
       event,
@@ -20401,13 +20552,13 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       );
     });
     this.#overlays.addEventListener(Overlays5.Overlays.AnnotationOverlayActionEvent.eventName, (event) => {
-      const { overlay, action: action2 } = event;
-      if (action2 === "Remove") {
+      const { overlay, action: action3 } = event;
+      if (action3 === "Remove") {
         if (ModificationsManager.activeManager()?.getAnnotationByOverlay(overlay) === this.#timeRangeSelectionAnnotation) {
           this.#timeRangeSelectionAnnotation = null;
         }
         ModificationsManager.activeManager()?.removeAnnotationOverlay(overlay);
-      } else if (action2 === "Update") {
+      } else if (action3 === "Update") {
         ModificationsManager.activeManager()?.updateAnnotationOverlay(overlay);
       }
     });
@@ -22048,9 +22199,9 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     );
     this.dispatchEventToListeners("DataChanged" /* DATA_CHANGED */);
   }
-  modifyTree(action2, entryIndex) {
+  modifyTree(action3, entryIndex) {
     const entry = this.entryData[entryIndex];
-    ModificationsManager.activeManager()?.getEntriesFilter().applyFilterAction({ type: action2, entry });
+    ModificationsManager.activeManager()?.getEntriesFilter().applyFilterAction({ type: action3, entry });
     this.timelineData(true);
     this.buildFlowForInitiator(entryIndex);
     this.dispatchEventToListeners("DataChanged" /* DATA_CHANGED */);
@@ -22452,15 +22603,15 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     for (const warningElement of warningElements) {
       warningElement.classList.add("popoverinfo-warning");
     }
-    return html13`
+    return html14`
       <style>${timelineFlamechartPopover_css_default}</style>
       <div class="timeline-flamechart-popover">
         <span class=${timeElementClassName}>${time}</span>
         <span class="popoverinfo-title">${title}</span>
         ${warningElements}
         ${additionalContent.map((elem) => {
-      const widget5 = UI19.Widget.Widget.get(elem);
-      return widget5 ? UI19.Widget.widget(UI19.Widget.WrapperWidget, { widget: widget5 }) : elem;
+      const widget6 = UI19.Widget.Widget.get(elem);
+      return widget6 ? UI19.Widget.widget(UI19.Widget.WrapperWidget, { widget: widget6 }) : elem;
     })}
       </div>`;
   }
@@ -22470,7 +22621,7 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     if (!hiddenEntriesAmount) {
       return null;
     }
-    return html13`
+    return html14`
       <style>${timelineFlamechartPopover_css_default}</style>
       <div class="timeline-flamechart-popover">
         <span class="popoverinfo-title">${hiddenEntriesAmount} hidden</span>
@@ -23024,8 +23175,8 @@ var TimingsTrackAppender = class {
 // ../../front_end/panels/timeline/CompatibilityTracksAppender.ts
 import * as TimelineUtils from "./utils/utils.js";
 function renderPopoverUrl(input, _output, target) {
-  render12(
-    html14`<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${input.originWithEntity})</span></div>`,
+  render13(
+    html15`<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${input.originWithEntity})</span></div>`,
     target
   );
 }
@@ -23202,7 +23353,7 @@ var CompatibilityTracksAppender = class {
       }
     };
     const threads = Trace37.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-    const showAllEvents = Common18.Settings.Settings.instance().resolve(SettingsUI7.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
+    const showAllEvents = Common18.Settings.Settings.instance().resolve(SettingsUI5.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
     for (const { pid, tid, name, type, entries, tree } of threads) {
       if (this.#parsedTrace.data.Meta.traceIsGeneric) {
         this.#threadAppenders.push(new ThreadAppender(

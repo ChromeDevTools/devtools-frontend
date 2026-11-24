@@ -48,6 +48,7 @@
   },
   "files": [
     "../../../../../../test/e2e/network/can-pretty-print-network.test.ts",
+    "../../../../../../test/e2e/network/network-columns-sorted.test.ts",
     "../../../../../../test/e2e/network/network-conditions.test.ts",
     "../../../../../../test/e2e/network/network-datagrid.test.ts",
     "../../../../../../test/e2e/network/network-filter.test.ts",

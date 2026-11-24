@@ -88,6 +88,21 @@ export class ResourceWebSocketFrameView extends ResourceChunkView {
     constructor(request) {
         super(request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state', i18nString(UIStrings.webSocketFrame), i18nString(UIStrings.filterUsingRegex), { jslog: `${VisualLogging.pane('web-socket-messages').track({ resize: true })}` });
     }
+    get request() {
+        return super.request;
+    }
+    set request(request) {
+        if (super.request === request) {
+            return;
+        }
+        if (this.isShowing()) {
+            super.request?.removeEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
+        }
+        super.request = request;
+        if (this.isShowing()) {
+            super.request?.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
+        }
+    }
     getRequestChunks() {
         return this.request.frames();
     }
@@ -103,11 +118,11 @@ export class ResourceWebSocketFrameView extends ResourceChunkView {
     wasShown() {
         super.wasShown();
         this.requestUpdate();
-        this.request.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
+        this.request?.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
     }
     willHide() {
         super.willHide();
-        this.request.removeEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
+        this.request?.removeEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
     }
     #onWebSocketFrameAdded(event) {
         this.chunkAdded(event.data);

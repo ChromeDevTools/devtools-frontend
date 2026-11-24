@@ -8,7 +8,9 @@ interface ViewInput {
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 export declare class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
     #private;
-    constructor(request: SDK.NetworkRequest.NetworkRequest, view?: typeof DEFAULT_VIEW);
+    constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement, view?: typeof DEFAULT_VIEW);
+    get request(): SDK.NetworkRequest.NetworkRequest;
+    set request(request: SDK.NetworkRequest.NetworkRequest);
     wasShown(): void;
     willHide(): void;
     performUpdate(): void;

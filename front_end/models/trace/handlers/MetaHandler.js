@@ -14,6 +14,20 @@ let rendererProcessesByFrameId = new Map();
 // about the main frame's ID, so we store and expose that.
 let mainFrameId = '';
 let mainFrameURL = '';
+let mainFrameIsOpaqueOrigin = false;
+let traceHasOpaqueOriginFlag = false;
+let committedFramesByFrameId = new Map();
+let committedPrimaryMainFrames = [];
+function hasSameTupleOrigin(urlA, urlB) {
+    try {
+        const originA = new URL(urlA).origin;
+        const originB = new URL(urlB).origin;
+        return originA !== 'null' && originA === originB;
+    }
+    catch {
+        return false;
+    }
+}
 let framesByProcessId = new Map();
 // We will often want to key data by the browser process, GPU process and top
 // level renderer IDs, so keep a track on those.
@@ -88,6 +102,10 @@ export function reset() {
     sameDocumentNavigations = [];
     mainFrameId = '';
     mainFrameURL = '';
+    mainFrameIsOpaqueOrigin = false;
+    traceHasOpaqueOriginFlag = false;
+    committedFramesByFrameId = new Map();
+    committedPrimaryMainFrames = [];
     browserProcessId = Types.Events.ProcessID(-1);
     browserThreadId = Types.Events.ThreadID(-1);
     gpuProcessId = Types.Events.ProcessID(-1);
@@ -175,7 +193,11 @@ export function handleEvent(event) {
         if (!event.args.data) {
             throw new Error('No frames found in trace data');
         }
+        let foundPrimaryMainFrame = false;
         for (const frame of (event.args.data.frames ?? [])) {
+            if ('isOpaqueOrigin' in frame) {
+                traceHasOpaqueOriginFlag = true;
+            }
             updateRendererProcessByFrame(event, frame);
             if (!frame.parent) {
                 topLevelRendererIds.add(frame.processId);
@@ -211,9 +233,13 @@ export function handleEvent(event) {
             const traceHasOutermostMainFrameFlag = 'isOutermostMainFrame' in frame;
             if (traceHasPrimaryMainFrameFlag && traceHasOutermostMainFrameFlag) {
                 // Ideal situation: identify the main frame as the one that has both these flags set to true.
-                if (frame.isInPrimaryMainFrame && frame.isOutermostMainFrame) {
+                // Keep the first matching frame so trailing inactive (e.g. BFCached) frames in older
+                // traces cannot overwrite the active primary main frame.
+                if (!foundPrimaryMainFrame && frame.isInPrimaryMainFrame && frame.isOutermostMainFrame) {
+                    foundPrimaryMainFrame = true;
                     mainFrameId = frame.frame;
                     mainFrameURL = frame.url;
+                    mainFrameIsOpaqueOrigin = Boolean(frame.isOpaqueOrigin);
                 }
             }
             else if (traceHasOutermostMainFrameFlag) {
@@ -221,12 +247,14 @@ export function handleEvent(event) {
                 if (frame.isOutermostMainFrame) {
                     mainFrameId = frame.frame;
                     mainFrameURL = frame.url;
+                    mainFrameIsOpaqueOrigin = Boolean(frame.isOpaqueOrigin);
                 }
                 // Worst case: guess by seeing if the frame doesn't have a parent, and does have a URL.
             }
             else if (!frame.parent && frame.url) {
                 mainFrameId = frame.frame;
                 mainFrameURL = frame.url;
+                mainFrameIsOpaqueOrigin = Boolean(frame.isOpaqueOrigin);
             }
         }
         return;
@@ -240,7 +268,14 @@ export function handleEvent(event) {
         if (!frame) {
             return;
         }
+        if ('isOpaqueOrigin' in frame) {
+            traceHasOpaqueOriginFlag = true;
+        }
         updateRendererProcessByFrame(event, frame);
+        Platform.MapUtilities.getWithDefault(committedFramesByFrameId, frame.frame, () => []).push({ ts: event.ts, frame });
+        if (frame.isInPrimaryMainFrame && frame.isOutermostMainFrame) {
+            committedPrimaryMainFrames.push({ ts: event.ts, frame });
+        }
         if (frame.parent) {
             return;
         }
@@ -379,6 +414,8 @@ export async function finalize(options) {
     // into the trace's lifecycle, we only do this in situations where the first
     // navigation happened very soon (0.5 seconds) after the trace started
     // recording.
+    let activeMainFrameTs = traceStartedTimeFromTracingStartedEvent;
+    const previousTrimmedMainFrameUrl = mainFrameURL.split('#')[0];
     const firstMainFrameNav = mainFrameNavigations.at(0);
     const firstNavTimeThreshold = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(0.5));
     if (firstMainFrameNav) {
@@ -386,7 +423,24 @@ export async function finalize(options) {
         if (firstMainFrameNav.args.data?.isOutermostMainFrame && firstMainFrameNav.args.data?.documentLoaderURL &&
             navigationIsWithinThreshold) {
             mainFrameURL = firstMainFrameNav.args.data.documentLoaderURL;
+            const trimmedNavUrl = mainFrameURL.split('#')[0];
+            const navigationId = firstMainFrameNav.args.data.navigationId;
+            const redirectedUrl = finalDisplayUrlByNavigationId.get(navigationId)?.split('#')[0];
+            const sameOriginRedirectUrl = redirectedUrl && hasSameTupleOrigin(trimmedNavUrl, redirectedUrl) ? redirectedUrl : null;
+            const committedEntries = committedFramesByFrameId.get(mainFrameId) ?? [];
+            const matchingCommittedEntry = committedEntries.findLast(({ frame }) => frame.url === trimmedNavUrl ||
+                (sameOriginRedirectUrl !== null && frame.url === sameOriginRedirectUrl));
+            if (matchingCommittedEntry && 'isOpaqueOrigin' in matchingCommittedEntry.frame) {
+                mainFrameIsOpaqueOrigin = Boolean(matchingCommittedEntry.frame.isOpaqueOrigin);
+                activeMainFrameTs = matchingCommittedEntry.ts;
+            }
+            else if (trimmedNavUrl !== previousTrimmedMainFrameUrl) {
+                mainFrameIsOpaqueOrigin = traceHasOpaqueOriginFlag;
+            }
         }
+    }
+    if (committedPrimaryMainFrames.some(({ ts, frame }) => ts >= activeMainFrameTs && frame.isOpaqueOrigin)) {
+        mainFrameIsOpaqueOrigin = true;
     }
     // Compute final display URLs for each hard navigation.
     // A hard navigation's final URL is updated by history API navigations (e.g. pushState).
@@ -430,6 +484,7 @@ export function data() {
         devicePixelRatio: devicePixelRatio ?? undefined,
         mainFrameId,
         mainFrameURL,
+        mainFrameIsOpaqueOrigin,
         navigationsByFrameId,
         navigationsByNavigationId,
         softNavigationsById,

@@ -398,6 +398,7 @@ models/extensions/ExtensionAPI.test.js
 panels/accessibility/ARIAAttributesView.test.js
 panels/accessibility/AccessibilityAnnouncementRecordingListView.test.js
 panels/accessibility/AccessibilityAnnouncementRecordingView.test.js
+panels/accessibility/AccessibilityNodeView.test.js
 panels/accessibility/AccessibilitySidebarView.test.js
 panels/ai_assistance/AiAssistancePanel.test.js
 panels/ai_assistance/ExportConversation.test.js
@@ -567,6 +568,7 @@ panels/issues/IssueView.test.js
 panels/issues/IssuesPane.test.js
 panels/layer_viewer/LayerTreeOutline.test.js
 panels/layer_viewer/layer_viewer.test.js
+panels/layers/LayerTreeModel.test.js
 panels/layers/LayersPanel.test.js
 panels/lighthouse/LighthouseController.test.js
 panels/lighthouse/LighthousePanel.test.js
@@ -682,6 +684,7 @@ panels/settings/emulation/DevicesSettingsTab.test.js
 panels/settings/emulation/components/UserAgentClientHintsForm.test.js
 panels/settings/emulation/utils/StructuredHeaders.test.js
 panels/settings/emulation/utils/UserAgentMetadata.test.js
+panels/snippets/EvaluateScriptSnippet.test.js
 panels/snippets/ScriptSnippetFileSystem.test.js
 panels/sources/AiCodeCompletionPlugin.test.js
 panels/sources/BreakpointEditDialog.test.js

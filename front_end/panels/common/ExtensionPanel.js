@@ -1,14 +1,13 @@
 // Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { Directives, html, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import { ExtensionNotifierView, ExtensionView } from './ExtensionView.js';
 const { repeat, styleMap } = Directives;
 const { widget, widgetRef } = UI.Widget;
@@ -159,19 +158,71 @@ export class ExtensionButton {
 const hashIdentifier = (id) => Platform.StringUtilities.hashCode(id).toString(36);
 // Produces a stable identifier usable as (part of) viewId by either sanitizing it or hashing.
 const cleanIdentifier = (id) => Platform.StringUtilities.sanitizeIdentifier(id) || hashIdentifier(id);
+export const SIDEBAR_PANE_DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `
+    ${input.pageURL ? widget(ExtensionView, {
+        data: {
+            server: input.server,
+            id: input.id,
+            src: input.pageURL,
+            className: 'extension fill',
+        },
+    }) : input.showObjectProperties ? html `
+      <devtools-widget ${widget(ExtensionNotifierView, {
+        data: {
+            server: input.server,
+            id: input.id,
+        },
+    })} ${widgetRef(ExtensionNotifierView, () => { })}>
+        ${input.objectTree ? html `<devtools-widget
+          ${widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+        objectTree: input.objectTree,
+        title: input.objectTitle ? html `<span>${input.objectTitle}</span>` : undefined,
+    })}
+          ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, () => { })}
+        ></devtools-widget>` : nothing}
+      </devtools-widget>
+    ` : nothing}
+  `, target, {
+        container: {
+            classes: ['fill'],
+            attributes: {
+                style: input.height ? `height: ${input.height}` : undefined,
+            },
+        },
+    });
+    // clang-format on
+};
 export class ExtensionSidebarPane extends UI.View.SimpleView {
     #panelName;
-    server;
+    #server;
     #id;
-    extensionView;
-    objectPropertiesView;
-    constructor(server, panelName, title, id, extensionId = 'extension') {
+    #view;
+    #pageURL;
+    #height;
+    #showObjectProperties = false;
+    #objectTree;
+    #objectTitle;
+    constructor(server, panelName, title, id, extensionId = 'extension', view = SIDEBAR_PANE_DEFAULT_VIEW) {
         const viewId = `extension-sidebar-${cleanIdentifier(extensionId)}-${cleanIdentifier(panelName)}-${hashIdentifier(title)}`;
         super({ title, viewId });
-        this.element.classList.add('fill');
         this.#panelName = panelName;
-        this.server = server;
+        this.#server = server;
         this.#id = id;
+        this.#view = view;
+        this.requestUpdate();
+    }
+    performUpdate() {
+        this.#view({
+            server: this.#server,
+            id: this.#id,
+            pageURL: this.#pageURL,
+            height: this.#height,
+            showObjectProperties: this.#showObjectProperties,
+            objectTree: this.#objectTree,
+            objectTitle: this.#objectTitle,
+        }, undefined, this.element);
     }
     id() {
         return this.#id;
@@ -180,32 +231,32 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
         return this.#panelName;
     }
     setObject(object, title, callback) {
-        this.createObjectPropertiesView();
+        this.#pageURL = undefined;
+        this.#showObjectProperties = true;
         this.#setObject(SDK.RemoteObject.RemoteObject.fromLocalObject(object), title, callback);
     }
     setExpression(expression, title, evaluateOptions, securityOrigin, callback) {
-        this.createObjectPropertiesView();
-        this.server.evaluate(expression, true, false, evaluateOptions, securityOrigin, this.onEvaluate.bind(this, title, callback));
+        this.#createObjectPropertiesView();
+        this.#server.evaluate(expression, true, false, evaluateOptions, securityOrigin, this.#onEvaluate.bind(this, title, callback));
     }
     setPage(url) {
-        if (this.objectPropertiesView) {
-            this.objectPropertiesView.detach();
-            delete this.objectPropertiesView;
+        this.#showObjectProperties = false;
+        this.#objectTree = undefined;
+        this.#objectTitle = undefined;
+        this.#pageURL = url;
+        if (!this.#height) {
+            this.#height = '150px';
         }
-        if (this.extensionView) {
-            this.extensionView.detach(true);
-        }
-        this.extensionView = new ExtensionView();
-        this.extensionView.data = { server: this.server, id: this.#id, src: url, className: 'extension fill' };
-        this.extensionView.show(this.element);
-        if (!this.element.style.height) {
-            this.setHeight('150px');
-        }
+        this.requestUpdate();
     }
     setHeight(height) {
-        this.element.style.height = height;
+        if (this.#height === height) {
+            return;
+        }
+        this.#height = height;
+        this.requestUpdate();
     }
-    onEvaluate(title, callback, error, result, _wasThrown) {
+    #onEvaluate(title, callback, error, result, _wasThrown) {
         if (error) {
             callback(error.toString());
         }
@@ -216,39 +267,33 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
             this.#setObject(result, title, callback);
         }
     }
-    createObjectPropertiesView() {
-        if (this.objectPropertiesView) {
+    #createObjectPropertiesView() {
+        if (this.#showObjectProperties) {
             return;
         }
-        if (this.extensionView) {
-            this.extensionView.detach(true);
-            delete this.extensionView;
-        }
-        this.objectPropertiesView = new ExtensionNotifierView();
-        this.objectPropertiesView.data = { server: this.server, id: this.#id };
-        this.objectPropertiesView.show(this.element);
+        this.#pageURL = undefined;
+        this.#objectTree = undefined;
+        this.#objectTitle = undefined;
+        this.#showObjectProperties = true;
+        this.requestUpdate();
     }
     #setObject(object, title, callback) {
-        const objectPropertiesView = this.objectPropertiesView;
         // This may only happen if setPage() was called while we were evaluating the expression.
-        if (!objectPropertiesView) {
+        if (!this.#showObjectProperties) {
             callback('operation cancelled');
             return;
         }
-        objectPropertiesView.detachChildWidgets();
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+        const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
             readOnly: true,
             propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
         });
-        section.objectTree.expanded = true;
-        if (title) {
-            const span = document.createElement('span');
-            span.textContent = title;
-            section.title = span;
-        }
-        section.show(objectPropertiesView.element);
-        callback();
+        objectTree.expanded = true;
+        this.#objectTree = objectTree;
+        this.#objectTitle = title;
+        this.requestUpdate();
+        void this.updateComplete.then(() => UI.Widget.Widget.allUpdatesComplete).then(() => {
+            callback();
+        });
     }
 }
 //# sourceMappingURL=ExtensionPanel.js.map

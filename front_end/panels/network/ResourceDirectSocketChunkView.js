@@ -67,6 +67,21 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView {
     constructor(request) {
         super(request, 'network-direct-socket-chunk-filter', 'resource-direct-socket-chunk-split-view-state', i18nString(UIStrings.directSocketChunk), i18nString(UIStrings.filterUsingRegex), { jslog: `${VisualLogging.pane('direct-socket-messages').track({ resize: true })}` });
     }
+    get request() {
+        return super.request;
+    }
+    set request(request) {
+        if (super.request === request) {
+            return;
+        }
+        if (this.isShowing()) {
+            super.request?.removeEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded, this);
+        }
+        super.request = request;
+        if (this.isShowing()) {
+            super.request?.addEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded, this);
+        }
+    }
     getRequestChunks() {
         return this.request.directSocketChunks();
     }
@@ -82,11 +97,11 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView {
     wasShown() {
         super.wasShown();
         this.requestUpdate();
-        this.request.addEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded, this);
+        this.request?.addEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded, this);
     }
     willHide() {
         super.willHide();
-        this.request.removeEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded, this);
+        this.request?.removeEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded, this);
     }
     #onDirectSocketChunkAdded(event) {
         this.chunkAdded(event.data);

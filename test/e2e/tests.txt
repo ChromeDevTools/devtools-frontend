@@ -3,6 +3,7 @@ animations/animations.test.js
 application/cookies.test.js
 application/crash-report-context.test.js
 application/frame-tree.test.js
+application/local-storage.test.js
 application/manifest.test.js
 application/reporting-api.test.js
 application/resource-tree.test.js
@@ -138,6 +139,7 @@ lighthouse/timespan.test.js
 media/media-tab.test.js
 memory/memory.test.js
 network/can-pretty-print-network.test.js
+network/network-columns-sorted.test.js
 network/network-conditions.test.js
 network/network-datagrid.test.js
 network/network-filter.test.js

@@ -13,10 +13,11 @@ export type View = (input: ViewInput, output: unknown, target: HTMLElement) => v
 export declare const DEFAULT_VIEW: View;
 export declare class EventSourceMessagesView extends UI.Widget.VBox {
     #private;
-    private readonly request;
     private messageFilterSetting;
     private filterRegex;
-    constructor(request: SDK.NetworkRequest.NetworkRequest, view?: View);
+    constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement, view?: View);
+    get request(): SDK.NetworkRequest.NetworkRequest;
+    set request(request: SDK.NetworkRequest.NetworkRequest);
     wasShown(): void;
     willHide(): void;
     private messageAdded;

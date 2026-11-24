@@ -173,7 +173,7 @@ export class ResourceChunkView extends UI.Widget.VBox {
     filterRegex = null;
     selectedChunk = null;
     currentSelectedNode;
-    request;
+    #request;
     messageFilterSetting;
     sidebarWidget = null;
     splitWidgetSettingKey;
@@ -183,16 +183,30 @@ export class ResourceChunkView extends UI.Widget.VBox {
         return defaultHeaderTemplate();
     }
     constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW) {
-        super(opts);
+        super(request instanceof HTMLElement ? request : undefined, opts);
         this.#view = view;
         this.messageFilterSetting = Common.Settings.Settings.instance().createSetting(messageFilterSettingKey, '');
         this.splitWidgetSettingKey = splitWidgetSettingKey;
         this.dataGridDisplayName = dataGridDisplayName;
         this.filterUsingRegexHint = filterUsingRegexHint;
-        this.request = request;
+        if (request && !(request instanceof HTMLElement)) {
+            this.#request = request;
+        }
         const initialFilter = this.messageFilterSetting.get();
         if (initialFilter) {
             this.applyFilter(initialFilter);
+        }
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        this.#request = request;
+        if (this.isShowing()) {
+            this.requestUpdate();
         }
     }
     onRowContextMenu(contextMenu, node) {
@@ -297,6 +311,9 @@ export class ResourceChunkView extends UI.Widget.VBox {
         this.requestUpdate();
     }
     performUpdate() {
+        if (!this.isShowing() || !this.#request) {
+            return;
+        }
         let chunks = this.getRequestChunks();
         const offset = clearChunkOffsets.get(this.request) || 0;
         chunks = chunks.slice(offset).filter(this.chunkFilter.bind(this));

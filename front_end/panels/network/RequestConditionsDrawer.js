@@ -215,13 +215,12 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
     };
     // clang-format off
     return html `
-    <input class=blocked-url-checkbox
+    <devtools-checkbox class=blocked-url-checkbox
       @change=${toggle}
-      type=checkbox
       title=${i18nString(UIStrings.enableThrottlingToggleLabel, { PH1: constructorStringOrWildcardURL })}
       .checked=${live(enabled)}
-      .disabled=${!editable || !originalOrUpgradedURLPattern}
-      jslog=${VisualLogging.toggle().track({ change: true })}>
+      ?disabled=${!editable || !originalOrUpgradedURLPattern}
+      jslog=${VisualLogging.toggle().track({ change: true })}></devtools-checkbox>
     <devtools-button
       .iconName=${'arrow-up'}
       .variant=${"icon" /* Buttons.Button.Variant.ICON */}

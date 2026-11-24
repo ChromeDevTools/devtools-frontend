@@ -33,6 +33,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import '../../ui/legacy/legacy.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -49,11 +50,10 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
-import { Link } from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -79,6 +79,9 @@ import { TimelineUIUtils } from './TimelineUIUtils.js';
 import { createHiddenTracksOverlay } from './TrackConfigBanner.js';
 import { UIDevtoolsController } from './UIDevtoolsController.js';
 import { UIDevtoolsUtils } from './UIDevtoolsUtils.js';
+const { bindToSetting } = UI.UIUtils;
+const { widget } = UI.Widget;
+const { ref } = Directives;
 const UIStrings = {
     /**
      * @description Text shown on the drag-and-drop overlay in the Performance panel.
@@ -321,6 +324,89 @@ let timelinePanelInstance;
 // Total time to wait for source maps to load before giving up so trace processing can proceed.
 const SOURCE_MAP_LOAD_TIMEOUT_MS = 5000;
 const TimelinePanelBase = Common.ObjectWrapper.eventMixin(UI.Panel.Panel);
+class GlobalNetworkThrottlingSelect extends MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect {
+    constructor(element) {
+        super(element, {
+            title: i18nString(UIStrings.network),
+            jslogContext: SDK.NetworkManager.activeNetworkThrottlingKeySetting(Common.Settings.Settings.instance()).name,
+        });
+        this.bindToGlobalConditions = true;
+    }
+}
+function renderSettingsPane(input, output) {
+    // clang-format off
+    return html `
+    ${!input.isNode && input.canRecord ? html `
+      <div class="timeline-settings-pane" ?hidden=${!input.showSettingsPane}
+          jslog=${VisualLogging.pane('timeline-settings-pane').track({ resize: true })}>
+        <div>
+          ${i18nString(UIStrings.cpu)}
+          <select ${widget(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}></select>
+        </div>
+        <devtools-checkbox title=${i18nString(UIStrings.capturesSelectorStats)}
+            .ariaLabel=${input.captureSelectorStatsTitle || i18nString(UIStrings.capturesSelectorStats)}
+            ${bindToSetting(input.captureSelectorStatsSetting)}>
+          ${input.captureSelectorStatsTitle}
+        </devtools-checkbox>
+        <div>
+          ${i18nString(UIStrings.network)}
+          <select ${widget(GlobalNetworkThrottlingSelect)}></select>
+        </div>
+        <devtools-checkbox title=${i18nString(UIStrings.capturesAdvancedPaint)}
+            .ariaLabel=${input.captureLayersAndPicturesTitle || i18nString(UIStrings.capturesAdvancedPaint)}
+            ${bindToSetting(input.captureLayersAndPicturesSetting)}>
+          ${input.captureLayersAndPicturesTitle}
+        </devtools-checkbox>
+        <devtools-checkbox title=${i18nString(UIStrings.disablesJavascriptSampling)}
+            .ariaLabel=${input.disableCaptureJSProfileTitle || i18nString(UIStrings.disablesJavascriptSampling)}
+            ${bindToSetting(input.disableCaptureJSProfileSetting)}>
+          ${input.disableCaptureJSProfileTitle}
+        </devtools-checkbox>
+        <div ?hidden=${!input.showScreenshots}>
+          ${input.screenshotCaptureModeTitle}
+          <select title=${input.screenshotCaptureModeTitle} aria-label=${input.screenshotCaptureModeTitle}
+              jslog=${VisualLogging.dropDown('screenshot-capture-mode').track({ change: true })}
+              @change=${(e) => input.onScreenshotPresetChange(e.target.value)}>
+            ${SCREENSHOT_CAPTURE_PRESETS.map(preset => html `
+              <option value=${preset.key} .selected=${preset.key === input.selectedScreenshotCaptureMode}
+                  jslog=${VisualLogging.item(`tracing.screenshot-size.${preset.key}`).track({ click: true })}>
+                ${preset.label()}
+              </option>`)}
+          </select>
+        </div>
+        <span class="hbox" style="align-items: center;">
+          <devtools-checkbox title=${i18nString(UIStrings.showDataAddedByExtensions)}
+              .ariaLabel=${input.thirdPartyTracksTitle || i18nString(UIStrings.showDataAddedByExtensions)}
+              ?disabled=${!input.uiControlsEnabled}
+              ${bindToSetting(input.thirdPartyTracksSetting)}>
+            ${input.thirdPartyTracksTitle}
+          </devtools-checkbox>
+          <devtools-link class="devtools-link"
+              href="https://developer.chrome.com/docs/devtools/performance/extension"
+              style="margin-left: 5px;">
+            ${i18nString(UIStrings.learnMore)}
+          </devtools-link>
+        </span>
+      </div>` : nothing}
+    <input type="file" accept=".json,.gz,.gzip,.cpuprofile" hidden tabindex="-1"
+        ${ref(el => {
+        output.openFileSelector = el instanceof HTMLInputElement ? () => el.click() : undefined;
+    })}
+        @click=${(event) => {
+        if (event.target instanceof HTMLInputElement) {
+            event.target.value = '';
+        }
+    }}
+        @change=${(event) => {
+        if (event.target instanceof HTMLInputElement && event.target.files?.length) {
+            input.onLoadFromFile(event.target.files[0]);
+        }
+    }}>`;
+    // clang-format on
+}
+export const DEFAULT_SETTINGS_PANE_VIEW = (input, output, target) => {
+    render(renderSettingsPane(input, output), target);
+};
 export class TimelinePanel extends TimelinePanelBase {
     dropTarget;
     recordingOptionUIControls;
@@ -365,7 +451,10 @@ export class TimelinePanel extends TimelinePanelBase {
     #searchableView;
     showSettingsPaneButton;
     showSettingsPaneSetting;
-    settingsPane;
+    #showSettingsPane = false;
+    #uiControlsEnabled = true;
+    #settingsPaneContainer = document.createElement('div');
+    #settingsPaneOutput = {};
     controller;
     cpuProfiler;
     clearButton;
@@ -378,8 +467,6 @@ export class TimelinePanel extends TimelinePanelBase {
     loader;
     showScreenshotsToolbarCheckbox;
     showMemoryToolbarCheckbox;
-    cpuThrottlingSelect;
-    fileSelectorElement;
     selection = null;
     traceLoadStart;
     #traceEngineModel;
@@ -423,8 +510,10 @@ export class TimelinePanel extends TimelinePanelBase {
     #resourceLoader;
     #targetManager;
     #isolateManager;
-    constructor(resourceLoader, targetManager, isolateManager, commentManager, traceModel) {
+    #settingsPaneView;
+    constructor(resourceLoader, targetManager, isolateManager, commentManager, traceModel, settingsPaneView = DEFAULT_SETTINGS_PANE_VIEW) {
         super('timeline');
+        this.#settingsPaneView = settingsPaneView;
         this.#resourceLoader = resourceLoader;
         this.#targetManager = targetManager;
         this.#isolateManager = isolateManager;
@@ -445,6 +534,7 @@ export class TimelinePanel extends TimelinePanelBase {
         this.screenshotCaptureModeSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineScreenshotCaptureModeSettingDescriptor);
         this.showScreenshotsSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineShowScreenshotsSettingDescriptor);
         this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
+        this.showScreenshotsSetting.addChangeListener(this.requestUpdate, this);
         this.showMemorySetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineShowMemorySettingDescriptor);
         this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
         this.#dimThirdPartiesSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineDimThirdPartiesSettingDescriptor);
@@ -466,6 +556,8 @@ export class TimelinePanel extends TimelinePanelBase {
             this.createSettingsPane();
             this.updateShowSettingsToolbarButton();
         }
+        this.#settingsPaneContainer.style.display = 'contents';
+        this.element.appendChild(this.#settingsPaneContainer);
         this.timelinePane = new UI.Widget.VBox();
         const topPaneElement = this.timelinePane.element.createChild('div', 'hbox');
         topPaneElement.id = 'timeline-overview-panel';
@@ -477,7 +569,6 @@ export class TimelinePanel extends TimelinePanelBase {
             await this.flameChart.removeTimestampMarkerOverlay();
         });
         this.statusPaneContainer = this.timelinePane.element.createChild('div', 'status-pane-container fill');
-        this.createFileSelector();
         this.flameChart = new TimelineFlameChartView(this, commentManager);
         this.element.addEventListener('toggle-popover', event => this.flameChart.togglePopover(event.detail));
         this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
@@ -569,6 +660,36 @@ export class TimelinePanel extends TimelinePanelBase {
         this.#showLandingPage();
         this.updateTimelineControls();
         SDK.TargetManager.TargetManager.instance().addEventListener("SuspendStateChanged" /* SDK.TargetManager.Events.SUSPEND_STATE_CHANGED */, this.onSuspendStateChanged, this);
+        this.performUpdate();
+    }
+    // Accessed in web_tests.
+    get settingsPane() {
+        return this.element.querySelector('.timeline-settings-pane');
+    }
+    performUpdate() {
+        this.#settingsPaneView({
+            isNode: this.#isNode,
+            canRecord: this.canRecord(),
+            uiControlsEnabled: this.#uiControlsEnabled,
+            showSettingsPane: this.#showSettingsPane,
+            showScreenshots: this.showScreenshotsSetting.get(),
+            captureSelectorStatsSetting: this.captureSelectorStatsSetting,
+            captureSelectorStatsTitle: SettingUIRegistration.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title,
+            captureLayersAndPicturesSetting: this.captureLayersAndPicturesSetting,
+            captureLayersAndPicturesTitle: SettingUIRegistration.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor())
+                .title,
+            disableCaptureJSProfileSetting: this.disableCaptureJSProfileSetting,
+            disableCaptureJSProfileTitle: SettingUIRegistration.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor())
+                .title,
+            screenshotCaptureModeTitle: SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title,
+            selectedScreenshotCaptureMode: this.screenshotCaptureModeSetting.get(),
+            thirdPartyTracksSetting: this.#thirdPartyTracksSetting,
+            thirdPartyTracksTitle: SettingUIRegistration.SettingUIRegistration.resolve(this.#thirdPartyTracksSetting.descriptor()).title,
+            onScreenshotPresetChange: value => this.screenshotCaptureModeSetting.set(value),
+            onLoadFromFile: file => {
+                void this.loadFromFile(file);
+            },
+        }, this.#settingsPaneOutput, this.#settingsPaneContainer);
     }
     zoomEvent(event) {
         this.flameChart.zoomEvent(event);
@@ -974,7 +1095,7 @@ export class TimelinePanel extends TimelinePanelBase {
             this.panelToolbar.appendToolbarItem(isolateSelector);
         }
         // Settings
-        if (!this.#isNode && canRecord) {
+        if (!this.#isNode && canRecord && this.showSettingsPaneButton) {
             this.panelRightToolbar.appendSeparator();
             this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
         }
@@ -1107,61 +1228,13 @@ export class TimelinePanel extends TimelinePanelBase {
         this.disableCaptureJSProfileSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
         this.captureLayersAndPicturesSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
         this.captureSelectorStatsSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
-        this.settingsPane = this.element.createChild('div', 'timeline-settings-pane');
-        this.settingsPane.setAttribute('jslog', `${VisualLogging.pane('timeline-settings-pane').track({ resize: true })}`);
-        const cpuThrottlingPane = this.settingsPane.createChild('div');
-        cpuThrottlingPane.append(i18nString(UIStrings.cpu));
-        this.cpuThrottlingSelect =
-            MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector.createForGlobalConditions(cpuThrottlingPane);
-        this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title, this.captureSelectorStatsSetting, i18nString(UIStrings.capturesSelectorStats)));
-        const networkThrottlingPane = this.settingsPane.createChild('div');
-        networkThrottlingPane.append(i18nString(UIStrings.network));
-        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(networkThrottlingPane, i18nString(UIStrings.network));
-        this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor()).title, this.captureLayersAndPicturesSetting, i18nString(UIStrings.capturesAdvancedPaint)));
-        this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(SettingUIRegistration.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor()).title, this.disableCaptureJSProfileSetting, i18nString(UIStrings.disablesJavascriptSampling)));
-        const screenshotPresetSelect = new UI.Toolbar.ToolbarComboBox(() => this.screenshotCaptureModeSetting.set(screenshotPresetSelect.selectedOption().value), SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title, '', 'screenshot-capture-mode');
-        let selectedScreenshotPresetIndex = 0;
-        for (let i = 0; i < SCREENSHOT_CAPTURE_PRESETS.length; ++i) {
-            const preset = SCREENSHOT_CAPTURE_PRESETS[i];
-            screenshotPresetSelect.addOption(screenshotPresetSelect.createOption(preset.label(), preset.key, `tracing.screenshot-size.${preset.key}`));
-            if (preset.key === this.screenshotCaptureModeSetting.get()) {
-                selectedScreenshotPresetIndex = i;
-            }
-        }
-        screenshotPresetSelect.setSelectedIndex(selectedScreenshotPresetIndex);
-        const screenshotPresetPane = this.settingsPane.createChild('div');
-        screenshotPresetPane.append(SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title);
-        screenshotPresetPane.append(screenshotPresetSelect.element);
-        // Surface the dropdown only when the "Screenshots" checkbox is on, since the
-        // preset only affects the screenshots captured during the recording.
-        const updateScreenshotPresetVisibility = () => {
-            screenshotPresetPane.hidden = !this.showScreenshotsSetting.get();
-        };
-        this.showScreenshotsSetting.addChangeListener(updateScreenshotPresetVisibility);
-        updateScreenshotPresetVisibility();
-        const thirdPartyCheckbox = this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions));
-        const localLink = Link.create('https://developer.chrome.com/docs/devtools/performance/extension', i18nString(UIStrings.learnMore));
-        // Has to be done in JS because the element is inserted into the
-        // checkbox's shadow DOM so any styling into timelinePanel.css would
-        // not apply.
-        localLink.style.marginLeft = '5px';
-        thirdPartyCheckbox.element.shadowRoot?.appendChild(localLink);
-        this.settingsPane.append(thirdPartyCheckbox.element);
-        this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
-        this.updateSettingsPaneVisibility();
+        this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility, this);
+        this.#showSettingsPane = this.showSettingsPaneSetting.get();
+        this.showSettingsPaneButton.setToggled(this.#showSettingsPane);
     }
     prepareToLoadTimeline() {
         console.assert(this.state === "Idle" /* State.IDLE */);
         this.setState("Loading" /* State.LOADING */);
-    }
-    createFileSelector() {
-        if (this.fileSelectorElement) {
-            this.fileSelectorElement.remove();
-        }
-        // .gz is far more popular than .gzip, but both are valid.
-        this.fileSelectorElement =
-            UI.UIUtils.createFileSelectorElement(this.loadFromFile.bind(this), '.json,.gz,.gzip,.cpuprofile');
-        this.timelinePane.element.appendChild(this.fileSelectorElement);
     }
     contextMenu(event) {
         // If we are recording (or transitioning to/from recording, don't let the user use the context menu)
@@ -1443,9 +1516,7 @@ export class TimelinePanel extends TimelinePanelBase {
         }
     }
     selectFileToLoad() {
-        if (this.fileSelectorElement) {
-            this.fileSelectorElement.click();
-        }
+        this.#settingsPaneOutput.openFileSelector?.();
     }
     async loadFromFile(file) {
         if (this.state !== "Idle" /* State.IDLE */) {
@@ -1459,7 +1530,6 @@ export class TimelinePanel extends TimelinePanelBase {
             this.loader = TimelineLoader.loadFromParsedJsonFile(JSON.parse(content), this);
             this.prepareToLoadTimeline();
         }
-        this.createFileSelector();
     }
     #launchRehydratedSession(traceJson) {
         let pathToLaunch = null;
@@ -1533,16 +1603,18 @@ export class TimelinePanel extends TimelinePanelBase {
         if (this.#isNode || !this.canRecord()) {
             return;
         }
-        if (this.showSettingsPaneSetting.get()) {
-            this.showSettingsPaneButton.setToggled(true);
-            this.settingsPane?.classList.remove('hidden');
+        const showSettingsPane = this.showSettingsPaneSetting.get();
+        if (this.#showSettingsPane === showSettingsPane) {
+            return;
         }
-        else {
-            this.showSettingsPaneButton.setToggled(false);
-            this.settingsPane?.classList.add('hidden');
-        }
+        this.#showSettingsPane = showSettingsPane;
+        this.showSettingsPaneButton?.setToggled(showSettingsPane);
+        this.requestUpdate();
     }
     updateShowSettingsToolbarButton() {
+        if (!this.showSettingsPaneButton) {
+            return;
+        }
         const messages = [];
         if (SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate() !== 1) {
             messages.push(i18nString(UIStrings.CpuThrottlingIsEnabled));
@@ -1563,18 +1635,16 @@ export class TimelinePanel extends TimelinePanelBase {
         this.showSettingsPaneButton.element.style.setProperty('--dot-toggle-top', '16px');
         this.showSettingsPaneButton.element.style.setProperty('--dot-toggle-left', '15px');
         if (messages.length) {
-            const tooltipElement = document.createElement('div');
-            messages.forEach(message => {
-                tooltipElement.createChild('div').textContent = message;
-            });
-            this.showSettingsPaneButton.setTitle(tooltipElement.textContent || '');
+            this.showSettingsPaneButton.setTitle(messages.join('\n'));
         }
         else {
             this.showSettingsPaneButton.setTitle(i18nString(UIStrings.captureSettings));
         }
     }
     setUIControlsEnabled(enabled) {
+        this.#uiControlsEnabled = enabled;
         this.recordingOptionUIControls.forEach(control => control.setEnabled(enabled));
+        this.requestUpdate();
     }
     async #evaluateInspectedURL() {
         if (!this.controller) {
@@ -2118,7 +2188,8 @@ export class TimelinePanel extends TimelinePanelBase {
         this.landingPage.detach();
         // Hide pane settings in trace view to conserve UI space, but preserve underlying setting.
         this.showSettingsPaneButton?.setToggled(false);
-        this.settingsPane?.classList.add('hidden');
+        this.#showSettingsPane = false;
+        this.requestUpdate();
     }
     async loadingStarted() {
         this.#changeView({ mode: 'STATUS_PANE_OVERLAY' });

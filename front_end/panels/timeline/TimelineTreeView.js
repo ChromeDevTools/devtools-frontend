@@ -175,6 +175,11 @@ const UIStrings = {
      * @description Badge text for an extension entity in timeline tree views.
      */
     extension: 'Extension',
+    /**
+     * @description Accessible text indicating the depth level of a row in a hierarchical datagrid.
+     * @example {1} PH1
+     */
+    levelS: 'Level {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -187,10 +192,11 @@ function renderDetailsPlaceholder(input, _output, target) {
     render(input.showPlaceholder ? html `<div class="empty-state">${i18nString(UIStrings.selectItemForDetails)}</div>` :
         nothing, target);
 }
-const { ifDefined, styleMap } = Directives;
+const { classMap, ifDefined, repeat, styleMap } = Directives;
 export var CellKind;
 (function (CellKind) {
     CellKind["NAME"] = "name";
+    CellKind["VALUE"] = "value";
 })(CellKind || (CellKind = {}));
 function renderNameCell(input, output) {
     const link = input.topCallFrameLink ? TimelineUIUtils.linkifyTopCallFrame(input.topCallFrameLink.event, input.topCallFrameLink.target, input.topCallFrameLink.linkifier, input.topCallFrameLink.isFreshOrEnhanced, input.topCallFrameLink.maxLength) :
@@ -213,13 +219,74 @@ function renderNameCell(input, output) {
     </div>`;
     // clang-format on
 }
-function renderNameCellIntoTd(input, output, target) {
-    render(renderNameCell(input, output), target);
+function renderBottomUpButton(onClick) {
+    // clang-format off
+    return html `<devtools-button
+      .data=${{
+        variant: "icon" /* Buttons.Button.Variant.ICON */,
+        iconName: 'account-tree',
+        size: "SMALL" /* Buttons.Button.Size.SMALL */,
+        title: i18nString(UIStrings.bottomUp),
+        accessibleLabel: i18nString(UIStrings.viewBottomUp),
+        jslogContext: 'bottom-up',
+    }}
+      @click=${onClick}></devtools-button>`;
+    // clang-format on
 }
+function renderValueCell(input) {
+    // clang-format off
+    return html `
+    <div class=${classMap({ 'background-bar-text': Boolean(input.barWidth) })}>
+      <span>${input.text}</span>
+      ${input.percent ? html `<span class="percent-column">${input.percent}</span>` : nothing}
+      ${input.onBottomUpButtonClick ? renderBottomUpButton(input.onBottomUpButtonClick) : nothing}
+    </div>
+    ${input.barWidth ? html `
+      <div class="background-bar-container">
+        <div class="background-bar" style=${styleMap({ width: input.barWidth })}></div>
+      </div>` : nothing}`;
+    // clang-format on
+}
+function renderCell(cell, output) {
+    const classes = {
+        [`${cell.columnId}-column`]: true,
+        disclosure: Boolean(cell.disclosure),
+        'numeric-column': cell.kind === "value" /* CellKind.VALUE */,
+    };
+    const style = cell.leftPadding ? styleMap({ 'padding-left': `${cell.leftPadding}px` }) : nothing;
+    const jslog = VisualLogging.tableCell().track({ click: true }).context(Platform.StringUtilities.toKebabCase(cell.columnId));
+    switch (cell.kind) {
+        case "name" /* CellKind.NAME */:
+            // clang-format off
+            return html `<td class=${classMap(classes)} style=${style} jslog=${jslog}>
+        ${renderNameCell(cell, output)}
+      </td>`;
+        // clang-format on
+        case "value" /* CellKind.VALUE */:
+            // clang-format off
+            return html `<td class=${classMap(classes)} style=${style} title=${cell.title} jslog=${jslog}>
+        ${renderValueCell(cell)}
+      </td>`;
+        // clang-format on
+        default:
+            Platform.assertNever(cell, `Unknown cell kind: ${JSON.stringify(cell)}`);
+    }
+}
+/**
+ * Renders the cells of a timeline tree data grid row into the `<tr>` that the
+ * `DataGridNode` creates for the row.
+ */
+export const GRID_ROW_VIEW = (input, output, target) => {
+    // clang-format off
+    render(html `
+    ${repeat(input.cells, cell => cell.columnId, cell => renderCell(cell, output))}
+    <td class="corner" aria-hidden="true"></td>`, target);
+    // clang-format on
+};
 /**
  * Computes the presentation data of the name cell for `profileNode`.
  */
-export function nameCellViewInput(treeView, profileNode, columnId) {
+export function nameCellViewInput(treeView, profileNode, columnId, disclosure, leftPadding) {
     const event = profileNode.event;
     if (profileNode.isGroupNode()) {
         const info = treeView.displayInfoForGroupNode(profileNode);
@@ -234,6 +301,8 @@ export function nameCellViewInput(treeView, profileNode, columnId) {
         }
         return {
             columnId,
+            disclosure,
+            leftPadding,
             kind: "name" /* CellKind.NAME */,
             name: info.name,
             iconColor: info.color,
@@ -241,7 +310,7 @@ export function nameCellViewInput(treeView, profileNode, columnId) {
         };
     }
     if (!event) {
-        return { columnId, kind: "name" /* CellKind.NAME */, name: '' };
+        return { columnId, disclosure, leftPadding, kind: "name" /* CellKind.NAME */, name: '' };
     }
     const parsedTrace = treeView.parsedTrace;
     const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
@@ -251,6 +320,8 @@ export function nameCellViewInput(treeView, profileNode, columnId) {
         TimelineUIUtils.eventColor(event);
     return {
         columnId,
+        disclosure,
+        leftPadding,
         kind: "name" /* CellKind.NAME */,
         name: TimelineUIUtils.eventTitle(event),
         iconColor,
@@ -262,6 +333,66 @@ export function nameCellViewInput(treeView, profileNode, columnId) {
             isFreshOrEnhanced,
             maxLength: treeView.maxLinkLength,
         },
+    };
+}
+/**
+ * Computes the presentation data of a numeric cell for `profileNode`, or
+ * returns `null` if `columnId` is not a numeric column.
+ */
+export function valueCellViewInput(treeView, profileNode, columnId, scale, onBottomUpButtonClick, disclosure, leftPadding) {
+    if (columnId === 'transfer-size') {
+        const formattedSize = i18n.ByteUtilities.formatBytesToKb(profileNode.transferSize);
+        return {
+            columnId,
+            disclosure,
+            leftPadding,
+            kind: "value" /* CellKind.VALUE */,
+            text: formattedSize,
+            title: formattedSize,
+        };
+    }
+    let showPercents = false;
+    let value;
+    let maxTime;
+    let showBottomUpButton = false;
+    switch (columnId) {
+        case 'start-time': {
+            const parsedTrace = treeView.parsedTrace;
+            if (!parsedTrace) {
+                throw new Error('Unable to load trace data for tree view');
+            }
+            const startTime = profileNode.event?.ts ?? Trace.Types.Timing.Micro(0);
+            value = Trace.Types.Timing.Micro(startTime - parsedTrace.data.Meta.traceBounds.min);
+            break;
+        }
+        case 'self':
+            value = profileNode.selfTime;
+            maxTime = scale.maxSelfTime;
+            showPercents = true;
+            // Show the bottom-up button on hover for the self time cell of the 3P tree.
+            showBottomUpButton = treeView.isThirdPartyTreeView();
+            break;
+        case 'total':
+            value = profileNode.totalTime;
+            maxTime = scale.maxTotalTime;
+            showPercents = true;
+            break;
+        default:
+            return null;
+    }
+    const valueMs = Trace.Helpers.Timing.microToMilli(value);
+    return {
+        columnId,
+        disclosure,
+        leftPadding,
+        kind: "value" /* CellKind.VALUE */,
+        text: i18n.TimeUtilities.preciseMillisToString(valueMs, 1),
+        title: i18n.TimeUtilities.preciseMillisToString(valueMs, 4),
+        percent: showPercents && treeView.exposePercentages() ?
+            i18nString(UIStrings.percentPlaceholder, { PH1: (value / scale.grandTotalTime * 100).toFixed(1) }) :
+            undefined,
+        barWidth: maxTime ? (value * 100 / maxTime).toFixed(1) + '%' : undefined,
+        onBottomUpButtonClick: showBottomUpButton ? onBottomUpButtonClick : undefined,
     };
 }
 export class TimelineTreeView extends TimelineTreeViewBase {
@@ -942,8 +1073,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     grandTotalTime;
     maxSelfTime;
     maxTotalTime;
+    rowView;
     #viewOutput = {};
-    constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView) {
+    constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView, rowView = GRID_ROW_VIEW) {
         super(null, false);
         this.populated = false;
         this.profileNode = profileNode;
@@ -951,93 +1083,49 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         this.grandTotalTime = grandTotalTime;
         this.maxSelfTime = maxSelfTime;
         this.maxTotalTime = maxTotalTime;
+        this.rowView = rowView;
     }
     appendLinkContextMenuItems(contextMenu) {
         this.#viewOutput.appendContextMenuItems?.(contextMenu);
     }
-    createCell(columnId) {
-        if (columnId === 'activity' || columnId === 'site') {
-            return this.createNameCell(columnId);
+    createCells(element) {
+        if (!this.dataGrid || !this.parent) {
+            return;
         }
-        return this.createValueCell(columnId) || super.createCell(columnId);
-    }
-    createNameCell(columnId) {
-        const cell = this.createTD(columnId);
-        renderNameCellIntoTd(nameCellViewInput(this.treeView, this.profileNode, columnId), this.#viewOutput, cell);
-        return cell;
-    }
-    createValueCell(columnId) {
-        if (columnId !== 'self' && columnId !== 'total' && columnId !== 'start-time' && columnId !== 'transfer-size') {
-            return null;
-        }
-        const cell = this.createTD(columnId);
-        cell.className = 'numeric-column';
-        if (columnId === 'transfer-size') {
-            const formattedSize = i18n.ByteUtilities.formatBytesToKb(this.profileNode.transferSize);
-            cell.setAttribute('title', formattedSize);
-            cell.createChild('div').createChild('span').textContent = formattedSize;
-            return cell;
-        }
-        let showPercents = false;
-        let value;
-        let maxTime;
-        let showBottomUpButton = false;
-        switch (columnId) {
-            case 'start-time': {
-                const parsedTrace = this.treeView.parsedTrace;
-                if (!parsedTrace) {
-                    throw new Error('Unable to load trace data for tree view');
-                }
-                const startTime = this.profileNode.event?.ts ?? Trace.Types.Timing.Micro(0);
-                value = Trace.Types.Timing.Micro(startTime - parsedTrace.data.Meta.traceBounds.min);
-                break;
+        const columnsArray = this.dataGrid.visibleColumnsArray;
+        const cells = [];
+        for (const column of columnsArray) {
+            const disclosure = column.id === this.dataGrid.disclosureColumnId;
+            const leftPadding = disclosure && this.leftPadding ? this.leftPadding : undefined;
+            if (column.id === 'activity' || column.id === 'site') {
+                cells.push(nameCellViewInput(this.treeView, this.profileNode, column.id, disclosure, leftPadding));
             }
-            case 'self':
-                value = this.profileNode.selfTime;
-                maxTime = this.maxSelfTime;
-                showPercents = true;
-                showBottomUpButton = this.treeView.isThirdPartyTreeView();
-                break;
-            case 'total':
-                value = this.profileNode.totalTime;
-                maxTime = this.maxTotalTime;
-                showPercents = true;
-                break;
+            else {
+                const input = valueCellViewInput(this.treeView, this.profileNode, column.id, {
+                    grandTotalTime: this.grandTotalTime,
+                    maxSelfTime: this.maxSelfTime,
+                    maxTotalTime: this.maxTotalTime,
+                }, () => this.#bottomUpButtonClicked(), disclosure, leftPadding);
+                if (input) {
+                    cells.push(input);
+                }
+            }
         }
-        const valueMs = Trace.Helpers.Timing.microToMilli(value);
-        cell.setAttribute('title', i18n.TimeUtilities.preciseMillisToString(valueMs, 4));
-        const textDiv = cell.createChild('div');
-        textDiv.createChild('span').textContent = i18n.TimeUtilities.preciseMillisToString(valueMs, 1);
-        if (showPercents && this.treeView.exposePercentages()) {
-            textDiv.createChild('span', 'percent-column').textContent =
-                i18nString(UIStrings.percentPlaceholder, { PH1: (value / this.grandTotalTime * 100).toFixed(1) });
+        this.#viewOutput.appendContextMenuItems = undefined;
+        this.rowView({ cells }, this.#viewOutput, element);
+        const accessibleTextArray = [];
+        if (this.hasChildren() || !this.parent.isRoot) {
+            accessibleTextArray.push(i18nString(UIStrings.levelS, { PH1: this.depth + 1 }));
         }
-        if (maxTime) {
-            textDiv.classList.add('background-bar-text');
-            cell.createChild('div', 'background-bar-container').createChild('div', 'background-bar').style.width =
-                (value * 100 / maxTime).toFixed(1) + '%';
+        const tdElements = element.querySelectorAll(':scope > td:not(.corner)');
+        for (let i = 0; i < columnsArray.length; ++i) {
+            const column = columnsArray[i];
+            const cell = tdElements[i];
+            if (cell) {
+                accessibleTextArray.push(`${column.title}: ${this.cellAccessibleTextMap.get(column.id) || cell.textContent}`);
+            }
         }
-        // Generate button on hover for 3P self time cell.
-        if (showBottomUpButton) {
-            this.generateBottomUpButton(textDiv);
-        }
-        return cell;
-    }
-    // Generates bottom up tree hover button and appends it to the provided cell
-    // element.
-    generateBottomUpButton(textDiv) {
-        const button = new Buttons.Button.Button();
-        button.data = {
-            variant: "icon" /* Buttons.Button.Variant.ICON */,
-            iconName: 'account-tree',
-            size: "SMALL" /* Buttons.Button.Size.SMALL */,
-            toggledIconName: i18nString(UIStrings.bottomUp),
-        };
-        UI.ARIAUtils.setLabel(button, i18nString(UIStrings.viewBottomUp));
-        button.addEventListener('click', () => this.#bottomUpButtonClicked());
-        UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.bottomUp));
-        // Append the button to the last column
-        textDiv.appendChild(button);
+        this.nodeAccessibleText = accessibleTextArray.join(', ');
     }
     #bottomUpButtonClicked() {
         // We should also trigger an event to "unhover" the 3P tree row. Since this
@@ -1050,8 +1138,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
  * `TreeGridNode` lets a `GridNode` (row) populate based on its tree children.
  */
 export class TreeGridNode extends GridNode {
-    constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView) {
-        super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
+    constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView, rowView = GRID_ROW_VIEW) {
+        super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView, rowView);
         this.setHasChildren(this.profileNode.hasChildren());
         treeNodeToGridNode.set(profileNode, this);
         treeView.indexTreeNode(profileNode);
@@ -1065,7 +1153,7 @@ export class TreeGridNode extends GridNode {
             return;
         }
         for (const node of this.profileNode.children().values()) {
-            const gridNode = new TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView);
+            const gridNode = new TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView, this.rowView);
             this.insertChildOrdered(gridNode);
         }
     }

@@ -488,6 +488,19 @@ function handleUserConfig2(userConfig) {
 var rendererProcessesByFrameId = /* @__PURE__ */ new Map();
 var mainFrameId = "";
 var mainFrameURL = "";
+var mainFrameIsOpaqueOrigin = false;
+var traceHasOpaqueOriginFlag = false;
+var committedFramesByFrameId = /* @__PURE__ */ new Map();
+var committedPrimaryMainFrames = [];
+function hasSameTupleOrigin(urlA, urlB) {
+  try {
+    const originA = new URL(urlA).origin;
+    const originB = new URL(urlB).origin;
+    return originA !== "null" && originA === originB;
+  } catch {
+    return false;
+  }
+}
 var framesByProcessId = /* @__PURE__ */ new Map();
 var browserProcessId = Types5.Events.ProcessID(-1);
 var browserThreadId = Types5.Events.ThreadID(-1);
@@ -536,6 +549,10 @@ function reset4() {
   sameDocumentNavigations = [];
   mainFrameId = "";
   mainFrameURL = "";
+  mainFrameIsOpaqueOrigin = false;
+  traceHasOpaqueOriginFlag = false;
+  committedFramesByFrameId = /* @__PURE__ */ new Map();
+  committedPrimaryMainFrames = [];
   browserProcessId = Types5.Events.ProcessID(-1);
   browserThreadId = Types5.Events.ThreadID(-1);
   gpuProcessId = Types5.Events.ProcessID(-1);
@@ -615,7 +632,11 @@ function handleEvent4(event) {
     if (!event.args.data) {
       throw new Error("No frames found in trace data");
     }
+    let foundPrimaryMainFrame = false;
     for (const frame of event.args.data.frames ?? []) {
+      if ("isOpaqueOrigin" in frame) {
+        traceHasOpaqueOriginFlag = true;
+      }
       updateRendererProcessByFrame(event, frame);
       if (!frame.parent) {
         topLevelRendererIds.add(frame.processId);
@@ -623,18 +644,22 @@ function handleEvent4(event) {
       const traceHasPrimaryMainFrameFlag = "isInPrimaryMainFrame" in frame;
       const traceHasOutermostMainFrameFlag = "isOutermostMainFrame" in frame;
       if (traceHasPrimaryMainFrameFlag && traceHasOutermostMainFrameFlag) {
-        if (frame.isInPrimaryMainFrame && frame.isOutermostMainFrame) {
+        if (!foundPrimaryMainFrame && frame.isInPrimaryMainFrame && frame.isOutermostMainFrame) {
+          foundPrimaryMainFrame = true;
           mainFrameId = frame.frame;
           mainFrameURL = frame.url;
+          mainFrameIsOpaqueOrigin = Boolean(frame.isOpaqueOrigin);
         }
       } else if (traceHasOutermostMainFrameFlag) {
         if (frame.isOutermostMainFrame) {
           mainFrameId = frame.frame;
           mainFrameURL = frame.url;
+          mainFrameIsOpaqueOrigin = Boolean(frame.isOpaqueOrigin);
         }
       } else if (!frame.parent && frame.url) {
         mainFrameId = frame.frame;
         mainFrameURL = frame.url;
+        mainFrameIsOpaqueOrigin = Boolean(frame.isOpaqueOrigin);
       }
     }
     return;
@@ -644,7 +669,14 @@ function handleEvent4(event) {
     if (!frame) {
       return;
     }
+    if ("isOpaqueOrigin" in frame) {
+      traceHasOpaqueOriginFlag = true;
+    }
     updateRendererProcessByFrame(event, frame);
+    Platform2.MapUtilities.getWithDefault(committedFramesByFrameId, frame.frame, () => []).push({ ts: event.ts, frame });
+    if (frame.isInPrimaryMainFrame && frame.isOutermostMainFrame) {
+      committedPrimaryMainFrames.push({ ts: event.ts, frame });
+    }
     if (frame.parent) {
       return;
     }
@@ -738,13 +770,30 @@ async function finalize4(options) {
       navigationsByNavigationId.delete(navigation.args.data.navigationId);
     }
   }
+  let activeMainFrameTs = traceStartedTimeFromTracingStartedEvent;
+  const previousTrimmedMainFrameUrl = mainFrameURL.split("#")[0];
   const firstMainFrameNav = mainFrameNavigations.at(0);
   const firstNavTimeThreshold = Helpers4.Timing.secondsToMicro(Types5.Timing.Seconds(0.5));
   if (firstMainFrameNav) {
     const navigationIsWithinThreshold = firstMainFrameNav.ts - traceBounds.min < firstNavTimeThreshold;
     if (firstMainFrameNav.args.data?.isOutermostMainFrame && firstMainFrameNav.args.data?.documentLoaderURL && navigationIsWithinThreshold) {
       mainFrameURL = firstMainFrameNav.args.data.documentLoaderURL;
+      const trimmedNavUrl = mainFrameURL.split("#")[0];
+      const navigationId = firstMainFrameNav.args.data.navigationId;
+      const redirectedUrl = finalDisplayUrlByNavigationId.get(navigationId)?.split("#")[0];
+      const sameOriginRedirectUrl = redirectedUrl && hasSameTupleOrigin(trimmedNavUrl, redirectedUrl) ? redirectedUrl : null;
+      const committedEntries = committedFramesByFrameId.get(mainFrameId) ?? [];
+      const matchingCommittedEntry = committedEntries.findLast(({ frame }) => frame.url === trimmedNavUrl || sameOriginRedirectUrl !== null && frame.url === sameOriginRedirectUrl);
+      if (matchingCommittedEntry && "isOpaqueOrigin" in matchingCommittedEntry.frame) {
+        mainFrameIsOpaqueOrigin = Boolean(matchingCommittedEntry.frame.isOpaqueOrigin);
+        activeMainFrameTs = matchingCommittedEntry.ts;
+      } else if (trimmedNavUrl !== previousTrimmedMainFrameUrl) {
+        mainFrameIsOpaqueOrigin = traceHasOpaqueOriginFlag;
+      }
     }
+  }
+  if (committedPrimaryMainFrames.some(({ ts, frame }) => ts >= activeMainFrameTs && frame.isOpaqueOrigin)) {
+    mainFrameIsOpaqueOrigin = true;
   }
   const softNavs = Array.from(softNavigationsById.values()).sort((a, b) => a.ts - b.ts);
   const hardNavs = [...mainFrameNavigations];
@@ -779,6 +828,7 @@ function data4() {
     devicePixelRatio: devicePixelRatio ?? void 0,
     mainFrameId,
     mainFrameURL,
+    mainFrameIsOpaqueOrigin,
     navigationsByFrameId,
     navigationsByNavigationId,
     softNavigationsById,
@@ -1998,6 +2048,7 @@ var Network;
     ResourceType2["CSPViolationReport"] = "CSPViolationReport";
     ResourceType2["Preflight"] = "Preflight";
     ResourceType2["FedCM"] = "FedCM";
+    ResourceType2["EmailVerification"] = "EmailVerification";
     ResourceType2["Other"] = "Other";
   })(ResourceType = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -2175,6 +2226,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;

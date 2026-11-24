@@ -14,7 +14,9 @@ export type View = (input: ViewInput, output: undefined, target: HTMLElement | D
 export declare const DEFAULT_VIEW: View;
 export declare class DirectSocketConnectionView extends UI.Widget.Widget<ShadowRoot> {
     #private;
-    constructor(request: SDK.NetworkRequest.NetworkRequest, view?: View);
+    constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement, view?: View);
+    get request(): Readonly<SDK.NetworkRequest.NetworkRequest>;
+    set request(request: Readonly<SDK.NetworkRequest.NetworkRequest>);
     wasShown(): void;
     willHide(): void;
     performUpdate(): void;

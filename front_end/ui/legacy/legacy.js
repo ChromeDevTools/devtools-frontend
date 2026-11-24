@@ -2202,21 +2202,59 @@ function widgetConfig(widgetClass, widgetParams) {
 }
 var currentUpdateQueue = null;
 var currentlyProcessed = /* @__PURE__ */ new Set();
+var inFlightUpdates = /* @__PURE__ */ new Set();
 var nextUpdateQueue = /* @__PURE__ */ new Map();
 var pendingAnimationFrames = /* @__PURE__ */ new WeakMap();
+var pendingMainWindowFrame;
 var overallUpdatePromise = null;
+function scheduleAnimationFrame(widgetWindow) {
+  if (widgetWindow === window) {
+    if (!pendingMainWindowFrame) {
+      let didRun = false;
+      const cancel = window.cancelAnimationFrame.bind(window);
+      const frameId = window.requestAnimationFrame(() => {
+        didRun = true;
+        pendingMainWindowFrame = void 0;
+        runNextUpdate();
+      });
+      if (!didRun) {
+        pendingMainWindowFrame = { frameId, cancel };
+      }
+    }
+    return;
+  }
+  if (!pendingAnimationFrames.has(widgetWindow)) {
+    let didRun = false;
+    const frameId = widgetWindow.requestAnimationFrame(() => {
+      didRun = true;
+      pendingAnimationFrames.delete(widgetWindow);
+      runNextUpdate();
+    });
+    if (!didRun) {
+      pendingAnimationFrames.set(widgetWindow, frameId);
+    }
+  }
+}
+function cancelAnimationFrameForWindow(widgetWindow) {
+  if (widgetWindow === window) {
+    if (pendingMainWindowFrame) {
+      const { frameId: frameId2, cancel } = pendingMainWindowFrame;
+      pendingMainWindowFrame = void 0;
+      cancel(frameId2);
+    }
+    return;
+  }
+  const frameId = pendingAnimationFrames.get(widgetWindow);
+  if (frameId !== void 0) {
+    pendingAnimationFrames.delete(widgetWindow);
+    widgetWindow.cancelAnimationFrame(frameId);
+  }
+}
 function enqueueIntoNextUpdateQueue(widget2) {
   const scheduledUpdate = nextUpdateQueue.get(widget2) ?? Promise.withResolvers();
   nextUpdateQueue.delete(widget2);
   nextUpdateQueue.set(widget2, scheduledUpdate);
-  const widgetWindow = widget2.contentElement.window() || window;
-  if (!pendingAnimationFrames.has(widgetWindow)) {
-    const frameId = widgetWindow.requestAnimationFrame(() => {
-      pendingAnimationFrames.delete(widgetWindow);
-      runNextUpdate();
-    });
-    pendingAnimationFrames.set(widgetWindow, frameId);
-  }
+  scheduleAnimationFrame(widget2.contentElement.window() || window);
   return scheduledUpdate.promise;
 }
 function enqueueWidgetUpdate(widget2) {
@@ -2244,12 +2282,38 @@ function cancelUpdate(widget2) {
   if (scheduledUpdate) {
     scheduledUpdate.resolve();
     nextUpdateQueue.delete(widget2);
+    const widgetWindow = widget2.contentElement.window() || window;
+    if (![...nextUpdateQueue.keys()].some((w) => (w.contentElement.window() || window) === widgetWindow)) {
+      cancelAnimationFrameForWindow(widgetWindow);
+    }
   }
+  resolveOverallUpdatePromise();
 }
 function resolveOverallUpdatePromise() {
   if (currentlyProcessed.size === 0 && (!currentUpdateQueue || currentUpdateQueue.size === 0) && nextUpdateQueue.size === 0 && overallUpdatePromise) {
     overallUpdatePromise.resolve();
     overallUpdatePromise = null;
+  }
+}
+async function runWidgetUpdate(widget2, resolve) {
+  try {
+    const controller = new AbortController();
+    widget2.addUpdateController(controller);
+    await widget2.performUpdate(controller.signal);
+  } catch (e) {
+    if (e.name !== "AbortError") {
+      console.error(`${widget2.constructor.name}.performUpdate failed: `, e);
+    }
+  } finally {
+    currentlyProcessed.delete(widget2);
+    const nextUpdate = nextUpdateQueue.get(widget2);
+    if (nextUpdate) {
+      void nextUpdate.promise.then(resolve);
+      scheduleAnimationFrame(widget2.contentElement.window() || window);
+    } else {
+      resolve();
+    }
+    resolveOverallUpdatePromise();
   }
 }
 function runNextUpdate() {
@@ -2269,34 +2333,10 @@ function runNextUpdate() {
     }
     const { resolve } = update;
     currentlyProcessed.add(widget2);
-    void (async () => {
-      try {
-        const controller = new AbortController();
-        widget2.addUpdateController(controller);
-        await widget2.performUpdate(controller.signal);
-      } finally {
-        currentlyProcessed.delete(widget2);
-        const nextUpdate = nextUpdateQueue.get(widget2);
-        if (nextUpdate) {
-          void nextUpdate.promise.then(resolve);
-          const widgetWindow = widget2.contentElement.window() || window;
-          if (!pendingAnimationFrames.has(widgetWindow)) {
-            const frameId = widgetWindow.requestAnimationFrame(() => {
-              pendingAnimationFrames.delete(widgetWindow);
-              runNextUpdate();
-            });
-            pendingAnimationFrames.set(widgetWindow, frameId);
-          }
-        } else {
-          resolve();
-        }
-        resolveOverallUpdatePromise();
-      }
-    })().catch((e) => {
-      if (e.name !== "AbortError") {
-        console.error(`${widget2.constructor.name}.performUpdate failed: `, e);
-      }
+    const updateTask = runWidgetUpdate(widget2, resolve).finally(() => {
+      inFlightUpdates.delete(updateTask);
     });
+    inFlightUpdates.add(updateTask);
   }
   currentUpdateQueue.clear();
   queueMicrotask(() => {
@@ -2658,6 +2698,26 @@ var Widget = class _Widget {
       overallUpdatePromise = Promise.withResolvers();
     }
     return overallUpdatePromise.promise;
+  }
+  static async flushPendingUpdatesForTesting() {
+    for (let i = 0; i < 20; i++) {
+      while (inFlightUpdates.size > 0) {
+        await Promise.all([...inFlightUpdates]);
+      }
+      if (currentUpdateQueue) {
+        await new Promise((resolve) => queueMicrotask(resolve));
+      }
+      if (nextUpdateQueue.size === 0 && !currentUpdateQueue && currentlyProcessed.size === 0) {
+        return;
+      }
+      if (nextUpdateQueue.size > 0 && !currentUpdateQueue) {
+        for (const widget2 of nextUpdateQueue.keys()) {
+          cancelAnimationFrameForWindow(widget2.contentElement.window() || window);
+        }
+        cancelAnimationFrameForWindow(window);
+        runNextUpdate();
+      }
+    }
   }
   static getOrCreateWidget(element) {
     const widget2 = _Widget.get(element);
@@ -5325,6 +5385,7 @@ var TabbedPane = class extends TabbedPaneBase {
   #leftToolbar;
   #rightToolbar;
   #trailingSlot;
+  #headerResizeObserver = new ResizeObserver(() => this.requestUpdate());
   #lastDispatchedHiddenTabIds = "";
   #zoomManager = ZoomManager.instance();
   allowTabReorder;
@@ -5364,7 +5425,6 @@ var TabbedPane = class extends TabbedPaneBase {
     this.#trailingSlot.classList.add("tabbed-pane-trailing-button");
     this.headerContentsElement.appendChild(this.#trailingSlot);
     this.#trailingSlot.addEventListener("slotchange", () => this.requestUpdate());
-    new ResizeObserver(() => this.requestUpdate()).observe(this.headerContentsElement);
     this.tabsElement.setAttribute("role", "tablist");
     this.tabsElement.addEventListener("keydown", this.keyDown.bind(this), false);
     this.#contentElement = this.contentElement.createChild("div", "tabbed-pane-content");
@@ -5732,6 +5792,7 @@ var TabbedPane = class extends TabbedPaneBase {
   }
   wasShown() {
     super.wasShown();
+    this.#headerResizeObserver.observe(this.headerContentsElement);
     this.#zoomManager.addEventListener("ZoomChanged" /* ZOOM_CHANGED */, this.zoomChanged, this);
     this.clearMeasuredWidths();
     const effectiveTab = this.currentTab || this.tabsHistory[0];
@@ -5743,6 +5804,7 @@ var TabbedPane = class extends TabbedPaneBase {
   }
   willHide() {
     super.willHide();
+    this.#headerResizeObserver.disconnect();
     this.#zoomManager.removeEventListener("ZoomChanged" /* ZOOM_CHANGED */, this.zoomChanged, this);
   }
   wasHidden() {

@@ -414,20 +414,38 @@ var DirectSocketConnectionView = class extends UI.Widget.Widget {
   #request;
   #view;
   constructor(request, view = DEFAULT_VIEW) {
-    super({
+    super(request instanceof HTMLElement ? request : void 0, {
       useShadowDom: "pure"
     });
-    this.#request = request;
     this.#view = view;
-    this.performUpdate();
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+      request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
   }
   wasShown() {
     super.wasShown();
-    this.#request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+    this.#request?.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
   }
   willHide() {
     super.willHide();
-    this.#request.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+    this.#request?.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
   }
   performUpdate() {
     if (!this.#request || !this.#request.directSocketInfo) {
@@ -474,6 +492,9 @@ var DirectSocketConnectionView = class extends UI.Widget.Widget {
     this.#view(viewInput, void 0, this.contentElement);
   }
   #setIsOpen(categoryName, open) {
+    if (!Common.Settings.Settings.hasInstance()) {
+      return;
+    }
     const setting = this.#getCategorySetting(categoryName);
     setting.set(open);
     this.requestUpdate();
@@ -2628,6 +2649,7 @@ var Network;
     ResourceType2["CSPViolationReport"] = "CSPViolationReport";
     ResourceType2["Preflight"] = "Preflight";
     ResourceType2["FedCM"] = "FedCM";
+    ResourceType2["EmailVerification"] = "EmailVerification";
     ResourceType2["Other"] = "Other";
   })(ResourceType = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -2805,6 +2827,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;

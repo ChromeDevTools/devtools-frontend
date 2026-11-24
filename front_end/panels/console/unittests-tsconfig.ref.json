@@ -98,6 +98,9 @@
       "path": "../../ui/legacy/components/utils/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/settings/bundle-tsconfig.ref.json"
     },
     {

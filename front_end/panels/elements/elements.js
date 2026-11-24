@@ -1209,6 +1209,7 @@ var Network;
     ResourceType2["CSPViolationReport"] = "CSPViolationReport";
     ResourceType2["Preflight"] = "Preflight";
     ResourceType2["FedCM"] = "FedCM";
+    ResourceType2["EmailVerification"] = "EmailVerification";
     ResourceType2["Other"] = "Other";
   })(ResourceType = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -1386,6 +1387,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;
@@ -9804,7 +9806,12 @@ var StylePropertiesSection = class _StylePropertiesSection {
       const tooltipPrefix = this.sectionTooltipIdFactory.subfactory("container", this.nestingLevel);
       void containerQuery.getContainerForNode(this.matchedStyles.node().id).then((container) => {
         if (container) {
-          containerQueryElement.parseStyleQueries(this.matchedStyles, style, container.containerNode, tooltipPrefix);
+          containerQueryElement.styleQueryContext = {
+            matchedStyles: this.matchedStyles,
+            style,
+            containerNode: container.containerNode,
+            tooltipPrefix
+          };
         }
       });
       void this.addContainerForContainerQuery(containerQuery);
@@ -24732,10 +24739,10 @@ var ElementsPanel = class _ElementsPanel extends UI22.Panel.Panel {
     crumbsContainer.id = "elements-crumbs";
     this.accessibilityTreeView = new AccessibilityTreeView();
     this.breadcrumbs = new ElementsComponents8.ElementsBreadcrumbs.ElementsBreadcrumbs();
-    this.breadcrumbs.addEventListener("breadcrumbsnodeselected", (event) => {
+    this.breadcrumbs.element.addEventListener("breadcrumbsnodeselected", (event) => {
       this.crumbNodeSelected(event);
     });
-    crumbsContainer.appendChild(this.breadcrumbs);
+    this.breadcrumbs.show(crumbsContainer);
     this.#computedStyleModel = new ComputedStyle3.ComputedStyleModel.ComputedStyleModel(
       UI22.Context.Context.instance().flavor(SDK18.DOMModel.DOMNode)
     );
@@ -24956,20 +24963,9 @@ ${node.simpleSelector()} {}`, false);
     if (!selectedNode) {
       this.#domTreeWidget.selectDOMNode(null);
     }
-    if (selectedNode) {
-      const crumbs = [selectedNode];
-      for (let current = selectedNode.parentNode; current; current = current.parentNode) {
-        crumbs.push(current);
-      }
-      this.breadcrumbs.data = {
-        crumbs,
-        selectedNode
-      };
-      if (this.accessibilityTreeView) {
-        void this.accessibilityTreeView.selectedNodeChanged(selectedNode);
-      }
-    } else {
-      this.breadcrumbs.data = { crumbs: [], selectedNode: null };
+    this.breadcrumbs.selectedNode = selectedNode;
+    if (selectedNode && this.accessibilityTreeView) {
+      void this.accessibilityTreeView.selectedNodeChanged(selectedNode);
     }
     UI22.Context.Context.instance().setFlavor(SDK18.DOMModel.DOMNode, selectedNode);
     if (!selectedNode) {
@@ -25244,30 +25240,9 @@ ${node.simpleSelector()} {}`, false);
       void UI22.ViewManager.ViewManager.instance().showView("elements");
     }
   }
-  updateBreadcrumbIfNeeded(event) {
-    const nodes = event.data;
-    const selectedNode = this.selectedDOMNode();
-    if (!selectedNode) {
-      this.breadcrumbs.data = {
-        crumbs: [],
-        selectedNode: null
-      };
-      return;
-    }
-    const existingCrumbs = [selectedNode];
-    for (let current = selectedNode.parentNode; current; current = current.parentNode) {
-      existingCrumbs.push(current);
-    }
-    const nodesThatHaveChangedMap = /* @__PURE__ */ new Map();
-    nodes.forEach((crumb) => nodesThatHaveChangedMap.set(crumb.id, crumb));
-    const newSetOfCrumbs = existingCrumbs.map((crumb) => {
-      const replacement = nodesThatHaveChangedMap.get(crumb.id);
-      return replacement || crumb;
-    });
-    this.breadcrumbs.data = {
-      crumbs: newSetOfCrumbs,
-      selectedNode
-    };
+  updateBreadcrumbIfNeeded() {
+    this.breadcrumbs.selectedNode = this.selectedDOMNode();
+    this.breadcrumbs.requestUpdate();
   }
   crumbNodeSelected(event) {
     this.selectDOMNode(event.node, true);

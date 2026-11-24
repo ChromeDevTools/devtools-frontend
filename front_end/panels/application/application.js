@@ -1227,6 +1227,7 @@ var Network;
     ResourceType6["CSPViolationReport"] = "CSPViolationReport";
     ResourceType6["Preflight"] = "Preflight";
     ResourceType6["FedCM"] = "FedCM";
+    ResourceType6["EmailVerification"] = "EmailVerification";
     ResourceType6["Other"] = "Other";
   })(ResourceType5 = Network3.ResourceType || (Network3.ResourceType = {}));
   let ErrorReason;
@@ -1404,6 +1405,7 @@ var Network;
     InitiatorType2["SignedExchange"] = "SignedExchange";
     InitiatorType2["Preflight"] = "preflight";
     InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["EmailVerification"] = "EmailVerification";
     InitiatorType2["Other"] = "other";
   })(InitiatorType = Network3.InitiatorType || (Network3.InitiatorType = {}));
   let SetCookieBlockedReason;
@@ -2897,7 +2899,7 @@ import * as Lit from "../../ui/lit/lit.js";
 var { html } = Lit;
 var ApplicationPanelTreeElement = class _ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
   resourcesPanel;
-  customItemURL;
+  #customItemURL;
   aiButtonContainer;
   constructor(resourcesPanel, title, expandable, jslogContext) {
     super(title, expandable, jslogContext);
@@ -2910,13 +2912,13 @@ var ApplicationPanelTreeElement = class _ApplicationPanelTreeElement extends UI.
     this.listItemElement.tabIndex = -1;
   }
   get itemURL() {
-    if (this.customItemURL) {
-      return this.customItemURL;
+    if (this.#customItemURL) {
+      return this.#customItemURL;
     }
     throw new Error("Unimplemented Method");
   }
   set itemURL(value) {
-    this.customItemURL = value;
+    this.#customItemURL = value;
   }
   onselect(selectedByUser) {
     if (!selectedByUser) {
@@ -2982,7 +2984,7 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   emptyCategoryHeadline;
   categoryDescription;
   settingsKey;
-  wasDescendantSelected = false;
+  #wasDescendantSelected = false;
   constructor(resourcesPanel, categoryName, emptyCategoryHeadline, categoryDescription, settingsKey, settingsDefault = false) {
     super(resourcesPanel, categoryName, false, settingsKey);
     this.settingsKey = settingsKey;
@@ -3021,27 +3023,27 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   select(omitFocus, selectedByUser) {
     if (this.selected && selectedByUser && !this.expanded && this.childCount() > 0) {
       this.expand();
-      const childToSelect = this.findChildToAutoSelect();
+      const childToSelect = this.#findChildToAutoSelect();
       if (childToSelect) {
         childToSelect.select(omitFocus, true);
       }
       return false;
     }
     const previousSelected = this.treeOutline?.selectedTreeElement ?? null;
-    this.wasDescendantSelected = Boolean(previousSelected?.hasAncestor(this));
+    this.#wasDescendantSelected = Boolean(previousSelected?.hasAncestor(this));
     try {
       return super.select(omitFocus, selectedByUser);
     } finally {
-      this.wasDescendantSelected = false;
+      this.#wasDescendantSelected = false;
     }
   }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    if (selectedByUser && !this.wasDescendantSelected && this.childCount() > 0) {
+    if (selectedByUser && !this.#wasDescendantSelected && this.childCount() > 0) {
       if (!this.expanded) {
         this.expand();
       }
-      const childToSelect = this.findChildToAutoSelect();
+      const childToSelect = this.#findChildToAutoSelect();
       if (childToSelect) {
         childToSelect.select(
           /* omitFocus= */
@@ -3052,15 +3054,15 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
         return false;
       }
     }
-    this.updateCategoryView();
+    this.#updateCategoryView();
     const item4 = this.createGenericStorageAiContext();
     UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item4);
     return false;
   }
-  isOriginStorageCategory() {
+  #isOriginStorageCategory() {
     return this.settingsKey === "cookies" || this.settingsKey === "local-storage" || this.settingsKey === "session-storage";
   }
-  getMainPageOrigin() {
+  #getMainPageOrigin() {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return "";
@@ -3069,15 +3071,15 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
     const url = mainFrame?.unreachableUrl() || mainFrame?.url || target.inspectedURL();
     return url ? Common.ParsedURL.ParsedURL.extractOrigin(url) : "";
   }
-  findChildToAutoSelect() {
-    if (!this.isOriginStorageCategory()) {
+  #findChildToAutoSelect() {
+    if (!this.#isOriginStorageCategory()) {
       return null;
     }
     const selectableChildren = this.children().filter((child) => child.selectable && !child.isExpandable());
     if (selectableChildren.length === 0) {
       return null;
     }
-    const mainPageOrigin = this.getMainPageOrigin();
+    const mainPageOrigin = this.#getMainPageOrigin();
     if (mainPageOrigin) {
       const matchingChild = selectableChildren.find((child) => child.titleAsText() === mainPageOrigin);
       if (matchingChild) {
@@ -3086,20 +3088,20 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
     }
     return selectableChildren.length === 1 ? selectableChildren[0] : null;
   }
-  updateCategoryView() {
+  #updateCategoryView() {
     const headline = this.childCount() === 0 ? this.emptyCategoryHeadline : this.categoryName;
     this.resourcesPanel.showCategoryView(this.categoryName, headline, this.categoryDescription, this.categoryLink);
   }
   appendChild(child, comparator) {
     super.appendChild(child, comparator);
     if (this.selected && this.childCount() === 1) {
-      this.updateCategoryView();
+      this.#updateCategoryView();
     }
   }
   removeChild(child) {
     super.removeChild(child);
     if (this.selected && this.childCount() === 0) {
-      this.updateCategoryView();
+      this.#updateCategoryView();
     }
   }
   onattach() {
@@ -10902,7 +10904,7 @@ devtools-icon.navigator-font-tree-item {
   right: var(--sys-size-3);
 }
 
-.tree-outline li:hover .ai-button-container {
+.tree-outline li:is(:hover, .hovered) .ai-button-container {
   display: inline-flex;
 }
 

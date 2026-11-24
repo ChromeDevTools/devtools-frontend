@@ -46,6 +46,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/workspace/IgnoreListManager.test.api.ts",
     "../../../../../../front_end/models/workspace/WorkspaceImpl.test.api.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -63,7 +64,13 @@
       "path": "../../core/common/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../formatter/bundle-tsconfig.ref.json"
     }
   ]
 }

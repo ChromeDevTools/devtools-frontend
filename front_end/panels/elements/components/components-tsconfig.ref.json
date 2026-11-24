@@ -52,13 +52,7 @@
       "path": "../../../ui/components/buttons/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../ui/components/helpers/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../../ui/components/node_text/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../ui/components/tooltips/bundle-tsconfig.ref.json"

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../core/common/common.js';
+import * as SettingsUI from '../ui/settings/settings.js';
 import { beforeEachWithTeardown } from './TestTeardown.js';
 function createSettingValue(category, settingName, defaultValue, settingType = "boolean" /* Common.Settings.SettingType.BOOLEAN */, title, options) {
     return {
@@ -216,6 +217,7 @@ export function setupSettings(reset) {
 }
 export function cleanupSettings() {
     Common.Settings.resetSettings();
+    SettingsUI.SettingUIRegistration.resetSettings();
 }
 export function setupSettingsHooks() {
     beforeEachWithTeardown(() => setupSettings(true), cleanupSettings);

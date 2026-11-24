@@ -1261,6 +1261,7 @@ var Network;
     ResourceType8["CSPViolationReport"] = "CSPViolationReport";
     ResourceType8["Preflight"] = "Preflight";
     ResourceType8["FedCM"] = "FedCM";
+    ResourceType8["EmailVerification"] = "EmailVerification";
     ResourceType8["Other"] = "Other";
   })(ResourceType7 = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
@@ -1438,6 +1439,7 @@ var Network;
     InitiatorType3["SignedExchange"] = "SignedExchange";
     InitiatorType3["Preflight"] = "preflight";
     InitiatorType3["FedCM"] = "FedCM";
+    InitiatorType3["EmailVerification"] = "EmailVerification";
     InitiatorType3["Other"] = "other";
   })(InitiatorType2 = Network2.InitiatorType || (Network2.InitiatorType = {}));
   let SetCookieBlockedReason;
@@ -21368,6 +21370,9 @@ var SCCRecord = class {
 };
 function* forEach(array, startAfter) {
   const startIdx = startAfter !== void 0 ? array.indexOf(startAfter) + 1 : 0;
+  if (startAfter !== void 0 && startIdx === 0) {
+    return;
+  }
   for (let i = startIdx; i < array.length; ++i) {
     yield array[i];
   }
@@ -21537,12 +21542,8 @@ var DOMInheritanceCascade = class {
       if (!value || !CSSMetadata.isCSSWideKeyword(value)) {
         break;
       }
-      const resolvedProperty = this.resolveGlobalKeyword(definedValue.declaration.declaration, value);
-      if (!resolvedProperty) {
-        return definedValue;
-      }
-      const declaration2 = new CSSValueSource(resolvedProperty);
-      if (!declaration2.value) {
+      const declaration2 = this.#matchedStyles.resolveGlobalKeyword(definedValue.declaration.declaration, value);
+      if (!declaration2?.value) {
         return definedValue;
       }
       definedValue = { declaration: declaration2, value: declaration2.value };
@@ -31744,10 +31745,13 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
     return null;
   }
-  static reloadAllPages(targetManager, bypassCache, scriptToEvaluateOnLoad) {
+  /**
+   * @param checkForRepost Set to `true` if the reload is a response to a user action. See `reloadPage`.
+   */
+  static reloadAllPages(targetManager, bypassCache, scriptToEvaluateOnLoad, checkForRepost) {
     for (const resourceTreeModel of targetManager.models(_ResourceTreeModel)) {
       if (resourceTreeModel.target().parentTarget()?.type() !== "frame" /* FRAME */) {
-        resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
+        resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad, checkForRepost);
       }
     }
   }
@@ -32040,15 +32044,20 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     this.#reloadSuspensionCount--;
     console.assert(this.#reloadSuspensionCount >= 0, "Unbalanced call to ResourceTreeModel.resumeReload()");
     if (!this.#reloadSuspensionCount && this.#pendingReloadOptions) {
-      const { ignoreCache, scriptToEvaluateOnLoad, loaderId } = this.#pendingReloadOptions;
+      const { ignoreCache, scriptToEvaluateOnLoad, checkForRepost, loaderId } = this.#pendingReloadOptions;
       if (loaderId !== this.mainFrame?.loaderId) {
         this.#pendingReloadOptions = null;
         return;
       }
-      this.reloadPage(ignoreCache, scriptToEvaluateOnLoad);
+      this.reloadPage(ignoreCache, scriptToEvaluateOnLoad, checkForRepost);
     }
   }
-  reloadPage(ignoreCache, scriptToEvaluateOnLoad) {
+  /**
+   * @param checkForRepost Set to `true` if the reload is a response to a user action. If the page has POST
+   * data, the browser then shows the form resubmission dialog before the reload. The browser does not
+   * reload the page if the user cancels the dialog.
+   */
+  reloadPage(ignoreCache, scriptToEvaluateOnLoad, checkForRepost) {
     const loaderId = this.mainFrame?.loaderId;
     if (!loaderId) {
       return;
@@ -32057,7 +32066,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       this.dispatchEventToListeners("PageReloadRequested" /* PageReloadRequested */, this);
     }
     if (this.#reloadSuspensionCount) {
-      this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad, loaderId };
+      this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad, checkForRepost, loaderId };
       return;
     }
     this.#pendingReloadOptions = null;
@@ -32066,7 +32075,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       networkManager.clearRequests();
     }
     this.dispatchEventToListeners("WillReloadPage" /* WillReloadPage */);
-    void this.agent.invoke_reload({ ignoreCache, scriptToEvaluateOnLoad, loaderId });
+    void this.agent.invoke_reload({ ignoreCache, scriptToEvaluateOnLoad, loaderId, checkForRepost });
   }
   navigate(url) {
     return this.agent.invoke_navigate({ url });

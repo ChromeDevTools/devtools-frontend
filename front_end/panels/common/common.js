@@ -1113,7 +1113,8 @@ __export(ExtensionPanel_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
   ExtensionButton: () => ExtensionButton,
   ExtensionPanel: () => ExtensionPanel,
-  ExtensionSidebarPane: () => ExtensionSidebarPane
+  ExtensionSidebarPane: () => ExtensionSidebarPane,
+  SIDEBAR_PANE_DEFAULT_VIEW: () => SIDEBAR_PANE_DEFAULT_VIEW
 });
 import * as Platform from "../../core/platform/platform.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
@@ -1121,7 +1122,7 @@ import * as Extensions from "../../models/extensions/extensions.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html5, render as render5 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html5, nothing as nothing3, render as render5 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/common/ExtensionView.ts
 var ExtensionView_exports = {};
@@ -1459,19 +1460,75 @@ var ExtensionButton = class {
 };
 var hashIdentifier = (id) => Platform.StringUtilities.hashCode(id).toString(36);
 var cleanIdentifier = (id) => Platform.StringUtilities.sanitizeIdentifier(id) || hashIdentifier(id);
+var SIDEBAR_PANE_DEFAULT_VIEW = (input, _output, target) => {
+  render5(html5`
+    ${input.pageURL ? widget2(ExtensionView, {
+    data: {
+      server: input.server,
+      id: input.id,
+      src: input.pageURL,
+      className: "extension fill"
+    }
+  }) : input.showObjectProperties ? html5`
+      <devtools-widget ${widget2(ExtensionNotifierView, {
+    data: {
+      server: input.server,
+      id: input.id
+    }
+  })} ${widgetRef(ExtensionNotifierView, () => {
+  })}>
+        ${input.objectTree ? html5`<devtools-widget
+          ${widget2(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+    objectTree: input.objectTree,
+    title: input.objectTitle ? html5`<span>${input.objectTitle}</span>` : void 0
+  })}
+          ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, () => {
+  })}
+        ></devtools-widget>` : nothing3}
+      </devtools-widget>
+    ` : nothing3}
+  `, target, {
+    container: {
+      classes: ["fill"],
+      attributes: {
+        style: input.height ? `height: ${input.height}` : void 0
+      }
+    }
+  });
+};
 var ExtensionSidebarPane = class extends UI5.View.SimpleView {
   #panelName;
-  server;
+  #server;
   #id;
-  extensionView;
-  objectPropertiesView;
-  constructor(server, panelName, title, id, extensionId = "extension") {
+  #view;
+  #pageURL;
+  #height;
+  #showObjectProperties = false;
+  #objectTree;
+  #objectTitle;
+  constructor(server, panelName, title, id, extensionId = "extension", view = SIDEBAR_PANE_DEFAULT_VIEW) {
     const viewId = `extension-sidebar-${cleanIdentifier(extensionId)}-${cleanIdentifier(panelName)}-${hashIdentifier(title)}`;
     super({ title, viewId });
-    this.element.classList.add("fill");
     this.#panelName = panelName;
-    this.server = server;
+    this.#server = server;
     this.#id = id;
+    this.#view = view;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view(
+      {
+        server: this.#server,
+        id: this.#id,
+        pageURL: this.#pageURL,
+        height: this.#height,
+        showObjectProperties: this.#showObjectProperties,
+        objectTree: this.#objectTree,
+        objectTitle: this.#objectTitle
+      },
+      void 0,
+      this.element
+    );
   }
   id() {
     return this.#id;
@@ -1480,39 +1537,39 @@ var ExtensionSidebarPane = class extends UI5.View.SimpleView {
     return this.#panelName;
   }
   setObject(object, title, callback) {
-    this.createObjectPropertiesView();
+    this.#pageURL = void 0;
+    this.#showObjectProperties = true;
     this.#setObject(SDK2.RemoteObject.RemoteObject.fromLocalObject(object), title, callback);
   }
   setExpression(expression, title, evaluateOptions, securityOrigin, callback) {
-    this.createObjectPropertiesView();
-    this.server.evaluate(
+    this.#createObjectPropertiesView();
+    this.#server.evaluate(
       expression,
       true,
       false,
       evaluateOptions,
       securityOrigin,
-      this.onEvaluate.bind(this, title, callback)
+      this.#onEvaluate.bind(this, title, callback)
     );
   }
   setPage(url) {
-    if (this.objectPropertiesView) {
-      this.objectPropertiesView.detach();
-      delete this.objectPropertiesView;
+    this.#showObjectProperties = false;
+    this.#objectTree = void 0;
+    this.#objectTitle = void 0;
+    this.#pageURL = url;
+    if (!this.#height) {
+      this.#height = "150px";
     }
-    if (this.extensionView) {
-      this.extensionView.detach(true);
-    }
-    this.extensionView = new ExtensionView();
-    this.extensionView.data = { server: this.server, id: this.#id, src: url, className: "extension fill" };
-    this.extensionView.show(this.element);
-    if (!this.element.style.height) {
-      this.setHeight("150px");
-    }
+    this.requestUpdate();
   }
   setHeight(height) {
-    this.element.style.height = height;
+    if (this.#height === height) {
+      return;
+    }
+    this.#height = height;
+    this.requestUpdate();
   }
-  onEvaluate(title, callback, error, result, _wasThrown) {
+  #onEvaluate(title, callback, error, result, _wasThrown) {
     if (error) {
       callback(error.toString());
     } else if (!result) {
@@ -1521,38 +1578,32 @@ var ExtensionSidebarPane = class extends UI5.View.SimpleView {
       this.#setObject(result, title, callback);
     }
   }
-  createObjectPropertiesView() {
-    if (this.objectPropertiesView) {
+  #createObjectPropertiesView() {
+    if (this.#showObjectProperties) {
       return;
     }
-    if (this.extensionView) {
-      this.extensionView.detach(true);
-      delete this.extensionView;
-    }
-    this.objectPropertiesView = new ExtensionNotifierView();
-    this.objectPropertiesView.data = { server: this.server, id: this.#id };
-    this.objectPropertiesView.show(this.element);
+    this.#pageURL = void 0;
+    this.#objectTree = void 0;
+    this.#objectTitle = void 0;
+    this.#showObjectProperties = true;
+    this.requestUpdate();
   }
   #setObject(object, title, callback) {
-    const objectPropertiesView = this.objectPropertiesView;
-    if (!objectPropertiesView) {
+    if (!this.#showObjectProperties) {
       callback("operation cancelled");
       return;
     }
-    objectPropertiesView.detachChildWidgets();
-    const section2 = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-    section2.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+    const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
       readOnly: true,
       propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
     });
-    section2.objectTree.expanded = true;
-    if (title) {
-      const span = document.createElement("span");
-      span.textContent = title;
-      section2.title = span;
-    }
-    section2.show(objectPropertiesView.element);
-    callback();
+    objectTree.expanded = true;
+    this.#objectTree = objectTree;
+    this.#objectTitle = title;
+    this.requestUpdate();
+    void this.updateComplete.then(() => UI5.Widget.Widget.allUpdatesComplete).then(() => {
+      callback();
+    });
   }
 };
 
@@ -3635,7 +3686,7 @@ import * as Common6 from "../../core/common/common.js";
 import * as i18n13 from "../../core/i18n/i18n.js";
 import * as SDK4 from "../../core/sdk/sdk.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html8, nothing as nothing3, render as render7 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html8, nothing as nothing4, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
@@ -3729,10 +3780,10 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html8`<span class="node-label-name">${input.tagName}</span>` : nothing3,
-    input.id ? html8`<span class="node-label-id">#${input.id}</span>` : nothing3,
+    input.tagName ? html8`<span class="node-label-name">${input.tagName}</span>` : nothing4,
+    input.id ? html8`<span class="node-label-id">#${input.id}</span>` : nothing4,
     ...input.classes.map((className) => html8`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html8`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing3
+    input.pseudo ? html8`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing4
   ]}</button>
     </span>` : i18nString5(UIStrings5.node)}`, target);
 };
@@ -3841,7 +3892,7 @@ var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mousedown=${(e) => e.consume()}>
-        <slot>${input.textContent ?? nothing3}</slot>
+        <slot>${input.textContent ?? nothing4}</slot>
       </button>`, target);
 };
 var DeferredDOMNodeLink = class extends UI7.Widget.Widget {
@@ -3913,10 +3964,10 @@ var Linkifier3 = class _Linkifier {
   }
   linkify(node, options) {
     if (node instanceof SDK4.DOMModel.DOMNode) {
-      return html8`<devtools-widget ${widget3((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html8`${options.textContent}` : nothing3}</devtools-widget>`;
+      return html8`<devtools-widget ${widget3((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html8`${options.textContent}` : nothing4}</devtools-widget>`;
     }
     if (node instanceof SDK4.DOMModel.DeferredDOMNode) {
-      return html8`<devtools-widget ${widget3((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html8`${options.textContent}` : nothing3}</devtools-widget>`;
+      return html8`<devtools-widget ${widget3((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html8`${options.textContent}` : nothing4}</devtools-widget>`;
     }
     throw new Error("Can't linkify non-node");
   }
@@ -4668,7 +4719,7 @@ var i18nString7 = i18n17.i18n.getLocalizedString.bind(void 0, str_7);
 var {
   html: html10,
   render: render9,
-  nothing: nothing5,
+  nothing: nothing6,
   Directives: { classMap: classMap3, repeat: repeat3, styleMap: styleMap2 }
 } = Lit3;
 var POPUP_MARGIN = 8;
@@ -4705,7 +4756,7 @@ function getPopupItems(input) {
 }
 function renderAnchorHighlight(thread, highlight) {
   if (!thread || !highlight?.visible) {
-    return nothing5;
+    return nothing6;
   }
   return html10`
     <div
@@ -4734,7 +4785,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
     height: `${input.hoverHighlight.height}px`
   })}>
         </div>
-      ` : nothing5}
+      ` : nothing6}
       ${renderAnchorHighlight(input.activeThread, input.activeHighlight)}
       ${renderAnchorHighlight(input.hoveredThread, input.hoveredHighlight)}
       ${repeat3(
@@ -4778,10 +4829,10 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
               style=${styleMap2({
         transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)${item3.anchoredToPin ? "" : " translateY(-100%)"}`
       })}
-              @mouseenter=${item3.isHoverPreview ? input.onPopupMouseEnter : nothing5}
-              @mouseleave=${item3.isHoverPreview ? input.onPopupMouseLeave : nothing5}
-              @mousedown=${item3.isHoverPreview ? input.onPopupInteract : nothing5}
-              @focusin=${item3.isHoverPreview ? input.onPopupInteract : nothing5}>
+              @mouseenter=${item3.isHoverPreview ? input.onPopupMouseEnter : nothing6}
+              @mouseleave=${item3.isHoverPreview ? input.onPopupMouseLeave : nothing6}
+              @mousedown=${item3.isHoverPreview ? input.onPopupInteract : nothing6}
+              @focusin=${item3.isHoverPreview ? input.onPopupInteract : nothing6}>
               ${UI9.Widget.widget(CommentThreadWidget, {
         title: item3.title,
         comments: [...item3.thread.comments],
@@ -5535,7 +5586,7 @@ import * as Platform5 from "../../core/platform/platform.js";
 import * as DevToolsState from "../../models/devtools_state/devtools_state.js";
 import * as Buttons5 from "../../ui/components/buttons/buttons.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html12, nothing as nothing7, render as render11 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html12, nothing as nothing8, render as render11 } from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/stateChangesStatusBarPills.css.js
@@ -5668,7 +5719,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
   output.pillWidths = [];
   render11(html12`
     <style>${stateChangesStatusBarPills_css_default}</style>
-    ${input.pills.length === 0 ? nothing7 : html12`
+    ${input.pills.length === 0 ? nothing8 : html12`
       <div class="pills" ${ref3((element) => {
     output.pillsColumnGap = element ? () => parseFloat(getComputedStyle(element).columnGap) || 0 : void 0;
   })}>${repeat4(input.pills, (pill) => pill.id, (pill, index) => html12`

@@ -9652,6 +9652,7 @@ export declare namespace Network {
         CSPViolationReport = "CSPViolationReport",
         Preflight = "Preflight",
         FedCM = "FedCM",
+        EmailVerification = "EmailVerification",
         Other = "Other"
     }
     /**
@@ -10379,6 +10380,7 @@ export declare namespace Network {
         SignedExchange = "SignedExchange",
         Preflight = "preflight",
         FedCM = "FedCM",
+        EmailVerification = "EmailVerification",
         Other = "other"
     }
     /**
@@ -15155,6 +15157,13 @@ export declare namespace Page {
          * reloading an unintended target in case there's a racing navigation.
          */
         loaderId?: Network.LoaderId;
+        /**
+         * If true and the page has POST data, the browser shows the form
+         * resubmission dialog before the reload. The command returns after the
+         * user responds to the dialog. If the user cancels the dialog, the
+         * command returns an error. The default value is false.
+         */
+        checkForRepost?: boolean;
     }
     interface RemoveScriptToEvaluateOnLoadRequest {
         identifier: ScriptIdentifier;

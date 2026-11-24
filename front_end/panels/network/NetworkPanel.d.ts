@@ -64,7 +64,6 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     private readonly progressBarContainer;
     networkLogView: NetworkLogView;
     private readonly detailsWidget;
-    private readonly closeButtonElement;
     private preserveLogSetting;
     recordLogSetting: Common.Settings.Setting<boolean>;
     private readonly throttlingSelect;

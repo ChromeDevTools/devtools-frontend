@@ -244,6 +244,9 @@
       "path": "../ui/lit/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../ui/settings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../ui/visual_logging/testing-tsconfig.ref.json"
     }
   ]

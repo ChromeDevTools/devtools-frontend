@@ -950,7 +950,12 @@ export class StylePropertiesSection {
             const tooltipPrefix = this.sectionTooltipIdFactory.subfactory('container', this.nestingLevel);
             void containerQuery.getContainerForNode(this.matchedStyles.node().id).then(container => {
                 if (container) {
-                    containerQueryElement.parseStyleQueries(this.matchedStyles, style, container.containerNode, tooltipPrefix);
+                    containerQueryElement.styleQueryContext = {
+                        matchedStyles: this.matchedStyles,
+                        style,
+                        containerNode: container.containerNode,
+                        tooltipPrefix,
+                    };
                 }
             });
             void this.addContainerForContainerQuery(containerQuery);

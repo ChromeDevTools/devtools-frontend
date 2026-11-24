@@ -90,6 +90,9 @@ export class AdvancedApp {
         return appInstance;
     }
     static removeInstance() {
+        if (appInstance) {
+            appInstance.#deviceModeView?.detach();
+        }
         appInstance = null;
     }
     presentUI(document) {

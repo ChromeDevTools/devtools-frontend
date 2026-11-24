@@ -37,6 +37,7 @@ export interface MetaHandlerData {
     threadsInProcess: Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.ThreadName>>;
     mainFrameId: string;
     mainFrameURL: string;
+    mainFrameIsOpaqueOrigin?: boolean;
     /**
      * A frame can have multiple renderer processes, at the same time,
      * a renderer process can have multiple URLs. This map tracks the

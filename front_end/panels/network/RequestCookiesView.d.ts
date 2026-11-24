@@ -14,10 +14,12 @@ interface ViewInput {
 type ViewFunction = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: ViewFunction;
 export declare class RequestCookiesView extends UI.Widget.Widget {
-    private request;
+    #private;
     private readonly showFilteredOutCookiesSetting;
     private readonly view;
-    constructor(request: SDK.NetworkRequest.NetworkRequest, view?: ViewFunction);
+    constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement, view?: ViewFunction);
+    get request(): SDK.NetworkRequest.NetworkRequest;
+    set request(request: SDK.NetworkRequest.NetworkRequest);
     private getRequestCookies;
     private getResponseCookies;
     performUpdate(): void;

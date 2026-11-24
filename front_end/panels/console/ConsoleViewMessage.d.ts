@@ -2,16 +2,80 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import { Icon } from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
+import * as Elements from '../elements/elements.js';
 import type { ConsoleViewportElement } from './ConsoleViewport.js';
 export declare const getMessageForElement: (element: Element) => ConsoleViewMessage | undefined;
+interface NodeParamViewInput {
+    node: SDK.DOMModel.DOMNode | null;
+    /** Rendered instead of the DOM tree once the node turns out to be unresolvable. */
+    fallback: LitTemplate | null;
+    onTreeResized: () => void;
+    onDOMTreeCreated: (domTree: Elements.DOMTreeWidget.DOMTreeWidget) => void;
+}
+type NodeParamView = (input: NodeParamViewInput, output: undefined, target: HTMLElement) => void;
+export declare const NODE_PARAM_VIEW: NodeParamView;
+/**
+ * A logged DOM node. Resolves the node itself and shows it as a DOM tree, or
+ * falls back to `renderFallback` if the node can't be resolved.
+ */
+export declare class ConsoleNodeParam extends UI.Widget.Widget {
+    #private;
+    renderFallback: (object: SDK.RemoteObject.RemoteObject) => LitTemplate;
+    onDimensionChange: (element: HTMLElement) => void;
+    onNodeResolved: () => void;
+    constructor(element?: HTMLElement, view?: NodeParamView);
+    set remoteObject(remoteObject: SDK.RemoteObject.RemoteObject);
+    /**
+     * Whether the message is visible. The DOM tree registers global listeners
+     * while it is shown, so it only stays shown while the message is visible.
+     */
+    set visible(visible: boolean);
+    performUpdate(): void;
+}
+interface ErrorParamViewInput {
+    error: Bindings.SymbolizedError.SymbolizedError | null;
+    ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
+}
+type ErrorParamView = (input: ErrorParamViewInput, output: undefined, target: HTMLElement) => void;
+export declare const ERROR_PARAM_VIEW: ErrorParamView;
+/** A logged error, symbolized against its source maps before it is shown. */
+export declare class ConsoleErrorParam extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: ErrorParamView);
+    set remoteObject(remoteObject: SDK.RemoteObject.RemoteObject);
+    set exceptionDetails(exceptionDetails: Protocol.Runtime.ExceptionDetails | undefined);
+    /** Resolves once the error is symbolized and rendered. */
+    get symbolizedForTest(): Promise<void>;
+    performUpdate(): void;
+}
+interface AccessorParamViewInput {
+    /** The getter's value, once the user invoked it. */
+    result: LitTemplate | null;
+    /** Invokes the getter; null when there is no object to invoke it on. */
+    onInvoke: (() => void) | null;
+}
+type AccessorParamView = (input: AccessorParamViewInput, output: undefined, target: HTMLElement) => void;
+export declare const ACCESSOR_PARAM_VIEW: AccessorParamView;
+/** An accessor property whose value is shown once the user invokes its getter. */
+export declare class ConsoleAccessorParam extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: AccessorParamView);
+    set object(object: SDK.RemoteObject.RemoteObject | null);
+    set propertyPath(propertyPath: string[]);
+    /** Renders the getter's result, or returns null to keep showing the invoke button. */
+    set renderResult(renderResult: (result: SDK.RemoteObject.CallFunctionResult) => LitTemplate | null);
+    performUpdate(): void;
+}
 export declare class ConsoleViewMessage implements ConsoleViewportElement {
     #private;
     protected message: SDK.ConsoleModel.ConsoleMessage;
@@ -19,8 +83,6 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private repeatCountInternal;
     private closeGroupDecorationCount;
     private consoleGroupInternal;
-    private selectableChildren;
-    private readonly domTreeWidgets;
     private readonly stackTracePreviews;
     private readonly messageResized;
     protected elementInternal: HTMLElement | null;
@@ -66,7 +128,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private buildMessageWithIgnoreLinks;
     private buildMessageHelper;
     private format;
-    protected formatParameter(output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean, includePreview?: boolean): LitTemplate | HTMLElement;
+    protected formatParameter(output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean, includePreview?: boolean): LitTemplate;
     private formatParameterAsValue;
     private formatParameterAsTrustedType;
     private formatParameterAsObject;
@@ -75,14 +137,12 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private contextMenuEventFired;
     protected renderPropertyPreviewOrAccessor(object: SDK.RemoteObject.RemoteObject | null, property: Protocol.Runtime.PropertyPreview, propertyPath: Array<{
         name: (string | symbol);
-    }>): DocumentFragment | HTMLElement;
+    }>): LitTemplate;
     private formatParameterAsNode;
     private formattedParameterAsNodeForTest;
     private formatParameterAsString;
     private renderSymbolizedError;
-    private formatAsArrayEntry;
     private renderPropertyPreview;
-    createRemoteObjectAccessorPropertySpan(object: SDK.RemoteObject.RemoteObject | null, propertyPath: string[], callback: (arg0: SDK.RemoteObject.CallFunctionResult) => void): HTMLElement;
     private formatAsAccessorProperty;
     private formatWithSubstitutionString;
     matchesFilterRegex(regexObject: RegExp): boolean;
@@ -100,6 +160,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     resetCloseGroupDecorationCount(): void;
     incrementCloseGroupDecorationCount(): void;
     private updateCloseGroupDecorations;
+    private get selectableChildren();
     protected focusedChildIndex(): number;
     private onKeyDown;
     maybeHandleOnKeyDown(event: KeyboardEvent): boolean;
@@ -189,3 +250,4 @@ export declare const getMaxTokenizableStringLength: () => number;
 export declare const setMaxTokenizableStringLength: (length: number) => void;
 export declare const getLongStringVisibleLength: () => number;
 export declare const setLongStringVisibleLength: (length: number) => void;
+export {};

@@ -185,9 +185,23 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     #request;
     #view;
     constructor(request, view = DEFAULT_VIEW) {
-        super();
-        this.#request = request;
+        super(request instanceof HTMLElement ? request : undefined);
+        if (request && !(request instanceof HTMLElement)) {
+            this.#request = request;
+        }
         this.#view = view;
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        this.#request = request;
+        if (this.isShowing()) {
+            this.requestUpdate();
+        }
     }
     static async createStackTracePreview(request, linkifier, focusableLink) {
         const initiator = request.initiator();
@@ -208,6 +222,9 @@ export class RequestInitiatorView extends UI.Widget.VBox {
         return { preview, stackTrace };
     }
     async performUpdate() {
+        if (!this.#request) {
+            return;
+        }
         const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
         const targetManager = SDK.TargetManager.TargetManager.instance();
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.#request);

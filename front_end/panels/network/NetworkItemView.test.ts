@@ -9,11 +9,12 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as NetworkForward from './forward/forward.js';
 import * as Network from './network.js';
@@ -145,5 +146,48 @@ describeWithEnvironment('NetworkItemView', () => {
     networkItemView.detach();
 
     assert.isFalse(parentElement.contains(networkItemView.element));
+  });
+
+  it('does not duplicate RequestPayloadView when switching away from and back to the Payload tab', async () => {
+    const requestWithPayload = createNetworkRequest({
+      url: 'https://www.example.com/foo.html?a=1',
+      statusCode: 200,
+      finished: true,
+    });
+    const networkItemView = new Network.NetworkItemView.NetworkItemView(
+        requestWithPayload, new NetworkTimeCalculator.NetworkTimeCalculator(true),
+        NetworkForward.UIRequestLocation.UIRequestTabs.PAYLOAD);
+    renderElementIntoDOM(networkItemView);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const payloadTab = networkItemView.element.querySelector<HTMLElement>('#payload');
+    assert.isNotNull(payloadTab);
+    const payloadTabWidget = UI.Widget.Widget.get(payloadTab);
+    assert.isDefined(payloadTabWidget);
+
+    const tabbedPane = networkItemView.element.querySelector('devtools-tabbed-pane');
+    assert.isNotNull(tabbedPane);
+
+    tabbedPane.dispatchEvent(new CustomEvent('select', {
+      detail: {
+        tabId: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
+        isUserGesture: true,
+      },
+    }));
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    tabbedPane.dispatchEvent(new CustomEvent('select', {
+      detail: {
+        tabId: NetworkForward.UIRequestLocation.UIRequestTabs.PAYLOAD,
+        isUserGesture: true,
+      },
+    }));
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.lengthOf(payloadTabWidget.children(), 1);
+    const payloadWidgetElement = payloadTab.querySelector<HTMLElement>('devtools-widget');
+    assert.isNotNull(payloadWidgetElement);
+    assert.instanceOf(UI.Widget.Widget.get(payloadWidgetElement), Network.RequestPayloadView.RequestPayloadView);
   });
 });

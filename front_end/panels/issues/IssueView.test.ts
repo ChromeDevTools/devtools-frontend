@@ -8,12 +8,14 @@ import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {StubIssue} from '../../testing/StubIssue.js';
 import {recordedMetricsContain, setupUserMetricHooks} from '../../testing/UserMetricsHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -388,4 +390,81 @@ describeWithEnvironment('IssueView', () => {
       assert.strictEqual(rows[1].cells[1].textContent, 'Warned');
     });
   });
+
+  it('resolves request link in CorsIssueDetailsView when updated from an unresolved request to a resolved request',
+     async () => {
+       const target = createTarget();
+       const issuesModel = target.model(SDK.IssuesModel.IssuesModel);
+       assert.exists(issuesModel);
+
+       const unresolvedRequestId = 'unresolved-request-id' as Protocol.Network.RequestId;
+       const resolvedRequestId = 'resolved-request-id' as Protocol.Network.RequestId;
+
+       const unresolvedCorsIssue = new IssuesManager.CorsIssue.CorsIssue({
+         corsErrorStatus: {
+           corsError: Protocol.Network.CorsError.InvalidAllowOriginValue,
+           failedParameter: '',
+         },
+         isWarning: false,
+         request: {
+           requestId: unresolvedRequestId,
+           url: 'https://example.com/unresolved.json',
+         },
+       },
+                                                                         issuesModel, undefined);
+
+       const resolvedCorsIssue = new IssuesManager.CorsIssue.CorsIssue({
+         corsErrorStatus: {
+           corsError: Protocol.Network.CorsError.InvalidAllowOriginValue,
+           failedParameter: '',
+         },
+         isWarning: false,
+         request: {
+           requestId: resolvedRequestId,
+           url: 'https://example.com/resolved.json',
+         },
+       },
+                                                                       issuesModel, undefined);
+
+       const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
+       const aggregatedIssue1 =
+           new IssuesManager.IssueAggregator.AggregatedIssue(unresolvedCorsIssue.code(), aggregationKey);
+       aggregatedIssue1.addInstance(unresolvedCorsIssue);
+
+       const view = new Issues.IssueView.IssueView(aggregatedIssue1, {title: 'CORS issue', links: [], markdown: []});
+       const treeOutline = new UI.TreeOutline.TreeOutline();
+       treeOutline.appendChild(view);
+       view.expand();
+       await raf();
+
+       dispatchEvent(target, 'Network.requestWillBeSent', {
+         requestId: resolvedRequestId,
+         loaderId: 'loader-id' as Protocol.Network.LoaderId,
+         request: {
+           url: 'https://example.com/resolved.json',
+           method: 'GET',
+           headers: {},
+           initialPriority: Protocol.Network.ResourcePriority.High,
+           referrerPolicy: Protocol.Network.RequestReferrerPolicy.NoReferrer,
+         },
+         timestamp: 0 as Protocol.Network.MonotonicTime,
+         wallTime: 0 as Protocol.Network.TimeSinceEpoch,
+         initiator: {type: Protocol.Network.InitiatorType.Other},
+         redirectHasExtraInfo: false,
+         documentURL: 'https://example.com/',
+       });
+
+       const aggregatedIssue2 =
+           new IssuesManager.IssueAggregator.AggregatedIssue(resolvedCorsIssue.code(), aggregationKey);
+       aggregatedIssue2.addInstance(resolvedCorsIssue);
+       view.setIssue(aggregatedIssue2);
+       view.update();
+       await raf();
+       await raf();
+
+       const requestLinkIcon = view.affectedResources.childrenListElement.querySelector('devtools-request-link-icon');
+       assert.exists(requestLinkIcon);
+       assert.strictEqual(requestLinkIcon.data.request?.requestId(), resolvedRequestId);
+       view.clear();
+     });
 });

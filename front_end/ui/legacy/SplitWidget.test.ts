@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 
@@ -817,5 +817,89 @@ describeWithEnvironment('SplitWidget', () => {
 
     containerA.detach();
     containerB.detach();
+  });
+
+  it('uninstalls external declarative resizers on disconnect', async () => {
+    const container = renderElementIntoDOM(new UI.Widget.VBox());
+
+    const renderSplit = (showSplit: boolean) => {
+      // clang-format off
+      render(html`
+        <div class="external-header" id="external-resizer">Header</div>
+        ${showSplit ? html`
+          <devtools-split-view direction="row" sidebar-position="second" resizer="external-resizer">
+            <div slot="main">Main</div>
+            <div slot="sidebar">Sidebar</div>
+          </devtools-split-view>
+        ` : nothing}`, container.contentElement);
+      // clang-format on
+    };
+
+    renderSplit(true);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const externalResizer = container.contentElement.querySelector<HTMLElement>('.external-header')!;
+    assert.strictEqual(externalResizer.style.getPropertyValue('cursor'), 'ns-resize');
+
+    renderSplit(false);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(externalResizer.style.getPropertyValue('cursor'), '');
+
+    container.detach();
+  });
+
+  it('observes external resizer id mutations', async () => {
+    const container = renderElementIntoDOM(new UI.Widget.VBox());
+
+    const renderSplit = (resizerId: string|typeof nothing) => {
+      // clang-format off
+      render(html`
+        <div class="external-header" id=${resizerId}>Header</div>
+        <devtools-split-view direction="row" sidebar-position="second" resizer="external-resizer">
+          <div slot="main">Main</div>
+          <div slot="sidebar">Sidebar</div>
+        </devtools-split-view>`, container.contentElement);
+      // clang-format on
+    };
+
+    renderSplit(nothing);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const externalResizer = container.contentElement.querySelector<HTMLElement>('.external-header')!;
+    assert.strictEqual(externalResizer.style.getPropertyValue('cursor'), '');
+
+    renderSplit('external-resizer');
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(externalResizer.style.getPropertyValue('cursor'), 'ns-resize');
+
+    renderSplit(nothing);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(externalResizer.style.getPropertyValue('cursor'), '');
+
+    container.detach();
+  });
+
+  it('scopes observer to split view for internal resizers and ignores unrelated DOM mutations', async () => {
+    const container = renderElementIntoDOM(new UI.Widget.VBox());
+    // clang-format off
+    render(html`
+      <div class="sibling-area"></div>
+      <devtools-split-view direction="row" sidebar-position="second" resizer="internal-resizer">
+        <div slot="main">Main</div>
+        <div slot="sidebar"><div id="internal-resizer">Header</div></div>
+      </devtools-split-view>`, container.contentElement);
+    // clang-format on
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const splitWidget = container.contentElement.querySelector('devtools-split-view')!.getWidget()!;
+    const setCustomResizersSpy = sinon.spy(splitWidget, 'setCustomResizers');
+    const siblingArea = container.contentElement.querySelector<HTMLElement>('.sibling-area')!;
+    const unrelatedNode = document.createElement('div');
+    unrelatedNode.id = 'internal-resizer';
+    siblingArea.appendChild(unrelatedNode);
+    await raf();
+
+    sinon.assert.notCalled(setCustomResizersSpy);
+    container.detach();
   });
 });

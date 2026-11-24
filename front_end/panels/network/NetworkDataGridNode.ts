@@ -36,6 +36,8 @@
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 /* eslint-disable @typescript-eslint/naming-convention */
 
+import '../../ui/components/buttons/buttons.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -49,13 +51,12 @@ import * as Logs from '../../models/logs/logs.js';
 import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import {PanelUtils} from '../utils/utils.js';
 
 const UIStrings = {
@@ -630,6 +631,73 @@ function isFirstPrimaryColumn(dataGrid: DataGrid.DataGrid.DataGridImpl<unknown>|
   }
   return firstPrimary.id === columnId;
 }
+
+interface PrimaryCellViewInput {
+  icon: LitTemplate;
+  leftPadding: number;
+  isConsoleOriginated: boolean;
+  aiButton?: {iconName: string, title: string};
+  onAiButtonClick: () => void;
+  onDoubleClick: () => void;
+  onMouseDown: (button: number) => void;
+  onFocus: () => void;
+}
+
+interface CellViewInput {
+  text: string;
+  title?: string;
+  subtitle?: string;
+  /** Set for the first visible name, path or URL cell. This cell owns the icons and the row click handlers. */
+  primary?: PrimaryCellViewInput;
+}
+
+// Prevents that a click on the AI button opens the request of the row.
+const stopPropagationInCapture = {
+  handleEvent: (event: Event) => event.stopPropagation(),
+  capture: true,
+};
+
+const CELL_VIEW = (input: CellViewInput, _output: undefined, target: HTMLElement): void => {
+  const primary = input.primary;
+  const onAiButtonClick = {
+    handleEvent: (event: Event) => {
+      event.stopPropagation();
+      primary?.onAiButtonClick();
+    },
+    capture: true,
+  };
+  // clang-format off
+  render(html`
+    ${primary?.icon ?? nothing}
+    ${primary?.isConsoleOriginated ? html`
+      <devtools-icon name="terminal" class="network-console-icon"
+                     title=${i18nString(UIStrings.requestOriginatedFromConsole)}></devtools-icon>` : nothing}
+    ${primary?.aiButton ? html`
+      <span class="ai-button-container">
+        <devtools-floating-button icon-name=${primary.aiButton.iconName} title=${primary.aiButton.title}
+                                  jslogcontext="ask-ai"
+                                  @click=${onAiButtonClick}
+                                  @dblclick=${stopPropagationInCapture}
+                                  @mousedown=${stopPropagationInCapture}></devtools-floating-button>
+      </span>` : nothing}
+    ${input.text}
+    ${input.subtitle !== undefined ? html`<div class="network-cell-subtitle">${input.subtitle}</div>` : nothing}`,
+    target, {
+      container: {
+        attributes: {
+          title: input.title,
+          tabindex: primary ? '-1' : undefined,
+          style: primary?.leftPadding ? `padding-left: ${primary.leftPadding}px` : undefined,
+        },
+        listeners: primary ? {
+          dblclick: () => primary.onDoubleClick(),
+          mousedown: event => primary.onMouseDown((event as MouseEvent).button),
+          focus: () => primary.onFocus(),
+        } : undefined,
+      },
+    });
+  // clang-format on
+};
 
 export class NetworkRequestNode extends NetworkNode {
   #requestInternal: SDK.NetworkRequest.NetworkRequest;
@@ -1383,55 +1451,47 @@ export class NetworkRequestNode extends NetworkNode {
     return PanelUtils.isFailedNetworkRequest(this.#requestInternal);
   }
 
-  #renderPrimaryCell(cell: HTMLElement, columnId: string, text?: string): void {
+  #renderPrimaryCell(cell: HTMLElement, columnId: string, text = ''): void {
+    const input: CellViewInput = {text};
     const dataGrid = this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>| null;
     if (isFirstPrimaryColumn(dataGrid, columnId)) {
-      const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
-      cell.style.setProperty('padding-left', leftPadding);
-      cell.tabIndex = -1;
-      cell.addEventListener('dblclick', this.#openInNewTab.bind(this), false);
-      cell.addEventListener('mousedown', (event: MouseEvent) => {
-        // When the request panel isn't visible yet, firing the RequestActivated event
-        // doesn't make it visible if no request is selected. So we'll select it first.
-        this.select();
-        // Only open panel on mousedown with left mouse button.
-        const showPanel = event.button ? RequestPanelBehavior.Unchanged : RequestPanelBehavior.ShowPanel;
-        this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel});
-      });
-      cell.addEventListener('focus', () => this.parentView().resetFocus());
-
-      // render icons
-
-      const iconElement = PanelUtils.getIconForNetworkRequest(this.#requestInternal);
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(iconElement, cell);
-
-      // render Console icon if this request originated from Console
-      if (this.#isConsoleOriginated()) {
-        const consoleIcon = createIcon('terminal', 'network-console-icon');
-        UI.Tooltip.Tooltip.install(consoleIcon, i18nString(UIStrings.requestOriginatedFromConsole));
-        cell.appendChild(consoleIcon);
-      }
-
-      // render Ask AI button
-      const aiButtonContainer = this.#createAiButtonIfAvailable();
-      if (aiButtonContainer) {
-        cell.appendChild(aiButtonContainer);
-      }
+      const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+      const aiAction = actionRegistry.hasAction('drjones.network-floating-button') ?
+          actionRegistry.getAction('drjones.network-floating-button') :
+          undefined;
+      input.primary = {
+        icon: PanelUtils.getIconForNetworkRequest(this.#requestInternal),
+        leftPadding: this.leftPadding,
+        isConsoleOriginated: this.#isConsoleOriginated(),
+        aiButton: aiAction ? {iconName: AiAssistance.AiUtils.getIconName(), title: aiAction.title()} : undefined,
+        onAiButtonClick: () => {
+          this.select();
+          void aiAction?.execute();
+        },
+        onDoubleClick: () => this.#openInNewTab(),
+        onMouseDown: button => {
+          // When the request panel isn't visible yet, firing the RequestActivated event
+          // doesn't make it visible if no request is selected. So we'll select it first.
+          this.select();
+          // Only open panel on mousedown with left mouse button.
+          const showPanel = button ? RequestPanelBehavior.Unchanged : RequestPanelBehavior.ShowPanel;
+          this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel});
+        },
+        onFocus: () => this.parentView().resetFocus(),
+      };
     }
 
     if (columnId === 'name') {
       const name = Platform.StringUtilities.trimMiddle(this.#requestInternal.name(), 100);
       const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.#requestInternal);
-      UI.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);
-      this.#appendSubtitle(cell, this.#requestInternal.path());
+      input.text = networkManager ? networkManager.target().decorateLabel(name) : name;
+      input.subtitle = this.#requestInternal.path();
       if (!this.#requestInternal.url().startsWith('data')) {
         // Show the URL as tooltip unless it's a data URL.
-        UI.Tooltip.Tooltip.install(cell, this.#requestInternal.url());
+        input.title = this.#requestInternal.url();
       }
-    } else if (text) {
-      UI.UIUtils.createTextChild(cell, text);
     }
+    CELL_VIEW(input, undefined, cell);
   }
 
   #renderStatusCell(cell: HTMLElement): void {
@@ -1811,30 +1871,6 @@ export class NetworkRequestNode extends NetworkNode {
       UI.Tooltip.Tooltip.install(subtitleElement, tooltipText);
     }
     cellElement.appendChild(subtitleElement);
-  }
-
-  #createAiButtonIfAvailable(): HTMLSpanElement|void {
-    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.network-floating-button')) {
-      const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.network-floating-button');
-      const aiButtonContainer = document.createElement('span');
-      aiButtonContainer.classList.add('ai-button-container');
-      const icon = AiAssistance.AiUtils.getIconName();
-      const floatingButton = Buttons.FloatingButton.create(icon, action.title(), 'ask-ai');
-      floatingButton.addEventListener('click', ev => {
-        ev.stopPropagation();
-        this.select();
-        void action.execute();
-      }, {capture: true});
-      // We need this as else the images get open under it.
-      floatingButton.addEventListener('dblclick', ev => {
-        ev.stopPropagation();
-      }, {capture: true});
-      floatingButton.addEventListener('mousedown', ev => {
-        ev.stopPropagation();
-      }, {capture: true});
-      aiButtonContainer.appendChild(floatingButton);
-      return aiButtonContainer;
-    }
   }
 }
 

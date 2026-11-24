@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -12,12 +12,13 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame} from '../../testing/ResourceHelpers.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
 
@@ -1031,6 +1032,46 @@ describeWithEnvironment('NetworkLogView', () => {
         url: urlString``,
       });
       assert.isFalse(Network.NetworkDataGridNode.NetworkRequestNode.isConsoleOriginated(request));
+    });
+  });
+
+  describe('AI button', () => {
+    const actionId = 'drjones.network-floating-button';
+
+    afterEach(() => {
+      UI.ActionRegistration.maybeRemoveActionExtension(actionId);
+      UI.ActionRegistry.ActionRegistry.reset();
+      UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+    });
+
+    it('is not rendered when the action is not registered', () => {
+      const request = createNetworkRequest({url: 'https://www.example.com/'});
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+      const el = renderNodeCell(networkRequestNode, 'name');
+      assert.isNull(el.querySelector('devtools-floating-button'));
+    });
+
+    it('selects the node and executes the action on click, and does not activate the request', () => {
+      registerNoopActions([actionId]);
+      const execute = sinon.stub(UI.ActionRegistry.ActionRegistry.instance().getAction(actionId), 'execute');
+      const parentView = createParentView();
+      const request = createNetworkRequest({url: 'https://www.example.com/'});
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(parentView, request);
+      const select = sinon.stub(networkRequestNode, 'select');
+      const el = renderNodeCell(networkRequestNode, 'name');
+
+      const button = el.querySelector('.ai-button-container devtools-floating-button');
+      assert.exists(button);
+      assert.strictEqual(button.getAttribute('title'), 'mock');
+
+      button.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+      button.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+      sinon.assert.notCalled(select);
+      sinon.assert.notCalled(parentView.dispatchEventToListeners);
+
+      button.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+      sinon.assert.calledOnce(select);
+      sinon.assert.calledOnce(execute);
     });
   });
 

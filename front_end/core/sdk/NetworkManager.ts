@@ -2215,7 +2215,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       Platform.MapUtilities.Multimap<(arg0: InterceptedRequest) => Promise<void>, InterceptionPattern> =
       new Platform.MapUtilities.Multimap();
   #extraHeaders?: Protocol.Network.Headers;
-  #customUserAgent?: string;
+  #customUserAgent = '';
   #isBlocking = false;
 
   constructor(targetManager: TargetManager) {
@@ -2402,9 +2402,13 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   setCustomUserAgentOverride(
       userAgent: string, userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null = null): void {
+    const uaChanged = this.#customUserAgent !== userAgent;
     this.#customUserAgent = userAgent;
     this.#userAgentMetadataOverride = userAgentMetadataOverride;
     this.updateUserAgentOverride();
+    if (uaChanged) {
+      this.dispatchEventToListeners(MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED);
+    }
   }
 
   get requestConditions(): RequestConditions {
@@ -2506,6 +2510,9 @@ export namespace MultitargetNetworkManager {
   export const enum Events {
     BLOCKED_PATTERNS_CHANGED = 'BlockedPatternsChanged',
     CONDITIONS_CHANGED = 'ConditionsChanged',
+    /** Fired when the custom user agent changes (set from the Network Conditions panel). */
+    CUSTOM_USER_AGENT_CHANGED = 'CustomUserAgentChanged',
+    /** Fired when the user agent changes (set from device emulation). */
     USER_AGENT_CHANGED = 'UserAgentChanged',
     INTERCEPTORS_CHANGED = 'InterceptorsChanged',
     REQUEST_INTERCEPTED = 'RequestIntercepted',
@@ -2515,6 +2522,7 @@ export namespace MultitargetNetworkManager {
   export interface EventTypes {
     [Events.BLOCKED_PATTERNS_CHANGED]: void;
     [Events.CONDITIONS_CHANGED]: void;
+    [Events.CUSTOM_USER_AGENT_CHANGED]: void;
     [Events.USER_AGENT_CHANGED]: void;
     [Events.INTERCEPTORS_CHANGED]: void;
     [Events.REQUEST_INTERCEPTED]: string;

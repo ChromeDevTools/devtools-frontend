@@ -1615,6 +1615,47 @@ describe('MultitargetNetworkManager', () => {
         userAgentMetadata: undefined,
       });
     });
+
+    it('emits CUSTOM_USER_AGENT_CHANGED when custom user agent changes', () => {
+      const listener = sinon.spy();
+      universe.multitargetNetworkManager.addEventListener(
+          SDK.NetworkManager.MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED, listener);
+
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('CustomAgent');
+
+      sinon.assert.calledOnce(listener);
+    });
+
+    it('does not emit CUSTOM_USER_AGENT_CHANGED when setting the same custom user agent', () => {
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('CustomAgent');
+      const listener = sinon.spy();
+      universe.multitargetNetworkManager.addEventListener(
+          SDK.NetworkManager.MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED, listener);
+
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('CustomAgent');
+
+      sinon.assert.notCalled(listener);
+    });
+
+    it('does not emit USER_AGENT_CHANGED when custom user agent changes', () => {
+      const listener = sinon.spy();
+      universe.multitargetNetworkManager.addEventListener(
+          SDK.NetworkManager.MultitargetNetworkManager.Events.USER_AGENT_CHANGED, listener);
+
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('CustomAgent');
+
+      sinon.assert.notCalled(listener);
+    });
+
+    it('does not emit CUSTOM_USER_AGENT_CHANGED when clearing an unset custom user agent', () => {
+      const listener = sinon.spy();
+      universe.multitargetNetworkManager.addEventListener(
+          SDK.NetworkManager.MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED, listener);
+
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('');
+
+      sinon.assert.notCalled(listener);
+    });
   });
 
   describe('Trust Token done event', () => {

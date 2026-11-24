@@ -15,6 +15,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {expectCall, spyCall} from '../../testing/ExpectStubCall.js';
+import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
@@ -160,5 +161,70 @@ describe('ScopeChainSidebarPane', () => {
     sinon.assert.calledOnce(expandRecursivelySpy);
     assert.isTrue(scopeElement.expanded);
     assert.strictEqual(scopeElement.childCount(), 2);
+  });
+
+  it('clears stale scope children when the scope chain updates while properties are loading', async () => {
+    const source = 'function f(a) { debugger } f(1)';
+    const scopes = '          {              }';
+    parseScopeChain(scopes);
+
+    const oldScopeObject = backend.createSimpleRemoteObject([{name: 'stack', value: 1}]);
+    const callFrame = await backend.createCallFrame(target, {url: 'file:///tmp/example.js', content: source}, scopes,
+                                                    null, [oldScopeObject]);
+
+    const pane = new Sources.ScopeChainSidebarPane.ScopeChainSidebarPane();
+    renderElementIntoDOM(pane);
+
+    const debuggableFrame = stubFrame<StackTrace.StackTrace.DebuggableFrame>({
+      sdkFrame: callFrame,
+      line: 0,
+      column: 0,
+    });
+    const flavor = StackTrace.StackTrace.DebuggableFrameFlavor.for(debuggableFrame);
+
+    const initialUpdate = spyCall(pane, 'sidebarPaneUpdatedForTest');
+    pane.flavorChanged(flavor);
+    await initialUpdate;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const tree = pane.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    const oldScopeElement = tree.getInternalTreeOutlineForTest().rootElement().firstChild();
+    assert.exists(oldScopeElement);
+    assert.strictEqual(oldScopeElement.listItemElement.getAttribute('aria-label'), 'Local');
+    assert.isAbove(oldScopeElement.childCount(), 0);
+
+    const pendingProperties = Promise.withResolvers<SDK.RemoteObject.GetPropertiesResult>();
+    const pluginScope = new Bindings.DebuggerLanguagePlugins.SourceScope(callFrame, 0n, 'LOCAL', 'LOCAL', undefined,
+                                                                         new TestPlugin('TestPlugin'));
+    sinon.stub(pluginScope.object(), 'getAllProperties').returns(pendingProperties.promise);
+    sinon.stub(backend.universe.debuggerWorkspaceBinding.pluginManager, 'resolveScopeChain').resolves([pluginScope]);
+
+    try {
+      const updated = spyCall(pane, 'sidebarPaneUpdatedForTest');
+      callFrame.debuggerModel.dispatchEventToListeners(SDK.DebuggerModel.Events.DebugInfoAttached, callFrame.script);
+      await updated;
+      tree.flushPendingUpdatesForTesting();
+
+      const newScopeElement = tree.getInternalTreeOutlineForTest().rootElement().firstChild();
+      assert.exists(newScopeElement);
+      assert.notStrictEqual(newScopeElement, oldScopeElement);
+      assert.strictEqual(newScopeElement.listItemElement.getAttribute('aria-label'), 'LOCAL');
+      assert.strictEqual(newScopeElement.childCount(), 0);
+
+      pendingProperties.resolve({
+        properties: [new SDK.RemoteObject.RemoteObjectProperty(
+            'localX0', new SDK.RemoteObject.LocalJSONObject(undefined), false, false, true, false)],
+        internalProperties: [],
+      });
+      await UI.Widget.Widget.allUpdatesComplete;
+      tree.flushPendingUpdatesForTesting();
+
+      assert.strictEqual(newScopeElement.childCount(), 1);
+      assert.strictEqual(
+          newScopeElement.firstChild()?.listItemElement.getAttribute('data-object-property-name-for-test'), 'localX0');
+    } finally {
+      pendingProperties.resolve({properties: [], internalProperties: []});
+    }
   });
 });

@@ -399,7 +399,12 @@ describe('The Debugger Language Plugins', () => {
       return funcNames.length === 6;
     });
     assert.deepEqual(funcNames, ['inner_inline_func', 'outer_inline_func', 'Main', 'go', 'await in go', '(anonymous)']);
-    const sourceLocations = await getCallFrameLocations(devToolsPage);
+
+    let sourceLocations: string[] = [];
+    await devToolsPage.waitForFunction(async () => {
+      sourceLocations = await getCallFrameLocations(devToolsPage);
+      return sourceLocations.length === 5 && sourceLocations[0] === 'unreachable.ll:6';
+    });
     assert.deepEqual(
         sourceLocations,
         ['unreachable.ll:6', 'unreachable.ll:11', 'unreachable.ll:16', 'unreachable.html:27', 'unreachable.html:30']);

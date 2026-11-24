@@ -55,7 +55,7 @@ node_ts_library("sources") {
 
   ts_deps = [
     "../../../front_end/ui/components/text_editor:bundle",
-    "../../conductor:implementation",
+    "../../conductor:core",
     "../../shared",
     "../conductor:implementation",
     "../helpers",

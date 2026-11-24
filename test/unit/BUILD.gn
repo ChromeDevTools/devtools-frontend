@@ -37,6 +37,7 @@ node_ts_library("karma") {
   sources = [ "karma.conf.ts" ]
   ts_deps = [
     "../../front_end/testing:test_id_generation",
+    "../conductor:core",
     "../conductor:implementation",
     "../shared",
   ]
@@ -56,7 +57,7 @@ node_ts_library("mocha") {
   ts_deps = [
     "../../front_end/core/common:bundle",
     "../../front_end/core/host:bundle",
-    "../conductor:implementation",
+    "../conductor:core",
     "../shared",
   ]
 }

@@ -15,6 +15,6 @@ node_ts_library("shared") {
   ts_deps = [
     "../../front_end/testing:mocha_helpers",
     "../../front_end/testing:test_id_generation",
-    "../conductor:implementation",
+    "../conductor:core",
   ]
 }

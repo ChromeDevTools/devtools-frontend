@@ -19,6 +19,7 @@ node_ts_library("extensions") {
 
   ts_deps = [
     "../../../extension-api",
+    "../../conductor:core",
     "../../conductor:implementation",
     "../conductor:implementation",
     "../helpers",

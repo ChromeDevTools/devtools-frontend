@@ -7,11 +7,13 @@ import * as path from 'node:path';
 
 import build from '../build.json' with {type : 'json'};
 
-export const SOURCE_ROOT: string = path.join(import.meta.dirname, '..', build.SOURCE_ROOT);
-export const CHECKOUT_ROOT: string = path.join(import.meta.dirname, '..', build.CHECKOUT_ROOT);
-export const BUILD_ROOT: string = path.join(import.meta.dirname, '..', build.BUILD_ROOT);
-export const GEN_DIR: string = path.join(BUILD_ROOT, 'gen', path.relative(CHECKOUT_ROOT, SOURCE_ROOT));
+export const DEVTOOLS_SOURCE_ROOT: string = path.resolve(import.meta.dirname, '..', build.SOURCE_ROOT);
+export const CHECKOUT_ROOT: string = path.resolve(import.meta.dirname, '..', build.CHECKOUT_ROOT);
+export const BUILD_ROOT: string = path.resolve(import.meta.dirname, '..', build.BUILD_ROOT);
 export const BUILD_WITH_CHROMIUM: boolean = build.BUILD_WITH_CHROMIUM;
+export const SOURCE_ROOT: string =
+    !BUILD_WITH_CHROMIUM && CHECKOUT_ROOT !== DEVTOOLS_SOURCE_ROOT ? CHECKOUT_ROOT : DEVTOOLS_SOURCE_ROOT;
+export const GEN_DIR: string = path.resolve(BUILD_ROOT, 'gen', path.relative(CHECKOUT_ROOT, SOURCE_ROOT));
 export const TEST_ID_REGEX: RegExp = /^(.*\.[tj]s):(.*)$/;
 
 function rebase(fromRoot: string, toRoot: string, filename: string, newExt?: string) {
@@ -120,7 +122,7 @@ export function resolveBuildTestId(spec: string): string {
     return caseName !== undefined ? `${absoluteFile}:${caseName}` : absoluteFile;
   }
   const jsFile = file.replace(/\.ts$/, '.js');
-  const absoluteJsFile = path.isAbsolute(jsFile) ? jsFile : path.join(GEN_DIR, jsFile);
+  const absoluteJsFile = path.isAbsolute(jsFile) ? path.normalize(jsFile) : path.join(GEN_DIR, jsFile);
   return caseName !== undefined ? `${absoluteJsFile}:${caseName}` : absoluteJsFile;
 }
 
@@ -134,7 +136,7 @@ export function defaultChromePath(): string {
     };
     return path.join(BUILD_ROOT, paths[os.platform() as 'linux' | 'win32' | 'darwin']);
   }
-  return path.join(SOURCE_ROOT, 'third_party', 'chrome', localChromePath());
+  return path.join(DEVTOOLS_SOURCE_ROOT, 'third_party', 'chrome', localChromePath());
 }
 
 function localChromePath() {

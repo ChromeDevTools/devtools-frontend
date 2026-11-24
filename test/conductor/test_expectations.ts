@@ -5,7 +5,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import {resolveBuildTestId, SOURCE_ROOT, TEST_ID_REGEX} from './paths.js';
+import {DEVTOOLS_SOURCE_ROOT, resolveBuildTestId, SOURCE_ROOT, TEST_ID_REGEX} from './paths.js';
 import {platform} from './platform.js';
 import {TestConfig} from './test_config.js';
 import {parseExpectations as parse, serializeExpectations as serialize} from './test_expectations_parser.js';
@@ -26,9 +26,19 @@ export const parseExpectations = parse as (content: string) => Expectation[];
 export const serializeExpectations = serialize as (expectations: Expectation[]) => string;
 const parsedExpectations = new Map<string, Expectation[]>();
 
+function getExpectationsPath(): string {
+  if (TestConfig.expectationsFile) {
+    return path.resolve(TestConfig.expectationsFile);
+  }
+  const sourceExpectations = path.join(SOURCE_ROOT, 'test', 'TestExpectations');
+  if (fs.existsSync(sourceExpectations)) {
+    return sourceExpectations;
+  }
+  return path.join(DEVTOOLS_SOURCE_ROOT, 'test', 'TestExpectations');
+}
+
 export function getExpectedResults(testId: string): ExpectationResult[]|undefined {
-  const expectationsPath = TestConfig.expectationsFile ? path.resolve(TestConfig.expectationsFile) :
-                                                         path.join(SOURCE_ROOT, 'test', 'TestExpectations');
+  const expectationsPath = getExpectationsPath();
 
   if (!parsedExpectations.has(expectationsPath)) {
     if (fs.existsSync(expectationsPath)) {
@@ -75,8 +85,7 @@ export function isExpectedResult(
 }
 
 export function getSkippedTests(): string[] {
-  const expectationsPath = TestConfig.expectationsFile ? path.resolve(TestConfig.expectationsFile) :
-                                                         path.join(SOURCE_ROOT, 'test', 'TestExpectations');
+  const expectationsPath = getExpectationsPath();
 
   if (!parsedExpectations.has(expectationsPath)) {
     if (fs.existsSync(expectationsPath)) {

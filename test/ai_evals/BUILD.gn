@@ -42,6 +42,7 @@ node_ts_library("harness_library") {
   ]
   ts_deps = [
     "../../front_end/panels/ai_assistance:bundle",
+    "../conductor:core",
     "../conductor:implementation",
     "../e2e/conductor:implementation",
     "../e2e/shared",

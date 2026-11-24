@@ -11,7 +11,7 @@ node_ts_library("helpers") {
   ]
   ts_deps = [
     "../../../front_end/panels/ai_assistance:bundle",
-    "../../conductor:implementation",
+    "../../conductor:core",
     "../../e2e/helpers",
     "../../e2e/shared",
   ]

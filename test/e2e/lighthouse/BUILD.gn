@@ -16,6 +16,7 @@ node_ts_library("lighthouse") {
   ts_deps = [
     "../../../front_end/core/common:bundle",
     "../../../front_end/core/sdk:bundle",
+    "../../conductor:core",
     "../../conductor:implementation",
     "../conductor:implementation",
     "../helpers",

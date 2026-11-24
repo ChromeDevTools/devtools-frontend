@@ -18,8 +18,8 @@ import {
 import {
   BUILD_ROOT,
   defaultChromePath,
+  DEVTOOLS_SOURCE_ROOT,
   resolveBuildTestId,
-  SOURCE_ROOT,
   TEST_ID_REGEX,
 } from './paths.js';
 import {shardFilter} from './sharding.js';
@@ -67,6 +67,7 @@ interface Config {
   otaPassword?: string;
   isolatedScriptTestOutput?: string;
   dryRun: boolean;
+  jobs?: number;
 }
 
 const diffBehaviors = asArray(options['on-diff']);
@@ -158,7 +159,7 @@ function configureChrome(executablePath: string) {
         [
           '/c',
           'python3',
-          path.join(SOURCE_ROOT, 'scripts', 'deps', 'set_lpac_acls.py'),
+          path.join(DEVTOOLS_SOURCE_ROOT, 'scripts', 'deps', 'set_lpac_acls.py'),
           path.dirname(executablePath),
         ],
         {
@@ -235,6 +236,7 @@ export const TestConfig: Config = {
   isolatedScriptTestOutput:
       options['isolated-script-test-output'] ? path.resolve(options['isolated-script-test-output']) : undefined,
   dryRun: Boolean(options['dry-run']),
+  jobs: options['jobs'],
 };
 
 export function shuffleTests(tests: string[]): string[] {

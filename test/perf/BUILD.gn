@@ -17,7 +17,7 @@ node_ts_library("tests") {
   sources = [ "run-mocha.ts" ]
 
   ts_deps = [
-    "../conductor:implementation",
+    "../conductor:core",
     "../e2e/conductor:implementation",
     "../shared",
   ]

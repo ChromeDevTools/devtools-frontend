@@ -110,6 +110,7 @@ export interface CommandLineOptions {
   'isolated-script-test-filter'?: string|string[];
   'isolated-script-test-filter-file'?: string|string[];
   'dry-run': boolean;
+  jobs?: number;
 }
 
 export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T>): Yargs.Argv<T&CommandLineOptions> {
@@ -261,5 +262,9 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         type: 'boolean',
         default: false,
         desc: 'Check test IDs and print matched tests without running them',
+      })
+      .option('jobs', {
+        type: 'number',
+        desc: 'Number of parallel worker processes to use when supported by the suite',
       });
 }

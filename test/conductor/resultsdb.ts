@@ -266,15 +266,19 @@ export function writeIsolatedScriptTestOutput(
   fs.writeFileSync(resolvedPath, JSON.stringify(data, null, 2));
 }
 
+export async function flushTestResults(): Promise<void> {
+  while (pendingResults.length > 0 || currentBatchPromise !== null) {
+    if (currentBatchPromise) {
+      await currentBatchPromise;
+    } else {
+      takeAndSendResults();
+    }
+  }
+}
+
 // When Node's event loop empties, flush all remaining queued batches sequentially before exiting.
 if (typeof process !== 'undefined' && process.on) {
-  process.on('beforeExit', async () => {
-    while (pendingResults.length > 0 || currentBatchPromise !== null) {
-      if (currentBatchPromise) {
-        await currentBatchPromise;
-      } else {
-        takeAndSendResults();
-      }
-    }
+  process.on('beforeExit', () => {
+    void flushTestResults();
   });
 }

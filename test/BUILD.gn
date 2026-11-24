@@ -67,11 +67,12 @@ group("unittests") {
 }
 
 node_ts_library("run") {
+  testonly = false
   sources = [ "run.ts" ]
 
   inputs = typescript_yargs_types_inputs
 
-  ts_deps = [ "conductor:implementation" ]
+  ts_deps = [ "conductor:core" ]
 }
 
 generated_file("build_config") {

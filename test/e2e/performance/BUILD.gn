@@ -18,6 +18,7 @@ node_ts_library("performance") {
     "wasm/performance_profiling.test.ts",
   ]
   ts_deps = [
+    "../../conductor:core",
     "../../conductor:implementation",
     "../conductor:implementation",
     "../helpers",

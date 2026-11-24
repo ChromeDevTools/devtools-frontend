@@ -18,7 +18,7 @@ node_ts_library("report") {
     "scorer.ts",
     "trajectory-builder.ts",
   ]
-  ts_deps = [ "../../conductor:implementation" ]
+  ts_deps = [ "../../conductor:core" ]
 }
 
 node_ts_library("unittests") {

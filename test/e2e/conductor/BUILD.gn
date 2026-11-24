@@ -14,6 +14,7 @@ group("conductor") {
 node_ts_library("implementation") {
   testonly = false
   ts_deps = [
+    "../../conductor:core",
     "../../conductor:implementation",
     "../shared",
   ]

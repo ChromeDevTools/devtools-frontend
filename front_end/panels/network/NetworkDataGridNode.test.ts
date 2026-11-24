@@ -670,6 +670,48 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.strictEqual(el2.textContent, 'false');
   });
 
+  describe('time cell', () => {
+    it('renders the duration with the latency as a subtitle', () => {
+      const request = createNetworkRequest({url: 'https://www.example.com'});
+      request.setIssueTime(1, 1);
+      request.responseReceivedTime = 2;
+      request.endTime = 3;
+
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+      const el = renderNodeCell(networkRequestNode, 'time');
+      const subtitle = el.querySelector<HTMLElement>('.network-cell-subtitle');
+      assert.exists(subtitle);
+      assert.strictEqual(subtitle.title, 'Latency (response received time - start time)');
+      assert.isNotEmpty(el.title);
+      assert.strictEqual(el.textContent, el.title + subtitle.textContent);
+      assert.isFalse(el.classList.contains('network-dim-cell'));
+      assert.isNull(el.querySelector('devtools-icon'));
+    });
+
+    it('renders a dimmed cell for a pending request', () => {
+      const request = createNetworkRequest({url: 'https://www.example.com'});
+
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+      const el = renderNodeCell(networkRequestNode, 'time');
+      assert.strictEqual(el.textContent, 'Pending');
+      assert.strictEqual(el.title, 'Pending');
+      assert.isTrue(el.classList.contains('network-dim-cell'));
+      assert.isNull(el.querySelector('.network-cell-subtitle'));
+    });
+  });
+
+  it('renders the priority cell with the initial priority as a subtitle', () => {
+    const request = createNetworkRequest({url: 'https://www.example.com'});
+    request.setInitialPriority(Protocol.Network.ResourcePriority.Low);
+    request.setPriority(Protocol.Network.ResourcePriority.High);
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'priority');
+    assert.strictEqual(el.title, 'High, Initial priority: Low');
+    assert.strictEqual(el.querySelector('.network-cell-subtitle')?.textContent, 'Low');
+    assert.strictEqual(el.textContent, 'HighLow');
+  });
+
   describe('getExecutionContextDescription', () => {
     it('returns empty string when there is no frame and no target', () => {
       const request = createNetworkRequest({url: 'https://www.example.com'});

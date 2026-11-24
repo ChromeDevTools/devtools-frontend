@@ -56,8 +56,10 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import {PanelUtils} from '../utils/utils.js';
+
+const {ifDefined} = Directives;
 
 const UIStrings = {
   /**
@@ -647,6 +649,10 @@ interface CellViewInput {
   text: string;
   title?: string;
   subtitle?: string;
+  subtitleTitle?: string;
+  dimmed?: boolean;
+  /** Set for the time cell of a request that a throttling rule slowed down. */
+  throttling?: {title: string, onClick: () => void};
   /** Set for the first visible name, path or URL cell. This cell owns the icons and the row click handlers. */
   primary?: PrimaryCellViewInput;
 }
@@ -680,10 +686,15 @@ const CELL_VIEW = (input: CellViewInput, _output: undefined, target: HTMLElement
                                   @dblclick=${stopPropagationInCapture}
                                   @mousedown=${stopPropagationInCapture}></devtools-floating-button>
       </span>` : nothing}
+    ${input.throttling ? html`
+      <devtools-icon name="watch" title=${input.throttling.title}
+                     @click=${input.throttling.onClick}></devtools-icon>` : nothing}
     ${input.text}
-    ${input.subtitle !== undefined ? html`<div class="network-cell-subtitle">${input.subtitle}</div>` : nothing}`,
+    ${input.subtitle !== undefined ? html`
+      <div class="network-cell-subtitle" title=${ifDefined(input.subtitleTitle)}>${input.subtitle}</div>` : nothing}`,
     target, {
       container: {
+        classes: input.dimmed ? ['network-dim-cell'] : [],
         attributes: {
           title: input.title,
           tabindex: primary ? '-1' : undefined,
@@ -1348,23 +1359,12 @@ export class NetworkRequestNode extends NetworkNode {
       case 'priority': {
         const priority = this.#requestInternal.priority();
         const initialPriority = this.#requestInternal.initialPriority();
-        if (priority && initialPriority) {
-          this.#setTextAndTitle(
-              cell,
-              PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
-              i18nString(
-                  UIStrings.initialPriorityToolTip,
-                  {
-                    PH1: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
-                    PH2: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority),
-                  },
-                  ),
-          );
-        } else {
-          this.#setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '');
-        }
-        this.#appendSubtitle(
-            cell, initialPriority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority) : '');
+        const text = priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '';
+        const subtitle = initialPriority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority) : '';
+        const title = priority && initialPriority ?
+            i18nString(UIStrings.initialPriorityToolTip, {PH1: text, PH2: subtitle}) :
+            text;
+        CELL_VIEW({text, title, subtitle}, undefined, cell);
         break;
       }
       case 'connection-id': {
@@ -1833,26 +1833,31 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   #renderTimeCell(cell: HTMLElement): void {
+    const input: CellViewInput = {text: ''};
     const throttlingConditions = this.throttlingConditions();
     if (throttlingConditions?.urlPattern) {
       const throttlingConditionsTitle = typeof throttlingConditions.conditions.title === 'string' ?
           throttlingConditions.conditions.title :
           throttlingConditions.conditions.title();
-      const icon = createIcon('watch');
-      icon.title = i18nString(UIStrings.wasThrottled, {PH1: throttlingConditionsTitle});
-      icon.addEventListener('click', () => void Common.Revealer.reveal(throttlingConditions));
-      cell.append(icon);
+      input.throttling = {
+        title: i18nString(UIStrings.wasThrottled, {PH1: throttlingConditionsTitle}),
+        onClick: () => void Common.Revealer.reveal(throttlingConditions),
+      };
     }
     if (this.#requestInternal.duration > 0) {
-      this.#setTextAndTitle(cell, i18n.TimeUtilities.secondsToString(this.#requestInternal.duration));
-      this.#appendSubtitle(cell, i18n.TimeUtilities.secondsToString(this.#requestInternal.latency), false,
-                           i18nString(UIStrings.timeSubtitleTooltipText));
+      input.text = i18n.TimeUtilities.secondsToString(this.#requestInternal.duration);
+      input.title = input.text;
+      input.subtitle = i18n.TimeUtilities.secondsToString(this.#requestInternal.latency);
+      input.subtitleTitle = i18nString(UIStrings.timeSubtitleTooltipText);
     } else if (this.#requestInternal.preserved) {
-      this.#setTextAndTitle(cell, i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
+      input.text = i18nString(UIStrings.unknown);
+      input.title = i18nString(UIStrings.unknownExplanation);
     } else {
-      cell.classList.add('network-dim-cell');
-      this.#setTextAndTitle(cell, i18nString(UIStrings.pending));
+      input.text = i18nString(UIStrings.pending);
+      input.title = input.text;
+      input.dimmed = true;
     }
+    CELL_VIEW(input, undefined, cell);
   }
 
   #renderExecutionContextCell(cell: HTMLElement): void {

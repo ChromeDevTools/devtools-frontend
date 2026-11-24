@@ -15,6 +15,7 @@ import {getMainFrame} from '../../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
+import * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 import {
   createCustomStep,
   installMocksForRecordingPlayer,
@@ -2052,5 +2053,19 @@ describe('RecordingPlayer.connectPuppeteer', () => {
     assert.strictEqual(error?.message, 'Could not get the target info of the primary page target');
     sinon.assert.notCalled(attachToTarget);
     sinon.assert.notCalled(connectPuppeteerToConnection);
+  });
+});
+
+describe('RecordingPlayer.disconnectPuppeteer', () => {
+  it('calls browser.disconnect() even when browser.pages() rejects', async () => {
+    const consoleError = sinon.stub(console, 'error');
+    const browser = sinon.createStubInstance(puppeteer.Browser);
+    browser.pages.rejects(new Error('\'Page.enable\' wasn\'t found'));
+    browser.disconnect.resolves();
+
+    await Models.RecordingPlayer.RecordingPlayer.disconnectPuppeteer(browser);
+
+    sinon.assert.calledOnce(browser.disconnect);
+    sinon.assert.calledOnceWithExactly(consoleError, 'Error disconnecting Puppeteer', '\'Page.enable\' wasn\'t found');
   });
 });

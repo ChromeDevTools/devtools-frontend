@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {describe, it} from '../../../test/api/mocha-interface.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import * as SDK from './sdk.js';
 
@@ -129,4 +130,135 @@ describe('TargetManager API Test', () => {
       childTargetManager.dispose();
     }
   });
+
+  it('pauses on event listener breakpoints after suspending and resuming all targets',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget, 'Primary page target should exist');
+
+       await inspectedPage.goToHtml(`
+         <!DOCTYPE html>
+         <input type="button" id="test">
+         <script>
+           function testElementClicked() {
+             return 0;
+           }
+
+           function addListenerAndClick() {
+             const element = document.getElementById('test');
+             element.addEventListener('click', testElementClicked, true);
+             element.click();
+           }
+         </script>
+       `);
+
+       const domDebuggerModel = primaryTarget.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+       assert.isNotNull(domDebuggerModel, 'DOMDebuggerModel should exist');
+       assert.isFalse(domDebuggerModel.suspended, 'DOMDebuggerModel should not be suspended initially');
+
+       const debuggerModel = primaryTarget.model(SDK.DebuggerModel.DebuggerModel);
+       assert.isNotNull(debuggerModel, 'DebuggerModel should exist');
+       assert.isTrue(debuggerModel.debuggerEnabled(), 'Debugger should be enabled initially');
+
+       const breakpoint = universe.domDebuggerManager.resolveEventListenerBreakpoint({
+         eventName: 'listener:click',
+       });
+       assert.isNotNull(breakpoint, 'Event listener breakpoint listener:click should exist');
+       assert.isFalse(breakpoint.enabled(), 'Event listener breakpoint should start disabled');
+       breakpoint.setEnabled(true);
+       assert.isTrue(breakpoint.enabled(), 'Event listener breakpoint should be enabled');
+
+       // Flush universe's CDP connection so DOMDebugger.setEventListenerBreakpoint completes
+       // before inspectedPage evaluates addListenerAndClick() over Puppeteer's separate session.
+       await primaryTarget.runtimeAgent().invoke_evaluate({expression: 'void 0'});
+
+       const pendingEvals: Array<Promise<unknown>> = [];
+       const triggerClickAndVerifyPauseAndResume = async(): Promise<void> => {
+         const paused = debuggerModel.once(SDK.DebuggerModel.Events.DebuggerPaused);
+         const evalPromise = inspectedPage.evaluate(() => {
+           (window as unknown as {addListenerAndClick: () => void}).addListenerAndClick();
+         });
+         void evalPromise.catch(() => {});
+         pendingEvals.push(evalPromise);
+
+         await paused;
+         const pausedDetails = debuggerModel.debuggerPausedDetails();
+         assert.isNotNull(pausedDetails, 'DebuggerPausedDetails should be present when paused');
+         assert.isTrue(debuggerModel.isPaused(), 'Script execution should be paused');
+         assert.strictEqual(pausedDetails.reason, Protocol.Debugger.PausedEventReason.EventListener);
+         assert.strictEqual(pausedDetails.callFrames[0]?.functionName, 'testElementClicked');
+         assert.strictEqual(pausedDetails.callFrames[1]?.functionName, 'addListenerAndClick');
+         const auxData = pausedDetails.auxData as SDK.DebuggerModel.EventListenerPausedDetailsAuxData | undefined;
+         assert.exists(auxData);
+         assert.deepEqual(auxData, {
+           eventName: 'listener:click',
+           targetName: 'INPUT',
+         });
+         assert.strictEqual(universe.domDebuggerManager.resolveEventListenerBreakpoint(auxData), breakpoint);
+
+         const resumed = debuggerModel.once(SDK.DebuggerModel.Events.DebuggerResumed);
+         debuggerModel.resume();
+         await Promise.all([resumed, evalPromise]);
+         assert.isFalse(debuggerModel.isPaused(), 'Script execution should be resumed');
+         assert.isNull(debuggerModel.debuggerPausedDetails());
+       };
+
+       let testError: unknown;
+       try {
+         await triggerClickAndVerifyPauseAndResume();
+
+         await universe.targetManager.suspendAllTargets();
+         assert.isTrue(universe.targetManager.allTargetsSuspended());
+         assert.isTrue(primaryTarget.suspended());
+         assert.isTrue(domDebuggerModel.suspended);
+         assert.isFalse(debuggerModel.debuggerEnabled());
+
+         await universe.targetManager.resumeAllTargets();
+         assert.isFalse(universe.targetManager.allTargetsSuspended());
+         assert.isFalse(primaryTarget.suspended());
+         assert.isFalse(domDebuggerModel.suspended);
+         assert.isTrue(debuggerModel.debuggerEnabled());
+         assert.isTrue(breakpoint.enabled());
+
+         await triggerClickAndVerifyPauseAndResume();
+       } catch (err) {
+         testError = err;
+         throw err;
+       } finally {
+         const cleanupErrors: unknown[] = [];
+         const cleanupSteps: Array<() => Promise<void>> = [
+           async () => {
+             if (universe.targetManager.allTargetsSuspended()) {
+               await universe.targetManager.resumeAllTargets();
+             }
+           },
+           async () => {
+             if (debuggerModel.isPaused()) {
+               const resumed = debuggerModel.once(SDK.DebuggerModel.Events.DebuggerResumed);
+               debuggerModel.resume();
+               await resumed;
+             }
+           },
+           async () => {
+             breakpoint.setEnabled(false);
+           },
+           async () => {
+             await primaryTarget.runtimeAgent().invoke_evaluate({expression: 'void 0'});
+           },
+           async () => {
+             await Promise.allSettled(pendingEvals);
+           },
+         ];
+         for (const step of cleanupSteps) {
+           try {
+             await step();
+           } catch (err) {
+             cleanupErrors.push(err);
+           }
+         }
+         if (!testError && cleanupErrors.length > 0) {
+           throw cleanupErrors[0];
+         }
+       }
+     });
 });

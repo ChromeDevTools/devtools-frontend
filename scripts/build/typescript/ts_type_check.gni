@@ -7,6 +7,16 @@ import("./typescript_vars.gni")
 
 # Defines a TypeScript verification-only target that runs type checking
 # without emitting .d.ts or .js files. Produces a .stamp file upon success.
+#
+# Scripts that Node.js runs straight from the source tree, without a build
+# step, set `runs_in = "node"` and `type_stripping = true`. They are then
+# checked the way Node.js loads them: module resolution follows Node.js,
+# imports name the `.ts` file, and syntax that type stripping cannot erase
+# (enums, namespaces, parameter properties) is an error.
+#
+# `allow_js = true` lets the sources import JavaScript files. The types of
+# those files are inferred, the files themselves are not checked. List them in
+# `inputs`, and make sure that `rootdir` contains them.
 template("ts_type_check") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
@@ -96,6 +106,20 @@ template("ts_type_check") {
         "undici-types",
       ]
     }
+  }
+
+  _type_stripping = defined(invoker.type_stripping) && invoker.type_stripping
+  assert(!_type_stripping || _runs_in_node,
+         "'type_stripping' requires runs_in = \"node\" for $target_name")
+  if (_type_stripping) {
+    _compiler_options.module = "nodenext"
+    _compiler_options.moduleResolution = "nodenext"
+    _compiler_options.allowImportingTsExtensions = true
+    _compiler_options.erasableSyntaxOnly = true
+  }
+
+  if (defined(invoker.allow_js) && invoker.allow_js) {
+    _compiler_options.allowJs = true
   }
 
   _es_libs = default_ts_dom_libs

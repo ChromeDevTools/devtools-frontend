@@ -1,0 +1,56 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../build/ninja/vars.gni")
+import("../build/typescript/typescript.gni")
+
+# Node.js runs the verifier and its tests straight from the source tree, so
+# the build only type-checks them.
+ts_type_check("gn_deps_verifier") {
+  testonly = true
+  runs_in = "node"
+  type_stripping = true
+  es_target = "esnext"
+  es_libs = []
+
+  # cli.ts imports ../devtools_paths.js.
+  allow_js = true
+  rootdir = ".."
+
+  sources = [
+    "cli.ts",
+    "extractors/gn_ast_extractor.ts",
+    "extractors/typescript_analyzer.ts",
+    "extractors/typescript_import.ts",
+    "gn_ast/gn_ast.ts",
+    "gn_ast/gn_ast_factory.ts",
+    "gn_ast/gn_ast_types.ts",
+    "gn_ast/gn_ast_visitor.ts",
+    "tests/extractors/gn_ast_extractor.test.ts",
+    "tests/extractors/typescript_analyzer.test.ts",
+    "tests/extractors/typescript_import.test.ts",
+    "tests/gn_ast/gn_ast.test.ts",
+    "tests/gn_ast/gn_ast_factory.test.ts",
+    "tests/gn_ast/gn_ast_visitor.test.ts",
+    "tests/utils/concurrency.test.ts",
+    "tests/utils/error.test.ts",
+    "tests/utils/gn_ast_updater.test.ts",
+    "tests/utils/gn_label.test.ts",
+    "tests/validator.test.ts",
+    "utils/concurrency.ts",
+    "utils/debug.ts",
+    "utils/error.ts",
+    "utils/gn_ast_updater.ts",
+    "utils/gn_label.ts",
+    "validator.ts",
+  ]
+
+  inputs = typescript_yargs_types_inputs + [
+             "../devtools_paths.js",
+             "../package.json",
+             devtools_location_prepend +
+                 "node_modules/typescript/lib/typescript.d.ts",
+             devtools_location_prepend + "node_modules/typescript/package.json",
+           ]
+}

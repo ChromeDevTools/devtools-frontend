@@ -157,6 +157,35 @@ devtools_entrypoint("bundle") {
 
 ---
 
+### Type-checking without emit (`ts_type_check`)
+
+The `ts_type_check` rule type-checks its `sources` and writes a stamp file. It emits neither `.js` nor `.d.ts` files, so other targets cannot list it in `ts_deps`. It takes the same `sources`, `ts_deps`, `deps`, `inputs`, `testonly`, `runs_in` and `rootdir` parameters as `ts_library`.
+
+Use it for scripts that Node.js runs straight from the source tree:
+
+```gn
+ts_type_check("my_script") {
+  runs_in = "node"
+  type_stripping = true
+  es_libs = []
+
+  sources = [
+    "cli.ts",
+    "helpers.ts",
+  ]
+}
+```
+
+#### Additional parameters
+
+- **`type_stripping`** (`boolean`, optional):
+  Set to `true` for sources that Node.js runs without a build step. Requires `runs_in = "node"`. Module resolution then follows Node.js (`nodenext`), imports name the `.ts` file, and syntax that type stripping cannot erase, such as enums, is an error.
+
+- **`allow_js`** (`boolean`, optional):
+  Set to `true` if the sources import JavaScript files. Their types are inferred, the files themselves are not checked. List them in `inputs`, and set `rootdir` so that it contains them.
+
+---
+
 ## Architecture Overview
 
 ### Core Principles

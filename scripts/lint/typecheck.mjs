@@ -21,15 +21,6 @@ const TS_CONFIGS = [
       'tsconfig.json',
     ),
   },
-  {
-    prefix: 'scripts/gn_deps_verifier',
-    configPath: join(
-      devtoolsRootPath(),
-      'scripts',
-      'gn_deps_verifier',
-      'tsconfig.json',
-    ),
-  },
 ];
 
 export async function runTypeCheck(files, {debug}) {

@@ -14,7 +14,6 @@ import type * as Protocol from '../generated/protocol.js';
 import * as DevToolsState from '../models/devtools_state/devtools_state.js';
 import {MockCDPConnection} from '../testing/MockCDPConnection.js';
 import {setupRuntimeHooks} from '../testing/RuntimeHelpers.js';
-import {DEFAULT_SETTING_REGISTRATIONS_FOR_TEST} from '../testing/SettingsHelpers.js';
 import {createTarget} from '../testing/TargetHelpers.js';
 import {TestUniverse} from '../testing/TestUniverse.js';
 
@@ -28,7 +27,7 @@ describe('Universe', () => {
       syncedStorage: new Common.Settings.SettingsStorage({}),
       globalStorage: new Common.Settings.SettingsStorage({}),
       localStorage: new Common.Settings.SettingsStorage({}),
-      settingRegistrations: [...DEFAULT_SETTING_REGISTRATIONS_FOR_TEST],
+      settingRegistrations: [],
     };
   }
 

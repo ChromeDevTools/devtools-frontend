@@ -29,7 +29,6 @@ import * as SourceMapScopes from '../models/source_map_scopes/source_map_scopes.
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 
-import {DEFAULT_SETTING_REGISTRATIONS_FOR_TEST} from './SettingsHelpers.js';
 import {createTarget} from './TargetHelpers.js';
 
 export interface CreationOptions extends Partial<Foundation.Universe.CreationOptions> {
@@ -49,9 +48,8 @@ export interface CreationOptions extends Partial<Foundation.Universe.CreationOpt
  * IMPORTANT: Do not add any `.instance()` singleton access here. Only add classes
  * that take all their dependencies via constructor (including Settings)!
  *
- * Registered settings need to be passed via constructor. By default `TestUniverse`
- * uses DEFAULT_SETTING_REGISTRATIONS_FOR_TEST, but it will not read the global
- * registered settings (on purpose).
+ * Registered settings can be passed via constructor, but by default `TestUniverse`
+ * uses an empty list and will not read the global registered settings (on purpose).
  */
 export class TestUniverse implements Foundation.Universe.Universe {
   readonly #context = new Root.DevToolsContext.WritableDevToolsContext();
@@ -135,7 +133,7 @@ export class TestUniverse implements Foundation.Universe.Universe {
           syncedStorage: storage,
           globalStorage: storage,
           localStorage: storage,
-          settingRegistrations: [...DEFAULT_SETTING_REGISTRATIONS_FOR_TEST],
+          settingRegistrations: [],
           console: this.console,
           ...this.#creationOptions?.settingsCreationOptions,
         };

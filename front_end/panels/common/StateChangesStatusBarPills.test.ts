@@ -109,6 +109,16 @@ describe('StateChangesStatusBarPills', () => {
     assert.isFalse(cacheDisabledSetting.get());
   });
 
+  it('reveals the state change of a pill', async () => {
+    const revealStub = sinon.stub(universe.stateManager, 'reveal').resolves();
+    universe.cpuThrottlingManager.setCPUThrottlingRate(4);
+    const {view} = await createWidget();
+
+    view.input.pills[0].onReveal();
+
+    sinon.assert.calledOnceWithExactly(revealStub, DevToolsState.State.StateKind.CPU_THROTTLING);
+  });
+
   it('stops listening to state changes when it is hidden', async () => {
     const {widget} = await createWidget();
 
@@ -210,12 +220,14 @@ describe('StateChangesStatusBarPills', () => {
         id: string,
         title: string,
         onReset: () => void = sinon.spy(),
+        onReveal: () => void = sinon.spy(),
         resetTitle = 'Enable cache',
         ): PanelCommon.StateChangesStatusBarPills.Pill {
       return {
         id,
         title: i18n.i18n.lockedString(title),
         resetTitle: i18n.i18n.lockedString(resetTitle),
+        onReveal,
         onReset,
       };
     }
@@ -243,7 +255,8 @@ describe('StateChangesStatusBarPills', () => {
     });
 
     it('sets the tooltip and accessible name of the reset button', () => {
-      const target = renderView([createPill('cache-disabled', 'Cache disabled', sinon.spy(), 'Enable cache')]);
+      const target =
+          renderView([createPill('cache-disabled', 'Cache disabled', sinon.spy(), sinon.spy(), 'Enable cache')]);
 
       const resetButton = target.querySelector<Buttons.Button.Button>('.pill devtools-button');
       assert.exists(resetButton);
@@ -251,13 +264,26 @@ describe('StateChangesStatusBarPills', () => {
       assert.strictEqual(resetButton.accessibleLabel, 'Enable cache');
     });
 
+    it('reveals a pill when the user clicks its label without resetting it', () => {
+      const onReset = sinon.spy();
+      const onReveal = sinon.spy();
+      const target = renderView([createPill('cache-disabled', 'Cache disabled', onReset, onReveal)]);
+
+      target.querySelector<HTMLButtonElement>('.pill-label')?.click();
+
+      sinon.assert.calledOnce(onReveal);
+      sinon.assert.notCalled(onReset);
+    });
+
     it('resets a pill when the user clicks its reset button', () => {
       const onReset = sinon.spy();
-      const target = renderView([createPill('cache-disabled', 'Cache disabled', onReset)]);
+      const onReveal = sinon.spy();
+      const target = renderView([createPill('cache-disabled', 'Cache disabled', onReset, onReveal)]);
 
       target.querySelector<Buttons.Button.Button>('.pill devtools-button')?.click();
 
       sinon.assert.calledOnce(onReset);
+      sinon.assert.notCalled(onReveal);
     });
 
     it('moves focus to the next pill when resetting a focused pill', () => {
@@ -284,11 +310,12 @@ describe('StateChangesStatusBarPills', () => {
       },
                    {}, target);
 
-      const [firstButton, secondButton] = target.querySelectorAll<Buttons.Button.Button>('.pill devtools-button');
-      firstButton.focus();
-      firstButton.click();
+      const [firstResetButton] = target.querySelectorAll<Buttons.Button.Button>('.pill devtools-button');
+      const [, secondPillLabel] = target.querySelectorAll<HTMLButtonElement>('.pill .pill-label');
+      firstResetButton.focus();
+      firstResetButton.click();
 
-      assert.strictEqual(document.activeElement, secondButton);
+      assert.strictEqual(document.activeElement, secondPillLabel);
     });
 
     it('moves focus to "Reset all" when resetting the last focused pill', () => {
@@ -374,6 +401,8 @@ describe('StateChangesStatusBarPills', () => {
       const pill = target.querySelector('.pill');
       assert.exists(pill);
       assert.strictEqual(pill.getAttribute('jslog'), 'Item; context: cache-disabled');
+      assert.strictEqual(pill.querySelector('.pill-label')?.getAttribute('jslog'),
+                         'Action; context: reveal; track: click');
       assert.strictEqual(pill.querySelector('devtools-button')?.jslogContext, 'reset');
       assert.strictEqual(target.querySelector<Buttons.Button.Button>('.reset-all')?.jslogContext, 'state-reset-all');
     });
@@ -401,8 +430,12 @@ describe('StateChangesStatusBarPills', () => {
 
     it('shows collapsed pills as submenus in the overflow menu', async () => {
       const onReset = sinon.spy();
+      const onReveal = sinon.spy();
       const onShowMoreMenuOpen = sinon.spy();
-      const pills = [createPill('cpu-throttling', 'CPU (4×)'), createPill('cache-disabled', 'Cache disabled', onReset)];
+      const pills = [
+        createPill('cpu-throttling', 'CPU (4×)'),
+        createPill('cache-disabled', 'Cache disabled', onReset, onReveal),
+      ];
       const target = renderView(pills, sinon.spy(), 300, 1, {}, false, onShowMoreMenuOpen);
 
       const moreButton = target.querySelector<Buttons.Button.Button>('devtools-button.more-pills:not(.collapsed)');
@@ -416,12 +449,19 @@ describe('StateChangesStatusBarPills', () => {
       assert.deepEqual(getMenuItemLabels(menu.defaultSection()), ['Cache disabled']);
       const subMenu = findMenuItemWithLabel(menu.defaultSection(), 'Cache disabled');
       assert.instanceOf(subMenu, UI.ContextMenu.SubMenu);
-      assert.deepEqual(getMenuItemLabels(subMenu.defaultSection()), ['Reset']);
+      assert.deepEqual(getMenuItemLabels(subMenu.defaultSection()), ['Inspect', 'Reset']);
+
+      const inspectItem = findMenuItemWithLabel(subMenu.defaultSection(), 'Inspect');
+      assert.exists(inspectItem);
+      menu.invokeHandler(inspectItem.id());
+      sinon.assert.calledOnce(onReveal);
+      sinon.assert.notCalled(onReset);
+
       const resetItem = findMenuItemWithLabel(subMenu.defaultSection(), 'Reset');
       assert.exists(resetItem);
       menu.invokeHandler(resetItem.id());
-
       sinon.assert.calledOnce(onReset);
+
       await assertScreenshot('status_bar/state_changes_pills_narrow.png');
     });
 

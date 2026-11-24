@@ -46,6 +46,11 @@ const UIStrings = {
   enableJavaScript: 'Enable JavaScript',
   /**
    * @description Label of a menu item in a submenu in the status bar at the bottom of DevTools.
+   * Clicking it opens the panel or setting where the changed setting is configured.
+   */
+  inspectMenuItem: 'Inspect',
+  /**
+   * @description Label of a menu item in a submenu in the status bar at the bottom of DevTools.
    * Clicking it resets the changed setting back to its default value.
    */
   resetMenuItem: 'Reset',
@@ -72,6 +77,7 @@ export interface Pill {
   id: string;
   title: Platform.UIString.LocalizedString;
   resetTitle: Platform.UIString.LocalizedString;
+  onReveal: () => void;
   onReset: () => void;
 }
 
@@ -105,6 +111,9 @@ function openShowMoreMenu(event: Event, overflowPills: Pill[], onOpen: () => voi
   });
   for (const pill of overflowPills) {
     const subMenu = menu.defaultSection().appendSubMenuItem(pill.title, false, pill.id);
+    subMenu.defaultSection().appendItem(i18nString(UIStrings.inspectMenuItem), pill.onReveal, {
+      jslogContext: 'inspect',
+    });
     subMenu.defaultSection().appendItem(i18nString(UIStrings.resetMenuItem), pill.onReset, {
       jslogContext: 'reset',
     });
@@ -117,9 +126,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   const overflowPills = input.pills.slice(input.visiblePillCount);
   const focusableElements: Array<Element|undefined> = [];
   const handlePillReset = (pill: Pill, index: number): void => {
-    const currElement = focusableElements[index];
     const nextElement = focusableElements[index + 1];
-    if (currElement?.hasFocus() && nextElement instanceof HTMLElement) {
+    if (target.hasFocus() && nextElement instanceof HTMLElement) {
       nextElement.focus();
     }
     pill.onReset();
@@ -143,7 +151,16 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           })}
           class=${classMap({'devtools-pill': true, pill: true, collapsed: index >= input.visiblePillCount})}
           jslog=${VisualLogging.item(pill.id)}>
-          ${pill.title}
+          <button
+            class="pill-label"
+            type="button"
+            jslog=${VisualLogging.action('reveal').track({click: true})}
+            ${ref(element => {
+              if (index < input.visiblePillCount) {
+                focusableElements[index] = element;
+              }
+            })}
+            @click=${pill.onReveal}>${pill.title}</button>
           <devtools-button
             .iconName=${'cross'}
             .variant=${Buttons.Button.Variant.ICON}
@@ -151,11 +168,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             .title=${pill.resetTitle}
             .accessibleLabel=${pill.resetTitle}
             .jslogContext=${'reset'}
-            ${ref(element => {
-              if (index < input.visiblePillCount) {
-                focusableElements[index] = element;
-              }
-            })}
             @click=${() => handlePillReset(pill, index)}></devtools-button>
         </span>`)}</div>
       <devtools-button
@@ -215,10 +227,6 @@ function pillResetTitle(state: DevToolsState.State.State): Platform.UIString.Loc
   }
 }
 
-function toPill(state: DevToolsState.State.State, onReset: () => void): Pill {
-  return {id: state.kind, title: pillTitle(state), resetTitle: pillResetTitle(state), onReset};
-}
-
 function countFittingPills(pillWidths: Array<() => number>, maxWidth: number, gap: number): number {
   let usedWidth = 0;
   for (let i = 0; i < pillWidths.length; i++) {
@@ -230,7 +238,7 @@ function countFittingPills(pillWidths: Array<() => number>, maxWidth: number, ga
   return pillWidths.length;
 }
 
-/** Shows a pill for each state change in the status bar. The user can reset one change or all changes. */
+/** Shows a pill for each state change in the status bar. The user can reveal or reset a change, or reset all changes. */
 export class StateChangesStatusBarPills extends UI.Widget.Widget {
   static override readonly INJECT: readonly[typeof DevToolsState.StateManager.StateManager] =
       [DevToolsState.StateManager.StateManager] as const;
@@ -284,8 +292,14 @@ export class StateChangesStatusBarPills extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    const pills =
-        this.#stateManager.nonDefaultStates().map(state => toPill(state, () => this.#stateManager.reset(state.kind)));
+    const pills: Pill[] =
+        this.#stateManager.nonDefaultStates().map(state => ({
+                                                    id: state.kind,
+                                                    title: pillTitle(state),
+                                                    resetTitle: pillResetTitle(state),
+                                                    onReveal: () => void this.#stateManager.reveal(state.kind),
+                                                    onReset: () => this.#stateManager.reset(state.kind),
+                                                  }));
     const onResetAll = (): void => {
       for (const pill of pills) {
         pill.onReset();

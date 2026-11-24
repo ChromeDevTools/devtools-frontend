@@ -52,4 +52,14 @@ describe('The status bar', () => {
     await devToolsPage.click('.status-bar .reset-all');
     await devToolsPage.waitForNone(PILL_SELECTOR);
   });
+
+  it('reveals the corresponding panel when clicking a pill label', async ({devToolsPage}) => {
+    await enableStateChangesPills(devToolsPage);
+    await throttleCPU(devToolsPage);
+    await waitForPills(devToolsPage, ['CPU (4×)']);
+
+    await devToolsPage.click('.status-bar .pill-label');
+
+    await devToolsPage.waitFor('.panel.timeline .timeline-settings-pane:not(.hidden)');
+  });
 });

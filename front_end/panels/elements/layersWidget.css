@@ -4,16 +4,18 @@
  * found in the LICENSE file.
  */
 
-.layers-widget {
-  overflow: hidden;
-  padding-left: var(--sys-size-2);
-  background-color: var(--sys-color-cdt-base-container);
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  margin-top: 0;
-  padding-bottom: var(--sys-size-2);
-}
+@scope to (devtools-widget > *) {
+  .layers-widget {
+    overflow: hidden;
+    padding-left: var(--sys-size-2);
+    background-color: var(--sys-color-cdt-base-container);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    margin-top: 0;
+    padding-bottom: var(--sys-size-2);
+  }
 
-.layers-widget > .layers-widget-title {
-  font-weight: bold;
-  margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
+  .layers-widget > .layers-widget-title {
+    font-weight: bold;
+    margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
+  }
 }

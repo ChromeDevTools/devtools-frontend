@@ -7,7 +7,7 @@ import {afterEach, beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -16,13 +16,14 @@ import * as Elements from './elements.js';
 describeWithEnvironment('LayersWidget', () => {
   let node: SDK.DOMModel.DOMNode;
   let cssModel: SDK.CSSModel.CSSModel;
+  let getRootLayerStub: sinon.SinonStub;
 
   beforeEach(() => {
     const target = createTarget();
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
     cssModel = domModel.cssModel();
-    sinon.stub(cssModel, 'getRootLayer').resolves({name: '', order: 0});
+    getRootLayerStub = sinon.stub(cssModel, 'getRootLayer').resolves({name: '', order: 0});
     node = new SDK.DOMModel.DOMNode(domModel);
     sinon.stub(node, 'enclosingElementOrSelf').returns(node);
   });
@@ -53,5 +54,31 @@ describeWithEnvironment('LayersWidget', () => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
     sinon.assert.notCalled(addEventListenerSpy.withArgs(SDK.CSSModel.Events.StyleSheetChanged));
+  });
+
+  it('renders the CSS layers tree', async () => {
+    getRootLayerStub.resolves({
+      name: '',
+      order: 0,
+      subLayers: [
+        {name: 'base', order: 1},
+        {
+          name: 'components',
+          order: 2,
+          subLayers: [{name: 'buttons', order: 1}],
+        },
+      ],
+    });
+
+    const widget = new Elements.LayersWidget.LayersWidget();
+    renderElementIntoDOM(widget, {includeCommonStyles: true});
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+    await widget.updateComplete;
+
+    widget.element.style.width = '300px';
+    widget.element.style.height = '150px';
+
+    await assertScreenshot('elements/layers_widget.png');
+    widget.detach();
   });
 });

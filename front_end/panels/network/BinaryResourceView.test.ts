@@ -177,6 +177,43 @@ describeWithEnvironment('BinaryResourceView', () => {
     view.detach();
   });
 
+  it('preserves the selected hex address across streaming chunks and re-showing', async () => {
+    const contentData = TextUtils.StreamingContentData.StreamingContentData.from(
+        new TextUtils.ContentData.ContentData(btoa('a'.repeat(49)), true, 'application/octet-stream'));
+    const view = new Network.BinaryResourceView.BinaryResourceView(
+        contentData,
+        urlString`http://example.com`,
+        Common.ResourceType.resourceTypes.XHR,
+    );
+    try {
+      renderElementIntoDOM(view, {width: 400, height: 400});
+      await waitForViewToSettle(view);
+
+      const byteCells = view.element.querySelectorAll<HTMLElement>('.byte-cell');
+      assert.isAtLeast(byteCells.length, 3);
+      byteCells[2].click();
+      await doubleRaf();
+      await doubleRaf();
+
+      const getSelectedByteIndex =
+          () => [...view.element.querySelectorAll('.byte-cell')].findIndex(cell => cell.classList.contains('selected'));
+      assert.strictEqual(getSelectedByteIndex(), 2);
+
+      view.detach();
+      renderElementIntoDOM(view, {width: 400, height: 400});
+      await doubleRaf();
+      await doubleRaf();
+      assert.strictEqual(getSelectedByteIndex(), 2);
+
+      contentData.addChunk(btoa('a'.repeat(49)));
+      await doubleRaf();
+      await doubleRaf();
+      assert.strictEqual(getSelectedByteIndex(), 2);
+    } finally {
+      view.detach();
+    }
+  });
+
   describe('with a stubbed view', () => {
     async function createView(viewOutput?: Network.BinaryResourceView.ViewOutput) {
       const contentData = TextUtils.StreamingContentData.StreamingContentData.from(

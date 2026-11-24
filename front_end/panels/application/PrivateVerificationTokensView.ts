@@ -9,6 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -18,6 +19,19 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import privateVerificationTokensViewStyles from './privateVerificationTokensView.css.js';
 
 const {repeat} = Directives;
+
+const FILTER_KEYS = [
+  'issuer',
+  'is-issuer',
+  'is-redeemer',
+  'id',
+  'key-id',
+  'expiration',
+  'creation-time',
+  'version',
+  'token',
+];
+const filterParser = new TextUtils.TextUtils.FilterParser(FILTER_KEYS);
 
 const UIStrings = {
   /**
@@ -90,7 +104,9 @@ export interface TokenRow {
 
 export interface ViewInput {
   tokens: TokenRow[];
+  filters: TextUtils.TextUtils.ParsedFilter[];
   selectedTokenId: string|null;
+  onFilterChanged: (filterText: string) => void;
   onSelect: (tokenId: string) => void;
   onDeselect: () => void;
   onDeleteAll: () => void;
@@ -103,6 +119,17 @@ function renderView(input: ViewInput): TemplateResult {
   return html`
     <div class="pvt-view" jslog=${VisualLogging.pane('private-verification-tokens')}>
       <devtools-toolbar class="pvt-toolbar" jslog=${VisualLogging.toolbar()}>
+        <devtools-toolbar-input type="filter"
+                                list="filter-suggestions"
+                                @change=${(e: CustomEvent<string>) => input.onFilterChanged(e.detail)}>
+          <datalist id="filter-suggestions">
+            ${FILTER_KEYS.map(key => html`
+              <option value=${key + ':'}></option>
+              <option value=${'-' + key + ':'}></option>
+            `)}
+          </datalist>
+        </devtools-toolbar-input>
+        <div role="separator" class="toolbar-divider"></div>
         <devtools-button class="clear-all-button"
                          .disabled=${!hasTokens}
                          .iconName=${'clear'}
@@ -122,6 +149,7 @@ function renderView(input: ViewInput): TemplateResult {
       <div class="table-container">
         ${hasTokens ? html`
           <devtools-data-grid striped inline deletable
+                              .filters=${input.filters}
                               @deselect=${input.onDeselect}>
             <table>
               <tr>
@@ -179,6 +207,7 @@ export class PrivateVerificationTokensView extends UI.Widget.VBox implements
   #tokens: TokenRow[] = [];
   #fetchGeneration = 0;
   #selectedTokenId: string|null = null;
+  #filters: TextUtils.TextUtils.ParsedFilter[] = [];
   #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
@@ -243,7 +272,7 @@ export class PrivateVerificationTokensView extends UI.Widget.VBox implements
 
   /**
    * Fetches tokens from the backend and caches them, so that local view state
-   * changes (such as selection) re-render without additional CDP round-trips.
+   * changes (filtering, selection) re-render without additional CDP round-trips.
    * Responses from superseded fetches are discarded.
    */
   async #refreshTokens(): Promise<void> {
@@ -275,12 +304,21 @@ export class PrivateVerificationTokensView extends UI.Widget.VBox implements
   override performUpdate(): void {
     this.#view({
       tokens: this.#tokens,
+      filters: this.#filters,
       selectedTokenId: this.#selectedTokenId,
+      onFilterChanged: filterText => {
+        this.#filters = filterParser.parse(filterText);
+        this.#selectedTokenId = null;
+        this.requestUpdate();
+      },
       onSelect: tokenId => {
         this.#selectedTokenId = tokenId;
         this.requestUpdate();
       },
       onDeselect: () => {
+        if (this.#selectedTokenId === null) {
+          return;
+        }
         this.#selectedTokenId = null;
         this.requestUpdate();
       },

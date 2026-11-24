@@ -9,10 +9,12 @@ import sinon from 'sinon';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {getValuesOfAllBodyRows} from '../../testing/DataGridHelpers.js';
 import {dispatchClickEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
@@ -256,13 +258,41 @@ describeWithEnvironment('PrivateVerificationTokensView', () => {
       }
     });
 
-    it('does not refetch tokens on selection changes', async () => {
+    it('parses filter text when onFilterChanged is invoked', async () => {
+      stubStorage(target);
+      const {viewStub} = await createWidget();
+      assert.deepEqual(viewStub.input.filters, []);
+
+      viewStub.input.onFilterChanged('issuer:example.com');
+      await viewStub.nextInput;
+
+      assert.lengthOf(viewStub.input.filters, 1);
+      assert.strictEqual(viewStub.input.filters[0].key, 'issuer');
+      assert.strictEqual(viewStub.input.filters[0].text, 'example.com');
+    });
+
+    it('clears selectedTokenId when onFilterChanged is invoked', async () => {
+      stubStorage(target, [makeToken({id: '1', issuerOrigin: 'http://example.com'})]);
+      const {viewStub} = await createWidget();
+
+      viewStub.input.onSelect('1');
+      await viewStub.nextInput;
+      assert.strictEqual(viewStub.input.selectedTokenId, '1');
+
+      viewStub.input.onFilterChanged('issuer:other.com');
+      await viewStub.nextInput;
+      assert.isNull(viewStub.input.selectedTokenId);
+    });
+
+    it('does not refetch tokens on filter or selection changes', async () => {
       const {getTokensStub, getConfigsStub} =
           stubStorage(target, [makeToken({id: '1', issuerOrigin: 'http://example.com'})]);
       const {viewStub} = await createWidget();
       getTokensStub.resetHistory();
       getConfigsStub.resetHistory();
 
+      viewStub.input.onFilterChanged('issuer:example.com');
+      await viewStub.nextInput;
       viewStub.input.onSelect('1');
       await viewStub.nextInput;
       viewStub.input.onDeselect();
@@ -277,7 +307,9 @@ describeWithEnvironment('PrivateVerificationTokensView', () => {
   describe('view', () => {
     const defaultInput: Application.PrivateVerificationTokensView.ViewInput = {
       tokens: [],
+      filters: [],
       selectedTokenId: null,
+      onFilterChanged: () => {},
       onSelect: () => {},
       onDeselect: () => {},
       onDeleteAll: () => {},
@@ -402,6 +434,34 @@ describeWithEnvironment('PrivateVerificationTokensView', () => {
       const rows = container.querySelectorAll('devtools-data-grid table tr');
       rows[2].dispatchEvent(new CustomEvent('select'));
       sinon.assert.calledOnceWithExactly(onSelect, '2');
+    });
+
+    it('calls onFilterChanged when the filter input changes', async () => {
+      const onFilterChanged = sinon.spy();
+      const container = await renderWithTokens({onFilterChanged});
+
+      const filterInput = container.querySelector('devtools-toolbar-input');
+      assert.isNotNull(filterInput);
+      filterInput.dispatchEvent(new CustomEvent('change', {detail: 'issuer.org'}));
+      sinon.assert.calledOnceWithExactly(onFilterChanged, 'issuer.org');
+    });
+
+    it('filters displayed rows according to filters', async () => {
+      const container = await renderWithTokens();
+      await RenderCoordinator.done({waitForWork: true});
+
+      const dataGrid = container.querySelector('devtools-data-grid');
+      assert.isNotNull(dataGrid);
+      assert.isNotNull(dataGrid.shadowRoot);
+      assert.lengthOf(getValuesOfAllBodyRows(dataGrid.shadowRoot), 2);
+
+      DEFAULT_VIEW({...defaultInput, tokens, filters: [{key: 'issuer', text: 'issuer.org', negative: false}]},
+                   undefined, container);
+      await RenderCoordinator.done({waitForWork: true});
+
+      const filteredRows = getValuesOfAllBodyRows(dataGrid.shadowRoot);
+      assert.lengthOf(filteredRows, 1);
+      assert.strictEqual(filteredRows[0][0], 'https://issuer.org');
     });
   });
 });

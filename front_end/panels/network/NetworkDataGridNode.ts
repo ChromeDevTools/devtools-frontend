@@ -57,9 +57,10 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../utils/utils.js';
 
-const {ifDefined} = Directives;
+const {classMap, ifDefined} = Directives;
 
 const UIStrings = {
   /**
@@ -650,6 +651,12 @@ interface CellViewInput {
   title?: string;
   subtitle?: string;
   subtitleTitle?: string;
+  /** Shows the subtitle also when the grid uses small rows. */
+  subtitleAlwaysVisible?: boolean;
+  /** Renders the text as a link. */
+  onLinkClick?: () => void;
+  /** The visual logging context of the link. */
+  linkJslogContext?: string;
   dimmed?: boolean;
   /** Set for the time cell of a request that a throttling rule slowed down. */
   throttling?: {title: string, onClick: () => void};
@@ -689,9 +696,13 @@ const CELL_VIEW = (input: CellViewInput, _output: undefined, target: HTMLElement
     ${input.throttling ? html`
       <devtools-icon name="watch" title=${input.throttling.title}
                      @click=${input.throttling.onClick}></devtools-icon>` : nothing}
-    ${input.text}
+    ${input.onLinkClick ? html`
+      <button class="devtools-link text-button link-style" tabindex="-1"
+              jslog=${VisualLogging.link(input.linkJslogContext).track({click: true})}
+              @click=${input.onLinkClick}>${input.text}</button>` : input.text}
     ${input.subtitle !== undefined ? html`
-      <div class="network-cell-subtitle" title=${ifDefined(input.subtitleTitle)}>${input.subtitle}</div>` : nothing}`,
+      <div class=${classMap({'network-cell-subtitle': true, 'always-visible': Boolean(input.subtitleAlwaysVisible)})}
+           title=${ifDefined(input.subtitleTitle)}>${input.subtitle}</div>` : nothing}`,
     target, {
       container: {
         classes: input.dimmed ? ['network-dim-cell'] : [],
@@ -1270,15 +1281,6 @@ export class NetworkRequestNode extends NetworkNode {
     UI.Tooltip.Tooltip.install(element, title || text);
   }
 
-  #setTextAndTitleAsLink(element: HTMLElement, cellText: string, titleText: string, handler: () => void): void {
-    const link = document.createElement('span');
-    link.classList.add('devtools-link');
-    link.textContent = cellText;
-    link.addEventListener('click', handler);
-    element.appendChild(link);
-    UI.Tooltip.Tooltip.install(element, titleText);
-  }
-
   override renderCell(c: Element, columnId: string): void {
     const cell = (c as HTMLElement);
     switch (columnId) {
@@ -1495,34 +1497,39 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   #renderStatusCell(cell: HTMLElement): void {
-    cell.classList.toggle('network-dim-cell',
-                          !this.#isFailed() && (this.#requestInternal.cached() || !this.#requestInternal.statusCode));
+    const request = this.#requestInternal;
+    const input: CellViewInput = {
+      text: '',
+      dimmed: !this.#isFailed() && (request.cached() || !request.statusCode),
+    };
+    const setTextAndTitle = (text: string, title?: string): void => {
+      input.text = text;
+      input.title = title || text;
+    };
 
-    const corsErrorStatus = this.#requestInternal.corsErrorStatus();
+    const corsErrorStatus = request.corsErrorStatus();
 
-    if (this.#requestInternal.failed && !this.#requestInternal.canceled && !this.#requestInternal.wasBlocked() &&
-        !corsErrorStatus) {
+    if (request.failed && !request.canceled && !request.wasBlocked() && !corsErrorStatus) {
       const failText = i18nString(UIStrings.failed);
-      if (this.#requestInternal.localizedFailDescription) {
-        UI.UIUtils.createTextChild(cell, failText);
-        this.#appendSubtitle(cell, this.#requestInternal.localizedFailDescription, true);
-        UI.Tooltip.Tooltip.install(cell, failText + ' ' + this.#requestInternal.localizedFailDescription);
+      if (request.localizedFailDescription) {
+        setTextAndTitle(failText, failText + ' ' + request.localizedFailDescription);
+        input.subtitle = request.localizedFailDescription;
+        input.subtitleAlwaysVisible = true;
       } else {
-        this.#setTextAndTitle(cell, failText);
+        setTextAndTitle(failText);
       }
-    } else if (this.#requestInternal.statusCode && this.#requestInternal.statusCode >= 400) {
-      const statusText = this.#requestInternal.getInferredStatusText();
-      UI.UIUtils.createTextChild(cell, String(this.#requestInternal.statusCode));
-      this.#appendSubtitle(cell, statusText);
-      UI.Tooltip.Tooltip.install(cell, this.#requestInternal.statusCode + ' ' + statusText);
-    } else if (!this.#requestInternal.statusCode && this.#requestInternal.parsedURL.isDataURL()) {
-      this.#setTextAndTitle(cell, i18nString(UIStrings.data));
-    } else if (!this.#requestInternal.statusCode && this.#requestInternal.canceled) {
-      this.#setTextAndTitle(cell, i18nString(UIStrings.canceled));
-    } else if (this.#requestInternal.wasBlocked()) {
+    } else if (request.statusCode && request.statusCode >= 400) {
+      const statusText = request.getInferredStatusText();
+      setTextAndTitle(String(request.statusCode), request.statusCode + ' ' + statusText);
+      input.subtitle = statusText;
+    } else if (!request.statusCode && request.parsedURL.isDataURL()) {
+      setTextAndTitle(i18nString(UIStrings.data));
+    } else if (!request.statusCode && request.canceled) {
+      setTextAndTitle(i18nString(UIStrings.canceled));
+    } else if (request.wasBlocked()) {
       let reason = i18nString(UIStrings.other);
       let displayShowHeadersLink = false;
-      switch (this.#requestInternal.blockedReason()) {
+      switch (request.blockedReason()) {
         case Protocol.Network.BlockedReason.Other:
           reason = i18nString(UIStrings.other);
           break;
@@ -1570,33 +1577,34 @@ export class NetworkRequestNode extends NetworkNode {
           break;
       }
       if (displayShowHeadersLink) {
-        this.#setTextAndTitleAsLink(
-            cell, i18nString(UIStrings.blockeds, {PH1: reason}), i18nString(UIStrings.blockedTooltip), () => {
-              this.parentView().dispatchEventToListeners(Events.RequestActivated, {
-                showPanel: RequestPanelBehavior.ShowPanel,
-                tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
-              });
-            });
+        setTextAndTitle(i18nString(UIStrings.blockeds, {PH1: reason}), i18nString(UIStrings.blockedTooltip));
+        input.linkJslogContext = 'headers-component';
+        input.onLinkClick = () => {
+          this.parentView().dispatchEventToListeners(Events.RequestActivated, {
+            showPanel: RequestPanelBehavior.ShowPanel,
+            tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
+          });
+        };
       } else {
-        this.#setTextAndTitle(cell, i18nString(UIStrings.blockeds, {PH1: reason}));
+        setTextAndTitle(i18nString(UIStrings.blockeds, {PH1: reason}));
       }
     } else if (corsErrorStatus) {
-      this.#setTextAndTitle(cell, i18nString(UIStrings.corsError),
-                            i18nString(UIStrings.crossoriginResourceSharingErrorS, {PH1: corsErrorStatus.corsError}));
-    } else if (this.#requestInternal.statusCode) {
-      UI.UIUtils.createTextChild(cell, String(this.#requestInternal.statusCode));
-      const statusText = this.#requestInternal.getInferredStatusText();
-      this.#appendSubtitle(cell, statusText);
-      UI.Tooltip.Tooltip.install(cell, this.#requestInternal.statusCode + ' ' + statusText);
-    } else if (this.#requestInternal.statusText) {
-      this.#setTextAndTitle(cell, this.#requestInternal.statusText);
-    } else if (this.#requestInternal.finished) {
-      this.#setTextAndTitle(cell, i18nString(UIStrings.finished));
-    } else if (this.#requestInternal.preserved) {
-      this.#setTextAndTitle(cell, i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
+      setTextAndTitle(i18nString(UIStrings.corsError),
+                      i18nString(UIStrings.crossoriginResourceSharingErrorS, {PH1: corsErrorStatus.corsError}));
+    } else if (request.statusCode) {
+      const statusText = request.getInferredStatusText();
+      setTextAndTitle(String(request.statusCode), request.statusCode + ' ' + statusText);
+      input.subtitle = statusText;
+    } else if (request.statusText) {
+      setTextAndTitle(request.statusText);
+    } else if (request.finished) {
+      setTextAndTitle(i18nString(UIStrings.finished));
+    } else if (request.preserved) {
+      setTextAndTitle(i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
     } else {
-      this.#setTextAndTitle(cell, i18nString(UIStrings.pendingq));
+      setTextAndTitle(i18nString(UIStrings.pendingq));
     }
+    CELL_VIEW(input, undefined, cell);
   }
 
   #renderProtocolCell(cell: HTMLElement): void {

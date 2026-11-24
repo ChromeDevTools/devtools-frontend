@@ -312,6 +312,40 @@ describeWithEnvironment('NetworkLogView', () => {
     const el = renderNodeCell(networkRequestNode, 'status');
 
     assert.strictEqual(el.title, '305 Use Proxy');
+    assert.strictEqual(el.querySelector('.network-cell-subtitle')?.textContent, 'Use Proxy');
+    assert.isFalse(el.classList.contains('network-dim-cell'));
+  });
+
+  it('renders a link to the headers for a request that response headers blocked', async () => {
+    const request = createNetworkRequest({url: 'https://www.example.com'});
+    request.setBlockedReason(Protocol.Network.BlockedReason.CorpNotSameOrigin);
+    const parentView = createParentView();
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(parentView, request);
+    const el = renderNodeCell(networkRequestNode, 'status');
+    const link = el.querySelector<HTMLElement>('.devtools-link');
+    assert.instanceOf(link, HTMLButtonElement);
+    assert.include(link.getAttribute('jslog'), 'context: headers-component');
+    assert.strictEqual(link.textContent, '(blocked:CORP not "same-origin")');
+    assert.strictEqual(el.title,
+                       'This request was blocked due to misconfigured response headers, click to view the headers');
+
+    link.click();
+    sinon.assert.calledOnce(parentView.dispatchEventToListeners);
+    assert.deepEqual(parentView.dispatchEventToListeners.firstCall.args as unknown[],
+                     ['RequestActivated', {showPanel: 'ShowPanel', tab: 'headers-component'}]);
+  });
+
+  it('renders the fail description as a subtitle that is always visible', async () => {
+    const request = createNetworkRequest({url: 'https://www.example.com', failed: true});
+    request.localizedFailDescription = 'net::ERR_FAILED';
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'status');
+    const subtitle = el.querySelector('.network-cell-subtitle.always-visible');
+    assert.strictEqual(subtitle?.textContent, 'net::ERR_FAILED');
+    assert.strictEqual(el.title, '(failed) net::ERR_FAILED');
+    assert.isNull(el.querySelector('.devtools-link'));
   });
 
   it('populate has-overrides: headers', async () => {

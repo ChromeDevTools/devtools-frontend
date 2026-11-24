@@ -78,6 +78,8 @@ devtools_ui_module("unittests") {
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../services/puppeteer:bundle",
     "../../../testing",
     "../testing",
   ]

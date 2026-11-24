@@ -13,7 +13,7 @@ import * as PuppeteerService from '../../../services/puppeteer/puppeteer.js';
 import * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 
-import {NavigationGuard} from './NavigationGuard.js';
+import {isDevToolsUrl, NavigationGuard} from './NavigationGuard.js';
 import type {Step, UserFlow} from './Schema.js';
 
 export const enum PlayRecordingSpeed {
@@ -39,9 +39,8 @@ export const defaultTimeout = 5000;  // ms
 
 function isPageTarget(target: Protocol.Target.TargetInfo): boolean {
   // Treat DevTools targets as page targets too.
-  return (
-      Common.ParsedURL.schemeIs(target.url as Platform.DevToolsPath.UrlString, 'devtools:') || target.type === 'page' ||
-      target.type === 'background_page' || target.type === 'webview');
+  return (isDevToolsUrl(target.url as Platform.DevToolsPath.UrlString) || target.type === 'page' ||
+          target.type === 'background_page' || target.type === 'webview');
 }
 
 function checkNavigationUrl(url: Platform.DevToolsPath.UrlString): void {
@@ -91,6 +90,14 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     page: puppeteer.Page,
     browser: puppeteer.Browser,
     connection: Pick<PuppeteerService.PuppeteerConnection.PuppeteerConnectionAdapter, 'blockPageInput'>,
+    /**
+     * The URL of the inspected page from Target.getTargetInfo. The browser
+     * process sends this value. Use it for security checks, and not
+     * `page.url()`: Puppeteer sets that value from CDP messages that the
+     * renderer writes (Page.frameNavigated, Page.navigatedWithinDocument and
+     * the Page.getFrameTree reply), and a compromised renderer can forge them.
+     */
+    targetUrl: Platform.DevToolsPath.UrlString,
   }> {
     const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
     if (!rootTarget) {
@@ -128,7 +135,13 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       throw new Error('Expected root target to have a router');
     }
 
-    const mainTargetId = await childTargetManager.getParentTargetId();
+    // Get the target info before Puppeteer connects. If the command fails,
+    // there is no Puppeteer connection to disconnect.
+    const targetInfo = await childTargetManager.getTargetInfo();
+    if (!targetInfo) {
+      throw new Error('Could not get the target info of the primary page target');
+    }
+    const mainTargetId = targetInfo.targetId;
     const rootTargetId = await rootChildTargetManager.getParentTargetId();
     const {sessionId} = await rootTarget.targetAgent().invoke_attachToTarget({targetId: rootTargetId, flatten: true});
     const {page, browser, puppeteerConnection} =
@@ -164,7 +177,12 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       );
     });
 
-    return {page, browser, connection: puppeteerConnection};
+    return {
+      page,
+      browser,
+      connection: puppeteerConnection,
+      targetUrl: targetInfo.url as Platform.DevToolsPath.UrlString,
+    };
   }
 
   static async disconnectPuppeteer(browser: puppeteer.Browser): Promise<void> {
@@ -229,11 +247,12 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   async play(): Promise<void> {
-    const {page, browser, connection} = await RecordingPlayer.connectPuppeteer();
+    const {page, browser, connection, targetUrl} = await RecordingPlayer.connectPuppeteer();
+    const isDevToolsTarget = isDevToolsUrl(targetUrl);
     this.aborted = false;
 
     const player = this;
-    const guard = new NavigationGuard(this.userFlow, page.url(), () => {
+    const guard = new NavigationGuard(this.userFlow, targetUrl, () => {
       // The step in progress must not send more input, because the page can
       // be at an origin that is not in the recording.
       if (guard.error) {
@@ -293,8 +312,8 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         }
         // When replaying on a DevTools target we skip setViewport and navigate steps
         // because navigation and viewport changes are not supported there.
-        if (Common.ParsedURL.schemeIs(page?.url() as Platform.DevToolsPath.UrlString, 'devtools:') &&
-            (step.type === 'setViewport' || step.type === 'navigate')) {
+        // Note: the renderer controls `page.url()`, thus this check must not use it.
+        if (isDevToolsTarget && (step.type === 'setViewport' || step.type === 'navigate')) {
           return;
         }
         if (step.type === 'navigate') {

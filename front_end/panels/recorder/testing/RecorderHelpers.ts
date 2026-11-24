@@ -100,6 +100,11 @@ export interface MockTarget {
 export interface RecordingPlayerMocks {
   /** The `send` method of the CDP session of the mock page. */
   send: sinon.SinonStub;
+  /**
+   * Sets the URL that the browser process reports for the inspected page in
+   * the target info. The default value is an empty string.
+   */
+  setTargetUrl(url: string): void;
   /** The `blockPageInput` method of the mock Puppeteer connection. */
   blockPageInput: sinon.SinonStub;
   /** The tab session, which is the parent of the CDP session of the mock page. */
@@ -150,7 +155,10 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
     on: (_event: string, listener: (session: unknown) => void) => tabSessionListeners.add(listener),
     off: (_event: string, listener: (session: unknown) => void) => tabSessionListeners.delete(listener),
   };
-  const client = {send: sinon.stub().resolves(), on, off, detached: false, parentSession: () => tabSession};
+  const send = sinon.stub().resolves();
+  // The browser process reports the session history of the inspected page.
+  send.withArgs('Page.getNavigationHistory').resolves({currentIndex: 0, entries: [{url: 'about:blank'}]});
+  const client = {send, on, off, detached: false, parentSession: () => tabSession};
   const mainFrame: MockFrame = {_id: 'main-frame', client, url: () => '', goto: sinon.stub().resolves()};
   const frames: MockFrame[] = [mainFrame];
   const page: MockPage = {
@@ -190,6 +198,7 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
   const blockPageInput = sinon.stub();
   const mock = {
     page,
+    targetUrl: '',
     connection: {blockPageInput},
     browser: {
       pages: () => Promise.resolve(pages),
@@ -206,6 +215,9 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
   sinon.stub(Models.RecordingPlayer.RecordingPlayer, 'connectPuppeteer').resolves(mock as never);
   return {
     send: client.send,
+    setTargetUrl: (url: string) => {
+      mock.targetUrl = url;
+    },
     blockPageInput,
     tabSession,
     tabChildTargets,

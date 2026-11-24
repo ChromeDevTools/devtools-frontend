@@ -7,6 +7,14 @@ import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import * as PuppeteerService from '../../../services/puppeteer/puppeteer.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
+import {getMainFrame} from '../../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../../testing/TestUniverse.js';
 import {
   createCustomStep,
   installMocksForRecordingPlayer,
@@ -336,6 +344,149 @@ describe('RecordingPlayer', () => {
     });
   });
 
+  describe('DevTools target', () => {
+    const devToolsUrl = 'devtools://devtools/bundled/devtools_app.html';
+
+    async function replayNavigateAndSetViewport(): Promise<Error|null> {
+      recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+          {
+            title: 'test',
+            steps: [
+              // The replay rejects this URL if it runs the navigate step.
+              {type: Models.Schema.StepType.Navigate, url: 'chrome://settings'},
+              {
+                type: Models.Schema.StepType.SetViewport,
+                width: 800,
+                height: 600,
+                deviceScaleFactor: 1,
+                isMobile: false,
+                hasTouch: false,
+                isLandscape: false,
+              },
+            ],
+          },
+          {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+      );
+      const result = new Promise<Error|null>(resolve => {
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data), {once: true});
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+      });
+      recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, ({data: {resolve}}) => resolve());
+      await recordingPlayer.play();
+      return await result;
+    }
+
+    it('skips navigate and setViewport steps if the target info has a devtools: URL', async () => {
+      mocks.setTargetUrl(devToolsUrl);
+
+      const error = await replayNavigateAndSetViewport();
+
+      assert.isNull(error);
+    });
+
+    it('does not skip navigate steps if only `page.url()` has a devtools: URL', async () => {
+      sinon.stub(console, 'error');
+      // A compromised renderer can forge the URL that Puppeteer reports.
+      mocks.pages[0].url = () => devToolsUrl;
+      mocks.mainFrame.url = () => devToolsUrl;
+
+      const error = await replayNavigateAndSetViewport();
+
+      assert.strictEqual(error?.message, 'Navigation to chrome://settings is not allowed, due to blocked schema');
+    });
+  });
+
+  describe('Current URL', () => {
+    /**
+     * Replays a recording that uses the current page. The page gets a
+     * response from `requestUrl` before the second step.
+     */
+    async function replayOnCurrentPage(requestUrl: string): Promise<Error|null> {
+      recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+          {title: 'test', steps: [createCustomStep(), createCustomStep()]},
+          {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+      );
+      const result = new Promise<Error|null>(resolve => {
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data), {once: true});
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+      });
+      let steps = 0;
+      recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, ({data: {resolve}}) => {
+        steps++;
+        if (steps === 2) {
+          mocks.emitRequestPaused({
+            requestId: '1',
+            frameId: 'main-frame',
+            request: {url: requestUrl},
+            responseStatusCode: 200,
+          });
+        }
+        resolve();
+      });
+      await recordingPlayer.play();
+      return await result;
+    }
+
+    it('allows navigations to the origin of the URL from the target info', async () => {
+      mocks.setTargetUrl('https://current.test/page');
+
+      const error = await replayOnCurrentPage('https://current.test/next');
+
+      assert.isNull(error);
+      sinon.assert.calledWith(mocks.send, 'Fetch.continueRequest', {requestId: '1'});
+    });
+
+    it('does not allow navigations to the origin of `page.url()`', async () => {
+      sinon.stub(console, 'error');
+      mocks.setTargetUrl('https://current.test/page');
+      // A compromised renderer can forge the URL that Puppeteer reports.
+      mocks.pages[0].url = () => 'https://forged.test/page';
+
+      const error = await replayOnCurrentPage('https://forged.test/next');
+
+      assert.strictEqual(
+          error?.message,
+          'Navigation to https://forged.test/next is not allowed, because the recording does not contain its origin');
+      sinon.assert.calledWith(mocks.send, 'Fetch.failRequest', {requestId: '1', errorReason: 'BlockedByClient'});
+    });
+  });
+
+  describe('Current document', () => {
+    it('stops the replay if the replay uses the current page and the history has a current entry that is not in the recording',
+       async () => {
+         sinon.stub(console, 'error');
+         mocks.setTargetUrl('https://current.test/page');
+         // A compromised renderer can forge the URL that Puppeteer reports.
+         mocks.pages[0].url = () => 'https://current.test/page';
+         mocks.mainFrame.url = () => 'https://current.test/page';
+         mocks.send.withArgs('Page.getNavigationHistory').resolves({
+           currentIndex: 0,
+           entries: [{url: 'https://other.test/landing'}],
+         });
+         recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+             {title: 'test', steps: [createCustomStep()]},
+             {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+         );
+         const result = new Promise<Error|null>(resolve => {
+           recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data),
+                                            {once: true});
+           recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+         });
+         const stepHandler = sinon.stub().callsFake(({data: {resolve}}) => resolve());
+         recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, stepHandler);
+
+         await recordingPlayer.play();
+
+         assert.strictEqual(
+             (await result)?.message,
+             'Navigation to https://other.test/landing is not allowed, because the recording does not contain its origin');
+         sinon.assert.notCalled(stepHandler);
+         const goto = mocks.pages[0].goto;
+         assert.isOk(goto);
+         sinon.assert.notCalled(goto);
+       });
+  });
+
   describe('Navigation guard', () => {
     const blockedUrl = 'https://other.test/landing';
     const blockedMessage =
@@ -389,6 +540,8 @@ describe('RecordingPlayer', () => {
         detached: false,
         parentSession: () => undefined,
       };
+      // The browser process reports the session history of the popup.
+      client.send.withArgs('Page.getNavigationHistory').resolves({currentIndex: 0, entries: [{url}]});
       const mainFrame = {_id: `frame-${url}`, client, url: () => url, goto: sinon.stub().resolves()};
       const frames = [
         mainFrame,
@@ -838,6 +991,90 @@ describe('RecordingPlayer', () => {
            assert.strictEqual(steps, 0);
          });
 
+      /**
+       * Creates the root frame of an OOPIF. The frame reports an allowed
+       * URL, and the target info from the browser process has `targetUrl`.
+       */
+      function createOopifFrame(targetUrl: string) {
+        const client = {
+          send: sinon.stub().resolves(),
+          on: sinon.stub(),
+          off: sinon.stub(),
+          detached: false,
+          target: () => ({_getTargetInfo: () => ({type: 'iframe', targetId: 'oopif', url: targetUrl})}),
+        };
+        return {_id: 'oopif', client, url: () => 'https://allowed.test/frame'};
+      }
+
+      it('stops the replay if the target info of an OOPIF has an origin that is not in the recording', async () => {
+        sinon.stub(console, 'error');
+        mocks.setTargetUrl('https://allowed.test/start');
+        // A compromised renderer of the OOPIF can forge the URL that Puppeteer reports.
+        mocks.frames.push(createOopifFrame(blockedUrl));
+
+        const {error, steps} = await replaySteps([frameCustomStep]);
+
+        assert.strictEqual(error?.message, blockedMessage);
+        assert.strictEqual(steps, 0);
+      });
+
+      it('accepts an OOPIF if the target info has an origin from the recording', async () => {
+        mocks.setTargetUrl('https://allowed.test/start');
+        mocks.frames.push(createOopifFrame('https://allowed.test/frame'));
+
+        const {error, steps} = await replaySteps([frameCustomStep]);
+
+        assert.isNull(error);
+        assert.strictEqual(steps, 1);
+      });
+
+      it('does not use the target info of an OOPIF for the in-process subframes of the OOPIF', async () => {
+        mocks.setTargetUrl('https://allowed.test/start');
+        const oopifFrame = createOopifFrame('https://allowed.test/frame');
+        // The target info has the URL of the root frame only.
+        oopifFrame.client.target = () =>
+            ({_getTargetInfo: () => ({type: 'iframe', targetId: 'oopif', url: blockedUrl})});
+        mocks.frames.push({_id: 'nested', client: oopifFrame.client, url: () => 'https://allowed.test/nested'});
+
+        const {error, steps} = await replaySteps([frameCustomStep]);
+
+        assert.isNull(error);
+        assert.strictEqual(steps, 1);
+      });
+
+      it('stops the replay if an OOPIF navigates and its target info has an origin that is not in the recording',
+         async () => {
+           sinon.stub(console, 'error');
+           recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+               {
+                 title: 'test',
+                 steps: [
+                   {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+                   frameCustomStep,
+                   createCustomStep(),
+                 ],
+               },
+               {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+           );
+           const result = new Promise<Error|null>(resolve => {
+             recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data),
+                                              {once: true});
+             recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+           });
+           let started = 0;
+           recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, ({data: {resolve}}) => {
+             started++;
+             if (started === 2) {
+               mocks.emitFrameNavigated(createOopifFrame(blockedUrl));
+             }
+             resolve();
+           });
+
+           await recordingPlayer.play();
+
+           assert.strictEqual((await result)?.message, blockedMessage);
+         });
+
       it('does not check the frames if the replay navigates the page first', async () => {
         mocks.frames.push({_id: 'subframe', client: mocks.mainFrame.client, url: () => blockedUrl});
 
@@ -903,6 +1140,31 @@ describe('RecordingPlayer', () => {
 
            assert.strictEqual(error?.message, blockedMessage);
            sinon.assert.notCalled(mocks.mainFrame.goto!);
+         });
+
+      it('does not navigate the page to about:blank if a step targets an OOPIF before the first navigate step',
+         async () => {
+           const oopifUrl = 'https://oopif.test/frame.html';
+           const oopifFrame = {_id: 'oopif', client: mocks.mainFrame.client, url: () => oopifUrl};
+           mocks.send.withArgs('Page.getNavigationHistory').resolves({
+             currentIndex: 0,
+             entries: [{url: 'https://allowed.test/start'}],
+           });
+           mocks.mainFrame.url = () => 'https://allowed.test/start';
+           Object.assign(mocks.pages[0], {waitForFrame: async () => oopifFrame});
+           mocks.frames.push(oopifFrame);
+           mocks.targets.push({url: () => oopifUrl, page: async () => null});
+
+           // The first step sends input to a frame of the current page, thus the page must stay.
+           const {error} = await replaySteps([
+             {type: Models.Schema.StepType.Close, target: oopifUrl},
+             {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+           ]);
+
+           assert.isNull(error);
+           const goto = mocks.pages[0].goto;
+           assert.isOk(goto);
+           sinon.assert.notCalled(goto);
          });
 
       function createPrerenderSession() {
@@ -998,6 +1260,7 @@ describe('RecordingPlayer', () => {
          async () => {
            // The history does not report the frames of its entries.
            mocks.send.withArgs('Page.getNavigationHistory').resolves({
+             currentIndex: 1,
              entries: [{url: 'https://allowed.test/first'}, {url: 'https://allowed.test/second'}],
            });
 
@@ -1010,10 +1273,16 @@ describe('RecordingPlayer', () => {
            sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
          });
 
-      it('navigates the page to about:blank if a frame is not allowed and the recording has subframe steps',
+      it('navigates the page to about:blank if the replay navigates first and has subframe steps, also if all frames report an allowed URL',
          async () => {
-           mocks.pages[0].url = () => 'https://allowed.test/start';
-           mocks.frames.push({_id: 'subframe', client: mocks.mainFrame.client, url: () => blockedUrl});
+           // A compromised renderer can forge the URL of a frame, and the
+           // history does not report the frames of its entries.
+           mocks.send.withArgs('Page.getNavigationHistory').resolves({
+             currentIndex: 0,
+             entries: [{url: 'https://allowed.test/start'}],
+           });
+           mocks.frames.push(
+               {_id: 'subframe', client: mocks.mainFrame.client, url: () => 'https://allowed.test/frame'});
 
            // The replay navigates the page first, thus the guard does not report the frame.
            const {error} = await replaySteps([
@@ -1089,6 +1358,41 @@ describe('RecordingPlayer', () => {
       assert.strictEqual(error?.message, blockedMessage);
       sinon.assert.calledWith(popup.client.send, 'Fetch.enable', fetchEnablePattern);
       sinon.assert.calledWith(popup.frames[1].client.send, 'Fetch.enable', fetchEnablePattern);
+    });
+
+    it('stops the replay if the history of a popup has a current entry that is not in the recording', async () => {
+      sinon.stub(console, 'error');
+      const popupUrl = 'https://popup.test/index.html';
+      // A compromised renderer can forge the URL that Puppeteer reports for the popup.
+      const popup = createPopupMock(popupUrl);
+      popup.client.send.withArgs('Page.getNavigationHistory').resolves({currentIndex: 0, entries: [{url: blockedUrl}]});
+      mocks.pages.push(popup.page);
+      mocks.targets.push({url: () => popupUrl, page: async () => popup.page});
+
+      const {error} = await replay(() => {}, [
+        {type: Models.Schema.StepType.Close, target: popupUrl},
+      ]);
+
+      assert.strictEqual(error?.message, blockedMessage);
+      sinon.assert.notCalled(popup.page.close);
+      sinon.assert.neverCalledWith(popup.client.send, 'Page.resetNavigationHistory');
+    });
+
+    it('stops the replay if the history of a popup has no current entry', async () => {
+      sinon.stub(console, 'error');
+      const popupUrl = 'https://popup.test/index.html';
+      const popup = createPopupMock(popupUrl);
+      popup.client.send.withArgs('Page.getNavigationHistory').resolves({entries: []});
+      mocks.pages.push(popup.page);
+      mocks.targets.push({url: () => popupUrl, page: async () => popup.page});
+
+      const {error} = await replay(() => {}, [
+        {type: Models.Schema.StepType.Close, target: popupUrl},
+      ]);
+
+      assert.strictEqual(error?.message,
+                         'Could not enable the navigation guard: The session history has no current entry');
+      sinon.assert.notCalled(popup.page.close);
     });
 
     it('guards all pages that share a step target URL', async () => {
@@ -1410,6 +1714,7 @@ describe('RecordingPlayer', () => {
 
     it('keeps the session history if all entries have an origin from the recording', async () => {
       mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        currentIndex: 1,
         entries: [{url: 'https://allowed.test/first'}, {url: 'https://allowed.test/second'}],
       });
 
@@ -1421,6 +1726,7 @@ describe('RecordingPlayer', () => {
 
     it('removes the session history if an entry has an origin that is not in the recording', async () => {
       mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        currentIndex: 1,
         entries: [{url: blockedUrl}, {url: 'https://allowed.test/second'}],
       });
 
@@ -1432,7 +1738,10 @@ describe('RecordingPlayer', () => {
 
     it('navigates the page to about:blank before it removes the history, if the document is not allowed', async () => {
       // The replay navigates the page first, and the recording does not contain this origin.
-      mocks.pages[0].url = () => 'https://unrecorded.test/page';
+      mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        currentIndex: 0,
+        entries: [{url: 'https://unrecorded.test/page'}],
+      });
 
       const {error} = await replay(() => {});
 
@@ -1443,9 +1752,41 @@ describe('RecordingPlayer', () => {
       sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
     });
 
+    it('navigates the page to about:blank if only `page.url()` has an origin from the recording', async () => {
+      // A compromised renderer can forge the URL that Puppeteer reports.
+      mocks.pages[0].url = () => 'https://allowed.test/page';
+      mocks.mainFrame.url = () => 'https://allowed.test/page';
+      mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        currentIndex: 0,
+        entries: [{url: 'https://unrecorded.test/page'}],
+      });
+
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      const goto = mocks.pages[0].goto;
+      assert.isOk(goto);
+      sinon.assert.calledOnceWithExactly(goto, 'about:blank');
+      sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
+    });
+
+    it('navigates the page to about:blank if the session history has no current entry', async () => {
+      mocks.send.withArgs('Page.getNavigationHistory').resolves({entries: []});
+
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      const goto = mocks.pages[0].goto;
+      assert.isOk(goto);
+      sinon.assert.calledOnceWithExactly(goto, 'about:blank');
+    });
+
     it('does not change the page if the guard has an error before it removes the history', async () => {
       sinon.stub(console, 'error');
-      mocks.pages[0].url = () => 'https://unrecorded.test/page';
+      mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        currentIndex: 0,
+        entries: [{url: 'https://unrecorded.test/page'}],
+      });
       mocks.send.withArgs('Fetch.enable').callsFake(async () => {
         mocks.emitRequestPaused({
           requestId: '1',
@@ -1463,6 +1804,35 @@ describe('RecordingPlayer', () => {
       sinon.assert.notCalled(goto);
       sinon.assert.neverCalledWith(mocks.send, 'Page.getNavigationHistory');
       sinon.assert.neverCalledWith(mocks.send, 'Page.resetNavigationHistory');
+    });
+
+    it('keeps the session history if the current entry of the history has a devtools: URL', async () => {
+      mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        currentIndex: 0,
+        entries: [{url: 'devtools://devtools/bundled/devtools_app.html'}],
+      });
+
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      const goto = mocks.pages[0].goto;
+      assert.isOk(goto);
+      sinon.assert.notCalled(goto);
+      sinon.assert.neverCalledWith(mocks.send, 'Page.resetNavigationHistory');
+    });
+
+    it('removes the session history if only `page.url()` has a devtools: URL', async () => {
+      // A compromised renderer can forge the URL that Puppeteer reports.
+      mocks.pages[0].url = () => 'devtools://devtools/bundled/devtools_app.html';
+      mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        currentIndex: 0,
+        entries: [{url: 'https://unrecorded.test/page'}],
+      });
+
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
     });
 
     it('fails closed if Fetch.enable rejects on a prerender session', async () => {
@@ -1534,5 +1904,79 @@ describe('RecordingPlayer', () => {
       assert.strictEqual(error?.message, blockedMessage);
       assert.strictEqual(steps, 0);
     });
+  });
+});
+
+describe('RecordingPlayer.connectPuppeteer', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  const pageUrl = 'https://current.test/page';
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+    // `connectPuppeteer()` gets the targets from the global target manager.
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+  });
+
+  afterEach(() => {
+    universe.dispose();
+  });
+
+  /**
+   * Creates a tab target and a page target on a mock CDP connection.
+   * `hasPageTargetInfo` selects if Target.getTargetInfo succeeds for the page target.
+   */
+  function installTargets(hasPageTargetInfo: boolean) {
+    SDK.ChildTargetManager.ChildTargetManager.install();
+    const connection = new MockCDPConnection();
+    const tabTarget = universe.createTarget({type: SDK.Target.Type.TAB, connection});
+    const pageTarget = universe.createTarget({parentTarget: tabTarget, url: pageUrl});
+    getMainFrame(pageTarget);
+    const tabTargetInfo = tabTarget.targetInfo();
+    const pageTargetInfo = pageTarget.targetInfo();
+    assert.exists(tabTargetInfo);
+    assert.exists(pageTargetInfo);
+    // The page target has a session, and the tab target has no session.
+    connection.setHandler('Target.getTargetInfo', (_params, sessionId) => {
+      if (!sessionId) {
+        return {result: {targetInfo: tabTargetInfo}};
+      }
+      return hasPageTargetInfo ? {result: {targetInfo: pageTargetInfo}} : {error: {code: -32000, message: 'failed'}};
+    });
+    const attachToTarget = sinon.stub().returns({sessionId: 'session'});
+    connection.setSuccessHandler('Target.attachToTarget', attachToTarget);
+    // The test does not use the Puppeteer objects, thus they have only the
+    // members that `connectPuppeteer()` reads.
+    const connectPuppeteerToConnection =
+        sinon.stub(PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper, 'connectPuppeteerToConnectionViaTab')
+            .resolves({page: {}, browser: {on: sinon.stub()}, puppeteerConnection: {}} as never);
+    return {attachToTarget, connectPuppeteerToConnection};
+  }
+
+  it('returns the URL from the target info of the primary page target', async () => {
+    const {attachToTarget} = installTargets(/* hasPageTargetInfo= */ true);
+
+    const {targetUrl} = await Models.RecordingPlayer.RecordingPlayer.connectPuppeteer();
+
+    assert.strictEqual(targetUrl, pageUrl);
+    sinon.assert.calledOnce(attachToTarget);
+  });
+
+  it('throws before it attaches to the target if the target info is not available', async () => {
+    const {attachToTarget, connectPuppeteerToConnection} = installTargets(/* hasPageTargetInfo= */ false);
+
+    let error: Error|undefined;
+    try {
+      await Models.RecordingPlayer.RecordingPlayer.connectPuppeteer();
+    } catch (err) {
+      error = err;
+    }
+
+    assert.strictEqual(error?.message, 'Could not get the target info of the primary page target');
+    sinon.assert.notCalled(attachToTarget);
+    sinon.assert.notCalled(connectPuppeteerToConnection);
   });
 });

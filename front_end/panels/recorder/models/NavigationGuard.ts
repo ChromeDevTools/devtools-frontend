@@ -27,6 +27,10 @@ export interface AllowedNavigations {
   urls: Set<string>;
 }
 
+export function isDevToolsUrl(url: Platform.DevToolsPath.UrlString): boolean {
+  return Common.ParsedURL.schemeIs(url, 'devtools:');
+}
+
 function addAllowedNavigation(allowed: AllowedNavigations, url: string): void {
   let parsed: URL;
   try {
@@ -49,7 +53,7 @@ function addAllowedNavigation(allowed: AllowedNavigations, url: string): void {
  * steps are skipped, so the current URL stays allowed.
  */
 function shouldAllowCurrentUrl(flow: UserFlow, currentUrl: string): boolean {
-  if (Common.ParsedURL.schemeIs(currentUrl as Platform.DevToolsPath.UrlString, 'devtools:')) {
+  if (isDevToolsUrl(currentUrl as Platform.DevToolsPath.UrlString)) {
     return true;
   }
   for (const step of flow.steps) {
@@ -67,6 +71,23 @@ function shouldAllowCurrentUrl(flow: UserFlow, currentUrl: string): boolean {
   }
   // The replay does not leave the current page.
   return true;
+}
+
+/**
+ * Returns true if a step with a target that is not 'main' runs before the
+ * first main-page navigate step. Such a step can send input to a frame or to
+ * a popup of the current page, thus the current page must stay.
+ */
+function hasOtherTargetStepBeforeNavigate(flow: UserFlow): boolean {
+  for (const step of flow.steps) {
+    if ('target' in step && step.target && step.target !== 'main') {
+      return true;
+    }
+    if (step.type === 'navigate') {
+      return false;
+    }
+  }
+  return false;
 }
 
 function isRedirectResponse(event: FetchRequestPausedEvent): boolean {
@@ -124,6 +145,31 @@ function canHaveFrames(session: puppeteer.CDPSession): boolean {
   } catch {
     // The target of the session is not known.
     return true;
+  }
+}
+
+/**
+ * Returns the URL from the target info of `frame`, if the frame is the root
+ * frame of an out-of-process iframe (OOPIF). Returns undefined for other
+ * frames, and if the target of the session is not known.
+ *
+ * The browser process sends the target info. The session of the OOPIF sends
+ * `frame.url()`, thus a compromised renderer of the OOPIF can forge it. The
+ * browser process reports no URL for the other subframes.
+ */
+function oopifTargetUrl(frame: Pick<puppeteer.Frame, 'client'|'_id'>, guardedPage: puppeteer.Page): string|undefined {
+  // A frame in the session of the main frame is not out of process.
+  if (frame.client === guardedPage.mainFrame().client) {
+    return undefined;
+  }
+  try {
+    const targetInfo = (frame.client as unknown as {target(): puppeteer.Target}).target()._getTargetInfo();
+    // The ID of an OOPIF target is the ID of its root frame. The other frames
+    // of the session are in-process subframes of the OOPIF.
+    return targetInfo.type === 'iframe' && targetInfo.targetId === frame._id ? targetInfo.url : undefined;
+  } catch {
+    // Puppeteer can report a session before it knows the target of the session.
+    return undefined;
   }
 }
 
@@ -189,6 +235,8 @@ export class NavigationGuard {
   readonly #checkSubframes: boolean;
   /** True if a step can send input to the page before the page navigates. */
   readonly #replayUsesCurrentPage: boolean;
+  /** True if no step can send input to the page or to its frames before the page navigates. */
+  readonly #replayNavigatesFirst: boolean;
   readonly #onError: () => void;
   readonly #guardedPages = new Set<puppeteer.Page>();
   /** The pages for which the guard checked the documents from before the guard. */
@@ -205,6 +253,9 @@ export class NavigationGuard {
   readonly #errorOrDispose = Promise.withResolvers<void>();
 
   /**
+   * @param currentUrl The URL of the inspected page. It must come from the
+   * target info of the browser process. Do not use `page.url()`, because
+   * Puppeteer sets that value from CDP messages that the renderer writes.
    * @param onError The guard calls it each time it blocks a navigation or
    * cannot enable the interception.
    */
@@ -212,6 +263,7 @@ export class NavigationGuard {
     this.#allowedNavigations = collectAllowedNavigations(flow, currentUrl);
     this.#checkSubframes = hasSubframeSteps(flow);
     this.#replayUsesCurrentPage = shouldAllowCurrentUrl(flow, currentUrl);
+    this.#replayNavigatesFirst = !this.#replayUsesCurrentPage && !hasOtherTargetStepBeforeNavigate(flow);
     this.#onError = onError;
   }
 
@@ -322,16 +374,27 @@ export class NavigationGuard {
   }
 
   // Finds the documents that loaded without a paused response.
-  #checkFrameUrl(frame: Pick<puppeteer.Frame, 'url'|'client'>, guardedPage: puppeteer.Page): void {
-    const url = frame.url();
+  #checkFrameUrl(frame: Pick<puppeteer.Frame, 'url'|'client'|'_id'>, guardedPage: puppeteer.Page): void {
     const isSubframe = frame !== guardedPage.mainFrame();
-    // about: pages and the Chrome error page do not come from the network.
-    if ((isSubframe && !this.#checkSubframes) || !url || url.startsWith('about:') || url.startsWith('chrome-error:')) {
+    if (isSubframe && !this.#checkSubframes) {
       return;
     }
-    if (!isNavigationAllowed(url, this.#allowedNavigations)) {
+    const url = this.#disallowedFrameUrl(frame, guardedPage);
+    if (url !== undefined) {
       this.#block(url);
     }
+  }
+
+  /**
+   * Returns a URL of `frame` that is from an origin that is not in the
+   * recording, or undefined if there is no such URL. For the root frame of
+   * an OOPIF, the guard checks `frame.url()` and the URL from the target
+   * info, because a compromised renderer can forge `frame.url()`.
+   */
+  #disallowedFrameUrl(frame: Pick<puppeteer.Frame, 'url'|'client'|'_id'>, guardedPage: puppeteer.Page): string
+      |undefined {
+    const urls = [frame.url(), oopifTargetUrl(frame, guardedPage)];
+    return urls.find(url => url !== undefined && this.#isDisallowedUrl(url));
   }
 
   /**
@@ -435,7 +498,7 @@ export class NavigationGuard {
       return;
     }
     this.#guardedPages.add(guardedPage);
-    const onFrameNavigated = (frame: Pick<puppeteer.Frame, 'url'|'client'>): void => {
+    const onFrameNavigated = (frame: Pick<puppeteer.Frame, 'url'|'client'|'_id'>): void => {
       // The frame can have a new session, for example for an OOPIF.
       void this.#guardClient(frame.client, guardedPage).catch((err: unknown) => {
         if (!this.#canIgnoreFailure(frame, guardedPage, err)) {
@@ -526,30 +589,61 @@ export class NavigationGuard {
    * an origin, the page first navigates to about:blank, so that the history
    * does not contain this document. The guard does not change the page if it
    * has an error or is disposed, because the replay does not run then.
+   *
+   * The URL of the current document comes from the session history of the
+   * browser process. `page.url()` and `frame.url()` come from CDP messages
+   * that the renderer writes, and a compromised renderer can forge them:
+   * - The guard does not use `page.url()`. A current document with an unknown
+   *   URL is not allowed.
+   * - If a step can send input to the current document, the guard stops the
+   *   replay for a current document that is not allowed.
+   *   `#checkExistingDocuments` cannot find this document if the renderer
+   *   forges the URL of the main frame.
+   * - If the guard checks subframes and no step uses the current page before
+   *   the page navigates, the page always navigates to about:blank.
+   * - If a step uses a frame of the current page first, the page must stay.
+   *   The history does not report the URLs of subframes. In this case, the
+   *   guard uses the target info for out-of-process iframes and `frame.url()`
+   *   for the other subframes. See `#disallowedFrameUrl`.
    */
   async #removeHistory(guardedPage: puppeteer.Page, navigateAwayIfDisallowed: boolean): Promise<void> {
     if (this.#error || this.#disposed) {
       return;
     }
-    const url = guardedPage.url();
-    // DevTools targets do not support navigations. See `RecordingPlayer`.
-    if (Common.ParsedURL.schemeIs(url as Platform.DevToolsPath.UrlString, 'devtools:')) {
+    const client = guardedPage.mainFrame().client;
+    const history =
+        await client.send('Page.getNavigationHistory') as {currentIndex?: number, entries?: Array<{url: string}>} |
+        undefined;
+    if (this.#error || this.#disposed) {
       return;
     }
-    const client = guardedPage.mainFrame().client;
-    if (!this.#checkSubframes) {
-      const history = await client.send('Page.getNavigationHistory') as {entries?: Array<{url: string}>} | undefined;
-      if (this.#error || this.#disposed) {
+    const entries = history?.entries ?? [];
+    const currentUrl = entries[history?.currentIndex ?? -1]?.url as Platform.DevToolsPath.UrlString | undefined;
+    // DevTools targets do not support navigations. See `RecordingPlayer`.
+    if (currentUrl !== undefined && isDevToolsUrl(currentUrl)) {
+      return;
+    }
+    // A step can send input to the current document of a step target page, and
+    // of the inspected page if the replay uses the current page.
+    if (!navigateAwayIfDisallowed || this.#replayUsesCurrentPage) {
+      if (currentUrl === undefined) {
+        this.#failGuard(new Error('The session history has no current entry'));
         return;
       }
-      const entries = history?.entries ?? [];
-      // Keep the history, and thus the Back button, if all entries are allowed.
-      if (entries.length > 0 && entries.every(entry => isNavigationAllowed(entry.url, this.#allowedNavigations))) {
+      if (this.#isDisallowedUrl(currentUrl)) {
+        this.#block(currentUrl);
         return;
       }
     }
-    const hasDisallowedDocument = this.#isDisallowedUrl(url) ||
-        (this.#checkSubframes && guardedPage.frames().some(frame => this.#isDisallowedUrl(frame.url())));
+    // Keep the history, and thus the Back button, if all entries are allowed.
+    if (!this.#checkSubframes && entries.length > 0 &&
+        entries.every(entry => isNavigationAllowed(entry.url, this.#allowedNavigations))) {
+      return;
+    }
+    const hasDisallowedDocument = currentUrl === undefined || this.#isDisallowedUrl(currentUrl) ||
+        (this.#checkSubframes &&
+         (this.#replayNavigatesFirst ||
+          guardedPage.frames().some(frame => this.#disallowedFrameUrl(frame, guardedPage) !== undefined)));
     if (navigateAwayIfDisallowed && hasDisallowedDocument) {
       await guardedPage.goto('about:blank');
       if (this.#error || this.#disposed) {

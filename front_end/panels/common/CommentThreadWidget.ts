@@ -35,6 +35,11 @@ const UIStrings = {
    */
   deleteQueuedComment: 'Delete queued comment',
   /**
+   * @description Tooltip on the text of a queued comment (a comment saved locally but not yet sent to the agent).
+   * Clicking the text, or pressing Enter or Space while it has focus, opens it for editing.
+   */
+  editQueuedComment: 'Edit queued comment',
+  /**
    * @description Alt text for the checkmark icon in the comment thread header indicating that comments have been sent
    * to the agent.
    */
@@ -235,6 +240,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
       ${showCommentInput ? html`
         <textarea
           ${ref(input.textAreaRef)}
+          autofocus
           class="devtools-text-input input"
           rows="1"
           aria-label=${i18nString(UIStrings.commentInputAriaLabel)}
@@ -284,13 +290,18 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             ${buttonText}
           </devtools-button>
         </div>
-      ` : html`<div class="thread-body">${input.comments.map(comment => comment.author === 'DEVELOPER' ? html`
-          <div class="comment-text"
-            @click=${() => {input.onSetEditMode(true);}}
-          >
-            ${comment.text}
-          </div>
-        ` : html`
+      ` : html`<div class="thread-body">${input.comments.map(comment => comment.author === 'DEVELOPER' ? (
+          input.status === 'ACTIVE' ? html`
+            <button class="comment-text"
+              autofocus
+              title=${i18nString(UIStrings.editQueuedComment)}
+              @click=${() => input.onSetEditMode(true)}
+              jslog=${VisualLogging.action('comments-edit-queued-comment').track({click: true})}
+            >${comment.text}</button>
+          ` : html`
+            <div class="comment-text">${comment.text}</div>
+          `
+        ) : html`
           <div class="agent-response">
             <div class="elbow"></div>
             <div class="response-content">
@@ -395,6 +406,10 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     this.#commentText = commentText;
     this.#isEditing = value;
     this.requestUpdate();
+    if (value) {
+      // The clicked comment is replaced by the textarea (the `autofocus` element while editing).
+      void this.updateComplete.then(() => this.focus());
+    }
   };
 
   #handleQueueModifierChange = (pressed: boolean): void => {
@@ -429,6 +444,8 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     this.#isEditing = false;
     this.#submit(text, this.onSaveEdit);
     this.requestUpdate();
+    // The textarea is removed when leaving edit mode; focus moves to the `autofocus` comment.
+    void this.updateComplete.then(() => this.focus());
   };
 
   #handleCommentTextChange = (event: Event): void => {

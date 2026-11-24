@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -22,6 +22,19 @@ const {DEFAULT_VIEW, CommentThreadWidget} = PanelCommon.CommentThreadWidget;
 function queueModifier(): {key: string, metaKey: boolean, ctrlKey: boolean} {
   const isMac = Host.Platform.isMac();
   return {key: isMac ? 'Meta' : 'Control', metaKey: isMac, ctrlKey: !isMac};
+}
+
+/**
+ * Native `autofocus` is applied asynchronously and only once per top-level
+ * document, so whether an `autofocus` element is focused at screenshot time
+ * depends on test order. Settle it and blur so goldens are deterministic.
+ */
+async function assertUnfocusedScreenshot(filename: string): Promise<void> {
+  await raf();
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+  await assertScreenshot(filename);
 }
 
 function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> = {},
@@ -64,13 +77,13 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
   it('renders the empty draft state', async () => {
     const target = renderView();
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comment_thread_widget_draft.png');
+    await assertUnfocusedScreenshot('comments/comment_thread_widget_draft.png');
   });
 
   it('renders the draft state with text entered', async () => {
     const target = renderView({commentText: 'A comment from dev'});
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comment_thread_widget_draft_with_text.png');
+    await assertUnfocusedScreenshot('comments/comment_thread_widget_draft_with_text.png');
   });
 
   it('renders a submitted developer comment', async () => {
@@ -79,7 +92,7 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     ];
     const target = renderView({comments});
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comment_thread_widget_submitted.png');
+    await assertUnfocusedScreenshot('comments/comment_thread_widget_submitted.png');
   });
 
   it('renders a developer comment taken by the agent', async () => {
@@ -91,7 +104,7 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     const spinner = target.querySelector('devtools-spinner');
     assert.isNotNull(spinner);
     spinner.active = false;
-    await assertScreenshot('comments/comment_thread_widget_working.png');
+    await assertUnfocusedScreenshot('comments/comment_thread_widget_working.png');
   });
 
   it('renders a queued developer comment', async () => {
@@ -100,7 +113,7 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     ];
     const target = renderView({comments, status: 'ACTIVE'});
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comment_thread_widget_queued.png');
+    await assertUnfocusedScreenshot('comments/comment_thread_widget_queued.png');
   });
 
   it('renders a queued developer comment in editing mode', async () => {
@@ -114,7 +127,7 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
       commentText: 'Align this to the grid',
     });
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comment_thread_widget_editing.png');
+    await assertUnfocusedScreenshot('comments/comment_thread_widget_editing.png');
   });
 
   it('renders a developer comment with an agent response', async () => {
@@ -128,7 +141,7 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     ];
     const target = renderView({comments, status: 'RESOLVED'});
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comment_thread_widget_agent_response.png');
+    await assertUnfocusedScreenshot('comments/comment_thread_widget_agent_response.png');
   });
 
   const LONG_AGENT_RESPONSE =
@@ -173,7 +186,7 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     ];
     const target = renderView({comments, status: 'RESOLVED', elementRemoved: true});
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comment_thread_widget_element_removed.png');
+    await assertUnfocusedScreenshot('comments/comment_thread_widget_element_removed.png');
   });
 
   it('keeps sent status within widget bounds when title is long', () => {
@@ -402,6 +415,27 @@ describeWithEnvironment('CommentThreadWidget edit interactions in DEFAULT_VIEW',
     commentText.click();
 
     sinon.assert.calledOnceWithExactly(onSetEditMode, true);
+  });
+
+  it('renders the queued developer comment as a focusable button', () => {
+    const target = renderView({comments, status: 'ACTIVE'});
+
+    const commentText = target.querySelector('.comment-text');
+    assert.instanceOf(commentText, HTMLButtonElement);
+    assert.strictEqual(commentText.textContent, 'Queued note');
+    assert.strictEqual(commentText.title, 'Edit queued comment');
+  });
+
+  it('does not make the developer comment editable once sent to the agent', () => {
+    const onSetEditMode = sinon.spy();
+    const target = renderView({comments, status: 'SENT_TO_AGENT', onSetEditMode});
+
+    const commentText = target.querySelector<HTMLElement>('.comment-text');
+    assert.isNotNull(commentText);
+    assert.notInstanceOf(commentText, HTMLButtonElement);
+    commentText.click();
+
+    sinon.assert.notCalled(onSetEditMode);
   });
 
   it('routes Enter, Cmd/Ctrl+Enter and the button to onSaveEdit while editing', () => {
@@ -649,5 +683,35 @@ describeWithEnvironment('CommentThreadWidget presenter', () => {
     widget.performUpdate();
     const expectedModifier = Host.Platform.isMac() ? 'Command' : 'Ctrl';
     assert.strictEqual(view.input.queueCommentDescription, `Press ${expectedModifier}+Enter to queue the comment`);
+  });
+});
+
+describeWithEnvironment('CommentThreadWidget keyboard editing', () => {
+  it('moves focus to the textarea when editing starts and back to the comment after saving', async () => {
+    const widget = new CommentThreadWidget();
+    widget.markAsRoot();
+    renderElementIntoDOM(widget);
+    try {
+      widget.status = 'ACTIVE';
+      widget.comments = [{author: 'DEVELOPER', text: 'Queued note', timestamp: 0}];
+      await widget.updateComplete;
+
+      const commentText = widget.contentElement.querySelector<HTMLButtonElement>('button.comment-text');
+      assert.isNotNull(commentText);
+      commentText.focus();
+      commentText.click();
+      await widget.updateComplete;
+
+      const textarea = widget.contentElement.querySelector('textarea');
+      assert.isNotNull(textarea);
+      assert.strictEqual(document.activeElement, textarea);
+
+      textarea.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true, cancelable: true}));
+      await widget.updateComplete;
+
+      assert.strictEqual(document.activeElement, widget.contentElement.querySelector('button.comment-text'));
+    } finally {
+      widget.detach();
+    }
   });
 });

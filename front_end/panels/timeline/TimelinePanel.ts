@@ -62,6 +62,7 @@ import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
 import * as AnnotationHelpers from './AnnotationHelpers.js';
@@ -404,7 +405,7 @@ export interface SettingsPaneViewInput {
 
 export interface SettingsPaneViewOutput {
   openFileSelector?: () => void;
-  focusCPUThrottling?: () => void;
+  focusAndHighlightCPUThrottling?: () => void;
 }
 
 export type SettingsPaneView = (input: SettingsPaneViewInput, output: SettingsPaneViewOutput, target: HTMLElement) =>
@@ -420,7 +421,10 @@ function renderSettingsPane(input: SettingsPaneViewInput, output: SettingsPaneVi
           ${i18nString(UIStrings.cpu)}
           <select ${widget(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}
               ${ref(el => {
-                output.focusCPUThrottling = el instanceof HTMLSelectElement ? () => el.focus() : undefined;
+                output.focusAndHighlightCPUThrottling = el instanceof HTMLSelectElement ? () => {
+                  el.focus();
+                  PanelUtils.PanelUtils.highlightElement(el);
+                } : undefined;
               })}></select>
         </div>
         <devtools-checkbox title=${i18nString(UIStrings.capturesSelectorStats)}
@@ -1808,7 +1812,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     this.showSettingsPaneSetting.set(true);
     this.updateSettingsPaneVisibility();
     await this.updateComplete;
-    this.#settingsPaneOutput.focusCPUThrottling?.();
+    this.#settingsPaneOutput.focusAndHighlightCPUThrottling?.();
   }
 
   revealParsedTrace(revealable: ParsedTraceRevealable): void {

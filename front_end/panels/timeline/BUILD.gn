@@ -119,6 +119,7 @@ devtools_ui_module("timeline") {
     "../../ui/visual_logging:bundle",
     "../common:bundle",
     "../layer_viewer:bundle",
+    "../utils:bundle",
     "./components:bundle",
     "./extensions:bundle",
     "./overlays:bundle",
@@ -250,6 +251,7 @@ devtools_ui_module("unittests") {
     "../../ui/lit:bundle",
     "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
+    "../utils:bundle",
     "./components:bundle",
     "./overlays:bundle",
   ]

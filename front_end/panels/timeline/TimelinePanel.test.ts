@@ -34,6 +34,7 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import * as TimelineComponents from './components/components.js';
 import * as Timeline from './timeline.js';
@@ -961,9 +962,10 @@ describe('TimelinePanel', function() {
 
   it('reveals CPU throttling in the capture settings pane', async function() {
     const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    const highlightStub = sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
     const settingsPane = timeline.element.querySelector<HTMLElement>('.timeline-settings-pane');
     assert.isOk(settingsPane);
-    const cpuThrottlingSelect = settingsPane.querySelector('select[jslog*="cpu-throttling"]');
+    const cpuThrottlingSelect = settingsPane.querySelector<HTMLSelectElement>('select[jslog*="cpu-throttling"]');
     assert.isOk(cpuThrottlingSelect);
     assert.isTrue(settingsPane.hidden);
 
@@ -974,6 +976,7 @@ describe('TimelinePanel', function() {
       sinon.assert.calledOnceWithExactly(showViewStub, 'timeline');
       assert.isFalse(settingsPane.hidden);
       assert.strictEqual(document.activeElement, cpuThrottlingSelect);
+      sinon.assert.calledOnceWithExactly(highlightStub, cpuThrottlingSelect);
     } finally {
       Common.Settings.Settings.instance().createSetting('timeline-show-settings-toolbar', false).set(false);
     }

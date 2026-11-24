@@ -229,6 +229,11 @@ export type SidebarPaneView = (
     ) => void;
 
 export const SIDEBAR_PANE_DEFAULT_VIEW: SidebarPaneView = (input, _output, target) => {
+  const existingWidget = target.firstElementChild ? UI.Widget.Widget.get(target.firstElementChild) : undefined;
+  if ((existingWidget instanceof ExtensionView && !input.pageURL) ||
+      (existingWidget instanceof ExtensionNotifierView && (Boolean(input.pageURL) || !input.showObjectProperties))) {
+    existingWidget.hideWidget();
+  }
   // clang-format off
   render(html`
     ${input.pageURL ? widget(ExtensionView, {
@@ -258,7 +263,7 @@ export const SIDEBAR_PANE_DEFAULT_VIEW: SidebarPaneView = (input, _output, targe
     container: {
       classes: ['fill'],
       attributes: {
-        style: input.height ? `height: ${input.height}` : undefined,
+        style: input.height && CSS.supports('height', input.height) ? `height: ${input.height}` : undefined,
       },
     },
   });

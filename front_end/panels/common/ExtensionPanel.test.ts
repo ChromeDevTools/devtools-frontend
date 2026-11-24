@@ -276,6 +276,25 @@ describeWithEnvironment('ExtensionSidebarPane', () => {
     assert.strictEqual(view.input.height, '250px');
   });
 
+  it('does not allow injecting extra CSS declarations via height in SIDEBAR_PANE_DEFAULT_VIEW', () => {
+    const target = document.createElement('div');
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    Common.ExtensionPanel.SIDEBAR_PANE_DEFAULT_VIEW(
+        {
+          server,
+          id: 'sidebar-1',
+          height: '100px; position: fixed; inset: 0px; z-index: 99999',
+          showObjectProperties: false,
+        },
+        undefined,
+        target,
+    );
+
+    assert.strictEqual(target.style.position, '');
+    assert.strictEqual(target.style.zIndex, '');
+    assert.strictEqual(target.style.height, '');
+  });
+
   it('cancels pending setExpression when setPage is called before evaluation completes', async () => {
     const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
     const view = createViewFunctionStub(Common.ExtensionPanel.ExtensionSidebarPane);
@@ -326,5 +345,44 @@ describeWithEnvironment('ExtensionSidebarPane', () => {
 
     assert.strictEqual(sidebarPane.viewId(), 'extension-sidebar-my-extension-custom-panel-1-3gj2w0');
     assert.isTrue(Platform.StringUtilities.isExtendedKebabCase(sidebarPane.viewId()));
+  });
+
+  it('notifies view hidden before view shown when switching between page and object while visible', async () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const sidebarPane = new Common.ExtensionPanel.ExtensionSidebarPane(
+        server, 'elements', 'Sidebar' as Platform.UIString.LocalizedString, 'sidebar-1');
+    renderElementIntoDOM(sidebarPane);
+
+    sidebarPane.setPage(urlString`about:blank`);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const iframe = sidebarPane.element.querySelector('iframe.extension');
+    assert.instanceOf(iframe, HTMLIFrameElement);
+    iframe.dispatchEvent(new Event('load'));
+    sinon.assert.calledOnce(server.notifyViewShown);
+
+    server.notifyViewShown.resetHistory();
+    server.notifyViewHidden.resetHistory();
+
+    await new Promise(resolve => sidebarPane.setObject({foo: 'bar'}, 'title', resolve));
+
+    sinon.assert.calledOnceWithExactly(server.notifyViewHidden, 'sidebar-1');
+    sinon.assert.calledOnceWithExactly(server.notifyViewShown, 'sidebar-1');
+    sinon.assert.callOrder(server.notifyViewHidden, server.notifyViewShown);
+
+    server.notifyViewShown.resetHistory();
+    server.notifyViewHidden.resetHistory();
+
+    sidebarPane.setPage(urlString`about:blank`);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const nextIframe = sidebarPane.element.querySelector('iframe.extension');
+    assert.instanceOf(nextIframe, HTMLIFrameElement);
+    nextIframe.dispatchEvent(new Event('load'));
+
+    sinon.assert.calledOnceWithExactly(server.notifyViewHidden, 'sidebar-1');
+    sinon.assert.calledOnce(server.notifyViewShown);
+    sinon.assert.callOrder(server.notifyViewHidden, server.notifyViewShown);
+    sidebarPane.detach();
   });
 });

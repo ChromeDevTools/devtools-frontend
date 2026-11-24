@@ -3,19 +3,142 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {
+  collectElementsOnThePage,
   getErrorStackOnThePage,
   type GetErrorStackOutput,
   stringifyObjectOnThePage,
 } from './DOMHelpers.js';
 import {PAGE_EXPOSED_FUNCTIONS} from './injected.js';
 
+/**
+ * Caps concurrent `DOM.describeNode` CDP calls and retained element
+ * `RemoteObject` handles per evaluation.
+ */
+export const MAX_SERIALIZED_ELEMENT_UIDS = 50;
+
 export function formatError(message: string): string {
   return `Error: ${message}`;
 }
 export class SideEffectError extends Error {}
+
+/**
+ * Resolves `backendNodeId` values (`depth: 0`) for an array `RemoteObject` of
+ * DOM `Element` handles.
+ *
+ * Individual lookup failures yield `null` at that element's index without
+ * aborting serialization.
+ */
+async function resolveElementBackendNodeIds(
+    elementsArray: SDK.RemoteObject.RemoteObject,
+    domAgent: ProtocolProxyApi.DOMApi,
+    ): Promise<Array<number|null>> {
+  const {properties, internalProperties} = await elementsArray.getOwnProperties(false);
+  try {
+    const elementProperties = (properties ?? []).filter(property => {
+      const index = Number(property.name);
+      return Number.isInteger(index) && index >= 0 && String(index) === property.name;
+    });
+
+    const resolvedEntries = await Promise.all(
+        elementProperties.map(async property => {
+          const index = Number(property.name);
+          const objectId = property.value?.objectId;
+          if (!objectId) {
+            return {index, backendNodeId: null};
+          }
+          const response = await domAgent.invoke_describeNode({objectId, depth: 0});
+          const backendNodeId =
+              !response.getError() && response.node?.backendNodeId ? response.node.backendNodeId : null;
+          return {index, backendNodeId};
+        }),
+    );
+
+    const maxIndex = resolvedEntries.reduce((max, entry) => Math.max(max, entry.index), -1);
+    const resolvedUids: Array<number|null> = Array.from({length: maxIndex + 1}, () => null);
+    for (const {index, backendNodeId} of resolvedEntries) {
+      resolvedUids[index] = backendNodeId;
+    }
+    return resolvedUids;
+  } finally {
+    // Release own and internal property handles because `getOwnProperties(false)`
+    // allocates separate handles (such as `[[Prototype]]`) that
+    // `elementsArray.release()` does not free.
+    for (const property of [...(properties ?? []), ...(internalProperties ?? [])]) {
+      property.value?.release();
+      property.symbol?.release();
+      property.getter?.release();
+      property.setter?.release();
+    }
+  }
+}
+
+/**
+ * Executes a page helper on `object` under `throwOnSideEffect: true` and
+ * returns its `RemoteObject` result.
+ *
+ * Releases the exception handle and throws if the page call throws or returns
+ * no object; callers are responsible for releasing the returned `RemoteObject`.
+ */
+async function callPageFunction<TArgs extends unknown[]>(
+    object: SDK.RemoteObject.RemoteObject,
+    fn: (this: unknown, ...args: TArgs) => unknown,
+    args?: Protocol.Runtime.CallArgument[],
+    ): Promise<SDK.RemoteObject.RemoteObject> {
+  const res = await object.callFunction(fn, args, {throwOnSideEffect: true});
+  if (res.wasThrown) {
+    const description = res.object?.description ?? object;
+    res.object?.release();
+    throw new Error(`Could not stringify the object: ${description}`);
+  }
+  if (!res.object) {
+    throw new Error('Could not stringify the object' + object);
+  }
+  return res.object;
+}
+
+/**
+ * Serializes a non-error `RemoteObject` on the inspected page, resolving
+ * `BackendNodeId` (`uid`) prefixes for any DOM `Element` instances found.
+ *
+ * Collects up to `MAX_SERIALIZED_ELEMENT_UIDS` element handles via
+ * `collectElementsOnThePage`, resolves their `BackendNodeId`s via
+ * `DOM.describeNode` when non-empty, and serializes via
+ * `stringifyObjectOnThePage` with any resolved UIDs. Releases all intermediate
+ * handles in `finally`.
+ */
+async function stringifyRemoteObjectOnThePage(object: SDK.RemoteObject.RemoteObject): Promise<string> {
+  const elementsArray = await callPageFunction(
+      object,
+      collectElementsOnThePage,
+      [{value: MAX_SERIALIZED_ELEMENT_UIDS}],
+  );
+  let serialized: SDK.RemoteObject.RemoteObject|undefined;
+  try {
+    if (elementsArray.type !== Protocol.Runtime.RemoteObjectType.Object ||
+        elementsArray.subtype !== Protocol.Runtime.RemoteObjectSubtype.Array) {
+      throw new Error('Could not stringify the object' + object);
+    }
+    const resolvedUids = elementsArray.arrayLength() > 0 ?
+        await resolveElementBackendNodeIds(elementsArray, object.runtimeModel().target().domAgent()) :
+        undefined;
+    serialized = await callPageFunction(
+        object,
+        stringifyObjectOnThePage,
+        resolvedUids ? [{value: resolvedUids}] : undefined,
+    );
+    if (serialized.type !== Protocol.Runtime.RemoteObjectType.String) {
+      throw new Error('Could not stringify the object' + object);
+    }
+    return serialized.value;
+  } finally {
+    elementsArray.release();
+    serialized?.release();
+  }
+}
 
 export async function stringifyRemoteObject(
     object: SDK.RemoteObject.RemoteObject, functionDeclaration: string): Promise<string> {
@@ -42,14 +165,7 @@ export async function stringifyRemoteObject(
 
         return EvaluateAction.stringifyError(res, functionDeclaration);
       }
-      const res = await object.callFunction(stringifyObjectOnThePage, undefined, {
-        throwOnSideEffect: true,
-      });
-      if (!res.object || res.object.type !== Protocol.Runtime.RemoteObjectType.String) {
-        throw new Error('Could not stringify the object' + object);
-      }
-
-      return res.object.value;
+      return await stringifyRemoteObjectOnThePage(object);
     }
     default:
       throw new Error('Unknown type to stringify ' + object.type);

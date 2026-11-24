@@ -21,6 +21,7 @@ allowed-tools:
 
 3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:
    - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.
+   - When you need the numeric `uid` for an element not already listed in the active context, return the DOM `Element` itself in `data` (directly or inside an object/array) and read the numeric `uid` from its serialized `(uid=<id>)` prefix (for example `(uid=15) <div id="card">...</div>`), then pass that numeric `uid` to `getStyles` or `setElementStyles`. Never guess numeric `uid`s.
    - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.
    - Geometry & layout inspection example:
      ```javascript

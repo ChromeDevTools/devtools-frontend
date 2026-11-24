@@ -8,6 +8,7 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
@@ -226,6 +227,99 @@ Cannot read properties of undefined (reading 'bar')`);
     });
 
     describe('stringifyRemoteObject', () => {
+      function createStubbedObjectSetup() {
+        const universe = new TestUniverse();
+        const target = universe.createTarget();
+        const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+        assert.exists(runtimeModel);
+        const object = new SDK.RemoteObject.RemoteObjectImpl(
+            runtimeModel,
+            'target-object' as Protocol.Runtime.RemoteObjectId,
+            Protocol.Runtime.RemoteObjectType.Object,
+            undefined,
+            undefined,
+            undefined,
+            'Object',
+        );
+        const runtimeAgent = target.runtimeAgent();
+        const callFunctionOnStub = sinon.stub(runtimeAgent, 'invoke_callFunctionOn');
+        const getPropertiesStub = sinon.stub(runtimeAgent, 'invoke_getProperties');
+        const releaseObjectStub = sinon.stub(runtimeAgent, 'invoke_releaseObject').resolves({
+          getError: () => undefined,
+        });
+        const describeNodeStub = sinon.stub(target.domAgent(), 'invoke_describeNode');
+
+        function stubElementArrayResponse(elementIds: string[], includeProto = true): void {
+          callFunctionOnStub.onFirstCall().resolves({
+            result: {
+              objectId: 'result-array' as Protocol.Runtime.RemoteObjectId,
+              type: Protocol.Runtime.RemoteObjectType.Object,
+              subtype: Protocol.Runtime.RemoteObjectSubtype.Array,
+              description: `Array(${elementIds.length})`,
+            },
+            getError: () => undefined,
+          });
+          const properties: Protocol.Runtime.PropertyDescriptor[] = [
+            ...elementIds.map((elementId, index) => ({
+                                name: String(index),
+                                configurable: true,
+                                enumerable: true,
+                                value: {
+                                  objectId: elementId as Protocol.Runtime.RemoteObjectId,
+                                  type: Protocol.Runtime.RemoteObjectType.Object,
+                                  subtype: Protocol.Runtime.RemoteObjectSubtype.Node,
+                                },
+                              })),
+            {
+              name: 'length',
+              configurable: false,
+              enumerable: false,
+              value: {
+                type: Protocol.Runtime.RemoteObjectType.Number,
+                value: elementIds.length,
+              },
+            },
+          ];
+          getPropertiesStub.resolves({
+            result: properties,
+            internalProperties: includeProto ? [{
+              name: '[[Prototype]]',
+              value: {
+                objectId: 'proto-1' as Protocol.Runtime.RemoteObjectId,
+                type: Protocol.Runtime.RemoteObjectType.Object,
+                description: 'Array(0)',
+              },
+            }] :
+                                               undefined,
+            getError: () => undefined,
+          });
+        }
+
+        return {
+          object,
+          callFunctionOnStub,
+          getPropertiesStub,
+          releaseObjectStub,
+          describeNodeStub,
+          stubElementArrayResponse,
+        };
+      }
+
+      function describeNodeSuccess(backendNodeId: number): Protocol.DOM.DescribeNodeResponse&
+          Protocol.ProtocolResponseWithError {
+        return {
+          node: {
+            nodeId: 0 as Protocol.DOM.NodeId,
+            backendNodeId: backendNodeId as Protocol.DOM.BackendNodeId,
+            nodeType: 1,
+            nodeName: 'DIV',
+            localName: 'div',
+            nodeValue: '',
+          },
+          getError: () => undefined,
+        };
+      }
+
       it('should serialize object when subtype is error', async () => {
         const error = new Error('Some error message');
         error.stack = 'some stack';
@@ -263,16 +357,226 @@ Cannot read properties of undefined (reading 'bar')`);
                 new SDK.RemoteObject.LocalJSONObject(Symbol('sym')), exampleCode),
             'Symbol(sym)');
       });
-    });
 
-    it('runs stringification on the page for objects', async () => {
-      const object = SDK.RemoteObject.RemoteObject.fromLocalObject(new SDK.RemoteObject.LocalJSONObject({}));
-      const callFunctionStub = sinon.stub(object, 'callFunction');
-      callFunctionStub.resolves({object: new SDK.RemoteObject.LocalJSONObject('result')});
-      const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
-      assert.strictEqual(result, 'result');
-      sinon.assert.calledOnceWithExactly(callFunctionStub, AiAssistance.DOMHelpers.stringifyObjectOnThePage, undefined,
-                                         {throwOnSideEffect: true});
+      it('skips DOM.describeNode when collectElementsOnThePage returns an empty array', async () => {
+        const {
+          object,
+          callFunctionOnStub,
+          getPropertiesStub,
+          releaseObjectStub,
+          describeNodeStub,
+          stubElementArrayResponse,
+        } = createStubbedObjectSetup();
+        stubElementArrayResponse([], false);
+        callFunctionOnStub.onSecondCall().resolves({
+          result: {
+            type: Protocol.Runtime.RemoteObjectType.String,
+            value: 'result',
+          },
+          getError: () => undefined,
+        });
+
+        const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+
+        assert.strictEqual(result, 'result');
+        assert.strictEqual(AiAssistance.EvaluateAction.MAX_SERIALIZED_ELEMENT_UIDS, 50);
+        sinon.assert.calledTwice(callFunctionOnStub);
+        assert.strictEqual(
+            callFunctionOnStub.firstCall.args[0].functionDeclaration,
+            AiAssistance.DOMHelpers.collectElementsOnThePage.toString(),
+        );
+        assert.deepEqual(callFunctionOnStub.firstCall.args[0].arguments, [{value: 50}]);
+        assert.isTrue(callFunctionOnStub.firstCall.args[0].throwOnSideEffect);
+        assert.strictEqual(
+            callFunctionOnStub.secondCall.args[0].functionDeclaration,
+            AiAssistance.DOMHelpers.stringifyObjectOnThePage.toString(),
+        );
+        assert.isUndefined(callFunctionOnStub.secondCall.args[0].arguments);
+        assert.isTrue(callFunctionOnStub.secondCall.args[0].throwOnSideEffect);
+        sinon.assert.notCalled(getPropertiesStub);
+        sinon.assert.notCalled(describeNodeStub);
+        assert.sameMembers(
+            releaseObjectStub.args.map(([arg]) => arg.objectId),
+            ['result-array' as Protocol.Runtime.RemoteObjectId],
+        );
+      });
+
+      it('resolves element backendNodeIds across collection and serialization and releases all handles', async () => {
+        const {object, callFunctionOnStub, releaseObjectStub, describeNodeStub, stubElementArrayResponse} =
+            createStubbedObjectSetup();
+        stubElementArrayResponse(['el-1', 'el-2']);
+        describeNodeStub.withArgs({objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0})
+            .resolves(describeNodeSuccess(15));
+        describeNodeStub.withArgs({objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0})
+            .resolves(describeNodeSuccess(42));
+        const finalJson = JSON.stringify({
+          first: '(uid=15) <div id="hero">...</div>',
+          second: '(uid=42) <svg></svg>',
+        });
+        callFunctionOnStub.onSecondCall().resolves({
+          result: {
+            type: Protocol.Runtime.RemoteObjectType.String,
+            value: finalJson,
+          },
+          getError: () => undefined,
+        });
+
+        const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+
+        assert.deepEqual(JSON.parse(result), {
+          first: '(uid=15) <div id="hero">...</div>',
+          second: '(uid=42) <svg></svg>',
+        });
+        sinon.assert.calledTwice(callFunctionOnStub);
+        assert.strictEqual(
+            callFunctionOnStub.firstCall.args[0].functionDeclaration,
+            AiAssistance.DOMHelpers.collectElementsOnThePage.toString(),
+        );
+        assert.deepEqual(callFunctionOnStub.firstCall.args[0].arguments, [{value: 50}]);
+        assert.isTrue(callFunctionOnStub.firstCall.args[0].throwOnSideEffect);
+        assert.strictEqual(
+            callFunctionOnStub.secondCall.args[0].functionDeclaration,
+            AiAssistance.DOMHelpers.stringifyObjectOnThePage.toString(),
+        );
+        assert.deepEqual(callFunctionOnStub.secondCall.args[0].arguments, [{value: [15, 42]}]);
+        assert.isTrue(callFunctionOnStub.secondCall.args[0].throwOnSideEffect);
+        sinon.assert.calledTwice(describeNodeStub);
+        sinon.assert.calledWithExactly(describeNodeStub.firstCall,
+                                       {objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0});
+        sinon.assert.calledWithExactly(describeNodeStub.secondCall,
+                                       {objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0});
+        assert.sameMembers(
+            releaseObjectStub.args.map(([arg]) => arg.objectId),
+            [
+              'el-1' as Protocol.Runtime.RemoteObjectId,
+              'el-2' as Protocol.Runtime.RemoteObjectId,
+              'proto-1' as Protocol.Runtime.RemoteObjectId,
+              'result-array' as Protocol.Runtime.RemoteObjectId,
+            ],
+        );
+      });
+
+      it('passes null in resolvedUids when DOM.describeNode fails or returns zero backendNodeId', async () => {
+        const {object, callFunctionOnStub, releaseObjectStub, describeNodeStub, stubElementArrayResponse} =
+            createStubbedObjectSetup();
+        stubElementArrayResponse(['el-1', 'el-2', 'el-3'], false);
+        describeNodeStub.withArgs({objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0})
+            .resolves(describeNodeSuccess(15));
+        describeNodeStub.withArgs({objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0})
+            .resolves({...describeNodeSuccess(999), getError: () => 'Node not found'});
+        describeNodeStub.withArgs({objectId: 'el-3' as Protocol.Runtime.RemoteObjectId, depth: 0})
+            .resolves(describeNodeSuccess(0));
+        const finalJson = JSON.stringify(['(uid=15) <div></div>', '<span class="x"></span>', '<p></p>']);
+        callFunctionOnStub.onSecondCall().resolves({
+          result: {
+            type: Protocol.Runtime.RemoteObjectType.String,
+            value: finalJson,
+          },
+          getError: () => undefined,
+        });
+
+        const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+
+        assert.deepEqual(JSON.parse(result), [
+          '(uid=15) <div></div>',
+          '<span class="x"></span>',
+          '<p></p>',
+        ]);
+        assert.deepEqual(
+            callFunctionOnStub.secondCall.args[0].arguments,
+            [{value: [15, null, null]}],
+        );
+        assert.sameMembers(
+            releaseObjectStub.args.map(([arg]) => arg.objectId),
+            [
+              'el-1' as Protocol.Runtime.RemoteObjectId,
+              'el-2' as Protocol.Runtime.RemoteObjectId,
+              'el-3' as Protocol.Runtime.RemoteObjectId,
+              'result-array' as Protocol.Runtime.RemoteObjectId,
+            ],
+        );
+      });
+
+      it('throws and releases result object when collectElementsOnThePage reports an exception', async () => {
+        const {object, callFunctionOnStub, releaseObjectStub} = createStubbedObjectSetup();
+        callFunctionOnStub.onFirstCall().resolves({
+          result: {
+            objectId: 'err-1' as Protocol.Runtime.RemoteObjectId,
+            type: Protocol.Runtime.RemoteObjectType.Object,
+            subtype: Protocol.Runtime.RemoteObjectSubtype.Error,
+            description: 'SideEffectError: Possible side-effect',
+          },
+          exceptionDetails: {
+            exceptionId: 1,
+            text: 'Uncaught',
+            lineNumber: 0,
+            columnNumber: 0,
+          },
+          getError: () => undefined,
+        });
+
+        let caughtError: unknown;
+        try {
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+        } catch (err) {
+          caughtError = err;
+        }
+        if (!(caughtError instanceof Error)) {
+          assert.fail('Expected Error to be thrown');
+        }
+        assert.strictEqual(caughtError.message,
+                           'Could not stringify the object: SideEffectError: Possible side-effect');
+        assert.sameMembers(
+            releaseObjectStub.args.map(([arg]) => arg.objectId),
+            ['err-1' as Protocol.Runtime.RemoteObjectId],
+        );
+      });
+
+      it('throws and releases both handles when stringifyObjectOnThePage reports an exception', async () => {
+        const {object, callFunctionOnStub, releaseObjectStub, describeNodeStub, stubElementArrayResponse} =
+            createStubbedObjectSetup();
+        stubElementArrayResponse(['el-1']);
+        describeNodeStub.withArgs({objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0})
+            .resolves(describeNodeSuccess(15));
+        callFunctionOnStub.onSecondCall().resolves({
+          result: {
+            objectId: 'err-2' as Protocol.Runtime.RemoteObjectId,
+            type: Protocol.Runtime.RemoteObjectType.Object,
+            subtype: Protocol.Runtime.RemoteObjectSubtype.Error,
+            description: 'SideEffectError: Possible side-effect in stringifyObjectOnThePage',
+          },
+          exceptionDetails: {
+            exceptionId: 2,
+            text: 'Uncaught',
+            lineNumber: 0,
+            columnNumber: 0,
+          },
+          getError: () => undefined,
+        });
+
+        let caughtError: unknown;
+        try {
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+        } catch (err) {
+          caughtError = err;
+        }
+        if (!(caughtError instanceof Error)) {
+          assert.fail('Expected Error to be thrown');
+        }
+        assert.strictEqual(
+            caughtError.message,
+            'Could not stringify the object: SideEffectError: Possible side-effect in stringifyObjectOnThePage',
+        );
+        assert.sameMembers(
+            releaseObjectStub.args.map(([arg]) => arg.objectId),
+            [
+              'el-1' as Protocol.Runtime.RemoteObjectId,
+              'proto-1' as Protocol.Runtime.RemoteObjectId,
+              'result-array' as Protocol.Runtime.RemoteObjectId,
+              'err-2' as Protocol.Runtime.RemoteObjectId,
+            ],
+        );
+      });
     });
   });
 });

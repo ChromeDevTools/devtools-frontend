@@ -532,6 +532,17 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
     });
   });
 
+  it('advertises DOM Element uid serialization for numeric uid tools without naming setElementStyles', () => {
+    const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+    const {description} = tool.parameters.properties.code;
+    assert.include(description, 'DOM `Element`');
+    assert.include(description, '(uid=<backendNodeId>)');
+    assert.include(description, '(uid=15) <div id="card">...</div>');
+    assert.include(description, `up to ${AiAssistance.EvaluateAction.MAX_SERIALIZED_ELEMENT_UIDS} elements per call`);
+    assert.include(description, 'numeric element `uid`s');
+    assert.notInclude(description, 'setElementStyles');
+  });
+
   it('validates code and executes successfully when V2 architecture is enabled', async () => {
     updateHostConfig({devToolsAiV2Architecture: {enabled: true}});
     const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();

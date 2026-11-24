@@ -71,6 +71,67 @@ describe('DOMHelpers', () => {
       const parsedResult = JSON.parse(result);
       assert.isUndefined(parsedResult[0]);
     });
+
+    it('serializes SVGElement without resolvedUids as a plain JSON string', () => {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.id = 'icon';
+      svg.classList.add('logo');
+      assert.strictEqual(
+          AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(svg),
+          '"<svg id=\\"icon\\" class=\\"logo\\"></svg>"',
+      );
+    });
+
+    it('formats resolved UIDs while omitting null or excess elements and preserving cycles', () => {
+      const el1 = document.createElement('div');
+      el1.id = 'hero';
+      el1.classList.add('banner');
+      el1.appendChild(document.createElement('p'));
+      const el2 = document.createElement('span');
+      const el3 = document.createElement('p');
+      const result = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(
+          {list: [el1, el2, el3], dup: el1},
+          [15, null],
+      );
+      assert.strictEqual(
+          result,
+          '{"list":["(uid=15) <div id=\\"hero\\" class=\\"banner\\">...</div>","<span></span>","<p></p>"],"dup":"(cycle)"}',
+      );
+    });
+  });
+
+  describe('collectElementsOnThePage', () => {
+    it('returns an empty array for a plain object without elements', () => {
+      const result = AiAssistance.DOMHelpers.collectElementsOnThePage.call({key: 'str'}, 50);
+      assert.deepEqual(result, []);
+    });
+
+    it('collects a single element handle', () => {
+      const el = document.createElement('div');
+      el.id = 'hero';
+      el.classList.add('banner');
+      el.appendChild(document.createElement('p'));
+      const result = AiAssistance.DOMHelpers.collectElementsOnThePage.call(el, 50);
+      assert.deepEqual(result, [el]);
+    });
+
+    it('deduplicates repeated element references via seenBefore', () => {
+      const el1 = document.createElement('div');
+      const el2 = document.createElement('span');
+      const result = AiAssistance.DOMHelpers.collectElementsOnThePage.call(
+          {first: el1, list: [el2, el1]},
+          50,
+      );
+      assert.deepEqual(result, [el1, el2]);
+    });
+
+    it('caps collected element handles at maxElements', () => {
+      const el1 = document.createElement('div');
+      const el2 = document.createElement('span');
+      const el3 = document.createElement('p');
+      const result = AiAssistance.DOMHelpers.collectElementsOnThePage.call([el1, el2, el3], 2);
+      assert.deepEqual(result, [el1, el2]);
+    });
   });
 
   describe('sanitizeStyleChanges', () => {

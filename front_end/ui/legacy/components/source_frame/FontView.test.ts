@@ -8,7 +8,7 @@ import {it} from 'mocha';
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as SourceFrame from './source_frame.js';
@@ -46,5 +46,21 @@ describeWithEnvironment('FontView', () => {
       }
     }
     assert.isFalse(effectiveInjectionFound, 'Effective CSS injection found (multiple rules in style tag)');
+  });
+
+  it('renders visual baseline of FontView', async () => {
+    const contentData = new TextUtils.ContentData.ContentData('', false, 'font/woff2');
+    const contentProvider = new TextUtils.StaticContentProvider.StaticContentProvider(
+        urlString`http://example.com/font.woff2`, Common.ResourceType.resourceTypes.Font,
+        () => Promise.resolve(contentData));
+
+    const fontView = new SourceFrame.FontView.FontView('font/woff2', contentProvider);
+    fontView.showToolbar = true;
+    renderElementIntoDOM(fontView, {includeCommonStyles: true, width: 400, height: 300});
+
+    await doubleRaf();
+    await fontView.updateComplete;
+
+    await assertScreenshot('source_frame/font_view_baseline.png');
   });
 });

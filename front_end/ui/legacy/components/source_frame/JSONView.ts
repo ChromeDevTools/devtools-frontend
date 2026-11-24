@@ -34,10 +34,11 @@ const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement
   const title = html`<span>${titleText}</span>`;
   render(html`
     <style>${jsonViewStyles}</style>
-    ${UI.Widget.widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
-           objectTree: input.objectTree,
-           title,
-         })}
+    <devtools-widget class="json-view-tree" ${
+             UI.Widget.widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+               objectTree: input.objectTree,
+               title,
+             })}></devtools-widget>
   `,
          target, {
 

@@ -925,8 +925,6 @@ export default defineConfig([
             'front_end/ui/legacy/components/perf_ui/ChartViewport.ts',
             'front_end/ui/legacy/components/perf_ui/OverviewGrid.ts',
             'front_end/ui/legacy/components/perf_ui/TimelineGrid.ts',
-            'front_end/ui/legacy/components/source_frame/FontView.ts',
-            'front_end/ui/legacy/components/source_frame/JSONView.ts',
             'front_end/ui/legacy/components/source_frame/XMLView.ts',
           ],
         },

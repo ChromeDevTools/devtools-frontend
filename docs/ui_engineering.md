@@ -866,7 +866,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 ## Migrating Checkboxes
 
-Replace various imperative checkbox creation methods with the declarative `<devtools-checkbox>` component. For settings-backed checkboxes, use the `UI.UIUtils.bindToSetting` directive. When migrating `UI.UIUtils.CheckboxLabel.create(title, ...)` or `SettingsUI.SettingsUI.createSettingCheckbox(title, setting)`, preserve `title=${title}` on `<devtools-checkbox>` so E2E helpers that query `[title="..."]` continue to match.
+Replace various imperative checkbox creation methods with the declarative `<devtools-checkbox>` component. Raw `<input type="checkbox">` elements are disallowed in Lit templates by the `@devtools/no-raw-checkbox-input` ESLint rule; always use `<devtools-checkbox>` instead. For settings-backed checkboxes, use the `UI.UIUtils.bindToSetting` directive. When migrating `UI.UIUtils.CheckboxLabel.create(title, ...)` or `SettingsUI.SettingsUI.createSettingCheckbox(title, setting)`, preserve `title=${title}` on `<devtools-checkbox>` so E2E helpers that query `[title="..."]` continue to match.
 
 **Before:**
 ```typescript

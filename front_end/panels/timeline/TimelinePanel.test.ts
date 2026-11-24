@@ -26,12 +26,14 @@ import {
   deinitializeGlobalVars,
   initializeGlobalVars,
   registerNoopActions,
+  registerTestTeardown,
 } from '../../testing/EnvironmentHelpers.js';
 import {type StubbedFileManager, stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {makeCompleteEvent} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as TimelineComponents from './components/components.js';
 import * as Timeline from './timeline.js';
@@ -65,6 +67,15 @@ describe('TimelinePanel', function() {
   let targetManager: SDK.TargetManager.TargetManager;
   let isolateManager: SDK.IsolateManager.IsolateManager;
   beforeEach(() => {
+    registerTestTeardown(SettingsUI.SettingUIRegistration.resetSettings);
+    for (const descriptor of [SettingsUI.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor,
+                              SettingsUI.TimelineSettings.timelineCaptureLayersAndPicturesSettingDescriptor,
+                              SettingsUI.TimelineSettings.timelineDisableJsSamplingSettingDescriptor,
+                              SettingsUI.TimelineSettings.timelineScreenshotCaptureModeSettingDescriptor,
+                              SettingsUI.TimelineSettings.timelineShowExtensionDataSettingDescriptor,
+    ]) {
+      SettingsUI.SettingUIRegistration.register(descriptor, {});
+    }
     registerNoopActions(
         ['timeline.toggle-recording', 'timeline.record-reload', 'timeline.show-history', 'components.collect-garbage']);
     targetManager = SDK.TargetManager.TargetManager.instance();

@@ -46,6 +46,7 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Timeline from './timeline.js';
 
@@ -140,6 +141,8 @@ describeWithEnvironment('TimelineUIUtils', function() {
   const SCRIPT_ID_STRING = String(SCRIPT_ID_NUMBER) as Protocol.Runtime.ScriptId;
 
   beforeEach(() => {
+    SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor,
+                                              {});
     connection = new MockCDPConnection();
     connection.setSuccessHandler('Debugger.enable',
                                  () => ({debuggerId: 'DEBUGGER_ID' as Protocol.Runtime.UniqueDebuggerId}));

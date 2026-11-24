@@ -8,12 +8,15 @@ import {beforeEach, it} from 'mocha';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 // eslint-disable-next-line @devtools/es-modules-import
 import {captureTraceSnapshot} from './TraceSnapshotSerializer.js';
 
 describeWithEnvironment('TraceSnapshotSerializer', function() {
   beforeEach(() => {
+    SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor,
+                                              {});
     setupIgnoreListManagerEnvironment();
   });
 

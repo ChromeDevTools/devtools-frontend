@@ -29,7 +29,6 @@ describeWithEnvironment('TimelinePanel landing page', () => {
     SDK.PageResourceLoader.PageResourceLoader.removeInstance();
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
     Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
-    SettingsUI.SettingUIRegistration.resetSettings();
   });
 
   describe('accessibility', () => {
@@ -40,11 +39,17 @@ describeWithEnvironment('TimelinePanel landing page', () => {
         [SettingsUI.TimelineSettings.timelineDimThirdPartiesSettingDescriptor, 'Dim 3rd parties'],
       ] as const;
       for (const [descriptor, title] of toolbarCheckboxSettings) {
-        if (!SettingsUI.SettingUIRegistration.maybeResolve(descriptor)?.title) {
-          SettingsUI.SettingUIRegistration.register(descriptor, {
-            title: () => i18n.i18n.lockedString(title),
-          });
-        }
+        SettingsUI.SettingUIRegistration.register(descriptor, {
+          title: () => i18n.i18n.lockedString(title),
+        });
+      }
+      for (const descriptor of [SettingsUI.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor,
+                                SettingsUI.TimelineSettings.timelineCaptureLayersAndPicturesSettingDescriptor,
+                                SettingsUI.TimelineSettings.timelineDisableJsSamplingSettingDescriptor,
+                                SettingsUI.TimelineSettings.timelineScreenshotCaptureModeSettingDescriptor,
+                                SettingsUI.TimelineSettings.timelineShowExtensionDataSettingDescriptor,
+      ]) {
+        SettingsUI.SettingUIRegistration.register(descriptor, {});
       }
 
       registerActions([

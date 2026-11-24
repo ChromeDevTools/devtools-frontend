@@ -780,6 +780,7 @@ describeWithEnvironment('Widget', () => {
   describe('WidgetDirective', () => {
     let attachedCount = 0;
     let detachedCount = 0;
+    let onDetachCount = 0;
     let fooSetterCount = 0;
     let barSetterCount = 0;
 
@@ -795,6 +796,10 @@ describeWithEnvironment('Widget', () => {
         detachedCount++;
       }
 
+      override onDetach(): void {
+        onDetachCount++;
+      }
+
       set foo(_value: string) {
         fooSetterCount++;
       }
@@ -807,6 +812,7 @@ describeWithEnvironment('Widget', () => {
     beforeEach(() => {
       attachedCount = 0;
       detachedCount = 0;
+      onDetachCount = 0;
       fooSetterCount = 0;
       barSetterCount = 0;
     });
@@ -889,10 +895,12 @@ describeWithEnvironment('Widget', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(attachedCount, 1);
       assert.strictEqual(detachedCount, 0);
+      assert.strictEqual(onDetachCount, 0);
 
       Lit.render(html`<div></div>`, container);
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(detachedCount, 1);
+      assert.strictEqual(onDetachCount, 1, 'expected onDetach() to be called when Lit removes the widget element');
     });
 
     it('only calls setters for changed widget parameters', async () => {
@@ -1005,6 +1013,7 @@ describeWithEnvironment('Widget', () => {
   describe('WidgetDirective (non-devtools-widget elements)', () => {
     let attachedCount = 0;
     let detachedCount = 0;
+    let onDetachCount = 0;
     let fooSetterCount = 0;
     let barSetterCount = 0;
 
@@ -1020,6 +1029,10 @@ describeWithEnvironment('Widget', () => {
         detachedCount++;
       }
 
+      override onDetach(): void {
+        onDetachCount++;
+      }
+
       set foo(_value: string) {
         fooSetterCount++;
       }
@@ -1032,6 +1045,7 @@ describeWithEnvironment('Widget', () => {
     beforeEach(() => {
       attachedCount = 0;
       detachedCount = 0;
+      onDetachCount = 0;
       fooSetterCount = 0;
       barSetterCount = 0;
     });
@@ -1110,10 +1124,12 @@ describeWithEnvironment('Widget', () => {
       Lit.render(html`<span ${UI.Widget.widget(TestWidget)}></span>`, container);
       assert.strictEqual(attachedCount, 1);
       assert.strictEqual(detachedCount, 0);
+      assert.strictEqual(onDetachCount, 0);
 
       Lit.render(html`<div></div>`, container);
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(detachedCount, 1);
+      assert.strictEqual(onDetachCount, 1, 'expected onDetach() to be called when Lit removes the widget element');
     });
 
     it('only calls setters for changed widget parameters', async () => {

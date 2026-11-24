@@ -800,7 +800,7 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
     if (!this.element.parentElement) {
       return false;
     }
-    if (this.#hideOnDetach) {
+    if (this.#hideOnDetach || trackerDetachingWidgets.has(this)) {
       return true;
     }
     for (const child of this.#children) {
@@ -1056,8 +1056,7 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
     //
     // overrideHideOnDetach will override hideOnDetach and the client takes
     // responsibility for the consequences.
-    const removeFromDOM =
-        Boolean(overrideHideOnDetach) || (!trackerDetachingWidgets.has(this) && !this.shouldHideOnDetach());
+    const removeFromDOM = Boolean(overrideHideOnDetach) || !this.shouldHideOnDetach();
     if (this.#visible) {
       this.#hideWidget(removeFromDOM);
     } else if (removeFromDOM) {

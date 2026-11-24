@@ -133,10 +133,8 @@ export class Settings {
   readonly localStorage: SettingsStorage;
 
   readonly #sessionStorage = new SettingsStorage({});
-  settingNameSet: Set<string> = new Set<string>();
   #eventSupport = new SettingsEventSupport();
   #registry = new Map<string, Setting<unknown>>();
-  readonly moduleSettings: Map<string, Setting<unknown>> = new Map<string, Setting<unknown>>();
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
   readonly #console: Console;
 
@@ -209,15 +207,6 @@ export class Settings {
     Root.DevToolsContext.globalInstance().delete(Settings);
   }
 
-  private registerModuleSetting(setting: Setting<unknown>): void {
-    const settingName = setting.name;
-    if (this.settingNameSet.has(settingName)) {
-      throw new Error(`Duplicate Setting name '${settingName}'`);
-    }
-    this.settingNameSet.add(settingName);
-    this.moduleSettings.set(setting.name, setting);
-  }
-
   static normalizeSettingName(name: string): string {
     if ([
           VersionController.GLOBAL_VERSION_SETTING_NAME,
@@ -229,23 +218,6 @@ export class Settings {
       return name;
     }
     return Platform.StringUtilities.toKebabCase(name);
-  }
-
-  /**
-   * Prefer a module setting if this setting is one that you might not want to
-   * surface to the user to control themselves. Examples of these are settings
-   * to store UI state such as how a user choses to position a split widget or
-   * which panel they last opened.
-   * If you are creating a setting that you expect the user to control, and
-   * sync, prefer {@link Settings.createSetting}
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  moduleSetting<T = any>(settingName: string): Setting<T> {
-    const setting = this.moduleSettings.get(settingName) as Setting<T>;
-    if (!setting) {
-      throw new Error('No setting registered: ' + settingName);
-    }
-    return setting;
   }
 
   settingForTest(settingName: string): Setting<unknown> {
@@ -328,9 +300,8 @@ export class Settings {
   /**
    * Resolves a setting descriptor to a concrete {@link Setting} instance.
    *
-   * If a setting with the same name already exists (either pre-registered or
-   * previously resolved), that instance is returned. Otherwise, a new setting
-   * is created and registered.
+   * If a setting with the same name already exists in the registry, that
+   * instance is returned. Otherwise, a new setting is created and registered.
    *
    * @param descriptor The descriptor defining the setting. Must not be conditional.
    * @throws If the descriptor is conditional (contains `isAvailable`). Use `maybeResolve` instead.
@@ -345,8 +316,11 @@ export class Settings {
   }
 
   #resolve<T>(descriptor: SettingDescriptor<T>): Setting<T> {
-    let setting = this.moduleSettings.get(descriptor.name);
+    let setting = this.#registry.get(descriptor.name);
     if (setting) {
+      if (setting.type() === null) {
+        setting.setSettingType(descriptor.type);
+      }
       return setting as Setting<T>;
     }
 
@@ -364,7 +338,6 @@ export class Settings {
 
     setting.setSettingType(type);
 
-    this.registerModuleSetting(setting);
     return setting as Setting<T>;
   }
 

@@ -406,17 +406,6 @@ describe('Settings instance', () => {
       assert.isFalse(setting2.get());
     });
 
-    it('produces the same setting instance as moduleSetting when resolving a descriptor', () => {
-      const descriptor: Common.Settings.SettingDescriptor<boolean> = {
-        name: 'resolved-setting',
-        type: Common.Settings.SettingType.BOOLEAN,
-        defaultValue: false,
-      };
-      const settingFromResolve = settings.resolve(descriptor);
-      const settingFromModule = settings.moduleSetting('resolved-setting');
-      assert.strictEqual(settingFromModule, settingFromResolve);
-    });
-
     it('fails TS compilation if the setting type is a function', () => {
       const descriptor: Common.Settings.SettingDescriptor<() => void> = {
         name: 'function-setting',

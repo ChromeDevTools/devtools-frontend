@@ -78,15 +78,14 @@ describeWithEnvironment('LayoutPane', () => {
     assert.deepEqual(checkboxesTitles, ['Boolean setting title', '', '']);
   });
 
-  it('renders settings even when grid settings are not pre-registered in moduleSettings', async () => {
+  it('renders settings even when grid settings are not yet in the settings registry', async () => {
     const settings = Common.Settings.Settings.instance();
     for (const descriptor of [SDK.SDKSettings.showGridLineLabelsSettingDescriptor,
                               SDK.SDKSettings.showGridTrackSizesSettingDescriptor,
                               SDK.SDKSettings.showGridAreasSettingDescriptor,
                               SDK.SDKSettings.extendGridLinesSettingDescriptor,
     ]) {
-      settings.moduleSettings.delete(descriptor.name);
-      settings.settingNameSet.delete(descriptor.name);
+      settings.getRegistry().delete(descriptor.name);
     }
 
     const component = await renderComponent();

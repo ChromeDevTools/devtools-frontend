@@ -11,6 +11,7 @@ import * as Platform from '../../core/platform/platform.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import type * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
@@ -67,7 +68,9 @@ describeWithEnvironment('LighthouseStartView', () => {
       assert.strictEqual(throttling.name, 'lighthouse.throttling');
       assert.deepEqual(throttling.options.map(o => o.value), ['simulate', 'devtools']);
       throttling.onChange('devtools');
-      assert.strictEqual(Common.Settings.Settings.instance().moduleSetting('lighthouse.throttling').get(), 'devtools');
+      assert.strictEqual(
+          Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.throttlingSettingDescriptor).get(),
+          'devtools');
     });
 
     it('renders checkboxes, dropdown options, and learn-more links in a toolbar', () => {

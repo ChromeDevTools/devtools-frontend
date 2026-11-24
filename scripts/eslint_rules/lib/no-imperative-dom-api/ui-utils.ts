@@ -210,18 +210,9 @@ export const uiUtils: RuleCreator = {
       },
       functionCall(call, _firstArg, secondArg, domFragment) {
         if (isIdentifierChain(call.callee, ['UI', 'SettingsUI', 'bindCheckbox'])) {
-          let setting = secondArg;
-          if (setting.type === 'CallExpression' &&
-              isMemberExpression(
-                  setting.callee,
-                  n => n.type === 'CallExpression' &&
-                      isIdentifierChain(n.callee, ['Common', 'Settings', 'Settings', 'instance']),
-                  n => isIdentifier(n, 'moduleSetting'))) {
-            setting = setting.arguments[0];
-          }
           domFragment.directives.push({
             name: 'bindToSetting',
-            arguments: [setting],
+            arguments: [secondArg],
           });
           return true;
         }

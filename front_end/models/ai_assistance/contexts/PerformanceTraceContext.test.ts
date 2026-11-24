@@ -12,11 +12,15 @@ import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {MockDebuggerBackend} from '../../../testing/MockScopeChain.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
+import {encodeSourceMap} from '../../../testing/SourceMapEncoder.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import {getBaseTraceHandlerData} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import {createContentProviderUISourceCodes} from '../../../testing/UISourceCodeHelpers.js';
+import * as Formatter from '../../formatter/formatter.js';
 import * as Trace from '../../trace/trace.js';
 import * as Workspace from '../../workspace/workspace.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -39,6 +43,7 @@ function createParsedTrace(metaOverrides: Partial<Trace.Handlers.ModelHandlers.M
 }
 
 describe('PerformanceTraceContext', () => {
+  setupRuntimeHooks();
   setupSettingsHooks();
   setupLocaleHooks();
 
@@ -545,6 +550,96 @@ Mock Longest Tasks`);
     });
   });
 
+  describe('canAccessFunctionSource', () => {
+    it('rejects source-mapped URLs from a cross-origin script', async () => {
+      const backend = new MockDebuggerBackend();
+      try {
+        void backend.universe.debuggerWorkspaceBinding;
+        const target = backend.createTarget({url: urlString`https://example.com/page.html`});
+        await backend.addScript(
+            target,
+            {url: 'https://other.example/bundle.js', content: 'function f() { return 1; }'},
+            {
+              url: 'https://other.example/bundle.js.map',
+              content: {
+                ...encodeSourceMap(['0:10 => secret.ts:0:12@secret', '0:26 => secret.ts:2:1']),
+                sources: ['webpack:///src/secret.ts'],
+                sourcesContent: ['function secret() {\n  return 1;\n}'],
+              },
+            },
+        );
+
+        const freshTrace = createParsedTrace({mainFrameURL: 'https://example.com/page.html'});
+        const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+        tracker.registerFreshRecording(freshTrace);
+        const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+            freshTrace, backend.universe.targetManager, tracker, backend.universe.debuggerWorkspaceBinding);
+
+        assert.isFalse(context.canAccessFunctionSource(urlString`webpack:///src/secret.ts`));
+      } finally {
+        backend.universe.dispose();
+        Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+      }
+    });
+
+    it('rejects file:// URLs', () => {
+      const freshTrace = createParsedTrace({mainFrameURL: 'https://example.com/page.html'});
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      tracker.registerFreshRecording(freshTrace);
+      const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          freshTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+
+      assert.isFalse(context.canAccessFunctionSource(urlString`file:///tmp/secret.ts`));
+    });
+
+    it('rejects same-origin source-mapped URLs when the trace is imported', async () => {
+      const backend = new MockDebuggerBackend();
+      try {
+        void backend.universe.debuggerWorkspaceBinding;
+        const target = backend.createTarget({url: urlString`https://example.com/page.html`});
+        await backend.addScript(
+            target,
+            {url: 'https://example.com/bundle.js', content: 'function f() { return 1; }'},
+            {
+              url: 'https://example.com/bundle.js.map',
+              content: {
+                ...encodeSourceMap(['0:10 => app.ts:0:12@app', '0:26 => app.ts:2:1']),
+                sources: ['webpack:///src/app.ts'],
+                sourcesContent: ['function app() {\n  return 1;\n}'],
+              },
+            },
+        );
+
+        const importedTrace = createParsedTrace({mainFrameURL: 'https://example.com/page.html'});
+        const importedTracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+        const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+            importedTrace, backend.universe.targetManager, importedTracker, backend.universe.debuggerWorkspaceBinding);
+
+        assert.isFalse(context.canAccessFunctionSource(urlString`webpack:///src/app.ts`));
+      } finally {
+        backend.universe.dispose();
+        Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+      }
+    });
+
+    it('rejects same-origin source-mapped URLs when mainFrameIsOpaqueOrigin is true', () => {
+      universe.createTarget({url: 'https://victim.example/sandboxed.html'});
+      const opaqueTrace = createParsedTrace({
+        mainFrameURL: 'https://victim.example/sandboxed.html',
+        mainFrameIsOpaqueOrigin: true,
+      });
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      tracker.registerFreshRecording(opaqueTrace);
+      const projectsSpy = sinon.spy(universe.workspace, 'projectsForType');
+
+      const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          opaqueTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+
+      assert.isFalse(context.canAccessFunctionSource(urlString`webpack:///src/app.ts`));
+      sinon.assert.notCalled(projectsSpy);
+    });
+  });
+
   describe('createFormatter', () => {
     it('blocks resolveFunctionCode when mainFrameIsOpaqueOrigin is true', async () => {
       universe.createTarget({url: 'https://victim.example/sandboxed.html'});
@@ -609,6 +704,59 @@ Mock Longest Tasks`);
 
       const resolved = await formatter.resolveFunctionCode?.(urlString`https://example.com/bundle.js`, 0, 0) ?? null;
       assert.isNull(resolved);
+    });
+
+    it('resolves function code when a same-origin script maps to a bundler scheme like webpack://', async () => {
+      const backend = new MockDebuggerBackend();
+      try {
+        void backend.universe.debuggerWorkspaceBinding;
+        const target = backend.createTarget({url: urlString`https://example.com/page.html`});
+        const sourceMap = {
+          ...encodeSourceMap([
+            '0:10 => app.ts:0:12@app',
+            '0:26 => app.ts:2:1',
+          ]),
+          sources: ['webpack:///src/app.ts'],
+          sourcesContent: ['function app() {\n  return 1;\n}'],
+        };
+        await backend.addScript(target, {
+          url: 'https://example.com/bundle.js',
+          content: 'function f() { return 1; }',
+        },
+                                {
+                                  url: 'https://example.com/bundle.js.map',
+                                  content: sourceMap,
+                                });
+
+        const mockTrace = createParsedTrace({
+          mainFrameURL: 'https://example.com/page.html',
+          mainFrameIsOpaqueOrigin: false,
+        });
+        const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+        tracker.registerFreshRecording(mockTrace);
+
+        const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+            mockTrace, backend.universe.targetManager, tracker, backend.universe.debuggerWorkspaceBinding);
+        assert.isFalse(context.canAccessResource('webpack:///src/app.ts'));
+        assert.isTrue(context.canAccessFunctionSource(urlString`webpack:///src/app.ts`));
+
+        const formatter = context.createFormatter();
+
+        const resolvedFromBundle =
+            await formatter.resolveFunctionCode?.(urlString`https://example.com/bundle.js`, 0, 10) ?? null;
+        assert.isNotNull(resolvedFromBundle);
+        assert.strictEqual(resolvedFromBundle.functionBounds.uiSourceCode.url(), urlString`webpack:///src/app.ts`);
+        assert.strictEqual(resolvedFromBundle.code, '() {\n  return 1;\n}');
+
+        const resolvedFromMappedUrl =
+            await formatter.resolveFunctionCode?.(urlString`webpack:///src/app.ts`, 0, 12) ?? null;
+        assert.isNotNull(resolvedFromMappedUrl);
+        assert.strictEqual(resolvedFromMappedUrl.functionBounds.uiSourceCode.url(), urlString`webpack:///src/app.ts`);
+        assert.strictEqual(resolvedFromMappedUrl.code, '() {\n  return 1;\n}');
+      } finally {
+        backend.universe.dispose();
+        Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+      }
     });
   });
 });

@@ -99,7 +99,8 @@ export class GetTraceFunctionCodeTool implements
       return {error: 'Missing arg: scriptUrl'};
     }
 
-    if (!performanceTraceContext.canAccessResource(params.scriptUrl)) {
+    const url = params.scriptUrl as Platform.DevToolsPath.UrlString;
+    if (!performanceTraceContext.canAccessFunctionSource(url)) {
       return {error: 'Resource not found'};
     }
 
@@ -112,7 +113,6 @@ export class GetTraceFunctionCodeTool implements
     }
 
     const formatter = performanceTraceContext.createFormatter();
-    const url = params.scriptUrl as Platform.DevToolsPath.UrlString;
     const code = await formatter.resolveFunctionCodeAtLocation(url, params.line, params.column);
     if (!code) {
       return {error: 'Could not find code'};

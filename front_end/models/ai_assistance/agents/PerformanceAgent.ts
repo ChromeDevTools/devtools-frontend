@@ -1054,7 +1054,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           return {error: 'Missing arg: column'};
         }
 
-        if (!context.canAccessResource(args.scriptUrl)) {
+        const url = args.scriptUrl as UrlString;
+        if (!context.canAccessFunctionSource(url)) {
           return {error: 'Resource not found'};
         }
 
@@ -1066,8 +1067,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         if (!target) {
           throw new Error('missing target');
         }
-
-        const url = args.scriptUrl as Platform.DevToolsPath.UrlString;
         const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
         if (!code) {
           return {error: 'Could not find code'};

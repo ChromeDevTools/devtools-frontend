@@ -15,9 +15,12 @@ import {
   stubPerformanceTraceFormatter,
 } from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {MockDebuggerBackend} from '../../../testing/MockScopeChain.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
+import {encodeSourceMap} from '../../../testing/SourceMapEncoder.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
+import * as Formatter from '../../formatter/formatter.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as AiAssistance from '../ai_assistance.js';
 
@@ -265,5 +268,48 @@ describe('GetTraceFunctionCodeTool', () => {
                          code: 'function test() { return 42; }',
                        },
                      }]);
+  });
+
+  it('resolves source-mapped bundler URLs such as webpack:// on a fresh same-origin trace', async () => {
+    const backend = new MockDebuggerBackend();
+    try {
+      void backend.universe.debuggerWorkspaceBinding;
+      const target = backend.createTarget({url: urlString`https://example.com/page.html`});
+      await backend.addScript(target, {
+        url: 'https://example.com/bundle.js',
+        content: 'function f() { return 1; }',
+      },
+                              {
+                                url: 'https://example.com/bundle.js.map',
+                                content: {
+                                  ...encodeSourceMap(['0:10 => app.ts:0:12@app', '0:26 => app.ts:2:1']),
+                                  sources: ['webpack:///src/app.ts'],
+                                  sourcesContent: ['function app() {\n  return 1;\n}'],
+                                },
+                              });
+
+      const parsedTrace = makeFakeParsedTrace();
+      const tracker = new Tracing.FreshRecording.Tracker();
+      tracker.registerFreshRecording(parsedTrace);
+
+      const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          parsedTrace,
+          backend.universe.targetManager,
+          tracker,
+          backend.universe.debuggerWorkspaceBinding,
+      );
+
+      const tool = new GetTraceFunctionCodeTool();
+      const result = await tool.handler(
+          {scriptUrl: 'webpack:///src/app.ts', line: 0, column: 12},
+          {getPerformanceTraceContext: () => traceContext},
+      );
+
+      assertIsResult(result);
+      assert.include(result.result, 'return 1;');
+    } finally {
+      backend.universe.dispose();
+      Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+    }
   });
 });

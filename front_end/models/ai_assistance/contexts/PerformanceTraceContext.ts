@@ -8,6 +8,7 @@ import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
+import * as Workspace from '../../workspace/workspace.js';
 import {
   type AiWidget,
   type ContextDetail,
@@ -110,7 +111,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
    *
    * Note: Function code resolution from source maps is only supported for fresh
    * recordings (recorded in the current session on the active target page) and
-   * same-origin resources permitted by `canAccessResource()`. For imported traces
+   * same-origin or mapped sources permitted by `canAccessFunctionSource()`. For imported traces
    * or inaccessible origins, it returns null.
    */
   createFormatter(): PerformanceTraceFormatter {
@@ -120,13 +121,13 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     const isFresh = this.#freshRecordingTracker.recordingIsFresh(focus.parsedTrace);
 
     formatter.resolveFunctionCode = async (url: UrlString, line: number, column: number) => {
-      if (!target || !isFresh || !this.canAccessResource(url)) {
+      if (!target || !isFresh || !this.canAccessFunctionSource(url)) {
         return null;
       }
       const code = await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(
           target, url, line, column, this.#debuggerWorkspaceBinding,
           {contextLength: 200, contextLineLength: 5, appendProfileData: true});
-      if (code && !this.canAccessResource(code.functionBounds.uiSourceCode.url())) {
+      if (code && !this.#canAccessOrigin(code.functionBounds.uiSourceCode.securityOrigin())) {
         return null;
       }
       return code;
@@ -151,8 +152,52 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
    * @returns `true` if the resource is same-origin with the trace and not a `file://` URL; otherwise `false`.
    */
   canAccessResource(url: string): boolean {
+    return this.#canAccessOrigin(SDK.SecurityOrigin.SecurityOrigin.create(url));
+  }
+
+  /**
+   * Checks whether the AI can resolve function source code at the specified URL.
+   *
+   * Allows URLs that pass `canAccessResource(url)` as well as authored source-map
+   * URLs (such as `webpack:///src/app.ts`) backed by a `Network` project
+   * `UISourceCode` on the active `primaryPageTarget()` whose `securityOrigin()`
+   * matches the trace origin on a fresh, non-opaque, non-`file:` recording.
+   */
+  canAccessFunctionSource(url: UrlString): boolean {
+    if (this.canAccessResource(url)) {
+      return true;
+    }
+
     const traceOrigin = this.getOrigin();
-    const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(url);
+    if (this.isImported() || traceOrigin.isOpaque() || traceOrigin.isFile()) {
+      return false;
+    }
+
+    if (SDK.SecurityOrigin.SecurityOrigin.create(url).isFile()) {
+      return false;
+    }
+
+    const target = this.#targetManager.primaryPageTarget();
+    if (!target) {
+      return false;
+    }
+
+    const projects = this.#debuggerWorkspaceBinding.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
+    for (const project of projects) {
+      if (Bindings.NetworkProject.NetworkProject.getTargetForProject(project) !== target) {
+        continue;
+      }
+      const uiSourceCode = project.uiSourceCodeForURL(url);
+      if (uiSourceCode) {
+        return this.#canAccessOrigin(uiSourceCode.securityOrigin());
+      }
+    }
+
+    return false;
+  }
+
+  #canAccessOrigin(targetOrigin: SDK.SecurityOrigin.SecurityOrigin): boolean {
+    const traceOrigin = this.getOrigin();
 
     // We explicitly block all file:// URLs even if same-origin (b/523743289).
     // Allowing local file access in trace AI risks leaking local system files

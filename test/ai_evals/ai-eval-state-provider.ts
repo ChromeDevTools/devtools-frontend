@@ -189,7 +189,6 @@ export class AiEvalStateProvider extends StateProvider {
   #taskToolCallStats = new Map<string, ToolCallStats>();
   #taskTokens = new Map<string, TurnTokens>();
   #resolvedModel: string|null = null;
-  #resultStores: ResultStore[] = [];
   // Target types of all registered eval tests. Suites are registered while the test files
   // are loaded, i.e. before `startEvalRun` is called from the global setup.
   #evalTypes = new Set<string>();
@@ -213,7 +212,6 @@ export class AiEvalStateProvider extends StateProvider {
     this.#taskToolCallStats = new Map();
     this.#taskTokens = new Map();
     this.#resolvedModel = null;
-    this.#resultStores = [];
     this.#visitedOrigins = new Set();
     const targets = [...this.#evalTypes];
     const agent = targets.length === 1 ? `devtools-${targets[0]}` : MIXED_TARGETS_AGENT;
@@ -448,7 +446,6 @@ export class AiEvalStateProvider extends StateProvider {
     const gradingDurationSeconds = Number(((performance.now() - gradingStart) / 1000).toFixed(3));
     let gradingOutput: string|undefined;
     if (store.results.size > 0) {
-      this.#resultStores.push(store);
       if (TestConfig.verbose > 0) {
         printResults(store);
       }

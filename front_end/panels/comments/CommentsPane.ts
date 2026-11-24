@@ -291,12 +291,13 @@ export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target:
           ${inputDisclaimer()}
         </div>
       </devtools-tooltip>
-      <button
-        class="send-agent-button"
+      <devtools-button
+        .data=${{
+          variant: Buttons.Button.Variant.PRIMARY,
+          jslogContext: 'comments-send-to-agent',
+        } as Buttons.Button.ButtonData}
         @click=${input.onSendToAgent}
-        jslog=${VisualLogging.action('comments-send-to-agent').track({click: true})}>
-        ${i18nString(UIStrings.sendToAgent)}
-      </button>
+      >${i18nString(UIStrings.sendToAgent)}</devtools-button>
     </div>
   `;
 

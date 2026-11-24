@@ -311,25 +311,14 @@
     cursor: pointer;
   }
 
+  .info-icon:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: var(--sys-size-2);
+    border-radius: var(--sys-shape-corner-full);
+  }
+
   .info-tooltip-container {
     max-width: var(--sys-size-28);
     padding: var(--sys-size-4) var(--sys-size-5);
-  }
-
-  .send-agent-button {
-    background-color: var(--sys-color-primary);
-    color: var(--sys-color-on-primary);
-    border: none;
-    border-radius: var(--sys-shape-corner-full);
-    padding: var(--sys-size-4) var(--sys-size-8);
-    font-size: var(--sys-typescale-body4-size);
-    font-weight: var(--ref-typeface-weight-medium);
-    cursor: pointer;
-    transition: background-color var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized), box-shadow var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
-  }
-
-  .send-agent-button:hover {
-    background-color: var(--sys-color-primary-bright);
-    box-shadow: var(--sys-elevation-level1);
   }
 }

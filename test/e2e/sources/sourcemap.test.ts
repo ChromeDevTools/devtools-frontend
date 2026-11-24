@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import {expectError} from '../../conductor/events.js';
 import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
   CONSOLE_TAB_SELECTOR,
@@ -596,6 +597,81 @@ describe('The Sources Tab', function() {
          assert.isTrue(await isBreakpointSet(devToolsPage, 2));
        });
   });
+
+  it('displays an error message when loading a source-map-referred file fails',
+     async ({devToolsPage, inspectedPage}) => {
+       const domainName = `localhost:${inspectedPage.serverPort}`;
+       const folder = 'test/e2e/resources';
+       const expectedErrorText = `Couldn’t load content for https://${domainName}/${
+           folder}/sourcemap-src-not-loaded.ts (HTTP error: status code 404, net::ERR_HTTP_RESPONSE_CODE_FAILURE)`;
+       const expectedLoadError = expectError(expectedErrorText);
+       try {
+         await inspectedPage.goToResource('empty.html');
+         await openSourcesPanel(devToolsPage);
+
+         const sourceMap = {
+           version: 3,
+           sources: ['./sourcemap-src-not-loaded.ts'],
+           names: [],
+           mappings: 'AAAA',
+         };
+         const encodedMap = Buffer.from(JSON.stringify(sourceMap)).toString('base64');
+         const commentPrefix = '//' +
+             '# ';
+         const jsLines = [
+           'const value = 42;',
+           `${commentPrefix}sourceMappingURL=data:application/json;base64,${encodedMap}`,
+           `${commentPrefix}sourceURL=sourcemap-src-not-loaded.js`,
+         ];
+         const scriptText = jsLines.join('\n');
+
+         await inspectedPage.evaluate(text => {
+           const scriptElement = document.createElement('script');
+           scriptElement.textContent = text;
+           document.head.appendChild(scriptElement);
+         }, scriptText);
+
+         for (const selector of ['[aria-label="top, frame"]',
+                                 `[aria-label="${domainName}, domain"]`,
+                                 `[aria-label="${folder}, nw-folder"]`,
+         ]) {
+           const item = await devToolsPage.waitFor(selector);
+           const expanded = await item.evaluate(node => node.getAttribute('aria-expanded') === 'true');
+           await item.dispose();
+           if (!expanded) {
+             const clicked = await devToolsPage.click(selector, {clickOptions: {count: 2, offset: {x: 40, y: 10}}});
+             await clicked.dispose();
+             await devToolsPage.waitFor(`${selector}[aria-expanded="true"]`);
+           }
+         }
+
+         await devToolsPage.waitFor('[aria-label="sourcemap-src-not-loaded.js, file"]');
+         await devToolsPage.waitFor('[aria-label="sourcemap-src-not-loaded.ts, file"]');
+
+         await openFileInEditor(devToolsPage, 'sourcemap-src-not-loaded.js');
+         const jsEditorContent = await devToolsPage.waitForFunction(async () => {
+           const lines = await retrieveCodeMirrorEditorContent(devToolsPage);
+           return lines.some(line => line.length > 0) ? lines : undefined;
+         });
+         assert.deepEqual(jsEditorContent, jsLines);
+
+         const closeButton = await devToolsPage.click('[aria-label="Close sourcemap-src-not-loaded.js"]');
+         await closeButton.dispose();
+         const tsItem = await devToolsPage.click('[aria-label="sourcemap-src-not-loaded.ts, file"]',
+                                                 {clickOptions: {count: 2, offset: {x: 40, y: 10}}});
+         await tsItem.dispose();
+         await devToolsPage.waitFor('[aria-label="sourcemap-src-not-loaded.ts"][aria-selected="true"]');
+
+         const tsEditorContent = await devToolsPage.waitForFunction(async () => {
+           const lines = await devToolsPage.getVisibleTextContents('.cm-line');
+           return lines.some(line => line.length > 0) ? lines : undefined;
+         });
+         assert.deepEqual(tsEditorContent, [expectedErrorText]);
+         assert.isDefined(expectedLoadError.caught);
+       } finally {
+         expectedLoadError.drop();
+       }
+     });
 
   it('can attach sourcemaps to CSS files from a context menu', async ({devToolsPage, inspectedPage}) => {
     await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'sourcemap-css.css', 'sourcemap-css-noinline.html');

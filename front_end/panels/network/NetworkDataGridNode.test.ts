@@ -746,6 +746,47 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.strictEqual(el.textContent, 'HighLow');
   });
 
+  it('renders the protocol cell with the protocol as text and title', () => {
+    const request = createNetworkRequest({url: 'https://www.example.com'});
+    request.protocol = 'h2';
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'protocol');
+    assert.strictEqual(el.textContent, 'h2');
+    assert.strictEqual(el.title, 'h2');
+  });
+
+  it('renders the render-blocking cell without a title', () => {
+    const request = createNetworkRequest({url: 'https://www.example.com'});
+    request.setRenderBlockingBehavior(Protocol.Network.RenderBlockingBehavior.Blocking);
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'render-blocking');
+    assert.strictEqual(el.textContent, 'Blocking');
+    assert.isFalse(el.hasAttribute('title'));
+  });
+
+  it('renders no text in the address space cell when the address space is unknown', () => {
+    const request = createNetworkRequest({url: 'https://www.example.com'});
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'remote-address-space');
+    assert.strictEqual(el.textContent, '');
+  });
+
+  it('renders a dimmed size cell with the resource size as a subtitle for a memory-cached request', () => {
+    const request = createNetworkRequest({url: 'https://www.example.com', fromMemoryCache: true});
+    request.resourceSize = 100;
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'size');
+    const subtitle = el.querySelector('.network-cell-subtitle');
+    assert.exists(subtitle);
+    assert.strictEqual(el.textContent, '(memory cache)' + subtitle.textContent);
+    assert.strictEqual(el.title, `Served from memory cache, resource size: ${subtitle.textContent}`);
+    assert.isTrue(el.classList.contains('network-dim-cell'));
+  });
+
   describe('getExecutionContextDescription', () => {
     it('returns empty string when there is no frame and no target', () => {
       const request = createNetworkRequest({url: 'https://www.example.com'});

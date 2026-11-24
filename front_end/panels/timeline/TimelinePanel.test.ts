@@ -959,6 +959,26 @@ describe('TimelinePanel', function() {
     assert.deepEqual(postMessageStub.firstCall.args[0], {type: 'REHYDRATING_TRACE_FILE', traceJson});
   });
 
+  it('reveals CPU throttling in the capture settings pane', async function() {
+    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    const settingsPane = timeline.element.querySelector<HTMLElement>('.timeline-settings-pane');
+    assert.isOk(settingsPane);
+    const cpuThrottlingSelect = settingsPane.querySelector('select[jslog*="cpu-throttling"]');
+    assert.isOk(cpuThrottlingSelect);
+    assert.isTrue(settingsPane.hidden);
+
+    try {
+      const revealer = new Timeline.TimelinePanel.CPUThrottlingRevealer();
+      await revealer.reveal();
+
+      sinon.assert.calledOnceWithExactly(showViewStub, 'timeline');
+      assert.isFalse(settingsPane.hidden);
+      assert.strictEqual(document.activeElement, cpuThrottlingSelect);
+    } finally {
+      Common.Settings.Settings.instance().createSetting('timeline-show-settings-toolbar', false).set(false);
+    }
+  });
+
   describe('views', () => {
     it('renders settings pane checkboxes and file input in DEFAULT_SETTINGS_PANE_VIEW', () => {
       const host = new UI.Widget.Widget();

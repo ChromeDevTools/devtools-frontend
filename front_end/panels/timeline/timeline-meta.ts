@@ -503,6 +503,19 @@ Common.Revealer.registerRevealer({
   },
 });
 
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      SDK.CPUThrottlingManager.CPUThrottlingManager,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.TIMELINE_PANEL,
+  async loadRevealer() {
+    const Timeline = await loadTimelineModule();
+    return new Timeline.TimelinePanel.CPUThrottlingRevealer();
+  },
+});
+
 SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineDisableJsSamplingSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
   title: i18nLazyString(UIStrings.disableJavascriptSamples),

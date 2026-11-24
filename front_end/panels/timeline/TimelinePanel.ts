@@ -404,6 +404,7 @@ export interface SettingsPaneViewInput {
 
 export interface SettingsPaneViewOutput {
   openFileSelector?: () => void;
+  focusCPUThrottling?: () => void;
 }
 
 export type SettingsPaneView = (input: SettingsPaneViewInput, output: SettingsPaneViewOutput, target: HTMLElement) =>
@@ -417,7 +418,10 @@ function renderSettingsPane(input: SettingsPaneViewInput, output: SettingsPaneVi
           jslog=${VisualLogging.pane('timeline-settings-pane').track({resize: true})}>
         <div>
           ${i18nString(UIStrings.cpu)}
-          <select ${widget(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}></select>
+          <select ${widget(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}
+              ${ref(el => {
+                output.focusCPUThrottling = el instanceof HTMLSelectElement ? () => el.focus() : undefined;
+              })}></select>
         </div>
         <devtools-checkbox title=${i18nString(UIStrings.capturesSelectorStats)}
             .ariaLabel=${input.captureSelectorStatsTitle || i18nString(UIStrings.capturesSelectorStats)}
@@ -1794,6 +1798,17 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
         });
       }
     }
+  }
+
+  async revealCPUThrottling(): Promise<void> {
+    // The capture settings pane is not rendered in Node mode or when recording is unavailable.
+    if (this.#isNode || !this.canRecord()) {
+      return;
+    }
+    this.showSettingsPaneSetting.set(true);
+    this.updateSettingsPaneVisibility();
+    await this.updateComplete;
+    this.#settingsPaneOutput.focusCPUThrottling?.();
   }
 
   revealParsedTrace(revealable: ParsedTraceRevealable): void {
@@ -3438,6 +3453,13 @@ export class ProfileFinishedRevealer implements Common.Revealer.Revealer<SDK.CPU
     });
     ProfileFinishedRevealer.#consoleProfilePromiseChain = taskPromise.catch(() => {});
     return await taskPromise;
+  }
+}
+
+export class CPUThrottlingRevealer implements Common.Revealer.Revealer<SDK.CPUThrottlingManager.CPUThrottlingManager> {
+  async reveal(): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('timeline');
+    await TimelinePanel.instance().revealCPUThrottling();
   }
 }
 

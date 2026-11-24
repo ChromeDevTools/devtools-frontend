@@ -164,14 +164,18 @@ function selectableRank(element: Element): number {
 
 function collectSelectableElements(root: Element|ShadowRoot, rank: number|undefined,
                                    result: Array<{element: HTMLElement, rank: number}>): void {
-  for (const element of root.querySelectorAll<HTMLElement>('*')) {
-    const elementRank = rank ?? selectableRank(element);
+  for (const element of root.children) {
+    if (!(element instanceof HTMLElement)) {
+      continue;
+    }
     if (element.hasAttribute(SELECTABLE_ATTRIBUTE)) {
-      result.push({element, rank: elementRank});
+      result.push({element, rank: rank ?? selectableRank(element)});
+      continue;
     }
     if (element.shadowRoot) {
-      collectSelectableElements(element.shadowRoot, elementRank, result);
+      collectSelectableElements(element.shadowRoot, rank ?? selectableRank(element), result);
     }
+    collectSelectableElements(element, rank, result);
   }
 }
 

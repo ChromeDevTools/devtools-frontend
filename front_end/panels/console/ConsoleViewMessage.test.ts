@@ -2535,6 +2535,56 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       host.detach();
     });
 
+    it('navigates past a TrustedType object parameter containing a URL on ArrowDown', async () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel)!;
+      const trustedObj = runtimeModel.createRemoteObject({
+        type: Protocol.Runtime.RemoteObjectType.Object,
+        subtype: Protocol.Runtime.RemoteObjectSubtype.Trustedtype,
+        className: 'TrustedScriptURL',
+        description: 'https://example.com/script.js',
+        objectId: 'trusted-1' as Protocol.Runtime.RemoteObjectId,
+      });
+      const objB = runtimeModel.createRemoteObject({
+        type: Protocol.Runtime.RemoteObjectType.Object,
+        className: 'Object',
+        description: 'ObjectB',
+        objectId: 'obj-b' as Protocol.Runtime.RemoteObjectId,
+      });
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          '',
+          {
+            type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+            parameters: [trustedObj, objB],
+          },
+      );
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const host = new UI.Widget.Widget();
+      host.markAsRoot();
+      renderElementIntoDOM(host);
+      const wrapper = message.toMessageElement();
+      host.contentElement.appendChild(wrapper);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+
+      const sections = [...wrapper.querySelectorAll<HTMLElement>('.console-view-object-properties-section')];
+      assert.lengthOf(sections, 2);
+
+      wrapper.focus();
+      assert.isTrue(message.maybeHandleOnKeyDown(new KeyboardEvent('keydown', {key: 'ArrowDown'})));
+      assert.isTrue(sections[0].hasFocus());
+
+      assert.isTrue(message.maybeHandleOnKeyDown(new KeyboardEvent('keydown', {key: 'ArrowDown'})));
+      assert.isTrue(
+          sections[1].hasFocus(),
+          'ArrowDown should move focus past the TrustedType parameter to the next object',
+      );
+      host.detach();
+    });
+
     it('shows object context menu on right-click for non-expandable objects', () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel)!;

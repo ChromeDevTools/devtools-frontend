@@ -754,14 +754,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   parsedScriptSource(scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString, startLine: number,
-                     startColumn: number, endLine: number, endColumn: number,
-                     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                     executionContextId: number, hash: string, executionContextAuxData: any,
-                     sourceMapURL: string|undefined, hasSourceURLComment: boolean, hasSyntaxError: boolean,
-                     length: number, isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null,
-                     codeOffset: number|null, scriptLanguage: string|null,
-                     debugSymbols: Protocol.Debugger.DebugSymbols[]|null,
+                     startColumn: number, endLine: number, endColumn: number, executionContextId: number, hash: string,
+                     executionContextAuxData: Record<string, unknown>|null|undefined, sourceMapURL: string|undefined,
+                     hasSourceURLComment: boolean, hasSyntaxError: boolean, length: number, isModule: boolean|null,
+                     originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null,
+                     scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols[]|null,
                      embedderName: Platform.DevToolsPath.UrlString|null, buildId: string|null): Script {
     const knownScript = this.#scripts.get(scriptId);
     if (knownScript) {

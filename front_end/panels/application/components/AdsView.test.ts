@@ -16,8 +16,16 @@ import {cleanTestDOM} from '../../../testing/DOMHooks.js';
 import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {setUpEnvironment} from '../../../testing/OverridesHelpers.js';
-import {getInitializedResourceTreeModel, MAIN_FRAME_ID} from '../../../testing/ResourceTreeHelpers.js';
-import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
+import {
+  activate,
+  FRAME,
+  getEffectivePayload,
+  getInitializedResourceTreeModel,
+  getMainFrame,
+  MAIN_FRAME_ID,
+  navigate,
+} from '../../../testing/ResourceTreeHelpers.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -25,6 +33,10 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as ApplicationComponents from './components.js';
 
 const {urlString} = Platform.DevToolsPath;
+
+type MaybePromise<T> = T|Promise<T>;
+type AdsViewStub = ViewFunctionStub<typeof ApplicationComponents.AdsView.AdsView>;
+type ViewInput = ApplicationComponents.AdsView.ViewInput;
 
 describeWithEnvironment('AdsView', () => {
   const NO_AD_METRICS: Protocol.Ads.AdMetrics = {
@@ -39,6 +51,7 @@ describeWithEnvironment('AdsView', () => {
   };
 
   let target: SDK.Target.Target;
+  let prerenderTarget: SDK.Target.Target;
   let connection: MockCDPConnection;
   let clock: sinon.SinonFakeTimers;
   let getFrameStub: sinon.SinonStubbedMember<SDK.FrameManager.FrameManager['getFrame']>;
@@ -93,7 +106,7 @@ describeWithEnvironment('AdsView', () => {
 
     setUpEnvironment();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
-    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
 
     getFrameStub = sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getFrame').callsFake((frameId: string) => {
@@ -565,6 +578,267 @@ describeWithEnvironment('AdsView', () => {
       assert.exists(item);
       contextMenu.invokeHandler(item.id());
       sinon.assert.calledOnceWithExactly(reveal, frame, false);
+    });
+  });
+
+  describe('polling', () => {
+    const FRAME_ID = 'frame-1' as Protocol.Page.FrameId;
+    const OTHER_FRAME_ID = 'frame-2' as Protocol.Page.FrameId;
+    const AD_FRAME: Protocol.Ads.AdFrameData = {
+      frameId: FRAME_ID,
+      initialOrigin: 'https://ads.example',
+      cpuTime: 100,
+      networkBytes: 1024,
+    };
+    // A later update for AD_FRAME, which comes without the initial origin.
+    const AD_FRAME_UPDATE: Protocol.Ads.AdFrameData = {
+      frameId: FRAME_ID,
+      cpuTime: 250,
+      networkBytes: 4096,
+    };
+    const OTHER_AD_FRAME: Protocol.Ads.AdFrameData = {
+      frameId: OTHER_FRAME_ID,
+      initialOrigin: 'https://other-ads.example',
+      cpuTime: 10,
+      networkBytes: 20,
+    };
+
+    // Answers the `Ads.getAdMetrics` requests with the given metrics, in order.
+    // A promise delays its response.
+    function respondToAdMetricsRequests(...responses: Array<MaybePromise<Partial<Protocol.Ads.AdMetrics>>>): void {
+      connection.setHandler('Ads.getAdMetrics', null);
+      connection.setSuccessHandler('Ads.getAdMetrics',
+                                   async () => ({metrics: {...NO_AD_METRICS, ...await responses.shift()}}));
+    }
+
+    // Does the same for the `Ads.getAdScripts` requests.
+    function respondToAdScriptsRequests(...responses: Array<MaybePromise<Protocol.Ads.AdScript[]>>): void {
+      connection.setHandler('Ads.getAdScripts', null);
+      connection.setSuccessHandler('Ads.getAdScripts', async () => ({newScripts: await responses.shift() ?? []}));
+    }
+
+    function adScript(scriptId: string): Protocol.Ads.AdScript {
+      return {scriptId: scriptId as Protocol.Runtime.ScriptId, provenance: {}};
+    }
+
+    function showAdsView(): {adsView: ApplicationComponents.AdsView.AdsView, view: AdsViewStub} {
+      const view = createViewFunctionStub(ApplicationComponents.AdsView.AdsView);
+      const adsView = new ApplicationComponents.AdsView.AdsView(view);
+      renderElementIntoDOM(adsView);
+      return {adsView, view};
+    }
+
+    // Returns the view input once the pending responses have been processed.
+    async function settledViewInput(adsView: ApplicationComponents.AdsView.AdsView,
+                                    view: AdsViewStub): Promise<ViewInput> {
+      await clock.tickAsync(0);
+      await adsView.updateComplete;
+      return view.input;
+    }
+
+    function shownFrameIds(input: ViewInput): Protocol.Page.FrameId[] {
+      return input.adFrames.map(frame => frame.frameId);
+    }
+
+    function shownScriptIds(input: ViewInput): Protocol.Runtime.ScriptId[] {
+      return input.adScripts.map(script => script.scriptId);
+    }
+
+    function navigatePrimaryPage(): void {
+      navigate(getMainFrame(target));
+    }
+
+    // The target of the prerendered page replaces `target` as the primary page target.
+    function activatePrerenderedPage(): void {
+      const targetInfo = prerenderTarget.targetInfo();
+      assert.exists(targetInfo);
+      target.dispose('target terminated');
+      prerenderTarget.updateTargetInfo({...targetInfo, subtype: undefined});
+      activate(prerenderTarget);
+    }
+
+    beforeEach(() => {
+      // The debugger model of either page knows every ad script, as an external script.
+      for (const pageTarget of [target, prerenderTarget]) {
+        const debuggerModel = pageTarget.model(SDK.DebuggerModel.DebuggerModel);
+        assert.exists(debuggerModel);
+        sinon.stub(debuggerModel, 'scriptForId').callsFake((scriptId: string) => {
+          const script = sinon.createStubInstance(SDK.Script.Script);
+          script.sourceURL = urlString`https://ads.example/${scriptId}.js`;
+          return script;
+        });
+      }
+    });
+
+    it('shows the ad metrics while the ad scripts are still pending', async () => {
+      const adScripts = Promise.withResolvers<Protocol.Ads.AdScript[]>();
+      respondToAdMetricsRequests({totalAdCpuTime: 150, updateAdFrames: [AD_FRAME]});
+      respondToAdScriptsRequests(adScripts.promise);
+
+      const {adsView, view} = showAdsView();
+      const input = await settledViewInput(adsView, view);
+
+      assert.strictEqual(input.metrics.totalAdCpuTime, 150);
+      assert.deepEqual(shownFrameIds(input), [FRAME_ID]);
+
+      // Let the poll finish.
+      adScripts.resolve([]);
+    });
+
+    it('processes the ad metrics and ad scripts that arrive while the view is hidden', async () => {
+      const adMetrics = Promise.withResolvers<Partial<Protocol.Ads.AdMetrics>>();
+      const adScripts = Promise.withResolvers<Protocol.Ads.AdScript[]>();
+      // The backend reports an ad script, and an ad frame's initial origin, only once.
+      respondToAdMetricsRequests(adMetrics.promise, {updateAdFrames: [AD_FRAME_UPDATE]});
+      respondToAdScriptsRequests(adScripts.promise);
+      const {adsView, view} = showAdsView();
+
+      adsView.hideWidget();
+      adMetrics.resolve({updateAdFrames: [AD_FRAME]});
+      adScripts.resolve([adScript('script-1')]);
+      await clock.tickAsync(0);
+      adsView.showWidget();
+      const input = await settledViewInput(adsView, view);
+
+      assert.deepEqual(shownFrameIds(input), [FRAME_ID]);
+      assert.strictEqual(input.adFrames[0].initialOrigin, 'https://ads.example');
+      assert.strictEqual(input.adFrames[0].rawCpuTime, 250);
+      assert.deepEqual(shownScriptIds(input), ['script-1']);
+    });
+
+    it('does not show the ad frames of the previous page when the ad scripts arrive after a navigation', async () => {
+      // While the page navigates, `Ads.getAdMetrics` is answered right away, but
+      // `Ads.getAdScripts` only after `Page.frameNavigated`.
+      const adScriptsOfNewPage = Promise.withResolvers<Protocol.Ads.AdScript[]>();
+      respondToAdMetricsRequests({updateAdFrames: [AD_FRAME]}, {updateAdFrames: [AD_FRAME_UPDATE]});
+      respondToAdScriptsRequests([adScript('script-1')], adScriptsOfNewPage.promise);
+      const {adsView, view} = showAdsView();
+      assert.deepEqual(shownFrameIds(await settledViewInput(adsView, view)), [FRAME_ID]);
+      // The second poll, which is sent while the page navigates.
+      await clock.tickAsync(500);
+
+      navigatePrimaryPage();
+      adScriptsOfNewPage.resolve([adScript('script-2')]);
+      const input = await settledViewInput(adsView, view);
+
+      assert.isEmpty(input.adFrames);
+      assert.deepEqual(shownScriptIds(input), ['script-2']);
+    });
+
+    it('ignores the ad metrics of the previous page that arrive after a navigation', async () => {
+      // The browser can still answer for the previous page after `Page.frameNavigated`.
+      const adMetricsOfPreviousPage = Promise.withResolvers<Partial<Protocol.Ads.AdMetrics>>();
+      respondToAdMetricsRequests({updateAdFrames: [AD_FRAME]}, adMetricsOfPreviousPage.promise);
+      const {adsView, view} = showAdsView();
+      assert.deepEqual(shownFrameIds(await settledViewInput(adsView, view)), [FRAME_ID]);
+      await clock.tickAsync(500);
+
+      navigatePrimaryPage();
+      // The update for the dropped ad frame marks the whole response as stale.
+      adMetricsOfPreviousPage.resolve({totalAdCpuTime: 150, updateAdFrames: [AD_FRAME_UPDATE, OTHER_AD_FRAME]});
+      const input = await settledViewInput(adsView, view);
+
+      assert.strictEqual(input.metrics.totalAdCpuTime, 0);
+      assert.isEmpty(input.adFrames);
+    });
+
+    it('shows the ad frames that are reported along with the removal of an unknown ad frame', async () => {
+      // `document.open()` clears the view but not the browser's state, so the
+      // browser still reports that the ad frames of the old document are gone.
+      respondToAdMetricsRequests({updateAdFrames: [AD_FRAME]},
+                                 {removeAdFrames: [FRAME_ID], updateAdFrames: [OTHER_AD_FRAME]});
+      const {adsView, view} = showAdsView();
+      assert.deepEqual(shownFrameIds(await settledViewInput(adsView, view)), [FRAME_ID]);
+
+      const mainFrame = getMainFrame(target);
+      mainFrame.resourceTreeModel().documentOpened(getEffectivePayload(mainFrame.id, FRAME));
+      await clock.tickAsync(500);
+      const input = await settledViewInput(adsView, view);
+
+      assert.deepEqual(shownFrameIds(input), [OTHER_FRAME_ID]);
+    });
+
+    it('ignores the responses of a target that is no longer the primary page target', async () => {
+      const adMetrics = Promise.withResolvers<Partial<Protocol.Ads.AdMetrics>>();
+      const adScripts = Promise.withResolvers<Protocol.Ads.AdScript[]>();
+      respondToAdMetricsRequests(adMetrics.promise);
+      respondToAdScriptsRequests(adScripts.promise);
+      const {adsView, view} = showAdsView();
+
+      activatePrerenderedPage();
+      adMetrics.resolve({totalAdCpuTime: 150, updateAdFrames: [AD_FRAME]});
+      adScripts.resolve([adScript('script-1')]);
+      const input = await settledViewInput(adsView, view);
+
+      assert.strictEqual(input.metrics.totalAdCpuTime, 0);
+      assert.isEmpty(input.adFrames);
+      assert.isEmpty(input.adScripts);
+    });
+
+    it('clears the data of the previous page when the page changes while the view is hidden', async () => {
+      respondToAdMetricsRequests({updateAdFrames: [AD_FRAME]});
+      respondToAdScriptsRequests([adScript('script-1')]);
+      const {adsView, view} = showAdsView();
+      assert.deepEqual(shownFrameIds(await settledViewInput(adsView, view)), [FRAME_ID]);
+
+      adsView.hideWidget();
+      navigatePrimaryPage();
+      adsView.showWidget();
+      const input = await settledViewInput(adsView, view);
+
+      assert.isEmpty(input.adFrames);
+      assert.isEmpty(input.adScripts);
+    });
+
+    it('keeps the ad scripts of the new page that arrive while the view is hidden', async () => {
+      const adScriptsOfNewPage = Promise.withResolvers<Protocol.Ads.AdScript[]>();
+      respondToAdMetricsRequests({updateAdFrames: [AD_FRAME]});
+      respondToAdScriptsRequests([adScript('script-1')], adScriptsOfNewPage.promise);
+      const {adsView, view} = showAdsView();
+      assert.deepEqual(shownFrameIds(await settledViewInput(adsView, view)), [FRAME_ID]);
+      // The second poll, which is sent while the page navigates.
+      await clock.tickAsync(500);
+
+      adsView.hideWidget();
+      navigatePrimaryPage();
+      adScriptsOfNewPage.resolve([adScript('script-2')]);
+      await clock.tickAsync(0);
+      adsView.showWidget();
+      const input = await settledViewInput(adsView, view);
+
+      assert.isEmpty(input.adFrames);
+      assert.deepEqual(shownScriptIds(input), ['script-2']);
+    });
+
+    it('clears the ad scripts that arrived while the view was hidden when the page changes again', async () => {
+      const adScripts = Promise.withResolvers<Protocol.Ads.AdScript[]>();
+      respondToAdScriptsRequests(adScripts.promise);
+      const {adsView, view} = showAdsView();
+
+      adsView.hideWidget();
+      navigatePrimaryPage();
+      adScripts.resolve([adScript('script-1')]);
+      await clock.tickAsync(0);
+      navigatePrimaryPage();
+      adsView.showWidget();
+      const input = await settledViewInput(adsView, view);
+
+      assert.isEmpty(input.adScripts);
+    });
+
+    it('stops listening for page changes once one has cleared the hidden view', async () => {
+      const {adsView, view} = showAdsView();
+      await settledViewInput(adsView, view);
+      adsView.hideWidget();
+      navigatePrimaryPage();
+      await adsView.updateComplete;
+      const {callCount} = view;
+
+      // The view updates on every page change that it listens for.
+      navigatePrimaryPage();
+      await adsView.updateComplete;
+
+      sinon.assert.callCount(view, callCount);
     });
   });
 

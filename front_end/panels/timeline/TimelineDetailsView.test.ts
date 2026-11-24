@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import {after, afterEach, before, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {assertScreenshot, doubleRaf, raf, renderElementIntoDOM, setColorScheme} from '../../testing/DOMHelpers.js';
@@ -621,4 +622,34 @@ describe('TimelineDetailsView', function() {
 
     container.detach(/* overrideHideOnDetach= */ true);
   });
+
+  it('does not show the Selector stats tab when a non-RecalcStyle event is selected right after setModel',
+     async function() {
+       const selectorStatsSetting =
+           Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false);
+       selectorStatsSetting.set(true);
+       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+       const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+       renderElementIntoDOM(detailsView);
+       try {
+         const evalScriptEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
+           return event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.dur && event.dur > 2000;
+         });
+         assert.isOk(evalScriptEvent);
+
+         await detailsView.setModel({
+           parsedTrace,
+           selectedEvents: allThreadEntriesInTrace(parsedTrace),
+           eventToRelatedInsightsMap: null,
+           entityMapper: null,
+         });
+         await detailsView.setSelection(Timeline.TimelineSelection.selectionFromEvent(evalScriptEvent));
+         await raf();
+
+         assert.isNull(detailsView.headerElement().querySelector('#tab-selector-stats'));
+       } finally {
+         selectorStatsSetting.set(false);
+         detailsView.detach();
+       }
+     });
 });

@@ -561,6 +561,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     // `setSelection(null)` short-circuits without updating the summary pane when any
     // of these dependencies are missing, so trigger the update directly.
     if (!this.#parsedTrace || !this.#selectedEvents || !TraceBounds.TraceBounds.BoundsManager.instance().state()) {
+      this.#closeExtraTabs();
       void this.updateSummaryPane();
     }
     this.lazyPaintProfilerView = null;
@@ -568,18 +569,21 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     await this.setSelection(null);
   }
 
-  /**
-   * Updates the UI shown in the Summary tab. If the summary tab is not
-   * currently selected, the update is deferred until the tab becomes active.
-   */
-  private async updateSummaryPane(): Promise<void> {
+  #closeExtraTabs(): void {
+    this.#summaryNeedsUpdate = false;
     const allTabs = this.tabbedPane.otherTabs(Tab.Details);
     for (let i = 0; i < allTabs.length; ++i) {
       if (!this.rangeDetailViews.has(allTabs[i])) {
         this.tabbedPane.closeTab(allTabs[i]);
       }
     }
+  }
 
+  /**
+   * Updates the UI shown in the Summary tab. If the summary tab is not
+   * currently selected, the update is deferred until the tab becomes active.
+   */
+  private async updateSummaryPane(): Promise<void> {
     if (this.#selectedTab() !== Tab.Details) {
       this.#summaryNeedsUpdate = true;
       return;
@@ -637,6 +641,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   private scheduleUpdateContentsFromWindow(forceImmediateUpdate = false): void {
     if (!this.#parsedTrace) {
       this.#hasPendingWindowUpdate = false;
+      this.#closeExtraTabs();
       void this.updateSummaryPane();
       return;
     }
@@ -684,8 +689,12 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     this.#summary.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
     this.#summary.linkifier = this.#detailsLinkifier;
     this.#summary.target = targetForEvent(this.#parsedTrace, event);
-    await this.updateSummaryPane();
+    this.#closeExtraTabs();
+    if (Trace.Types.Events.isLegacyTimelineFrame(event)) {
+      this.#addLayerTreeForSelectedFrame(event);
+    }
     this.appendExtraDetailsTabsForTraceEvent(event);
+    await this.updateSummaryPane();
   }
 
   async setSelection(selection: TimelineSelection|null): Promise<void> {
@@ -707,10 +716,6 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       // Cancel any pending debounced range stats update
       this.#debouncedUpdateContentsFromWindow.cancel();
       this.#hasPendingWindowUpdate = false;
-
-      if (Trace.Types.Events.isLegacyTimelineFrame(selection.event)) {
-        this.#addLayerTreeForSelectedFrame(selection.event);
-      }
 
       await this.#setSelectionForTraceEvent(selection.event);
     } else if (selectionIsRange(selection)) {
@@ -879,7 +884,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       selection: this.#selection,
     };
 
-    await this.updateSummaryPane();
+    this.#closeExtraTabs();
 
     // Find all recalculate style events data from range
     const isSelectorStatsEnabled =
@@ -896,6 +901,8 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         this.showAggregatedSelectorStats(eventsInRange);
       }
     }
+
+    await this.updateSummaryPane();
   }
 }
 

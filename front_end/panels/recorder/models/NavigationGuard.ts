@@ -6,7 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 
-import type {UserFlow} from './Schema.js';
+import {StepType, type UserFlow} from './Schema.js';
 
 const SESSION_ATTACHED = 'sessionattached' as puppeteer.CDPSessionEventSessionAttached;
 const NON_INTERACTIVE_STEP_TYPES = new Set<string>(['setViewport', 'emulateNetworkConditions']);
@@ -75,15 +75,20 @@ function shouldAllowCurrentUrl(flow: UserFlow, currentUrl: string): boolean {
 
 /**
  * Returns true if a step with a target that is not 'main' runs before the
- * first main-page navigate step. Such a step can send input to a frame or to
- * a popup of the current page, thus the current page must stay.
+ * first main-page navigate step. Such a step can send input to an
+ * out-of-process iframe of the current page, thus the current page must stay.
+ *
+ * The guard does not know if the target is an iframe of the current page or
+ * a popup, thus a popup target gives the same result. A navigate step with a
+ * different target does not navigate the main page, thus it is also such a
+ * step.
  */
 function hasOtherTargetStepBeforeNavigate(flow: UserFlow): boolean {
   for (const step of flow.steps) {
     if ('target' in step && step.target && step.target !== 'main') {
       return true;
     }
-    if (step.type === 'navigate') {
+    if (step.type === StepType.Navigate) {
       return false;
     }
   }
@@ -233,10 +238,11 @@ export function isNavigationAllowed(url: string, allowed: AllowedNavigations): b
 export class NavigationGuard {
   readonly #allowedNavigations: AllowedNavigations;
   readonly #checkSubframes: boolean;
-  /** True if a step can send input to the page before the page navigates. */
+  /**
+   * True if a step can send input to the page, or to a frame of the page,
+   * before the page navigates.
+   */
   readonly #replayUsesCurrentPage: boolean;
-  /** True if no step can send input to the page or to its frames before the page navigates. */
-  readonly #replayNavigatesFirst: boolean;
   readonly #onError: () => void;
   readonly #guardedPages = new Set<puppeteer.Page>();
   /** The pages for which the guard checked the documents from before the guard. */
@@ -262,8 +268,9 @@ export class NavigationGuard {
   constructor(flow: UserFlow, currentUrl: string, onError: () => void) {
     this.#allowedNavigations = collectAllowedNavigations(flow, currentUrl);
     this.#checkSubframes = hasSubframeSteps(flow);
-    this.#replayUsesCurrentPage = shouldAllowCurrentUrl(flow, currentUrl);
-    this.#replayNavigatesFirst = !this.#replayUsesCurrentPage && !hasOtherTargetStepBeforeNavigate(flow);
+    // A step with a different target does not add the current URL to the
+    // allowed navigations, but the guard must check the current documents.
+    this.#replayUsesCurrentPage = shouldAllowCurrentUrl(flow, currentUrl) || hasOtherTargetStepBeforeNavigate(flow);
     this.#onError = onError;
   }
 
@@ -483,15 +490,16 @@ export class NavigationGuard {
   /**
    * Enables the guard on all frames of `guardedPage`. The guard also checks
    * the URLs that the frames have now, if `checkExistingFrames` is true or if
-   * a step can send input to the inspected page before the page navigates.
+   * a step can send input to the inspected page, or to a frame of the page,
+   * before the page navigates.
    * A later call with `checkExistingFrames` set to true does this check for a
    * page that has the guard already.
    */
   async guardPage(guardedPage: puppeteer.Page, checkExistingFrames: boolean): Promise<void> {
     if (this.#guardedPages.has(guardedPage)) {
       // The first call for the inspected page does not check the frames if
-      // the replay navigates the page first. A step with a different target
-      // can send input to a frame of the page before that navigation.
+      // the replay navigates the page first. A later step with a different
+      // target can send input to a frame of the page.
       if (checkExistingFrames) {
         await this.#checkExistingDocuments(guardedPage);
       }
@@ -556,7 +564,9 @@ export class NavigationGuard {
     }
     // If the replay navigates the page first, that navigation removes the
     // frames and the prerendered pages of the current document. They cannot
-    // get input, thus their documents must not stop the replay.
+    // get input, thus their documents must not stop the replay. If a step
+    // can send input to the page, or to a frame of the page, before that
+    // navigation, the guard checks them.
     if (checkExistingFrames || this.#replayUsesCurrentPage) {
       await this.#checkExistingDocuments(guardedPage);
     }
@@ -642,7 +652,7 @@ export class NavigationGuard {
     }
     const hasDisallowedDocument = currentUrl === undefined || this.#isDisallowedUrl(currentUrl) ||
         (this.#checkSubframes &&
-         (this.#replayNavigatesFirst ||
+         (!this.#replayUsesCurrentPage ||
           guardedPage.frames().some(frame => this.#disallowedFrameUrl(frame, guardedPage) !== undefined)));
     if (navigateAwayIfDisallowed && hasDisallowedDocument) {
       await guardedPage.goto('about:blank');

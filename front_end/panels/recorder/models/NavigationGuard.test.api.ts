@@ -240,6 +240,35 @@ describe('NavigationGuard API Test', () => {
        }
      });
 
+  it('reports the inspected page from an origin that is not in the recording, if a step targets a frame of the page before a navigate step',
+     async ({inspectedPage}) => {
+       // The recording has only the origin of the frame, not the origin of the page.
+       const frameUrl = other(inspectedPage, 'iframe1.html');
+       const pageUrl = recorded(inspectedPage, 'oopif.html');
+       assert.isNull(await navigate(inspectedPage, pageUrl));
+       await inspectedPage.page.waitForFrame(frameUrl);
+       const flow = {
+         title: 'test',
+         steps: [
+           {type: 'click', selectors: [['a']], offsetX: 1, offsetY: 1, target: frameUrl},
+           {type: 'navigate', url: other(inspectedPage, 'recorder.html')},
+         ],
+       } as UserFlow;
+       const guard = new NavigationGuard(flow, inspectedPage.page.url(), () => {});
+       try {
+         await guard.guardPage(inspectedPage.page as never, /* checkExistingFrames= */ false);
+         // The guard reports the page at the start of the replay and does not change it.
+         assert.include(errorMessage(guard), `Navigation to ${pageUrl} is not allowed`);
+         assert.strictEqual(inspectedPage.page.url(), pageUrl);
+
+         await guard.guardStepTarget(inspectedPage.page.browser() as never, frameUrl, 5000);
+
+         assert.strictEqual(inspectedPage.page.url(), pageUrl);
+       } finally {
+         await guard.dispose();
+       }
+     });
+
   it('removes a page from before the replay from the session history', async ({inspectedPage}) => {
     // Chrome does not pause a response for a back/forward cache restore, so
     // the guard cannot fail it. The guard removes the pages that `history.back()`

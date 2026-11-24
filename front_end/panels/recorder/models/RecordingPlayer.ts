@@ -350,7 +350,8 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     try {
       // The guard checks the frames that the inspected page has now only if a
-      // step can send input to the page before the page navigates.
+      // step can send input to the page, or to a frame of the page, before
+      // the page navigates.
       await guard.guardPage(page, /* checkExistingFrames= */ false);
       this.#runner = await PuppeteerReplay.createRunner(this.userFlow, extension);
       // `run()` resets the abort state of the runner.

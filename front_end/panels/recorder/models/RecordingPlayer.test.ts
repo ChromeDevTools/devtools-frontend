@@ -1131,15 +1131,89 @@ describe('RecordingPlayer', () => {
            mocks.frames.push(oopifFrame);
            mocks.targets.push({url: () => oopifUrl, page: async () => null});
 
-           // The first step has a different target, thus the guard does not
-           // check the frames of the inspected page at the start of the replay.
-           const {error} = await replaySteps([
+           // The first step has a different target. It can send input to the
+           // OOPIF, thus the guard checks the page at the start of the replay.
+           const {error, steps} = await replaySteps([
              {type: Models.Schema.StepType.Close, target: oopifUrl},
              {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
            ]);
 
            assert.strictEqual(error?.message, blockedMessage);
-           sinon.assert.notCalled(mocks.mainFrame.goto!);
+           assert.strictEqual(steps, 0);
+           // The guard does not change the page of the user.
+           sinon.assert.notCalled(mocks.pages[0].goto!);
+           sinon.assert.neverCalledWith(mocks.send, 'Page.resetNavigationHistory');
+         });
+
+      // The guard does not know if a target is an OOPIF of the inspected page
+      // or a popup, thus each of these steps causes the check of the page.
+      const stepsBeforeNavigation: Array<{name: string, steps: Models.Schema.Step[]}> = [
+        {
+          name: 'a step targets a popup',
+          steps: [{type: Models.Schema.StepType.Close, target: 'https://popup.test/index.html'}],
+        },
+        {
+          name: 'a navigate step targets a popup',
+          steps: [{
+            type: Models.Schema.StepType.Navigate,
+            url: 'https://allowed.test/popup',
+            target: 'https://popup.test/index.html',
+          }],
+        },
+        {
+          name: 'a non-interactive step is before a step that targets an OOPIF',
+          steps: [
+            {
+              type: Models.Schema.StepType.SetViewport,
+              width: 800,
+              height: 600,
+              deviceScaleFactor: 1,
+              isMobile: false,
+              hasTouch: false,
+              isLandscape: false,
+            },
+            {type: Models.Schema.StepType.Close, target: 'https://oopif.test/frame.html'},
+          ],
+        },
+      ];
+      for (const {name, steps: firstSteps} of stepsBeforeNavigation) {
+        it(`stops the replay on a page from an unrecorded origin if ${name} before a main-page navigate step`,
+            async () => {
+              sinon.stub(console, 'error');
+              mocks.mainFrame.url = () => blockedUrl;
+              mocks.pages[0].url = () => blockedUrl;
+
+              const {error, steps} = await replaySteps([
+                ...firstSteps,
+                {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+              ]);
+
+              assert.strictEqual(error?.message, blockedMessage);
+              assert.strictEqual(steps, 0);
+              sinon.assert.notCalled(mocks.pages[0].goto!);
+              sinon.assert.neverCalledWith(mocks.send, 'Page.resetNavigationHistory');
+            });
+      }
+
+      it('keeps the page if a step targets an OOPIF on a page from a recorded origin before a navigate step',
+         async () => {
+           const oopifUrl = 'https://oopif.test/frame.html';
+           const oopifFrame = {_id: 'oopif', client: mocks.mainFrame.client, url: () => oopifUrl};
+           mocks.mainFrame.url = () => 'https://allowed.test/start';
+           mocks.pages[0].url = () => 'https://allowed.test/start';
+           Object.assign(mocks.pages[0], {waitForFrame: async () => oopifFrame});
+           mocks.frames.push(oopifFrame);
+           mocks.targets.push({url: () => oopifUrl, page: async () => null});
+
+           const {error, steps} = await replaySteps([
+             {type: Models.Schema.StepType.Close, target: oopifUrl},
+             {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+           ]);
+
+           assert.isNull(error);
+           assert.strictEqual(steps, 2);
+           sinon.assert.notCalled(mocks.pages[0].goto!);
+           sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
          });
 
       it('does not navigate the page to about:blank if a step targets an OOPIF before the first navigate step',
@@ -1253,7 +1327,7 @@ describe('RecordingPlayer', () => {
            ]);
 
            assert.strictEqual(error?.message, blockedMessage);
-           sinon.assert.notCalled(mocks.mainFrame.goto!);
+           sinon.assert.notCalled(mocks.pages[0].goto!);
          });
 
       it('removes the session history if the recording has subframe steps, also if all entries are allowed',

@@ -274,9 +274,13 @@ describe('The Console Tab', () => {
   });
 
   it('can show verbose promise unhandledrejections', async ({devToolsPage, inspectedPage}) => {
+    await navigateToConsoleTab(devToolsPage);
+    await showVerboseMessages(devToolsPage);
+    await devToolsPage.waitFor('[aria-label="Log level: All levels"]');
+
     const messages = await getConsoleMessages(devToolsPage, inspectedPage, 'onunhandledrejection', false, async () => {
-      await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 4);
-      await showVerboseMessages(devToolsPage);
+      await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 5);
+      await devToolsPage.waitFor('.console-message-text .symbolized-error-widget');
     });
 
     assert.deepEqual(messages, [

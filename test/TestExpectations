@@ -24,4 +24,3 @@ crbug.com/581834564 [ linux mac win32 ] test/e2e/coverage/coverage.test.ts:the_c
 crbug.com/581828366 [ mac ] test/e2e/lighthouse/devtools-settings.test.ts:devtools:device_emulation:is_restored_after_a_lighthouse_run [ Failure Pass ]
 crbug.com/581823781 [ mac ] test/e2e/recorder/ui.test.ts:recorder:ui:shortcuts:should_toggle_code_view_with_shortcut [ Failure Pass ]
 crbug.com/581815669 [ mac ] test/e2e/elements/classes-pane.test.ts:the_classes_pane:removes_the_previewed_classes_on_esc [ Failure Pass ]
-crbug.com/589685541 [ linux mac win32 ] test/e2e/console/console-message-format.test.ts:the_console_tab:can_show_verbose_promise_unhandledrejections [ Failure Pass ]

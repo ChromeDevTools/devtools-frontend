@@ -372,16 +372,8 @@ export const GENERIC_SETTINGS_TAB_DEFAULT_VIEW: GenericSettingsTabView = (
     output: GenericSettingsTabViewOutput,
     target: HTMLElement,
     ): void => {
-  const settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
+  const sectionContainers = new Map<GenericSettingsSection, Element>();
   let syncSection: PanelComponents.SyncSection.SyncSection|undefined;
-  output.highlightSetting = (setting: Common.Settings.Setting<unknown>): void => {
-    const element = settingToControl.get(setting);
-    if (element) {
-      PanelUtils.highlightElement(element);
-    } else if (setting.name === 'receive-gdp-badges') {
-      void syncSection?.highlightReceiveBadgesSetting();
-    }
-  };
   // clang-format off
   render(
       html`
@@ -396,19 +388,10 @@ export const GENERIC_SETTINGS_TAB_DEFAULT_VIEW: GenericSettingsTabView = (
                       </devtools-widget>`
                     : html`
                       <div ${ref(el => {
-                        if (!el) {
-                          return;
-                        }
-                        let childIndex = 0;
-                        for (const setting of section.settings) {
-                          if (setting.type() !== Common.Settings.SettingType.BOOLEAN &&
-                              setting.type() !== Common.Settings.SettingType.ENUM) {
-                            continue;
-                          }
-                          const child = el.children[childIndex++];
-                          if (child instanceof HTMLElement) {
-                            settingToControl.set(setting, child);
-                          }
+                        if (el) {
+                          sectionContainers.set(section, el);
+                        } else {
+                          sectionContainers.delete(section);
                         }
                       })}>
                         ${section.settings.map(setting => SettingsUI.SettingsUI.renderControlForSetting(setting))}
@@ -439,6 +422,26 @@ export const GENERIC_SETTINGS_TAB_DEFAULT_VIEW: GenericSettingsTabView = (
         },
       });
   // clang-format on
+
+  output.highlightSetting = (setting: Common.Settings.Setting<unknown>): void => {
+    for (const [section, el] of sectionContainers) {
+      let childIndex = 0;
+      for (const s of section.settings) {
+        if (s.type() !== Common.Settings.SettingType.BOOLEAN && s.type() !== Common.Settings.SettingType.ENUM) {
+          continue;
+        }
+        const child = el.children[childIndex++];
+        if (s === setting && child instanceof HTMLElement) {
+          PanelUtils.highlightElement(child);
+          return;
+        }
+      }
+    }
+
+    if (setting.name === 'receive-gdp-badges') {
+      void syncSection?.highlightReceiveBadgesSetting();
+    }
+  };
 };
 
 export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {

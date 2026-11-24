@@ -16,6 +16,7 @@ import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOM
 import {describeWithEnvironment, registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -24,7 +25,11 @@ import * as PanelUtils from '../utils/utils.js';
 import * as Settings from './settings.js';
 
 const {urlString} = Platform.DevToolsPath;
-const {EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW, ExperimentsSettingsTab} = Settings.SettingsScreen;
+const {
+  EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW,
+  ExperimentsSettingsTab,
+  GENERIC_SETTINGS_TAB_DEFAULT_VIEW,
+} = Settings.SettingsScreen;
 
 describe('SettingsScreen', () => {
   setupLocaleHooks();
@@ -545,5 +550,46 @@ describeWithEnvironment('ExperimentsSettingsTab default view', () => {
     const filteredCheckboxes = target.querySelectorAll<UI.UIUtils.CheckboxLabel>('devtools-checkbox');
     assert.lengthOf(filteredCheckboxes, 1);
     assert.strictEqual(filteredCheckboxes[0], betaCheckbox);
+  });
+});
+
+describe('GENERIC_SETTINGS_TAB_DEFAULT_VIEW', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+
+  it('highlights a setting control on the first render', () => {
+    const highlightStub = sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
+    const setting = Common.Settings.Settings.instance().createSetting('test-highlight-setting', false);
+    setting.setRegistration({
+      settingName: 'test-highlight-setting',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      title: () => i18n.i18n.lockedString('Test highlight setting'),
+      category: Common.Settings.SettingCategory.DEBUGGER,
+    });
+
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    const output: Settings.SettingsScreen.GenericSettingsTabViewOutput = {};
+
+    GENERIC_SETTINGS_TAB_DEFAULT_VIEW(
+        {
+          sections: [{
+            category: Common.Settings.SettingCategory.DEBUGGER,
+            heading: i18n.i18n.lockedString('Debugger'),
+            settings: [setting],
+          }],
+          syncInfo: {isSyncActive: false},
+          onRestoreDefaults: () => {},
+        },
+        output,
+        target,
+    );
+
+    output.highlightSetting?.(setting);
+
+    const checkbox = target.querySelector('setting-checkbox');
+    assert.instanceOf(checkbox, HTMLElement);
+    sinon.assert.calledOnceWithExactly(highlightStub, checkbox);
   });
 });

@@ -113,6 +113,7 @@ div:has(.settings-select) + div:has(.settings-select) {
 }
 
 .settings-card-container-wrapper setting-checkbox { /* stylelint-disable-line selector-type-no-unknown */
+  display: block;
   min-height: var(--sys-size-13);
   position: relative;
   left: calc(var(--sys-size-4) * -1);

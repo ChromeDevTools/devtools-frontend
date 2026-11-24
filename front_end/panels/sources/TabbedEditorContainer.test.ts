@@ -11,7 +11,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as TextUtils from '../../core/text_utils/text_utils.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -25,6 +25,7 @@ import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewF
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html} from '../../ui/lit/lit.js';
+import * as PanelCommon from '../common/common.js';
 
 import * as SourcesComponents from './components/components.js';
 import * as Sources from './sources.js';
@@ -489,6 +490,80 @@ describe('TabbedEditorContainer', () => {
       sinon.assert.calledWithExactly(sourcesPanelFileOpenedSpy, 'text/typescript');
       editorContainer.detach();
     });
+
+    it('forwards the active UISourceCode to ExtensionServer.sourceSelectionChanged on editor selection update',
+       async () => {
+         const editorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
+         renderElementIntoDOM(editorContainer);
+         const url = urlString`http://localhost/selection.js`;
+         const {uiSourceCode: canonicalScript} = createContentProviderUISourceCode({
+           url,
+           projectId: 'canonical-project',
+           mimeType: 'text/javascript',
+           content: 'const sampleValue = 42;',
+           universe: testUniverse,
+         });
+         const {uiSourceCode: duplicateScript} = createContentProviderUISourceCode({
+           url,
+           projectId: 'duplicate-project',
+           mimeType: 'text/javascript',
+           content: 'const secondValue = 99;',
+           universe: testUniverse,
+         });
+         const selectionSpy =
+             sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'sourceSelectionChanged');
+         try {
+           editorContainer.showFile(canonicalScript);
+           const widget = editorContainer.visibleView;
+           assert.instanceOf(widget, Sources.UISourceCodeFrame.UISourceCodeFrame);
+           sinon.stub(widget, 'loadPlugins' as keyof typeof widget);
+           await widget.setContent('const sampleValue = 42;');
+           selectionSpy.resetHistory();
+
+           widget.textEditor.editor.dispatch({selection: {anchor: 6, head: 17}});
+           sinon.assert.calledOnceWithExactly(selectionSpy, sinon.match.same(canonicalScript),
+                                              new TextUtils.TextRange.TextRange(0, 6, 0, 17));
+
+           selectionSpy.resetHistory();
+           editorContainer.showFile(duplicateScript);
+
+           // Dispatch synchronously before UISourceCodeFrame.setUISourceCode's async microtask settles
+           // (mirroring TabbedEditorContainer.showSourceLocation -> revealPosition).
+           widget.textEditor.editor.dispatch({selection: {anchor: 0, head: 5}});
+           sinon.assert.calledOnceWithExactly(selectionSpy, sinon.match.same(duplicateScript),
+                                              new TextUtils.TextRange.TextRange(0, 0, 0, 5),
+                                              sinon.match.same(canonicalScript));
+
+           // Hold the content swap open: uiSourceCode() already returns the duplicate, but the editor
+           // still shows the canonical text, so the canonical UISourceCode must still be forwarded.
+           let finishSwap = (): void => {};
+           const setContentStub =
+               sinon.stub(widget as unknown as {setContentDataOrError: () => Promise<void>}, 'setContentDataOrError')
+                   .callsFake(() => new Promise<void>(resolve => {
+                                finishSwap = resolve;
+                              }));
+           await raf();
+           assert.strictEqual(widget.uiSourceCode(), duplicateScript);
+           selectionSpy.resetHistory();
+           widget.textEditor.editor.dispatch({selection: {anchor: 0, head: 3}});
+           sinon.assert.calledOnceWithExactly(selectionSpy, sinon.match.same(duplicateScript),
+                                              new TextUtils.TextRange.TextRange(0, 0, 0, 3),
+                                              sinon.match.same(canonicalScript));
+           setContentStub.restore();
+           finishSwap();
+
+           await raf();
+           await widget.setContent('const secondValue = 99;');
+           selectionSpy.resetHistory();
+
+           widget.textEditor.editor.dispatch({selection: {anchor: 6, head: 17}});
+           sinon.assert.calledOnceWithExactly(selectionSpy, sinon.match.same(duplicateScript),
+                                              new TextUtils.TextRange.TextRange(0, 6, 0, 17));
+         } finally {
+           selectionSpy.restore();
+           editorContainer.detach();
+         }
+       });
   });
 });
 

@@ -53,6 +53,9 @@ const UISourceCodeFrameBase:
 export class UISourceCodeFrame extends UISourceCodeFrameBase {
   #uiSourceCode: Workspace.UISourceCode.UISourceCode;
   #muteSourceCodeEvents = false;
+  // The UISourceCode whose content is currently in the text editor. Lags behind #uiSourceCode
+  // while setUISourceCode swaps in the new content.
+  #displayedUISourceCode: Workspace.UISourceCode.UISourceCode;
   #persistenceBinding: Persistence.Persistence.PersistenceBinding|null;
   #uiSourceCodeEventListeners: Common.EventTarget.EventDescriptor[] = [];
   #messageAndDecorationListeners: Common.EventTarget.EventDescriptor[] = [];
@@ -69,6 +72,7 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
     super(() => this.workingCopy());
 
     this.#uiSourceCode = uiSourceCode;
+    this.#displayedUISourceCode = uiSourceCode;
 
     this.#persistenceBinding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
 
@@ -140,6 +144,10 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
     return this.#uiSourceCode;
   }
 
+  displayedUISourceCode(): Workspace.UISourceCode.UISourceCode {
+    return this.#displayedUISourceCode;
+  }
+
   setUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const loaded = uiSourceCode.contentLoaded() ? Promise.resolve() : uiSourceCode.requestContentData();
     const startUISourceCode = this.#uiSourceCode;
@@ -154,6 +162,7 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
       } else {
         this.reloadPlugins();
       }
+      this.#displayedUISourceCode = uiSourceCode;
       this.initializeUISourceCode();
     }, console.error);
   }

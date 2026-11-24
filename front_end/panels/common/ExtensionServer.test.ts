@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -16,6 +17,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import type * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
@@ -36,6 +38,7 @@ import {
   mockResourceTree,
 } from '../../testing/ResourceTreeHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
+import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -684,6 +687,7 @@ describe('openResource hosts policy', () => {
         Workspace.Workspace.WorkspaceImpl.instance(), 'open-resource-test', Workspace.Workspace.projectTypes.Network,
         '', false);
     const source = new Workspace.UISourceCode.UISourceCode(project, url, Common.ResourceType.resourceTypes.Script);
+    project.addUISourceCode(source);
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
                                           {scriptsForUISourceCode: [script], sourceMapURLsForUISourceCode: []}));
@@ -1423,6 +1427,270 @@ describe('Runtime hosts policy', () => {
        assert.deepEqual(committedUrls, [allowedVmUrl]);
      });
 
+  interface SourceSelectionInfo {
+    startLine: number;
+    startColumn: number;
+    endLine: number;
+    endColumn: number;
+    url: Platform.DevToolsPath.UrlString;
+  }
+
+  it('does not notify resource or selection listeners for scripts with sourceURL from blocked origins', async () => {
+    const backend = getBackend(context);
+    mockResourceTree(backend.cdpConnection);
+    const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(allowedUrl);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+
+    const addedUrls: string[] = [];
+    const committedUrls: string[] = [];
+    const selections: SourceSelectionInfo[] = [];
+    context.chrome.devtools?.inspectedWindow.onResourceAdded.addListener(r => addedUrls.push(r.url));
+    context.chrome.devtools?.inspectedWindow.onResourceContentCommitted.addListener(r => committedUrls.push(r.url));
+    context.chrome.devtools?.panels.sources.onSelectionChanged.addListener((selection?: SourceSelectionInfo) => {
+      if (selection) {
+        selections.push(selection);
+      }
+    });
+    const extensionServer = PanelCommon.ExtensionServer.ExtensionServer.instance();
+    await waitForFunction(
+        () => extensionServer.hasSubscribers(Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded) &&
+            extensionServer.hasSubscribers(Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted) &&
+            extensionServer.hasSubscribers(Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'sources'));
+
+    const sameOriginClaimedUrl = urlString`${allowedUrl}from-blocked-origin.js`;
+    await backend.addScript(target, {
+      url: sameOriginClaimedUrl,
+      hasSourceURL: true,
+      embedderName: `${blockedUrl}/bundle.min.js`,
+      content: 'console.log(1);',
+    },
+                            null);
+
+    const customSchemeClaimedUrl = urlString`webpack://app/from-blocked-origin.js`;
+    await backend.addScript(target, {
+      url: customSchemeClaimedUrl,
+      hasSourceURL: true,
+      embedderName: `${blockedUrl}/custom-bundle.min.js`,
+      content: 'console.log(2);',
+    },
+                            null);
+
+    const customAllowedUrl = urlString`webpack://app/from-allowed-origin.js`;
+    await backend.addScript(target, {
+      url: customAllowedUrl,
+      hasSourceURL: true,
+      embedderName: `${allowedUrl}allowed-custom-bundle.min.js`,
+      content: 'console.log(3);',
+    },
+                            null);
+
+    const allowedClaimedUrl = urlString`${allowedUrl}from-allowed-origin.js`;
+    await backend.addScript(target, {
+      url: allowedClaimedUrl,
+      hasSourceURL: true,
+      embedderName: `${allowedUrl}bundle.min.js`,
+      content: 'console.log(4);',
+    },
+                            null);
+
+    void backend.universe.cssWorkspaceBinding;
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    const allowedStyleSourceUrl = urlString`${allowedUrl}inline-style.css`;
+    cssModel.styleSheetAdded({
+      styleSheetId: 'inline-style-id' as Protocol.DOM.StyleSheetId,
+      frameId: 'main' as Protocol.Page.FrameId,
+      sourceURL: allowedStyleSourceUrl,
+      hasSourceURL: true,
+      origin: Protocol.CSS.StyleSheetOrigin.Regular,
+      title: '',
+      disabled: false,
+      isInline: true,
+      isMutable: false,
+      isConstructed: false,
+      startLine: 0,
+      startColumn: 0,
+      length: 16,
+      endLine: 0,
+      endColumn: 16,
+    });
+
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const sameOriginBlockedUISourceCode = workspace.uiSourceCodeForURL(sameOriginClaimedUrl);
+    const customSchemeBlockedUISourceCode = workspace.uiSourceCodeForURL(customSchemeClaimedUrl);
+    const customAllowedUISourceCode = workspace.uiSourceCodeForURL(customAllowedUrl);
+    const allowedUISourceCode = workspace.uiSourceCodeForURL(allowedClaimedUrl);
+    const allowedStyleUISourceCode = workspace.uiSourceCodeForURL(allowedStyleSourceUrl);
+    assert.exists(sameOriginBlockedUISourceCode);
+    assert.exists(customSchemeBlockedUISourceCode);
+    assert.exists(customAllowedUISourceCode);
+    assert.exists(allowedUISourceCode);
+    assert.exists(allowedStyleUISourceCode);
+    assert.isTrue(Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(allowedStyleUISourceCode));
+
+    const range = new TextUtils.TextRange.TextRange(1, 2, 1, 5);
+    extensionServer.sourceSelectionChanged(sameOriginBlockedUISourceCode, range);
+    extensionServer.sourceSelectionChanged(customSchemeBlockedUISourceCode, range);
+    extensionServer.sourceSelectionChanged(customAllowedUISourceCode, range);
+    extensionServer.sourceSelectionChanged(allowedUISourceCode, range);
+    extensionServer.sourceSelectionChanged(allowedStyleUISourceCode, range);
+
+    sameOriginBlockedUISourceCode.setWorkingCopy('updated blocked 1');
+    sameOriginBlockedUISourceCode.commitWorkingCopy();
+    customSchemeBlockedUISourceCode.setWorkingCopy('updated blocked 2');
+    customSchemeBlockedUISourceCode.commitWorkingCopy();
+    customAllowedUISourceCode.setWorkingCopy('updated custom allowed');
+    customAllowedUISourceCode.commitWorkingCopy();
+    allowedUISourceCode.setWorkingCopy('updated allowed');
+    allowedUISourceCode.commitWorkingCopy();
+
+    await waitForFunction(() => committedUrls.includes(allowedClaimedUrl) && selections.length >= 3);
+    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
+
+    assert.include(resources.map(r => r.url), allowedStyleSourceUrl);
+    assert.include(addedUrls, customAllowedUrl);
+    assert.include(addedUrls, allowedClaimedUrl);
+    assert.include(addedUrls, allowedStyleSourceUrl);
+    assert.notInclude(addedUrls, sameOriginClaimedUrl);
+    assert.notInclude(addedUrls, customSchemeClaimedUrl);
+    assert.deepEqual(committedUrls, [customAllowedUrl, allowedClaimedUrl]);
+    assert.deepEqual(selections, [
+      {startLine: 1, startColumn: 2, endLine: 1, endColumn: 5, url: customAllowedUrl},
+      {startLine: 1, startColumn: 2, endLine: 1, endColumn: 5, url: allowedClaimedUrl},
+      {startLine: 1, startColumn: 2, endLine: 1, endColumn: 5, url: allowedStyleSourceUrl},
+    ]);
+  });
+
+  it('does not notify onSelectionChanged for blocked source maps, debugger:// scripts, service projects, blocked targets, URL collisions, or detached UISourceCodes',
+     async () => {
+       const backend = getBackend(context);
+       mockResourceTree(backend.cdpConnection);
+       const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+       target.setInspectedURL(allowedUrl);
+       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+           .returns(backend.universe.debuggerWorkspaceBinding);
+
+       const blockedTarget =
+           backend.createTarget({id: 'blocked-subframe' as Protocol.Target.TargetID, parentTarget: target});
+       sinon.stub(blockedTarget, 'inspectedURL').returns(blockedUrl);
+
+       const selections: SourceSelectionInfo[] = [];
+       context.chrome.devtools?.panels.sources.onSelectionChanged.addListener((selection?: SourceSelectionInfo) => {
+         if (selection) {
+           selections.push(selection);
+         }
+       });
+       const extensionServer = PanelCommon.ExtensionServer.ExtensionServer.instance();
+       await waitForFunction(() => extensionServer.hasSubscribers(
+                                 Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'sources'));
+
+       // 1. Source-mapped UISourceCode originating from a blocked script.
+       const blockedMappedUrl = urlString`webpack://app/src/blocked-mapped.ts`;
+       const inlineSourceMapContent: SDK.SourceMap.SourceMapV3 = {
+         version: 3,
+         sources: [blockedMappedUrl],
+         sourcesContent: ['const x = 1;'],
+         mappings: 'AAAA',
+       };
+       const mappedScript =
+           await backend.addScript(target, {url: `${blockedUrl}/mapped.min.js`, content: 'console.log(1);'}, {
+             url: `data:application/json;base64,${btoa(JSON.stringify(inlineSourceMapContent))}`,
+             content: inlineSourceMapContent,
+           });
+
+       // 2. DefaultScriptMapping debugger:// UISourceCode of a blocked script.
+       const blockedScript =
+           await backend.addScript(target, {url: `${blockedUrl}/vm-script.js`, content: 'console.log(2);'}, null);
+       const blockedVmUrl = Bindings.DefaultScriptMapping.DefaultScriptMapping.createV8ScriptURL(blockedScript);
+
+       // 3. Allowed-URL script running inside a blocked subframe target.
+       const blockedTargetScriptUrl = urlString`${allowedUrl}subframe-script.js`;
+       await backend.addScript(blockedTarget, {url: blockedTargetScriptUrl, content: 'console.log(3);'}, null);
+
+       // 4. Unbacked service-project UISourceCode.
+       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+       const unbackedServiceProject = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+           workspace, `service:${target.id()}`, Workspace.Workspace.projectTypes.Service, '',
+           true /* isServiceProject */);
+       Bindings.NetworkProject.NetworkProject.setTargetForProject(unbackedServiceProject, target);
+       const unbackedServiceUrl = urlString`${allowedUrl}service-stub.js`;
+       await createUISourceCode(unbackedServiceProject, unbackedServiceUrl, Common.ResourceType.resourceTypes.Script);
+       const unbackedServiceUISourceCode = unbackedServiceProject.uiSourceCodeForURL(unbackedServiceUrl);
+       assert.exists(unbackedServiceUISourceCode);
+
+       // 5. Multi-project URL collision: an allowed Document UISourceCode and a blocked sourceURL Script UISourceCode
+       // sharing the exact same URL across projects.
+       const sharedUrl = urlString`${allowedUrl}shared.html`;
+       const docProject = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+           workspace, `resources:${target.id()}`, Workspace.Workspace.projectTypes.Network, '',
+           false /* isServiceProject */);
+       Bindings.NetworkProject.NetworkProject.setTargetForProject(docProject, target);
+       await createUISourceCode(docProject, sharedUrl, Common.ResourceType.resourceTypes.Document);
+       const allowedDocumentUISourceCode = docProject.uiSourceCodeForURL(sharedUrl);
+       assert.exists(allowedDocumentUISourceCode);
+
+       const unbackedSourceUrl = urlString`${allowedUrl}unbacked-source-url.js`;
+       await createUISourceCode(docProject, unbackedSourceUrl, Common.ResourceType.resourceTypes.Script);
+       const unbackedSourceUrlUISourceCode = docProject.uiSourceCodeForURL(unbackedSourceUrl);
+       assert.exists(unbackedSourceUrlUISourceCode);
+       Bindings.NetworkProject.NetworkProject.setSourceURLSynthesized(unbackedSourceUrlUISourceCode);
+
+       await backend.addScript(target, {
+         url: sharedUrl,
+         hasSourceURL: true,
+         embedderName: `${blockedUrl}/inline-loader.js`,
+         content: 'console.log(4);',
+       },
+                               null);
+
+       const blockedMappedUISourceCode = workspace.uiSourceCodeForURL(blockedMappedUrl);
+       const blockedVmUISourceCode = workspace.uiSourceCodeForURL(blockedVmUrl);
+       const blockedTargetUISourceCode = workspace.uiSourceCodeForURL(blockedTargetScriptUrl);
+       const collidingUISourceCodes = workspace.projects().map(p => p.uiSourceCodeForURL(sharedUrl)).filter(Boolean) as
+           Workspace.UISourceCode.UISourceCode[];
+       const blockedCollisionUISourceCode = collidingUISourceCodes.find(u => u !== allowedDocumentUISourceCode);
+
+       assert.exists(blockedMappedUISourceCode);
+       assert.exists(blockedVmUISourceCode);
+       assert.exists(blockedTargetUISourceCode);
+       assert.exists(blockedCollisionUISourceCode);
+       // Verify uiSourceCodeForURL(sharedUrl) returns the allowed Document first, proving URL-only lookup collides.
+       assert.strictEqual(workspace.uiSourceCodeForURL(sharedUrl), allowedDocumentUISourceCode);
+
+       const getResourceContent = registerExtensionForResourceContent();
+       assertPermissionDenied(await getResourceContent(unbackedSourceUrl), unbackedSourceUrl);
+
+       const blockedRange = new TextUtils.TextRange.TextRange(0, 0, 0, 4);
+       const allowedRange = new TextUtils.TextRange.TextRange(2, 1, 2, 6);
+       extensionServer.sourceSelectionChanged(blockedMappedUISourceCode, blockedRange);
+       extensionServer.sourceSelectionChanged(blockedVmUISourceCode, blockedRange);
+       extensionServer.sourceSelectionChanged(blockedTargetUISourceCode, blockedRange);
+       extensionServer.sourceSelectionChanged(unbackedServiceUISourceCode, blockedRange);
+       extensionServer.sourceSelectionChanged(unbackedSourceUrlUISourceCode, blockedRange);
+       extensionServer.sourceSelectionChanged(blockedCollisionUISourceCode, blockedRange);
+       extensionServer.sourceSelectionChanged(allowedDocumentUISourceCode, blockedRange, blockedCollisionUISourceCode);
+
+       // 6. Detached UISourceCodes (after source map detach or script mapping reset) must also fail closed.
+       mappedScript.debuggerModel.sourceMapManager().detachSourceMap(mappedScript);
+       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().resetForTest(target);
+       extensionServer.sourceSelectionChanged(blockedMappedUISourceCode, blockedRange);
+       extensionServer.sourceSelectionChanged(blockedCollisionUISourceCode, blockedRange);
+       extensionServer.sourceSelectionChanged(allowedDocumentUISourceCode, blockedRange, blockedMappedUISourceCode);
+       extensionServer.sourceSelectionChanged(allowedDocumentUISourceCode, allowedRange);
+
+       await waitForFunction(() => selections.length >= 1);
+
+       assert.deepEqual(selections, [{
+                          startLine: 2,
+                          startColumn: 1,
+                          endLine: 2,
+                          endColumn: 6,
+                          url: sharedUrl,
+                        }]);
+     });
+
   type ResourceContentResult = PanelCommon.ExtensionServer.Record|{content: string, encoding: string};
 
   /**
@@ -1759,36 +2027,35 @@ describe('Runtime hosts policy', () => {
     assert.deepEqual(result.entries[1]._initiator, allowedInitiator);
   });
 
-  it('redacts Content-Location, Refresh, or Link headers referencing blocked hosts',
-     async () => {
-       Logs.NetworkLog.NetworkLog.instance();
-       const frameId = 'frame-id' as Protocol.Page.FrameId;
-       const target = createTarget({id: 'target' as Protocol.Target.TargetID});
-       target.setInspectedURL(allowedUrl);
+  it('redacts Content-Location, Refresh, or Link headers referencing blocked hosts', async () => {
+    Logs.NetworkLog.NetworkLog.instance();
+    const frameId = 'frame-id' as Protocol.Page.FrameId;
+    const target = createTarget({id: 'target' as Protocol.Target.TargetID});
+    target.setInspectedURL(allowedUrl);
 
-       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-       assert.exists(networkManager);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
 
-       const blockedRedirectUrl = urlString`${`${blockedUrl}/target-page`}`;
-       createRequest(networkManager, frameId, 'content-loc' as Protocol.Network.RequestId, allowedUrl,
-                     [{name: 'Content-Location', value: `${blockedRedirectUrl}`}]);
-       createRequest(networkManager, frameId, 'refresh' as Protocol.Network.RequestId, allowedUrl,
-                     [{name: 'Refresh', value: `5; url=${blockedRedirectUrl}`}]);
-       createRequest(networkManager, frameId, 'link' as Protocol.Network.RequestId, allowedUrl,
-                     [{name: 'Link', value: `<${blockedRedirectUrl}>; rel=preload`}]);
-       const allowedHeaders = [
-         {name: 'Content-Location', value: `${allowedUrl}?content-location`},
-         {name: 'Refresh', value: `5; url=${allowedUrl}?refresh`},
-         {name: 'Link', value: `<${allowedUrl}?link>; rel=stylesheet`},
-       ];
-       createRequest(networkManager, frameId, 'clean' as Protocol.Network.RequestId, allowedUrl, allowedHeaders);
+    const blockedRedirectUrl = urlString`${`${blockedUrl}/target-page`}`;
+    createRequest(networkManager, frameId, 'content-loc' as Protocol.Network.RequestId, allowedUrl,
+                  [{name: 'Content-Location', value: `${blockedRedirectUrl}`}]);
+    createRequest(networkManager, frameId, 'refresh' as Protocol.Network.RequestId, allowedUrl,
+                  [{name: 'Refresh', value: `5; url=${blockedRedirectUrl}`}]);
+    createRequest(networkManager, frameId, 'link' as Protocol.Network.RequestId, allowedUrl,
+                  [{name: 'Link', value: `<${blockedRedirectUrl}>; rel=preload`}]);
+    const allowedHeaders = [
+      {name: 'Content-Location', value: `${allowedUrl}?content-location`},
+      {name: 'Refresh', value: `5; url=${allowedUrl}?refresh`},
+      {name: 'Link', value: `<${allowedUrl}?link>; rel=stylesheet`},
+    ];
+    createRequest(networkManager, frameId, 'clean' as Protocol.Network.RequestId, allowedUrl, allowedHeaders);
 
-       const result = await context.chrome.devtools!.network.getHAR() as HAR.Log.LogDTO;
-       // Expect all 4 requests to be present, with the first three sanitized and the last intact.
-       assert.lengthOf(result.entries, 4);
-       assert.isFalse(result.entries.some(entry => entry.response.headers.some(h => h.value.includes(blockedUrl))));
-       assert.deepEqual(result.entries[3].response.headers, allowedHeaders);
-     });
+    const result = await context.chrome.devtools!.network.getHAR() as HAR.Log.LogDTO;
+    // Expect all 4 requests to be present, with the first three sanitized and the last intact.
+    assert.lengthOf(result.entries, 4);
+    assert.isFalse(result.entries.some(entry => entry.response.headers.some(h => h.value.includes(blockedUrl))));
+    assert.deepEqual(result.entries[3].response.headers, allowedHeaders);
+  });
 
   it('redacts blocked redirect URLs and initiators from onRequestFinished entries', async () => {
     const frameId = 'frame-id' as Protocol.Page.FrameId;
@@ -2029,6 +2296,173 @@ describe('Runtime hosts policy', () => {
 
     await context.chrome.devtools.recorder.createView('Test View', 'test.html');
     assert.isUndefined(manager.views().find(v => v.title === 'Test View'));
+  });
+});
+
+describe('Persistence bindings with {allowFileAccess: true}', () => {
+  const context = setupDevtoolsExtensionHooks({allowFileAccess: true, hostsPolicy});
+
+  it('authorizes Persistence-bound file:// UISourceCodes against their bound network UISourceCode', async () => {
+    const backend = getBackend(context);
+    const previousGlobalContext = Root.DevToolsContext.globalInstance();
+    Root.DevToolsContext.setGlobalInstance(backend.universe.context as Root.DevToolsContext.WritableDevToolsContext);
+    try {
+      mockResourceTree(backend.cdpConnection);
+      const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+      target.setInspectedURL(allowedUrl);
+      sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+          .returns(backend.universe.debuggerWorkspaceBinding);
+
+      const committedUrls: string[] = [];
+      const selections:
+          Array<{url: string, startLine: number, startColumn: number, endLine: number, endColumn: number}> = [];
+      context.chrome.devtools?.inspectedWindow.onResourceContentCommitted.addListener(r => committedUrls.push(r.url));
+      context.chrome.devtools?.panels.sources.onSelectionChanged.addListener(
+          (selection?: {url: string, startLine: number, startColumn: number, endLine: number, endColumn: number}) => {
+            if (selection) {
+              selections.push(selection);
+            }
+          });
+      await waitForFunction(() => PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
+                                      Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted) &&
+                                PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
+                                    Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'sources'));
+
+      const restrictedClaimedUrl = urlString`${allowedUrl}restricted-override.js`;
+      const allowedClaimedUrl = urlString`${allowedUrl}allowed-override.js`;
+      await backend.addScript(target, {
+        url: 'restricted-override.js',
+        hasSourceURL: true,
+        embedderName: `${blockedUrl}/restricted.min.js`,
+        content: 'const RESTRICTED = 1;',
+      },
+                              null);
+      await backend.addScript(target, {
+        url: 'allowed-override.js',
+        hasSourceURL: true,
+        embedderName: `${allowedUrl}allowed.min.js`,
+        content: 'const ALLOWED = 2;',
+      },
+                              null);
+
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      const restrictedNetworkUISourceCode = workspace.uiSourceCodeForURL(restrictedClaimedUrl);
+      const allowedNetworkUISourceCode = workspace.uiSourceCodeForURL(allowedClaimedUrl);
+      assert.exists(restrictedNetworkUISourceCode);
+      assert.exists(allowedNetworkUISourceCode);
+
+      const fsRestrictedUrl = urlString`file:///var/www/overrides/restricted-override.js`;
+      const fsAllowedUrl = urlString`file:///var/www/overrides/allowed-override.js`;
+      const {uiSourceCode: fsRestrictedUISourceCode} = createFileSystemUISourceCode({
+        url: fsRestrictedUrl,
+        mimeType: 'text/javascript',
+        fileSystemPath: 'file:///var/www/overrides',
+        content: 'const RESTRICTED = 1;',
+        universe: backend.universe,
+      });
+      const {uiSourceCode: fsAllowedUISourceCode} = createFileSystemUISourceCode({
+        url: fsAllowedUrl,
+        mimeType: 'text/javascript',
+        fileSystemPath: 'file:///var/www',
+        content: 'const ALLOWED = 2;',
+        universe: backend.universe,
+      });
+
+      await backend.universe.persistence.addBinding(
+          new Persistence.Persistence.PersistenceBinding(restrictedNetworkUISourceCode, fsRestrictedUISourceCode));
+      await backend.universe.persistence.addBinding(
+          new Persistence.Persistence.PersistenceBinding(allowedNetworkUISourceCode, fsAllowedUISourceCode));
+
+      const range = new TextUtils.TextRange.TextRange(0, 0, 0, 5);
+      const server = PanelCommon.ExtensionServer.ExtensionServer.instance();
+      server.sourceSelectionChanged(fsRestrictedUISourceCode, range);
+
+      fsRestrictedUISourceCode.setWorkingCopy('updated restricted override');
+      fsRestrictedUISourceCode.commitWorkingCopy();
+
+      // Even if the bound network UISourceCode is detached before the PersistenceBinding is removed,
+      // the bound file:// UISourceCode must fail closed.
+      restrictedNetworkUISourceCode.project().removeUISourceCode(restrictedNetworkUISourceCode.url());
+      server.sourceSelectionChanged(fsRestrictedUISourceCode, range);
+      fsRestrictedUISourceCode.setWorkingCopy('updated restricted override after detach');
+      fsRestrictedUISourceCode.commitWorkingCopy();
+
+      server.sourceSelectionChanged(fsAllowedUISourceCode, range);
+      fsAllowedUISourceCode.setWorkingCopy('updated allowed override');
+      fsAllowedUISourceCode.commitWorkingCopy();
+
+      await waitForFunction(() => committedUrls.includes(fsAllowedUrl) && selections.length >= 1);
+
+      assert.deepEqual(committedUrls, [allowedClaimedUrl, fsAllowedUrl]);
+      assert.deepEqual(selections, [{
+                         startLine: 0,
+                         startColumn: 0,
+                         endLine: 0,
+                         endColumn: 5,
+                         url: fsAllowedUrl,
+                       }]);
+    } finally {
+      Root.DevToolsContext.setGlobalInstance(previousGlobalContext);
+    }
+  });
+
+  // Covers override files without a PersistenceBinding: not bound yet, already unbound, or `.headers`.
+  it('authorizes Local Overrides files against the host in their path', async () => {
+    const backend = getBackend(context);
+    const previousGlobalContext = Root.DevToolsContext.globalInstance();
+    Root.DevToolsContext.setGlobalInstance(backend.universe.context as Root.DevToolsContext.WritableDevToolsContext);
+    try {
+      mockResourceTree(backend.cdpConnection);
+      const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+      target.setInspectedURL(allowedUrl);
+      sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+          .returns(backend.universe.debuggerWorkspaceBinding);
+
+      const addedUrls: string[] = [];
+      const selectedUrls: string[] = [];
+      context.chrome.devtools?.inspectedWindow.onResourceAdded.addListener(r => addedUrls.push(r.url));
+      context.chrome.devtools?.panels.sources.onSelectionChanged.addListener((selection?: {url: string}) => {
+        if (selection) {
+          selectedUrls.push(selection.url);
+        }
+      });
+      const server = PanelCommon.ExtensionServer.ExtensionServer.instance();
+      await waitForFunction(
+          () => server.hasSubscribers(Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded) &&
+              server.hasSubscribers(Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'sources'));
+
+      const overridesPath = 'file:///var/www/overrides';
+      const blockedHost = new URL(blockedUrl).host;
+      const allowedHost = new URL(allowedUrl).host;
+      const {project} = createFileSystemUISourceCode({
+        url: urlString`${overridesPath}/${allowedHost}/index.html`,
+        mimeType: 'text/html',
+        fileSystemPath: overridesPath,
+        universe: backend.universe,
+      });
+      await backend.universe.networkPersistenceManager.setProject(project);
+
+      function addFile(url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode {
+        const uiSourceCode = project.createUISourceCode(url, Common.ResourceType.resourceTypes.Script);
+        project.addUISourceCode(uiSourceCode);
+        return uiSourceCode;
+      }
+      const blockedFile = addFile(urlString`${overridesPath}/${blockedHost}/app.js`);
+      const blockedHeaders = addFile(urlString`${overridesPath}/${blockedHost}/.headers`);
+      const allowedFile = addFile(urlString`${overridesPath}/${allowedHost}/app.js`);
+
+      const range = new TextUtils.TextRange.TextRange(0, 0, 0, 5);
+      server.sourceSelectionChanged(blockedFile, range);
+      server.sourceSelectionChanged(blockedHeaders, range);
+      server.sourceSelectionChanged(allowedFile, range);
+
+      await waitForFunction(() => addedUrls.includes(allowedFile.url()) && selectedUrls.length >= 1);
+      assert.notInclude(addedUrls, blockedFile.url());
+      assert.notInclude(addedUrls, blockedHeaders.url());
+      assert.deepEqual(selectedUrls, [allowedFile.url()]);
+    } finally {
+      Root.DevToolsContext.setGlobalInstance(previousGlobalContext);
+    }
   });
 });
 
@@ -2761,7 +3195,6 @@ describe('Language Extension API', () => {
     };
     assert.deepEqual(resource, expectedResource);
   });
-
 });
 
 for (const allowFileAccess of [false, true]) {
@@ -2801,52 +3234,50 @@ for (const allowFileAccess of [false, true]) {
 }
 
 for (const allowFileAccess of [true, false]) {
-  describe(
-      `Language Extension API with {allowFileAccess: ${allowFileAccess}}`, () => {
-        const context = setupDevtoolsExtensionHooks({allowFileAccess});
-        let target: SDK.Target.Target;
-        beforeEach(() => {
-          target = getBackend(context).createTarget();
-          const targetManager = target.targetManager();
-          const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-          const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-          target.setInspectedURL(urlString`http://example.com`);
-          const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-            forceNew: true,
-            resourceMapping,
-            targetManager,
-            ignoreListManager,
-            workspace: Workspace.Workspace.WorkspaceImpl.instance(),
-          });
-        });
-
-        it('passes allowFileAccess to the LanguageExtensionEndpoint', async () => {
-          const endpointSpy =
-              sinon.spy(Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint.prototype, 'handleScript');
-          const plugin = new StubLanguageExtension();
-          await context.chrome.devtools?.languageServices.registerLanguageExtensionPlugin(plugin, 'plugin', {
-            language: Protocol.Debugger.ScriptLanguage.JavaScript,
-            symbol_types: [Protocol.Debugger.DebugSymbolsType.SourceMap],
-          });
-
-          const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-          assert.isOk(debuggerModel);
-          debuggerModel.parsedScriptSource('0' as Protocol.Runtime.ScriptId, urlString`file:///source/url`, 0, 0, 100,
-                                           100, 0, '', {}, 'file:///source/url.map', false, false, 200, true, null,
-                                           null, Protocol.Debugger.ScriptLanguage.JavaScript, [{
-                                             type: Protocol.Debugger.DebugSymbolsType.SourceMap,
-                                             externalURL: 'file:///source/url.map',
-                                           }],
-                                           null, null);
-
-          sinon.assert.calledOnce(endpointSpy);
-          assert.strictEqual(
-              (endpointSpy.thisValues[0] as Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint)
-                  .allowFileAccess,
-              allowFileAccess);
-        });
+  describe(`Language Extension API with {allowFileAccess: ${allowFileAccess}}`, () => {
+    const context = setupDevtoolsExtensionHooks({allowFileAccess});
+    let target: SDK.Target.Target;
+    beforeEach(() => {
+      target = getBackend(context).createTarget();
+      const targetManager = target.targetManager();
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+      target.setInspectedURL(urlString`http://example.com`);
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping,
+        targetManager,
+        ignoreListManager,
+        workspace: Workspace.Workspace.WorkspaceImpl.instance(),
       });
+    });
+
+    it('passes allowFileAccess to the LanguageExtensionEndpoint', async () => {
+      const endpointSpy =
+          sinon.spy(Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint.prototype, 'handleScript');
+      const plugin = new StubLanguageExtension();
+      await context.chrome.devtools?.languageServices.registerLanguageExtensionPlugin(plugin, 'plugin', {
+        language: Protocol.Debugger.ScriptLanguage.JavaScript,
+        symbol_types: [Protocol.Debugger.DebugSymbolsType.SourceMap],
+      });
+
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assert.isOk(debuggerModel);
+      debuggerModel.parsedScriptSource('0' as Protocol.Runtime.ScriptId, urlString`file:///source/url`, 0, 0, 100, 100,
+                                       0, '', {}, 'file:///source/url.map', false, false, 200, true, null, null,
+                                       Protocol.Debugger.ScriptLanguage.JavaScript, [{
+                                         type: Protocol.Debugger.DebugSymbolsType.SourceMap,
+                                         externalURL: 'file:///source/url.map',
+                                       }],
+                                       null, null);
+
+      sinon.assert.calledOnce(endpointSpy);
+      assert.strictEqual(
+          (endpointSpy.thisValues[0] as Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint).allowFileAccess,
+          allowFileAccess);
+    });
+  });
 }
 
 describe('attachSourceMapURL', () => {
@@ -3015,6 +3446,7 @@ describe('Extension Panels', () => {
     mockUISourceCode.uiLocation.returns(mockUiLocation);
     mockUISourceCode.contentURL.returns(url);
     mockUISourceCode.project.returns(project);
+    sinon.stub(project, 'uiSourceCodeForURL').returns(mockUISourceCode);
 
     const uiSourceCodeStub = sinon.stub(workspace, 'uiSourceCodeForURL').returns(mockUISourceCode);
     const revealRegistry = Common.Revealer.RevealerRegistry.instance();

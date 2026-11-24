@@ -19,6 +19,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -1112,13 +1113,56 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   /**
+   * Local Overrides files live in `<overrides>/<host>/...`. Their PersistenceBinding to the network
+   * UISourceCode can be missing (not bound yet, already unbound, or a `.headers` file), so also check
+   * the host from the path. The scheme isn't stored in the path, so both http and https must be allowed.
+   */
+  private extensionAllowedOnOverrideFile(uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                                         portOrExtension: MessagePort|RegisteredExtension): boolean {
+    if (!Root.DevToolsContext.globalInstance().has(Persistence.NetworkPersistenceManager.NetworkPersistenceManager)) {
+      return true;
+    }
+    const host =
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().hostForOverrideFile(uiSourceCode);
+    // Overrides of file:// URLs are covered by the file:// check on the override file itself.
+    if (host === null || host === 'file:') {
+      return true;
+    }
+    // An override file whose host can't be determined can't be checked. Fail closed.
+    if (!host) {
+      return false;
+    }
+    return ['http', 'https'].every(scheme => this.extensionAllowedOnURL(
+                                       `${scheme}://${host}/` as Platform.DevToolsPath.UrlString, portOrExtension));
+  }
+
+  /**
    * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
    * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
    * long as the corresponding target and the embedder name (if it is a URL) are permitted.
    */
   private extensionAllowedOnContentProvider(contentProvider: TextUtils.ContentProvider.ContentProvider,
-                                            portOrExtension: MessagePort|RegisteredExtension): boolean {
+                                            portOrExtension: MessagePort|RegisteredExtension,
+                                            checkPersistence = true): boolean {
     if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      // Detached UISourceCodes (removed from their project, or replaced by another one with the same URL)
+      // are no longer tracked by the bindings below, so they can't be checked. Fail closed.
+      if (!this.isAttachedUISourceCode(contentProvider)) {
+        return false;
+      }
+
+      if (checkPersistence && Root.DevToolsContext.globalInstance().has(Persistence.Persistence.PersistenceImpl)) {
+        const binding = Persistence.Persistence.PersistenceImpl.instance().binding(contentProvider);
+        if (binding && binding.fileSystem === contentProvider && binding.network !== contentProvider &&
+            !this.extensionAllowedOnContentProvider(binding.network, portOrExtension, false)) {
+          return false;
+        }
+      }
+
+      if (!this.extensionAllowedOnOverrideFile(contentProvider, portOrExtension)) {
+        return false;
+      }
+
       const debuggerSourceMapURLs =
           Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapURLsForUISourceCode(
               contentProvider);
@@ -1142,9 +1186,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
               Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
           return !uiSourceCodeTarget || this.extensionAllowedOnTarget(uiSourceCodeTarget, portOrExtension);
         }
-      } else if (contentProvider.project().isServiceProject()) {
-        // Service projects (debugger:///VM scripts, source map stubs) use synthetic URLs that can't be
-        // checked against the host policy. Without a backing script to check instead, fail closed.
+      } else if (contentProvider.project().isServiceProject() ||
+                 (contentProvider.contentType() === Common.ResourceType.resourceTypes.Script &&
+                  Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(contentProvider))) {
+        // Service projects (debugger:///VM scripts, source map stubs) and //# sourceURL=-synthesized
+        // Script UISourceCodes use synthetic/page-chosen URLs that can't be checked against the host
+        // policy. Without a backing script to check instead, fail closed.
         return false;
       }
     }
@@ -1656,6 +1703,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         SDK.NetworkManager.MultitargetNetworkManager.Events.USER_AGENT_CHANGED, this.#onUserAgentChanged, this);
   }
 
+  private isAttachedUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return uiSourceCode.project().uiSourceCodeForURL(uiSourceCode.url()) === uiSourceCode;
+  }
+
   private notifyResourceAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
     const uiSourceCode = event.data;
     this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded, [this.makeResource(uiSourceCode)],
@@ -1694,16 +1745,18 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'elements', []);
   }
 
-  sourceSelectionChanged(url: Platform.DevToolsPath.UrlString, range: TextUtils.TextRange.TextRange): void {
+  sourceSelectionChanged(uiSourceCode: Workspace.UISourceCode.UISourceCode, range: TextUtils.TextRange.TextRange,
+                         displayedUISourceCode?: Workspace.UISourceCode.UISourceCode): void {
     this.postNotification(
         Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + 'sources', [{
           startLine: range.startLine,
           startColumn: range.startColumn,
           endLine: range.endLine,
           endColumn: range.endColumn,
-          url,
+          url: uiSourceCode.url(),
         }],
-        extension => extension.isAllowedOnTarget(url));
+        extension => this.extensionAllowedOnContentProvider(uiSourceCode, extension) &&
+            (!displayedUISourceCode || this.extensionAllowedOnContentProvider(displayedUISourceCode, extension)));
   }
 
   private setInspectedTabId(event: Common.EventTarget.EventTargetEvent<string>): void {

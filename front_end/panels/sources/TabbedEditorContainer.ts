@@ -775,7 +775,13 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       this.previouslyViewedFilesSetting.set(this.#history.toObject());
 
       if (this.#currentFile) {
-        PanelCommon.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(this.#currentFile.url(), range);
+        if (this.#currentView instanceof UISourceCodeFrame &&
+            this.#currentView.displayedUISourceCode() !== this.#currentFile) {
+          PanelCommon.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(
+              this.#currentFile, range, this.#currentView.displayedUISourceCode());
+        } else {
+          PanelCommon.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(this.#currentFile, range);
+        }
       }
     }
   }

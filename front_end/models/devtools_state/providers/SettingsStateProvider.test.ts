@@ -3,14 +3,19 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {createSettingsForTest} from '../../../testing/SettingsHelpers.js';
 import * as DevToolsState from '../devtools_state.js';
 
 describe('SettingsStateProvider', () => {
+  afterEach(() => {
+    Common.Revealer.RevealerRegistry.removeInstance();
+  });
+
   it('reports tracked setting changes, including back to default', () => {
     const settings = createSettingsForTest();
     const provider = new DevToolsState.SettingsStateProvider.SettingsStateProvider(settings);
@@ -102,5 +107,25 @@ describe('SettingsStateProvider', () => {
     settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(true);
 
     sinon.assert.notCalled(listener);
+  });
+
+  it('reveals a tracked setting and ignores other state kinds', async () => {
+    const settings = createSettingsForTest();
+    const provider = new DevToolsState.SettingsStateProvider.SettingsStateProvider(settings);
+    const reveal = sinon.stub().resolves();
+    Common.Revealer.registerRevealer({
+      contextTypes() {
+        return [Common.Settings.Setting];
+      },
+      async loadRevealer() {
+        return {reveal};
+      },
+    });
+
+    await provider.reveal(DevToolsState.State.StateKind.JAVASCRIPT_DISABLED);
+    await provider.reveal(DevToolsState.State.StateKind.CPU_THROTTLING);
+
+    sinon.assert.calledOnceWithExactly(reveal, settings.resolve(SDK.SDKSettings.javaScriptDisabledSettingDescriptor),
+                                       false);
   });
 });

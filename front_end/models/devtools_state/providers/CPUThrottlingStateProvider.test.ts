@@ -3,15 +3,21 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../../core/common/common.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import * as DevToolsState from '../devtools_state.js';
 
 describe('CPUThrottlingStateProvider', () => {
   setupRuntimeHooks();
+
+  afterEach(() => {
+    Common.Revealer.RevealerRegistry.removeInstance();
+  });
 
   it('reports CPU throttling rate changes, including back to default', () => {
     const manager = new TestUniverse().cpuThrottlingManager;
@@ -87,5 +93,24 @@ describe('CPUThrottlingStateProvider', () => {
     manager.setCPUThrottlingRate(4);
 
     sinon.assert.notCalled(listener);
+  });
+
+  it('reveals CPU throttling and ignores other state kinds', async () => {
+    const manager = new TestUniverse().cpuThrottlingManager;
+    const provider = new DevToolsState.CPUThrottlingStateProvider.CPUThrottlingStateProvider(manager);
+    const reveal = sinon.stub().resolves();
+    Common.Revealer.registerRevealer({
+      contextTypes() {
+        return [SDK.CPUThrottlingManager.CPUThrottlingManager];
+      },
+      async loadRevealer() {
+        return {reveal};
+      },
+    });
+
+    await provider.reveal(DevToolsState.State.StateKind.CPU_THROTTLING);
+    await provider.reveal(DevToolsState.State.StateKind.CACHE_DISABLED);
+
+    sinon.assert.calledOnceWithExactly(reveal, manager, false);
   });
 });

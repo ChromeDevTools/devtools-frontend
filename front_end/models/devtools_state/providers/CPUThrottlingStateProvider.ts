@@ -15,8 +15,8 @@ import {
 const NO_CPU_THROTTLING_RATE = 1;
 
 /**
- * Owns access to `CPUThrottlingManager` for `StateManager`: lists CPU throttling state, resets it, and reports
- * changes.
+ * Owns access to `CPUThrottlingManager` for `StateManager`: lists CPU throttling state, reveals it, resets it, and
+ * reports changes.
  */
 export class CPUThrottlingStateProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     StateProvider {
@@ -37,6 +37,12 @@ export class CPUThrottlingStateProvider extends Common.ObjectWrapper.ObjectWrapp
 
   allStates(): State[] {
     return [this.#toState()];
+  }
+
+  async reveal(kind: StateKind): Promise<void> {
+    if (kind === StateKind.CPU_THROTTLING) {
+      await Common.Revealer.reveal(this.#cpuThrottlingManager);
+    }
   }
 
   reset(kind: StateKind): void {

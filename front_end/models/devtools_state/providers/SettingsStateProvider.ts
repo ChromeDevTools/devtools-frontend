@@ -25,7 +25,8 @@ const TRACKED_SETTINGS: readonly TrackedSetting[] = [
 const TRACKED_SETTINGS_BY_NAME = new Map(TRACKED_SETTINGS.map(entry => [entry.descriptor.name, entry]));
 
 /**
- * Owns access to `Common.Settings` for `StateManager`: lists tracked settings, resets them, and reports changes.
+ * Owns access to `Common.Settings` for `StateManager`: lists tracked settings, reveals them, resets them, and reports
+ * changes.
  */
 export class SettingsStateProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements StateProvider {
   readonly #settings: Common.Settings.Settings;
@@ -47,6 +48,14 @@ export class SettingsStateProvider extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   allStates(): State[] {
     return TRACKED_SETTINGS.map(entry => this.#toState(entry));
+  }
+
+  async reveal(kind: StateKind): Promise<void> {
+    for (const entry of TRACKED_SETTINGS) {
+      if (entry.kind === kind) {
+        await Common.Revealer.reveal(this.#settings.resolve(entry.descriptor));
+      }
+    }
   }
 
   reset(kind: StateKind): void {

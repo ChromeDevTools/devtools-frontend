@@ -13,11 +13,16 @@ import * as DevToolsState from './devtools_state.js';
 class FakeProvider extends Common.ObjectWrapper.ObjectWrapper<DevToolsState.State.EventTypes> implements
     DevToolsState.State.StateProvider {
   currentStates: DevToolsState.State.State[] = [];
+  revealCalls: DevToolsState.State.StateKind[] = [];
   resetCalls: DevToolsState.State.StateKind[] = [];
   disposeCalls = 0;
 
   allStates(): DevToolsState.State.State[] {
     return this.currentStates;
+  }
+
+  async reveal(kind: DevToolsState.State.StateKind): Promise<void> {
+    this.revealCalls.push(kind);
   }
 
   reset(kind: DevToolsState.State.StateKind): void {
@@ -127,5 +132,16 @@ describe('StateManager', () => {
       isDefault: false,
     });
     sinon.assert.notCalled(listener);
+  });
+
+  it('delegates reveal to all providers', async () => {
+    const first = new FakeProvider();
+    const second = new FakeProvider();
+    const manager = new DevToolsState.StateManager.StateManager([first, second]);
+
+    await manager.reveal(DevToolsState.State.StateKind.CACHE_DISABLED);
+
+    assert.deepEqual(first.revealCalls, [DevToolsState.State.StateKind.CACHE_DISABLED]);
+    assert.deepEqual(second.revealCalls, [DevToolsState.State.StateKind.CACHE_DISABLED]);
   });
 });

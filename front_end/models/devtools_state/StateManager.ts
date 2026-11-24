@@ -13,7 +13,7 @@ import {
 } from './State.js';
 
 /**
- * The single place to read, reset, and listen to changes of the DevTools state. It delegates to providers so
+ * The single place to read, reveal, reset, and listen to changes of the DevTools state. It delegates to providers so
  * callers do not depend on the parts of DevTools that own the underlying state.
  */
 export class StateManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -38,6 +38,12 @@ export class StateManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   nonDefaultStates(): State[] {
     return this.allStates().filter(state => !state.isDefault);
+  }
+
+  async reveal(kind: StateKind): Promise<void> {
+    for (const provider of this.#providers) {
+      await provider.reveal(kind);
+    }
   }
 
   reset(kind: StateKind): void {

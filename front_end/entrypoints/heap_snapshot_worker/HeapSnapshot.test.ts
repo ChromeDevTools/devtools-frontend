@@ -2495,6 +2495,80 @@ describe('HeapSnapshot', () => {
     });
   });
 
+  describe('getStatistics', () => {
+    it('calculates heap snapshot statistics across node types', async () => {
+      const builder = new HeapSnapshotBuilder();
+      let size = 1;
+      let multiplier = 1;
+      for (const type of builder.nodeTypesArray) {
+        if (type === 'synthetic' || type === 'number') {
+          continue;
+        }
+        const node = new HeapNode(type, size * multiplier, type);
+        builder.rootNode.linkNode(node, 'internal', type + 'Link');
+        ++multiplier;
+        size *= 10;
+      }
+
+      const jsArrayNode = new HeapNode('Array', 8, 'object');
+      builder.rootNode.linkNode(jsArrayNode, 'internal', 'JSArrayLink');
+      const jsArrayElementsNode = new HeapNode('', 12, 'array');
+      jsArrayNode.linkNode(jsArrayElementsNode, 'internal', 'elements');
+
+      const gcRootsNode = new HeapNode('(GC roots)', 0, 'synthetic');
+      builder.rootNode.linkNode(gcRootsNode, 'internal', '0');
+      const strongRootsNode = new HeapNode('(Strong roots)', 0, 'synthetic');
+      gcRootsNode.linkNode(strongRootsNode, 'internal', '0');
+      const systemObjectNode = new HeapNode('SystemObject', 900000000, 'object');
+      strongRootsNode.linkNode(systemObjectNode, 'internal', '0');
+
+      builder.extraNativeBytes = 10;
+      const snapshot = await builder.createJSHeapSnapshot();
+
+      assert.deepEqual(snapshot.getStatistics(), {
+        total: 1887654351,
+        native: {
+          total: 80000010,
+          typedArrays: 0,
+        },
+        v8heap: {
+          total: 1807654341,
+          code: 50000,
+          jsArrays: 20,
+          strings: 300,
+          system: 1,
+        },
+      });
+    });
+
+    it('tracks JSArrayBufferData native nodes as typedArrays without extra_native_bytes', async () => {
+      const builder = new HeapSnapshotBuilder();
+      const bufferDataNode = new HeapNode('system / JSArrayBufferData', 64, 'native');
+      builder.rootNode.linkNode(bufferDataNode, 'internal', 'bufferData');
+      const otherNativeNode = new HeapNode('system / BackingStore', 36, 'native');
+      builder.rootNode.linkNode(otherNativeNode, 'internal', 'backingStore');
+
+      const profile = postprocessHeapSnapshotMock(builder.generateSnapshot());
+      delete profile.snapshot.extra_native_bytes;
+      const snapshot = await HeapSnapshotWorker.HeapSnapshot.createJSHeapSnapshotForTesting(profile);
+
+      assert.deepEqual(snapshot.getStatistics(), {
+        total: 100,
+        native: {
+          total: 100,
+          typedArrays: 64,
+        },
+        v8heap: {
+          total: 0,
+          code: 0,
+          jsArrays: 0,
+          strings: 0,
+          system: 0,
+        },
+      });
+    });
+  });
+
   describe('queryObjects', () => {
     async function createTestSnapshotForQueryObjects() {
       const parsedSnapshot = postprocessHeapSnapshotMock({

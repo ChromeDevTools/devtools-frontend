@@ -190,6 +190,38 @@ class FindChromiumRootTest(unittest.TestCase):
 
         self.assertIsNone(find_chromium_root.find_chromium_root(devtools))
 
+    def test_solution_dir_is_symlink(self):
+        workspace = self.mkdir('workspace')
+        chromium = self.mkdir('workspace', 'chromium')
+        devtools = self.mkdir('workspace', 'chromium', 'third_party',
+                              'devtools-frontend', 'src')
+        self.write_gclient(workspace, CHROMIUM_GCLIENT)
+        src_symlink = os.path.join(workspace, 'src')
+        try:
+            os.symlink('./chromium', src_symlink, target_is_directory=True)
+        except OSError:
+            self.skipTest('symlinks are not supported')
+
+        self.assertEqual(find_chromium_root.find_chromium_root(devtools),
+                         chromium)
+        self.assertEqual(
+            find_chromium_root.find_chromium_root(
+                os.path.join(src_symlink, 'third_party', 'devtools-frontend',
+                             'src')), src_symlink)
+
+    def test_standalone_solution_dir_is_symlink(self):
+        workspace = self.mkdir('workspace')
+        devtools = self.mkdir('workspace', 'my-devtools')
+        self.write_gclient(workspace, STANDALONE_GCLIENT)
+        try:
+            os.symlink('./my-devtools',
+                       os.path.join(workspace, 'devtools-frontend'),
+                       target_is_directory=True)
+        except OSError:
+            self.skipTest('symlinks are not supported')
+
+        self.assertIsNone(find_chromium_root.find_chromium_root(devtools))
+
 
 class MainTest(unittest.TestCase):
 

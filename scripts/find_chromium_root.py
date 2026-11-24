@@ -115,6 +115,27 @@ def _is_strictly_inside(directory, child):
         return False
 
 
+def _find_matching_ancestor(solution_dir, devtools_root):
+    """If `devtools_root` is strictly inside `solution_dir`, returns the
+    corresponding ancestor path of `devtools_root`, or None.
+
+    If `solution_dir` is a symlink (e.g. `src -> ./chromium` in Cog
+    workspaces), resolves symlinks so a `devtools_root` addressed via the real
+    directory still matches and returns an ancestor of `devtools_root`.
+    """
+    if _is_strictly_inside(solution_dir, devtools_root):
+        return solution_dir
+    real_solution = os.path.normcase(os.path.realpath(solution_dir))
+    current = os.path.dirname(devtools_root)
+    while True:
+        if os.path.normcase(os.path.realpath(current)) == real_solution:
+            return current
+        parent = os.path.dirname(current)
+        if parent == current:
+            return None
+        current = parent
+
+
 def find_chromium_root(devtools_root=None):
     """Returns the absolute path to the root of the Chromium checkout (the
     `chromium/src` directory) that contains DevTools, or None if DevTools is
@@ -138,8 +159,9 @@ def find_chromium_root(devtools_root=None):
     gclient_file = os.path.join(gclient_root, GCLIENT_FILE_NAME)
     for name in parse_gclient_solution_names(gclient_file):
         solution_dir = os.path.normpath(os.path.join(gclient_root, name))
-        if _is_strictly_inside(solution_dir, devtools_root):
-            return solution_dir
+        chromium_root = _find_matching_ancestor(solution_dir, devtools_root)
+        if chromium_root is not None:
+            return chromium_root
     return None
 
 

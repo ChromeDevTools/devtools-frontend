@@ -103,7 +103,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
    * Defaults to undefined which indicates the user has not searched.
    */
   private searchResults: PerfUI.FlameChart.DataProviderSearchResult[]|undefined = undefined;
-  private eventListeners: Common.EventTarget.EventDescriptor[];
   private readonly networkSplitWidget: UI.SplitWidget.SplitWidget;
   private mainDataProvider: TimelineFlameChartDataProvider;
   private readonly mainFlameChart: PerfUI.FlameChart.FlameChart;
@@ -213,7 +212,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.element.classList.add('timeline-flamechart');
 
     this.delegate = delegate;
-    this.eventListeners = [];
     this.#parsedTrace = null;
 
     const flameChartsContainer = new UI.Widget.VBox();
@@ -1267,7 +1265,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     }
 
     this.#selectedGroupName = null;
-    Common.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
     this.#entityMapper = new Trace.EntityMapper.EntityMapper(this.#parsedTrace);
     // order is important: |reset| needs to be called after the trace

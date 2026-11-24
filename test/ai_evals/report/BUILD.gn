@@ -26,7 +26,9 @@ node_ts_library("report") {
 node_ts_library("unittests") {
   sources = [
     "eval-logger.test.ts",
+    "eval-task-recorder.test.ts",
     "report-helpers.test.ts",
+    "scorer.test.ts",
     "trajectory-builder.test.ts",
   ]
   ts_deps = [ ":report" ]

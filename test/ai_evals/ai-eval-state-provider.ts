@@ -14,7 +14,7 @@ import {type BrowserSettings, type BrowserWrapper, Launcher} from '../e2e/shared
 import type {DevToolsPage} from '../e2e/shared/DevToolsPage.js';
 import {InspectedPage} from '../e2e/shared/InspectedPage.js';
 
-import {getDefaultOtaAccount} from './helpers/eval-environment.js';
+import {EVALS_DIR, getDefaultOtaAccount} from './helpers/eval-environment.js';
 import {EvalLogger} from './report/eval-logger.js';
 import {finalizeEvalTask, handleTaskFailure} from './report/eval-task-recorder.js';
 import {
@@ -32,7 +32,10 @@ import {
   uploadRunLog,
   uploadRunStarted,
 } from './report/gcs-upload.js';
+import {judgeExpectations} from './report/grading-judge.js';
+import {type GradingItem, loadTaskGrading, type TaskGrading} from './report/grading-loader.js';
 import {aggregateRunMetrics, buildRunTags, formatError, generateRunId} from './report/report-helpers.js';
+import {CheckSource, formatCheckTable, type GradingCheckRow, scoreChecks, type ScoreResult} from './report/scorer.js';
 import {
   calculateTrajectoryTokens,
   calculateTrajectoryToolCalls,
@@ -150,6 +153,24 @@ interface TaskGradingResult {
   customScore: number|null;
   gradingOutput?: string;
   gradingDurationSeconds: number;
+  /** Set when the task is graded by Grading V1 (expectations and weights). */
+  grading?: ScoreResult;
+}
+
+/**
+ * Asks the LLM judge for a verdict on each expectation and scores the verdicts with the weights.
+ */
+async function judgeAndScore(trajectory: Trajectory, items: GradingItem[]): Promise<ScoreResult> {
+  const judged = await judgeExpectations({evalsDir: EVALS_DIR, trajectory, expectations: items});
+  if ('gradingError' in judged) {
+    return scoreChecks([], judged.gradingError);
+  }
+  // Verdicts come in the order of the expectations.
+  const checks = items.map((item, index): GradingCheckRow => {
+    const {verdict, reason} = judged.verdicts[index];
+    return {id: item.id, source: CheckSource.JUDGE, verdict, weight: item.weight, critical: item.critical, reason};
+  });
+  return scoreChecks(checks);
 }
 
 /**
@@ -388,7 +409,36 @@ export class AiEvalStateProvider extends StateProvider {
   }
 
   async #gradeTaskTrajectory(evalTask: EvalTaskHandle, trajectory: Trajectory): Promise<TaskGradingResult> {
-    if (evalTask.hasFailed || evalTask.evals.length === 0) {
+    if (evalTask.hasFailed) {
+      return {customScore: null, gradingDurationSeconds: 0};
+    }
+    let taskGrading: TaskGrading|null = null;
+    let configError: string|undefined;
+    try {
+      taskGrading = loadTaskGrading(EVALS_DIR, evalTask.taskId, evalTask.type);
+    } catch (error) {
+      configError = formatError(error);
+    }
+    if (!taskGrading && !configError) {
+      // Tasks without Grading V1 files still use the legacy evaluators.
+      return await this.#gradeTaskTrajectoryLegacy(evalTask, trajectory);
+    }
+
+    const gradingStart = performance.now();
+    // Invalid grading files are a grading error: the score is null, not 0.
+    const grading =
+        configError ? scoreChecks([], configError) : await judgeAndScore(trajectory, taskGrading?.items ?? []);
+    const gradingDurationSeconds = Number(((performance.now() - gradingStart) / 1000).toFixed(3));
+    const gradingOutput = formatCheckTable(grading);
+    const summary =
+        `Graded: score=${grading.score ?? 'null'}, pass=${grading.pass ?? 'null'} (${gradingDurationSeconds}s)`;
+    evalTask.log(summary);
+    this.#logger.head(`[Task ${evalTask.taskId}] ${summary}\n${gradingOutput}`);
+    return {customScore: grading.score, gradingOutput, gradingDurationSeconds, grading};
+  }
+
+  async #gradeTaskTrajectoryLegacy(evalTask: EvalTaskHandle, trajectory: Trajectory): Promise<TaskGradingResult> {
+    if (evalTask.evals.length === 0) {
       return {customScore: null, gradingDurationSeconds: 0};
     }
     const gradingStart = performance.now();
@@ -440,7 +490,7 @@ export class AiEvalStateProvider extends StateProvider {
       }
       this.#taskToolCallStats.set(evalTask.taskId, calculateTrajectoryToolCalls(trajectory));
       this.#taskTokens.set(evalTask.taskId, calculateTrajectoryTokens(trajectory));
-      const {customScore, gradingOutput, gradingDurationSeconds} =
+      const {customScore, gradingOutput, gradingDurationSeconds, grading} =
           await this.#gradeTaskTrajectory(evalTask, trajectory);
       finalizeEvalTask({
         runId: this.#runId,
@@ -460,6 +510,7 @@ export class AiEvalStateProvider extends StateProvider {
         customScore,
         gradingOutput,
         gradingDurationSeconds,
+        grading,
       });
     } catch (err) {
       const errorMessage = formatError(err);

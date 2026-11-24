@@ -17,6 +17,7 @@ import {
   formatVerificationStderr,
   formatVerificationStdout,
 } from './report-helpers.js';
+import {PASS_SCORE_THRESHOLD, type ScoreResult} from './scorer.js';
 import {
   calculateTrajectoryTokens,
   calculateTrajectoryToolCalls,
@@ -26,8 +27,6 @@ import {
   type Trajectory,
   type TurnTokens,
 } from './trajectory-builder.js';
-
-export const PASS_SCORE_THRESHOLD = 0.7;
 
 export interface FinalizeTaskOptions {
   runId: string;
@@ -48,6 +47,8 @@ export interface FinalizeTaskOptions {
   errorMessage?: string;
   customScore?: number|null;
   gradingOutput?: string;
+  /** Grading V1 result. When set, it decides pass/fail instead of the score threshold alone. */
+  grading?: ScoreResult;
 }
 
 export interface HandleTaskFailureOptions {
@@ -100,6 +101,8 @@ export interface RecordTaskCompletionOptions {
   hasError?: boolean;
   customScore?: number|null;
   gradingOutput?: string;
+  /** Grading V1 result. When set, it decides pass/fail instead of the score threshold alone. */
+  grading?: ScoreResult;
 }
 
 /**
@@ -232,15 +235,25 @@ export function recordTaskCompletion(options: RecordTaskCompletionOptions): void
     hasError = false,
     customScore,
     gradingOutput,
+    grading,
   } = options;
   // Only report a numeric score if a custom/grader score was computed and execution/upload succeeded;
   // otherwise emit null so ungraded tasks or execution failures do not skew averages.
   const score = (!allUploadsSucceeded || hasError) ? null : (customScore ?? null);
+  // With Grading V1, `pass` decides. A grading error fails the task, while its score stays null.
+  const gradingV1Failed = grading !== undefined && (grading.pass === false || grading.gradingError !== undefined);
   const status: TaskOutcomeStatus =
-      (!allUploadsSucceeded || hasError || (score !== null && score < PASS_SCORE_THRESHOLD)) ? 'FAILED' : 'PASSED';
-  const wasGraded = (customScore !== undefined && customScore !== null) || gradingOutput !== undefined;
-  const gradingPassed = customScore === undefined || customScore === null || customScore >= PASS_SCORE_THRESHOLD;
-  const gradingStatus: PhaseStatus = wasGraded ? (gradingPassed ? 'SUCCEEDED' : 'FAILED') : 'UNSPECIFIED';
+      (!allUploadsSucceeded || hasError || gradingV1Failed || (score !== null && score < PASS_SCORE_THRESHOLD)) ?
+      'FAILED' :
+      'PASSED';
+  let gradingStatus: PhaseStatus;
+  if (grading) {
+    gradingStatus = gradingV1Failed ? 'FAILED' : (grading.pass ? 'SUCCEEDED' : 'UNSPECIFIED');
+  } else {
+    const wasGraded = (customScore !== undefined && customScore !== null) || gradingOutput !== undefined;
+    const gradingPassed = customScore === undefined || customScore === null || customScore >= PASS_SCORE_THRESHOLD;
+    gradingStatus = wasGraded ? (gradingPassed ? 'SUCCEEDED' : 'FAILED') : 'UNSPECIFIED';
+  }
 
   uploadTaskCompleted({
     taskId,
@@ -269,6 +282,42 @@ export function recordTaskCompletion(options: RecordTaskCompletionOptions): void
   taskStatuses.push({taskId, status, score});
 }
 
+export interface EvalResultOptions {
+  runId: string;
+  taskId: string;
+  target: string;
+  gradingOutput: string;
+  grading?: ScoreResult;
+}
+
+/**
+ * Builds the content of `eval_result.json`. For Grading V1 it holds the score, pass/fail,
+ * the M/P/N summary and the check table (id, source, verdict, weight, reason).
+ */
+export function buildEvalResult(options: EvalResultOptions): object {
+  const {runId, taskId, target, gradingOutput, grading} = options;
+  if (!grading) {
+    return {runId, taskId, target, gradingOutput};
+  }
+  return {
+    runId,
+    taskId,
+    target,
+    score: grading.score,
+    pass: grading.pass,
+    rawScore: grading.rawScore,
+    summary: {
+      maxPoints: grading.maxPoints,
+      earnedPoints: grading.earnedPoints,
+      penaltyPoints: grading.penaltyPoints,
+      criticalFailures: grading.criticalFailures,
+    },
+    checks: grading.checks,
+    gradingError: grading.gradingError ?? null,
+    gradingOutput,
+  };
+}
+
 /**
  * Exports the task trajectory to disk (`outputDir`), uploads all task artifacts,
  * and seals `eval_task_completed.marker`.
@@ -293,6 +342,7 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     errorMessage,
     customScore,
     gradingOutput,
+    grading,
   } = options;
 
   logger.append(`[Task ${taskId}] Finished execution (${durationSeconds}s)`);
@@ -312,12 +362,7 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     errorMessage,
   });
   if (gradingOutput) {
-    const evalResultJson = JSON.stringify({
-      runId,
-      target,
-      gradingOutput,
-    },
-                                          null, 2);
+    const evalResultJson = JSON.stringify(buildEvalResult({runId, taskId, target, gradingOutput, grading}), null, 2);
     const evalResultUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.EVAL_RESULT, evalResultJson);
     const graderLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, gradingOutput);
     allUploadsSucceeded = allUploadsSucceeded && evalResultUploaded && graderLogUploaded;
@@ -336,6 +381,7 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     hasError,
     customScore,
     gradingOutput,
+    grading,
   });
 
   return evalOutputPath;

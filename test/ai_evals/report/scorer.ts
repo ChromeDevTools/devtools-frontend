@@ -21,9 +21,10 @@ const MAX_REASON_LENGTH = 300;
 
 // Only the LLM judge produces verdicts today. Add more sources (for example
 // code-based state checks) when evals need them.
-export enum CheckSource {
-  JUDGE = 'judge',
-}
+export const CheckSource = {
+  JUDGE: 'judge',
+} as const;
+export type CheckSource = (typeof CheckSource)[keyof typeof CheckSource];
 
 export interface GradingCheckRow {
   id: string;

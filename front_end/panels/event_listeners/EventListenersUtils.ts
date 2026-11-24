@@ -351,11 +351,9 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
       }
     }
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function checkInternalHandler(handler: any): (() => void)|null {
+    function checkInternalHandler(handler: unknown): (() => void)|null {
       if (handler && (typeof handler === 'function')) {
-        return handler;
+        return handler as () => void;
       }
       errorLines.push('internal handler isn\'t a function or empty');
       return null;

@@ -146,6 +146,45 @@ async function prepareNonConsoleDrawerTab(devToolsPage: DevToolsPage) {
   await devToolsPage.waitFor('#tab-elements[aria-selected="true"]');
 }
 
+async function setViewportAndWait(width: number, height: number, devToolsPage: DevToolsPage) {
+  await devToolsPage.page.setViewport({width, height});
+  await devToolsPage.waitForFunction(async () => {
+    return await devToolsPage.evaluate(
+        (expectedWidth, expectedHeight) => window.innerWidth === expectedWidth && window.innerHeight === expectedHeight,
+        width, height);
+  });
+  // Wait for the resize event and any follow-up animation frame updates to flush.
+  await devToolsPage.raf();
+  await devToolsPage.raf();
+}
+
+async function zoomInAndWait(devToolsPage: DevToolsPage) {
+  const previousZoom = await devToolsPage.evaluate(`
+    (async function() {
+      const UI = await import('./ui/legacy/legacy.js');
+      return UI.ZoomManager.ZoomManager.instance().zoomFactor();
+    })();
+  `) as number;
+  // Zooming sends an async IPC to the embedder; wait until both the host and
+  // ZoomManager (updated on the resulting window resize event) reflect the new
+  // zoom level and layout settles.
+  await devToolsPage.pressKey('Equal', {control: true});
+  await devToolsPage.waitForFunction(async () => {
+    return await devToolsPage.evaluate(`
+      (async function(prev) {
+        const [Host, UI] = await Promise.all([
+          import('./core/host/host.js'),
+          import('./ui/legacy/legacy.js'),
+        ]);
+        const hostZoom = Host.InspectorFrontendHost.InspectorFrontendHostInstance.zoomFactor();
+        const zoomManagerZoom = UI.ZoomManager.ZoomManager.instance().zoomFactor();
+        return zoomManagerZoom > prev && zoomManagerZoom === hostZoom;
+      })(${previousZoom});
+    `);
+  });
+  await devToolsPage.raf();
+}
+
 describe('Drawer', () => {
   setup({enabledFeatures: ['DevToolsVerticalDrawer']});
 
@@ -153,11 +192,11 @@ describe('Drawer', () => {
     // Shrink the viewport to a narrower width so the toolbar is crowded
     // enough to trigger the button size change (the default 1280px is too
     // wide to reproduce the issue).
-    await devToolsPage.page.setViewport({width: 800, height: 600});
+    await setViewportAndWait(800, 600, devToolsPage);
 
     // Zoom in 2 levels so the 1px shift becomes more visible / detectable.
-    await devToolsPage.pressKey('Equal', {control: true});
-    await devToolsPage.pressKey('Equal', {control: true});
+    await zoomInAndWait(devToolsPage);
+    await zoomInAndWait(devToolsPage);
 
     // Measure the main panel's .tabbed-pane-header (inside the TabbedPane
     // shadow DOM). Its width changes by ~1px due to the sidebar border

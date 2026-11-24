@@ -1374,4 +1374,61 @@ describeWithEnvironment('NetworkLogView', () => {
       assert.isTrue(cell.classList.contains('network-dim-cell'));
     });
   });
+
+  it('renders the method cell with a link that reveals the preflight request', () => {
+    const request = createNetworkRequest({url: 'https://www.example.com/api', requestMethod: 'POST'});
+    const preflightRequest = createNetworkRequest({url: 'https://www.example.com/api', requestMethod: 'OPTIONS'});
+    request.setPreflightRequest(preflightRequest);
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'method');
+    assert.strictEqual(el.textContent, 'POST + Preflight');
+    assert.strictEqual(el.title, 'POST + Preflight');
+    assert.lengthOf(el.children, 1);
+    const link = el.children[0];
+    assert.instanceOf(link, HTMLButtonElement);
+    assert.strictEqual(link.textContent, 'Preflight');
+    assert.strictEqual(link.title, 'Select preflight request');
+
+    link.click();
+    sinon.assert.calledOnceWithExactly(revealStub, preflightRequest, false);
+  });
+
+  it('renders an icon link that reveals the request that triggered a preflight request', () => {
+    const initiatorRequest = createNetworkRequest({url: 'https://www.example.com/api', requestMethod: 'POST'});
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/api',
+      requestMethod: 'OPTIONS',
+      initiator: {type: Protocol.Network.InitiatorType.Preflight},
+    });
+    sinon.stub(request, 'preflightInitiatorRequest').returns(initiatorRequest);
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'initiator');
+    assert.strictEqual(el.textContent, 'Preflight');
+    const link = el.querySelector<HTMLElement>('button.devtools-link.trailing-link-icon');
+    assert.exists(link);
+    assert.strictEqual(link.getAttribute('aria-label'), 'Select the request that triggered this preflight');
+    assert.strictEqual(link.querySelector('devtools-icon')?.getAttribute('name'), 'arrow-up-down-circle');
+
+    link.click();
+    sinon.assert.calledOnceWithExactly(revealStub, initiatorRequest, false);
+  });
+
+  it('renders the disclosure cell of a group node', () => {
+    const groupNode = new Network.NetworkDataGridNode.NetworkGroupNode(createParentView());
+    const dataGrid = new DataGrid.DataGrid.DataGridImpl<Network.NetworkDataGridNode.NetworkNode>({
+      displayName: 'Network Log' as Platform.UIString.LocalizedString,
+      columns: [{id: 'name', title: 'Name' as Platform.UIString.LocalizedString, sortable: false}],
+    });
+    groupNode.dataGrid = dataGrid;
+    groupNode.parent = dataGrid.rootNode();
+    const tr = document.createElement('tr');
+    groupNode.createCells(tr);
+
+    assert.isTrue(tr.cells[0].classList.contains('disclosure'));
+    assert.strictEqual(tr.cells[0].textContent, '');
+  });
 });

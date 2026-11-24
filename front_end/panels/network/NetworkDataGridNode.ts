@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -37,6 +36,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import '../../ui/components/buttons/buttons.js';
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -51,7 +51,6 @@ import * as Logs from '../../models/logs/logs.js';
 import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
-import {createIcon} from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -646,6 +645,39 @@ interface PrimaryCellViewInput {
   onFocus: () => void;
 }
 
+/** A link to a URL, with an optional line and column. */
+interface UrlLink {
+  kind: 'url';
+  url: Platform.DevToolsPath.UrlString;
+  options?: Components.Linkifier.LinkifyURLOptions;
+}
+
+/** A link that reveals another network request. It shows the icon if `iconName` is set, and the text if not. */
+interface RevealLink {
+  kind: 'reveal';
+  text?: string;
+  iconName?: string;
+  title?: string;
+  className?: string;
+  jslogContext: string;
+  onClick: () => void;
+}
+
+/** A link to a script location. The linkifier keeps the link text in sync with source maps. */
+interface ScriptLocationLink {
+  kind: 'script-location';
+  linkifier: Components.Linkifier.Linkifier;
+  target: SDK.Target.Target|null;
+  /** If set, the link points to the top frame of this stack trace. */
+  stackTrace: Protocol.Runtime.StackTrace|null;
+  scriptId: Protocol.Runtime.ScriptId|null;
+  url: Platform.DevToolsPath.UrlString;
+  lineNumber?: number;
+  columnNumber?: number;
+}
+
+type CellLink = UrlLink|RevealLink|ScriptLocationLink;
+
 interface CellViewInput {
   text: string;
   title?: string;
@@ -658,6 +690,11 @@ interface CellViewInput {
   /** The visual logging context of the link. */
   linkJslogContext?: string;
   dimmed?: boolean;
+  /** A link that the view places after the text. */
+  link?: CellLink;
+  scriptInitiated?: boolean;
+  /** Set for the cell of a group node that shows the expand arrow. */
+  disclosure?: {leftPadding: number};
   /** Set for the time cell of a request that a throttling rule slowed down. */
   throttling?: {title: string, onClick: () => void};
   /** Set for the first visible name, path or URL cell. This cell owns the icons and the row click handlers. */
@@ -670,6 +707,34 @@ const stopPropagationInCapture = {
   capture: true,
 };
 
+function renderCellLink(link: CellLink): LitTemplate {
+  switch (link.kind) {
+    case 'url':
+      return Components.Linkifier.Linkifier.renderLinkifiedUrl(link.url, link.options);
+    case 'reveal': {
+      const onClick = (event: Event): void => {
+        event.consume(true);
+        link.onClick();
+      };
+      const classes = `devtools-link text-button link-style ${link.className ?? ''}`;
+      // clang-format off
+      return html`
+        <button class=${classes} tabindex="-1" role="link" title=${ifDefined(link.title)}
+                aria-label=${ifDefined(link.iconName ? link.title : undefined)}
+                jslog=${VisualLogging.link(link.jslogContext).track({click: true})}
+                @click=${onClick}>${link.iconName ?
+                  html`<devtools-icon name=${link.iconName}></devtools-icon>` : link.text}</button>`;
+      // clang-format on
+    }
+    case 'script-location':
+      // The linkifier owns the element, because it updates the link text when the live location changes.
+      return html`${
+          link.stackTrace ? link.linkifier.linkifyStackTraceTopFrame(link.target, link.stackTrace) :
+                            link.linkifier.linkifyScriptLocation(link.target, link.scriptId, link.url, link.lineNumber,
+                                                                 {columnNumber: link.columnNumber})}`;
+  }
+}
+
 const CELL_VIEW = (input: CellViewInput, _output: undefined, target: HTMLElement): void => {
   const primary = input.primary;
   const onAiButtonClick = {
@@ -679,6 +744,24 @@ const CELL_VIEW = (input: CellViewInput, _output: undefined, target: HTMLElement
     },
     capture: true,
   };
+  const classes = [];
+  if (input.dimmed) {
+    classes.push('network-dim-cell');
+  }
+  if (input.scriptInitiated) {
+    classes.push('network-script-initiated');
+  }
+  if (input.disclosure) {
+    classes.push('disclosure');
+  }
+  const attributes: Record<string, string|undefined> = {title: input.title};
+  if (primary) {
+    attributes.tabindex = '-1';
+  }
+  const leftPadding = (primary ?? input.disclosure)?.leftPadding;
+  if (leftPadding !== undefined) {
+    attributes.style = leftPadding ? `padding-left: ${leftPadding}px` : undefined;
+  }
   // clang-format off
   render(html`
     ${primary?.icon ?? nothing}
@@ -700,17 +783,14 @@ const CELL_VIEW = (input: CellViewInput, _output: undefined, target: HTMLElement
       <button class="devtools-link text-button link-style" tabindex="-1"
               jslog=${VisualLogging.link(input.linkJslogContext).track({click: true})}
               @click=${input.onLinkClick}>${input.text}</button>` : input.text}
+    ${input.link ? renderCellLink(input.link) : nothing}
     ${input.subtitle !== undefined ? html`
       <div class=${classMap({'network-cell-subtitle': true, 'always-visible': Boolean(input.subtitleAlwaysVisible)})}
            title=${ifDefined(input.subtitleTitle)}>${input.subtitle}</div>` : nothing}`,
     target, {
       container: {
-        classes: input.dimmed ? ['network-dim-cell'] : [],
-        attributes: {
-          title: input.title,
-          tabindex: primary ? '-1' : undefined,
-          style: primary?.leftPadding ? `padding-left: ${primary.leftPadding}px` : undefined,
-        },
+        classes,
+        attributes,
         listeners: primary ? {
           dblclick: () => primary.onDoubleClick(),
           mousedown: event => primary.onMouseDown((event as MouseEvent).button),
@@ -1303,11 +1383,18 @@ export class NetworkRequestNode extends NetworkNode {
       case 'method': {
         const preflightRequest = this.#requestInternal.preflightRequest();
         if (preflightRequest) {
-          this.#renderTextCell(cell, `${this.#requestInternal.requestMethod} + `,
-                               i18nString(UIStrings.sPreflight, {PH1: this.#requestInternal.requestMethod}));
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
-              preflightRequest, i18nString(UIStrings.preflight), undefined,
-              i18nString(UIStrings.selectPreflightRequest), undefined, 'preflight-request'));
+          CELL_VIEW({
+            text: `${this.#requestInternal.requestMethod} + `,
+            title: i18nString(UIStrings.sPreflight, {PH1: this.#requestInternal.requestMethod}),
+            link: {
+              kind: 'reveal',
+              text: i18nString(UIStrings.preflight),
+              title: i18nString(UIStrings.selectPreflightRequest),
+              jslogContext: 'preflight-request',
+              onClick: () => void Common.Revealer.reveal(preflightRequest),
+            },
+          },
+                    undefined, cell);
         } else {
           this.#renderTextCell(cell, this.#requestInternal.requestMethod);
         }
@@ -1681,74 +1768,82 @@ export class NetworkRequestNode extends NetworkNode {
     const request = this.#requestInternal;
     const initiator = Logs.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
 
-    const timing = request.timing;
-    if (timing?.pushStart) {
-      cell.appendChild(document.createTextNode(i18nString(UIStrings.push)));
-    }
+    const input: CellViewInput = {text: request.timing?.pushStart ? i18nString(UIStrings.push) : ''};
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.PARSER: {
-        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
-          lineNumber: initiator.lineNumber,
-          columnNumber: initiator.columnNumber,
-          userMetric: this.#getLinkifierMetric(),
-        }));
-        this.#appendSubtitle(cell, i18nString(UIStrings.parser));
+        input.link = {
+          kind: 'url',
+          url: initiator.url,
+          options: {
+            lineNumber: initiator.lineNumber,
+            columnNumber: initiator.columnNumber,
+            userMetric: this.#getLinkifierMetric(),
+          },
+        };
+        input.subtitle = i18nString(UIStrings.parser);
         break;
       }
 
       case SDK.NetworkRequest.InitiatorType.REDIRECT: {
-        UI.Tooltip.Tooltip.install(cell, initiator.url);
+        input.title = initiator.url;
         const redirectSource = (request.redirectSource() as SDK.NetworkRequest.NetworkRequest);
         console.assert(redirectSource !== null);
         if (this.parentView().nodeForRequest(redirectSource)) {
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
-              redirectSource, Bindings.ResourceUtils.displayNameForURL(redirectSource.url()), undefined, undefined,
-              undefined, 'redirect-source-request'));
+          input.link = {
+            kind: 'reveal',
+            text: Platform.StringUtilities.trimMiddle(Bindings.ResourceUtils.displayNameForURL(redirectSource.url()),
+                                                      UI.UIUtils.MaxLengthForDisplayedURLs),
+            jslogContext: 'redirect-source-request',
+            onClick: () => void Common.Revealer.reveal(redirectSource),
+          };
         } else {
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(
-              redirectSource.url(), {jslogContext: 'redirect-source-request-url'}));
+          input.link = {kind: 'url', url: redirectSource.url(), options: {jslogContext: 'redirect-source-request-url'}};
         }
-        this.#appendSubtitle(cell, i18nString(UIStrings.redirect));
+        input.subtitle = i18nString(UIStrings.redirect);
         break;
       }
 
       case SDK.NetworkRequest.InitiatorType.SCRIPT: {
-        const target = SDK.NetworkManager.NetworkManager.forRequest(request)?.target() || null;
-        const linkifier = this.parentView().linkifier();
-        const anchor = initiator.stack?.callFrames.length ?
-            linkifier.linkifyStackTraceTopFrame(target, initiator.stack) :
-            linkifier.linkifyScriptLocation(target, initiator.scriptId, initiator.url, initiator.lineNumber,
-                                            {columnNumber: initiator.columnNumber});
-        UI.Tooltip.Tooltip.install(anchor, '');
-        cell.appendChild(anchor);
-        this.#appendSubtitle(
-            cell, this.#isConsoleOriginated() ? i18nString(UIStrings.console) : i18nString(UIStrings.script));
-        cell.classList.add('network-script-initiated');
+        input.link = {
+          kind: 'script-location',
+          linkifier: this.parentView().linkifier(),
+          target: SDK.NetworkManager.NetworkManager.forRequest(request)?.target() || null,
+          stackTrace: initiator.stack?.callFrames.length ? initiator.stack : null,
+          scriptId: initiator.scriptId,
+          url: initiator.url,
+          lineNumber: initiator.lineNumber,
+          columnNumber: initiator.columnNumber,
+        };
+        input.subtitle = this.#isConsoleOriginated() ? i18nString(UIStrings.console) : i18nString(UIStrings.script);
+        input.scriptInitiated = true;
         break;
       }
 
       case SDK.NetworkRequest.InitiatorType.PRELOAD: {
-        UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.preload));
-        cell.classList.add('network-dim-cell');
-        cell.appendChild(document.createTextNode(i18nString(UIStrings.preload)));
+        input.title = i18nString(UIStrings.preload);
+        input.dimmed = true;
+        input.text += i18nString(UIStrings.preload);
         break;
       }
 
       case SDK.NetworkRequest.InitiatorType.SIGNED_EXCHANGE: {
-        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url));
-        this.#appendSubtitle(cell, i18nString(UIStrings.signedexchange));
+        input.link = {kind: 'url', url: initiator.url};
+        input.subtitle = i18nString(UIStrings.signedexchange);
         break;
       }
 
       case SDK.NetworkRequest.InitiatorType.PREFLIGHT: {
-        cell.appendChild(document.createTextNode(i18nString(UIStrings.preflight)));
-        if (initiator.initiatorRequest) {
-          const icon = createIcon('arrow-up-down-circle');
-          const link = Components.Linkifier.Linkifier.linkifyRevealable(
-              initiator.initiatorRequest, icon, undefined, i18nString(UIStrings.selectTheRequestThatTriggered),
-              'trailing-link-icon', 'initator-request');
-          UI.ARIAUtils.setLabel(link, i18nString(UIStrings.selectTheRequestThatTriggered));
-          cell.appendChild(link);
+        input.text += i18nString(UIStrings.preflight);
+        const initiatorRequest = initiator.initiatorRequest;
+        if (initiatorRequest) {
+          input.link = {
+            kind: 'reveal',
+            iconName: 'arrow-up-down-circle',
+            title: i18nString(UIStrings.selectTheRequestThatTriggered),
+            className: 'trailing-link-icon',
+            jslogContext: 'initator-request',
+            onClick: () => void Common.Revealer.reveal(initiatorRequest),
+          };
         }
         break;
       }
@@ -1762,11 +1857,12 @@ export class NetworkRequestNode extends NetworkNode {
         const initiatorText =
             request.fromEarlyHints() ? i18nString(UIStrings.earlyHints) : i18nString(UIStrings.otherC);
 
-        UI.Tooltip.Tooltip.install(cell, initiatorText);
-        cell.classList.add('network-dim-cell');
-        cell.appendChild(document.createTextNode(initiatorText));
+        input.title = initiatorText;
+        input.dimmed = true;
+        input.text += initiatorText;
       }
     }
+    CELL_VIEW(input, undefined, cell);
   }
 
   #renderAddressSpaceCell(cell: HTMLElement, ipAddressSpace: Protocol.Network.IPAddressSpace): void {
@@ -1862,19 +1958,6 @@ export class NetworkRequestNode extends NetworkNode {
     const contextDescription = NetworkRequestNode.getExecutionContextDescription(this.#requestInternal);
     this.#renderTextCell(cell, contextDescription);
   }
-
-  #appendSubtitle(cellElement: Element, subtitleText: string, alwaysVisible = false, tooltipText = ''): void {
-    const subtitleElement = document.createElement('div');
-    subtitleElement.classList.add('network-cell-subtitle');
-    if (alwaysVisible) {
-      subtitleElement.classList.add('always-visible');
-    }
-    subtitleElement.textContent = subtitleText;
-    if (tooltipText) {
-      UI.Tooltip.Tooltip.install(subtitleElement, tooltipText);
-    }
-    cellElement.appendChild(subtitleElement);
-  }
 }
 
 export class NetworkGroupNode extends NetworkNode {
@@ -1893,9 +1976,7 @@ export class NetworkGroupNode extends NetworkNode {
     const primaryColumn = firstPrimaryColumn(dataGrid) ?? dataGrid.visibleColumnsArray[0];
     if (primaryColumn.id === columnId) {
       const cell = (c as HTMLElement);
-      const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
-      cell.style.setProperty('padding-left', leftPadding);
-      cell.classList.add('disclosure');
+      CELL_VIEW({text: '', disclosure: {leftPadding: this.leftPadding}}, undefined, cell);
       this.setCellAccessibleName(cell.textContent || '', cell, columnId);
     }
   }

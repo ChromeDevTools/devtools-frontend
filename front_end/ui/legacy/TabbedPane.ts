@@ -1838,7 +1838,9 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
     const widget = this.getWidget();
     if (widget && tabId) {
       this.#updateTabs(widget);
-      widget.selectTab(tabId);
+      if (widget.selectedTabId !== tabId) {
+        widget.selectTab(tabId);
+      }
     }
   }
 
@@ -2069,6 +2071,7 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
         }
       }
       this.#managedTabIds = newIds;
+      const selectedTabId = widget.selectedTabId;
       const autoSelect = widget.autoSelectFirstItemOnShow;
       if (tabs.some(tab => tab.selected)) {
         widget.setAutoSelectFirstItemOnShow(false);
@@ -2104,7 +2107,7 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
         if (tab.enabled !== undefined) {
           widget.setTabEnabled(tab.id, tab.enabled);
         }
-        if (tab.selected) {
+        if (tab.selected && tab.id !== selectedTabId && widget.selectedTabId !== tab.id) {
           widget.selectTab(tab.id);
         }
         ++index;

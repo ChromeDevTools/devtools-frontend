@@ -976,6 +976,7 @@ describeWithEnvironment('TabbedPaneElement', () => {
       onSelect.resetHistory();
 
       widget.selectTab('tab2', true);
+      await Promise.resolve();
       sinon.assert.calledOnceWithExactly(
           onTabInvoked, sinon.match({detail: {tabId: 'tab2', prevTabId: 'tab1', isUserGesture: true}}));
       sinon.assert.calledOnceWithExactly(
@@ -985,9 +986,27 @@ describeWithEnvironment('TabbedPaneElement', () => {
       onSelect.resetHistory();
 
       widget.selectTab('tab2', true);
+      await Promise.resolve();
       sinon.assert.calledOnceWithExactly(
           onTabInvoked, sinon.match({detail: {tabId: 'tab2', prevTabId: 'tab2', isUserGesture: true}}));
       sinon.assert.notCalled(onSelect);
+
+      // Setting selectedTab / selected-tab via the custom element property/attribute must emit tabinvoked at most once
+      // when changing tabs, and must not emit tabinvoked when re-applied to the already-selected tab.
+      onTabInvoked.resetHistory();
+      onSelect.resetHistory();
+      element.selectedTab = 'tab2';
+      element.setAttribute('selected-tab', 'tab2');
+      await Promise.resolve();
+      sinon.assert.notCalled(onTabInvoked);
+      sinon.assert.notCalled(onSelect);
+
+      element.selectedTab = 'tab1';
+      await Promise.resolve();
+      sinon.assert.calledOnceWithExactly(
+          onTabInvoked, sinon.match({detail: {tabId: 'tab1', prevTabId: 'tab2', isUserGesture: undefined}}));
+      sinon.assert.calledOnceWithExactly(
+          onSelect, sinon.match({detail: {tabId: 'tab1', prevTabId: 'tab2', isUserGesture: undefined}}));
     });
 
     it('supports declarative <devtools-widget> tabs, selected-tab, and focus-header attributes', async () => {

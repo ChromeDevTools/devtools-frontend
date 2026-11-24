@@ -102,7 +102,10 @@ const SUGGEST_FOLLOW_UPS_PREMATURE_RESULT =
  *   matching synthetic `"Suggestions recorded."` responses.
  * - `suggestFollowUps` alone with empty text: `AiAgent#run()` retains valid
  *   suggestions for the run, and `AiAgent#runFunctionCalls()` requests the
- *   final Markdown answer.
+ *   final Markdown answer. When the run ends, `AiAgent#handleFinalResponse()`
+ *   removes the empty-text call and its response from history and records the
+ *   call with the answer instead, so the model does not repeat the empty-text
+ *   call in later turns.
  * - `suggestFollowUps` alongside other tools: `AiAgent#run()` discards the
  *   premature suggestions, and `AiAgent#runFunctionCalls()` instructs the
  *   model to call `suggestFollowUps` only in the final response.
@@ -1252,7 +1255,10 @@ export abstract class AiAgent<T> {
    *   without committing `runEntries`.
    * - Otherwise, records the answer (and any `suggestFollowUps` calls verbatim
    *   with matching synthetic `functionResponse` parts) in `#history` and yields
-   *   a completed `ANSWER` with follow-up suggestions.
+   *   a completed `ANSWER` with follow-up suggestions. Empty-text
+   *   `suggestFollowUps` steps from earlier in the run are left out of the
+   *   saved history; if the answer has no `suggestFollowUps` call, the last
+   *   removed call is recorded with the answer.
    */
   async *
       #handleFinalResponse(
@@ -1272,28 +1278,30 @@ export abstract class AiAgent<T> {
 
     const parsedResponse = this.parseTextResponse(textResponse);
     debugLog(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
+    const {entries, removedCall} = removeEmptyTextFollowUpSteps(runEntries);
+    const finalCalls: FunctionCalls|undefined = functionCalls ?? (removedCall ? [removedCall] : undefined);
     const modelParts: Host.AidaClient.Part[] = [{text: parsedResponse.answer}];
-    if (functionCalls) {
-      modelParts.push(...functionCalls.map(functionCall => ({functionCall})));
+    if (finalCalls) {
+      modelParts.push(...finalCalls.map(functionCall => ({functionCall})));
     }
-    runEntries.push({
+    entries.push({
       parts: modelParts,
       role: Host.AidaClient.Role.MODEL,
     });
-    if (functionCalls) {
+    if (finalCalls) {
       // Pair every `functionCall` with a synthetic `functionResponse` so `historical_contexts`
       // stays valid before the next `USER` turn and retains `[text, suggestFollowUps]` examples.
-      runEntries.push({
-        parts: functionCalls.map(functionCall => ({
-                                   functionResponse: {
-                                     name: functionCall.name,
-                                     response: {result: SUGGEST_FOLLOW_UPS_RECORDED_RESULT},
-                                   },
-                                 })),
+      entries.push({
+        parts: finalCalls.map(functionCall => ({
+                                functionResponse: {
+                                  name: functionCall.name,
+                                  response: {result: SUGGEST_FOLLOW_UPS_RECORDED_RESULT},
+                                },
+                              })),
         role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
       });
     }
-    this.#commitRun(runEntries);
+    this.#commitRun(entries);
     // The `parsedResponse.suggestions` fallback for text-parsed `SUGGESTIONS:`
     // remains only while V1 agents (`StylingAgent`, `PerformanceAgent`) exist.
     const suggestions = latestSuggestions ?? parsedResponse.suggestions;
@@ -1771,6 +1779,59 @@ export function sanitizeSuggestionsList(parsed: unknown): [string, ...string[]]|
     return undefined;
   }
   return sanitized as [string, ...string[]];
+}
+
+function isSuggestFollowUpsCall(part: Host.AidaClient.Part): part is {functionCall: Host.AidaClient.AidaFunctionCall} {
+  return 'functionCall' in part && part.functionCall.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME;
+}
+
+function isSuggestFollowUpsResponse(part: Host.AidaClient.Part): boolean {
+  return 'functionResponse' in part && part.functionResponse.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME;
+}
+
+/**
+ * Returns whether `content` exists, has at least one part, and every part
+ * matches `predicate`. The length check is needed because `Array#every()`
+ * returns `true` for an empty array, which would treat a message with no
+ * parts as matching.
+ */
+function consistsOnlyOf(content: Host.AidaClient.Content|undefined,
+                        predicate: (part: Host.AidaClient.Part) => boolean): boolean {
+  return content !== undefined && content.parts.length > 0 && content.parts.every(predicate);
+}
+
+/**
+ * Returns whether `current` and `next` form an empty-text `suggestFollowUps`
+ * step: a `MODEL` entry with only `suggestFollowUps` calls (no text), followed
+ * by an entry with only their `functionResponse` parts.
+ */
+function isEmptyTextFollowUpStep(current: Host.AidaClient.Content, next: Host.AidaClient.Content|undefined): boolean {
+  if (current.role !== Host.AidaClient.Role.MODEL) {
+    return false;
+  }
+  return consistsOnlyOf(current, isSuggestFollowUpsCall) && consistsOnlyOf(next, isSuggestFollowUpsResponse);
+}
+
+/**
+ * Returns `runEntries` without empty-text `suggestFollowUps` steps, and the
+ * `suggestFollowUps` call from the last removed step.
+ *
+ * If history keeps these steps, the model treats them as examples and repeats
+ * the empty-text call in later turns.
+ */
+function removeEmptyTextFollowUpSteps(runEntries: Host.AidaClient.Content[]):
+    {entries: Host.AidaClient.Content[], removedCall?: Host.AidaClient.AidaFunctionCall} {
+  const entries: Host.AidaClient.Content[] = [];
+  let removedCall: Host.AidaClient.AidaFunctionCall|undefined;
+  for (let i = 0; i < runEntries.length; i++) {
+    if (isEmptyTextFollowUpStep(runEntries[i], runEntries[i + 1])) {
+      removedCall = runEntries[i].parts.findLast(isSuggestFollowUpsCall)?.functionCall;
+      i++;  // Also skip the step's `functionResponse` entry.
+      continue;
+    }
+    entries.push(runEntries[i]);
+  }
+  return {entries, removedCall};
 }
 
 /**

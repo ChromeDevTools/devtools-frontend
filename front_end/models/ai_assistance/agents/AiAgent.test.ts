@@ -503,6 +503,7 @@ describe('AiAgent', () => {
       assert.exists(answer);
       assert.strictEqual(answer.text, 'Final answer');
       assert.deepEqual(answer.suggestions, ['Follow-up question']);
+      // The empty-text call and its response are not kept in history; the call is recorded with the answer.
       assert.deepEqual(agent.history, [
         {
           role: Host.AidaClient.Role.USER,
@@ -510,29 +511,150 @@ describe('AiAgent', () => {
         },
         {
           role: Host.AidaClient.Role.MODEL,
-          parts: [{
-            functionCall: {
-              name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
-              args: {suggestions: ['Follow-up question']},
-              thoughtSignature: 'sig-1',
+          parts: [
+            {text: 'Final answer'},
+            {
+              functionCall: {
+                name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+                args: {suggestions: ['Follow-up question']},
+                thoughtSignature: 'sig-1',
+              },
             },
-          }],
+          ],
         },
         {
           role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
           parts: [{
             functionResponse: {
               name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
-              response: {
-                result:
-                    'Suggestions recorded, but your response text was empty. Provide your final Markdown answer to the user now.',
-              },
+              response: {result: 'Suggestions recorded.'},
             },
           }],
         },
+      ]);
+    });
+
+    it('removes every empty-text suggestFollowUps step when the model repeats it before answering', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{
+            name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+            args: {suggestions: ['First attempt']},
+            thoughtSignature: 'sig-1',
+          }],
+        }],
+        [{
+          explanation: '',
+          functionCalls: [{
+            name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+            args: {suggestions: ['Second attempt']},
+            thoughtSignature: 'sig-2',
+          }],
+        }],
+        [{
+          explanation: 'Final answer',
+        }],
+      ]);
+      const agent = new AiAgentMock({aidaClient});
+
+      await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+      sinon.assert.calledThrice(aidaClient.doConversation);
+      assert.deepEqual(agent.history, [
+        {
+          role: Host.AidaClient.Role.USER,
+          parts: [{text: 'query'}],
+        },
         {
           role: Host.AidaClient.Role.MODEL,
-          parts: [{text: 'Final answer'}],
+          parts: [
+            {text: 'Final answer'},
+            {
+              functionCall: {
+                name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+                args: {suggestions: ['Second attempt']},
+                thoughtSignature: 'sig-2',
+              },
+            },
+          ],
+        },
+        {
+          role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+          parts: [{
+            functionResponse: {
+              name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+              response: {result: 'Suggestions recorded.'},
+            },
+          }],
+        },
+      ]);
+    });
+
+    it('keeps tool calls made between an empty-text suggestFollowUps call and the answer', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{
+            name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+            args: {suggestions: ['Follow-up question']},
+          }],
+        }],
+        [{
+          explanation: '',
+          functionCalls: [{name: 'testFn', args: {}}],
+        }],
+        [{
+          explanation: 'Final answer',
+        }],
+      ]);
+      const agent = new AiAgentMock({aidaClient});
+      agent.declareFunctionForTest('testFn', {
+        description: 'test fn description',
+        parameters: {
+          type: Host.AidaClient.ParametersTypes.OBJECT,
+          description: 'test parameters',
+          properties: {},
+          required: [],
+        },
+        handler: async () => ({result: 'tool result'}),
+      });
+
+      await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+      assert.deepEqual(agent.history, [
+        {
+          role: Host.AidaClient.Role.USER,
+          parts: [{text: 'query'}],
+        },
+        {
+          role: Host.AidaClient.Role.MODEL,
+          parts: [{functionCall: {name: 'testFn', args: {}}}],
+        },
+        {
+          role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+          parts: [{functionResponse: {name: 'testFn', response: {result: 'tool result', widgets: undefined}}}],
+        },
+        {
+          role: Host.AidaClient.Role.MODEL,
+          parts: [
+            {text: 'Final answer'},
+            {
+              functionCall: {
+                name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+                args: {suggestions: ['Follow-up question']},
+              },
+            },
+          ],
+        },
+        {
+          role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+          parts: [{
+            functionResponse: {
+              name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+              response: {result: 'Suggestions recorded.'},
+            },
+          }],
         },
       ]);
     });
@@ -570,7 +692,12 @@ describe('AiAgent', () => {
       assert.exists(answer);
       assert.strictEqual(answer.text, 'Final answer');
       assert.deepEqual(answer.suggestions, ['Latest']);
-      assert.deepEqual(agent.history.slice(-2), [
+      // The earlier empty-text step is removed, and the answer keeps its own `suggestFollowUps` calls.
+      assert.deepEqual(agent.history, [
+        {
+          role: Host.AidaClient.Role.USER,
+          parts: [{text: 'query'}],
+        },
         {
           role: Host.AidaClient.Role.MODEL,
           parts: [

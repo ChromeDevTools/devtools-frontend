@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import {it} from 'mocha';
 
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Media from './media.js';
@@ -59,5 +60,20 @@ describeWithEnvironment('EventDisplayTable', () => {
     const secondEvent = viewInput!.parsedEvents[1];
 
     assert.strictEqual(secondEvent.displayTimestamp, '234.568');
+  });
+
+  it('renders events correctly', async () => {
+    const view = new Media.PlayerEventsView.PlayerEventsView();
+    renderElementIntoDOM(view, {includeCommonStyles: true, width: '600px', height: '400px'});
+    view.onEvent({
+      timestamp: 1000,
+      value: JSON.stringify({event: 'kPlay', extra: 'value'}),
+    } as Media.MediaModel.PlayerEvent);
+    view.onEvent({
+      timestamp: 1234.5678,
+      value: JSON.stringify({event: 'kPause', reason: 'user'}),
+    } as Media.MediaModel.PlayerEvent);
+
+    await assertScreenshot('media/EventDisplayTable.png');
   });
 });

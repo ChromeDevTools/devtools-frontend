@@ -666,7 +666,6 @@ export default defineConfig([
       '@devtools/lit-no-non-latin1': 'error',
       '@devtools/no-boolean-input-checked-attr': 'error',
       '@devtools/lit-template-result-or-nothing': 'error',
-      '@devtools/inject-checkbox-styles': 'error',
       '@devtools/no-raw-checkbox-input': 'error',
       '@devtools/jslog-context-list': 'error',
       '@devtools/es-modules-import': 'error',

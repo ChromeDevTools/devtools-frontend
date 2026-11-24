@@ -218,7 +218,7 @@ export interface ViewInput {
 
 export type ViewOutput = undefined;
 
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment) => void;
 
 function renderCheckbox(label: Common.UIString.LocalizedString, subtitle: Common.UIString.LocalizedString,
                         setting: Common.Settings.Setting<boolean>, onChange?: () => void): Lit.TemplateResult {
@@ -330,13 +330,13 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
-export class RenderingOptionsView extends UI.Widget.VBox {
+export class RenderingOptionsView extends UI.Widget.VBox<ShadowRoot> {
   readonly #view: View;
   readonly #autoDarkModeSetting =
       Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulateAutoDarkModeSettingDescriptor);
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view;
     this.requestUpdate();
   }

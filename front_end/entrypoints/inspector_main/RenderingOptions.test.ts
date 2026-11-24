@@ -154,6 +154,18 @@ describeWithEnvironment('RenderingOptions', () => {
                                          Host.UserMetrics.Action.ToggleEmulateFocusedPageFromRenderingTab);
       widget.detach();
     });
+
+    it('sets jslog attribute on the widget host element', async () => {
+      const widget = new InspectorMain.RenderingOptions.RenderingOptionsView();
+      widget.markAsRoot();
+      renderElementIntoDOM(widget);
+      await widget.updateComplete;
+
+      assert.strictEqual(widget.element.getAttribute('jslog'), 'Panel; context: rendering; track: resize');
+      assert.strictEqual<Node|null>(widget.contentElement, widget.element.shadowRoot);
+
+      widget.detach();
+    });
   });
 
   describe('DEFAULT_VIEW', () => {

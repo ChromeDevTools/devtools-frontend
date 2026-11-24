@@ -639,7 +639,7 @@ export class PaintProfilerCommandLogView extends UI.Widget.VBox {
   }
 
   set selectionWindow(window: {left: number, right: number}|null) {
-    this.#selectionWindow = window;
+    this.#selectionWindow = window ?? {left: 0, right: this.#log.length};
     this.requestUpdate();
   }
 

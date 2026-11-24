@@ -99,6 +99,21 @@ describeWithEnvironment('TimelinePaintProfilerView', () => {
     view.input.onWindowChanged({left: 1, right: 3});
     assert.deepEqual((await view.nextInput).selectionWindow, {left: 1, right: 3});
   });
+
+  it('resets the selection window when the snapshot changes', async () => {
+    const {view, widget} = await createShownWidget();
+    const log = [new SDK.PaintProfiler.PaintProfilerLogItem({method: 'drawRect', params: null}, 0)];
+    const s1 = createSnapshot(log);
+    widget.setSnapshot(s1);
+    const initialSelectionWindow = (await waitForInput(view, i => i.snapshot === s1)).selectionWindow;
+
+    view.input.onWindowChanged({left: 1, right: 3});
+    assert.deepEqual((await view.nextInput).selectionWindow, {left: 1, right: 3});
+
+    const s2 = createSnapshot(log);
+    widget.setSnapshot(s2);
+    assert.deepEqual((await waitForInput(view, i => i.snapshot === s2)).selectionWindow, initialSelectionWindow);
+  });
 });
 
 describeWithEnvironment('TimelinePaintProfilerView view', () => {
@@ -125,13 +140,14 @@ describeWithEnvironment('TimelinePaintProfilerView view', () => {
   it('renders the paint profiler, the command log and the image view', async () => {
     const log = [new SDK.PaintProfiler.PaintProfilerLogItem({method: 'drawRect', params: null}, 0)];
     const clipRect = {x: 1, y: 2, width: 3, height: 4};
-    const target = await renderView({log, clipRect, selectionWindow: {left: 0, right: 1}, imageURL: IMAGE_URL});
+    const target = await renderView({log, clipRect, imageURL: IMAGE_URL});
     const bar = target.querySelector<HTMLElement>('.timeline-paint-profiler-bar')!;
     assert.instanceOf(UI.Widget.Widget.get(bar), LayerViewer.PaintProfilerView.PaintProfilerView);
     const split = target.querySelector('devtools-split-view')!;
     const logView = UI.Widget.Widget.get(split.querySelector<HTMLElement>('[slot="sidebar"]')!);
     assert.instanceOf(logView, LayerViewer.PaintProfilerView.PaintProfilerCommandLogView);
     assert.strictEqual(logView.commandLog, log);
+    assert.deepEqual(logView.selectionWindow, {left: 0, right: 1});
     const imgView = UI.Widget.Widget.get(split.querySelector<HTMLElement>('[slot="main"]')!);
     assert.instanceOf(imgView, TimelinePaintImageView);
     assert.strictEqual(imgView.imageURL, IMAGE_URL);

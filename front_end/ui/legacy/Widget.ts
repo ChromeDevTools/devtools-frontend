@@ -263,6 +263,10 @@ export function registerWidgetConfig<WidgetT extends AnyWidget>(element: HTMLEle
     setUpLifecycleTracking(element);
   }
   widgetConfigs.set(element, config);
+  const widget = Widget.get(element);
+  if (element.isConnected && widget && !widget.parentWidget()) {
+    connectWidget(element);
+  }
 }
 
 export function instantiateWidget<WidgetT extends AnyWidget>(element: HTMLElement,
@@ -312,6 +316,24 @@ function detachWidgetWithoutRemovingElementFromDOM(widget: AnyWidget): void {
   }
 }
 
+function connectWidget<WidgetT extends AnyWidget>(element: HTMLElement): void {
+  let widget = Widget.get(element) as WidgetT;
+  if (!widget) {
+    const config = widgetConfigs.get(element);
+    if (!config) {
+      throw new Error('No widgetConfig defined');
+    }
+    widget = instantiateWidget(element, config) as WidgetT;
+  }
+  const parent =
+      (element.parentNode instanceof DocumentFragment) ? element.parentNode : element.parentElementOrShadowHost();
+  if (!parent) {
+    widget.markAsRoot();
+  } else if (!(parent instanceof WidgetElement && parent.controlsChildWidget(element))) {
+    widget.show(parent as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
+  }
+}
+
 function setUpLifecycleTracking<WidgetT extends AnyWidget>(element: HTMLElement): void {
   let tracker: WidgetElement<WidgetT>;
   if (element instanceof WidgetElement) {
@@ -332,21 +354,7 @@ function setUpLifecycleTracking<WidgetT extends AnyWidget>(element: HTMLElement)
     }
   };
   tracker.onConnect = () => {
-    let widget = Widget.get(element) as WidgetT;
-    if (!widget) {
-      const config = widgetConfigs.get(element);
-      if (!config) {
-        throw new Error('No widgetConfig defined');
-      }
-      widget = instantiateWidget(element, config) as WidgetT;
-    }
-    const parent =
-        (element.parentNode instanceof DocumentFragment) ? element.parentNode : element.parentElementOrShadowHost();
-    if (!parent) {
-      widget.markAsRoot();
-    } else if (!(parent instanceof WidgetElement && parent.controlsChildWidget(element))) {
-      widget.show(parent as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
-    }
+    connectWidget(element);
   };
 }
 

@@ -950,6 +950,10 @@ describeWithEnvironment('Widget', () => {
 
       renderChild();
       assert.strictEqual(parent.contentElement.querySelector('devtools-widget'), element);
+      assert.strictEqual(child.parentWidget(), parent);
+      assert.isTrue(child.isShowing());
+      assert.isFalse(element.classList.contains('hidden'));
+      assert.strictEqual(attachedCount, 2);
     });
 
     it('shows the widget again when its detached element is connected again', () => {

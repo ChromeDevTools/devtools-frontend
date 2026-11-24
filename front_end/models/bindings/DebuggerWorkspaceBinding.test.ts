@@ -8,9 +8,10 @@ import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
+import {getInitializedResourceTreeModel} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
@@ -309,4 +310,174 @@ describe('DebuggerWorkspaceBinding', () => {
        assert.deepEqual(debuggerWorkspaceBinding.scriptsForUISourceCode(vmUISourceCode), [script]);
        assert.strictEqual(Bindings.NetworkProject.NetworkProject.targetForUISourceCode(vmUISourceCode), target);
      });
+
+  describe('frame attach and detach', () => {
+    let backend: MockDebuggerBackend|null = null;
+
+    afterEach(() => {
+      backend?.universe.dispose();
+      backend = null;
+    });
+
+    it('adds and removes UISourceCodes as an iframe attaches and detaches', async () => {
+      const inspectedPageUrl = urlString`http://127.0.0.1:8000/devtools/resources/inspected-page.html`;
+      const magicFrameUrl = urlString`http://127.0.0.1:8000/devtools/bindings/resources/magic-frame.html`;
+      const magicScriptUrl = urlString`http://127.0.0.1:8000/devtools/bindings/resources/magic-script.js`;
+      const magicStyleUrl = urlString`http://127.0.0.1:8000/devtools/bindings/resources/magic-style.css`;
+      const mainFrameId = 'main-frame' as Protocol.Page.FrameId;
+      const childFrameId = 'child-frame' as Protocol.Page.FrameId;
+      const childLoaderId = 'child-loader' as Protocol.Network.LoaderId;
+      const childContextId = 2 as Protocol.Runtime.ExecutionContextId;
+      const styleSheetId = 'magic-style-id' as Protocol.DOM.StyleSheetId;
+
+      backend = new MockDebuggerBackend();
+      // Instantiate bindings before creating the target so all model observers attach in startup order.
+      void backend.universe.cssWorkspaceBinding;
+      void backend.universe.debuggerWorkspaceBinding;
+      const {workspace} = backend.universe;
+
+      backend.cdpConnection.setSuccessHandler('Network.enable', () => ({}));
+      backend.cdpConnection.setSuccessHandler('Network.setAttachDebugStack', () => ({}));
+      backend.cdpConnection.setSuccessHandler('Page.enable', () => ({}));
+      backend.cdpConnection.setSuccessHandler('DOM.enable', () => ({}));
+      backend.cdpConnection.setSuccessHandler('CSS.enable', () => ({}));
+      backend.cdpConnection.setSuccessHandler(
+          'Page.getResourceTree',
+          () => ({
+            frameTree: {
+              frame: {
+                id: mainFrameId,
+                loaderId: 'main-loader' as Protocol.Network.LoaderId,
+                url: inspectedPageUrl,
+                domainAndRegistry: '127.0.0.1',
+                securityOrigin: 'http://127.0.0.1:8000',
+                mimeType: 'text/html',
+                secureContextType: Protocol.Page.SecureContextType.SecureLocalhost,
+                crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.NotIsolated,
+                gatedAPIFeatures: [],
+              },
+              resources: [
+                {
+                  url: inspectedPageUrl,
+                  type: Protocol.Network.ResourceType.Document,
+                  mimeType: 'text/html',
+                  contentSize: 42,
+                },
+              ],
+            },
+          }));
+
+      const target =
+          backend.createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
+      await getInitializedResourceTreeModel(target);
+
+      const snapshotWorkspaceURLs = (): string[] => workspace.uiSourceCodes().map(c => c.url()).sort();
+
+      assert.deepEqual(snapshotWorkspaceURLs(), [inspectedPageUrl]);
+
+      backend.cdpConnection.dispatchEvent(
+          'Page.frameAttached',
+          {frameId: childFrameId, parentFrameId: mainFrameId},
+          target.sessionId,
+      );
+      backend.cdpConnection.dispatchEvent(
+          'Page.frameNavigated',
+          {
+            frame: {
+              id: childFrameId,
+              parentId: mainFrameId,
+              loaderId: childLoaderId,
+              url: magicFrameUrl,
+              domainAndRegistry: '127.0.0.1',
+              securityOrigin: 'http://127.0.0.1:8000',
+              mimeType: 'text/html',
+              secureContextType: Protocol.Page.SecureContextType.SecureLocalhost,
+              crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.NotIsolated,
+              gatedAPIFeatures: [],
+            },
+            type: Protocol.Page.NavigationType.Navigation,
+          },
+          target.sessionId,
+      );
+      backend.cdpConnection.dispatchEvent(
+          'Runtime.executionContextCreated',
+          {
+            context: {
+              id: childContextId,
+              origin: 'http://127.0.0.1:8000',
+              name: '',
+              uniqueId: 'child-ctx',
+              auxData: {isDefault: true, frameId: childFrameId, type: 'default'},
+            },
+          },
+          target.sessionId,
+      );
+      backend.cdpConnection.dispatchEvent(
+          'CSS.styleSheetAdded',
+          {
+            header: {
+              styleSheetId,
+              frameId: childFrameId,
+              sourceURL: magicStyleUrl,
+              origin: Protocol.CSS.StyleSheetOrigin.Regular,
+              title: '',
+              disabled: false,
+              isInline: false,
+              isMutable: false,
+              isConstructed: false,
+              loadingFailed: false,
+              startLine: 0,
+              startColumn: 0,
+              length: 0,
+              endLine: 0,
+              endColumn: 0,
+            },
+          },
+          target.sessionId,
+      );
+      const magicScript = await backend.addScript(
+          target,
+          {
+            url: magicScriptUrl,
+            content: 'console.log("magic");',
+            executionContextId: childContextId,
+            hasSourceURL: false,
+          },
+          null,
+      );
+      const magicVmUrl = `debugger:///VM${magicScript.scriptId} magic-script.js`;
+
+      assert.deepEqual(
+          snapshotWorkspaceURLs(),
+          [
+            magicVmUrl,
+            magicFrameUrl,
+            magicScriptUrl,
+            magicStyleUrl,
+            inspectedPageUrl,
+          ].sort(),
+      );
+
+      backend.cdpConnection.dispatchEvent(
+          'CSS.styleSheetRemoved',
+          {styleSheetId},
+          target.sessionId,
+      );
+      backend.cdpConnection.dispatchEvent(
+          'Runtime.executionContextDestroyed',
+          {executionContextId: childContextId, executionContextUniqueId: 'child-ctx'},
+          target.sessionId,
+      );
+      backend.cdpConnection.dispatchEvent(
+          'Page.frameDetached',
+          {frameId: childFrameId, reason: Protocol.Page.FrameDetachedEventReason.Remove},
+          target.sessionId,
+      );
+
+      assert.isNull(workspace.uiSourceCodeForURL(magicFrameUrl));
+      assert.isNull(workspace.uiSourceCodeForURL(magicScriptUrl));
+      assert.isNull(workspace.uiSourceCodeForURL(magicStyleUrl));
+      assert.deepEqual(snapshotWorkspaceURLs(), [magicVmUrl, inspectedPageUrl].sort());
+    });
+  });
 });

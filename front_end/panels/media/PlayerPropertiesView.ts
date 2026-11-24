@@ -527,8 +527,8 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   }
 
   onProperty(property: Protocol.Media.PlayerProperty): void {
-    if (!(property.name in this.#properties)) {
-      throw new Error(`Player property '${property.name}' not supported.`);
+    if (!Object.hasOwn(this.#properties, property.name)) {
+      return;
     }
     this.#properties[property.name as PlayerPropertyKeys].data = property.value;
     this.requestUpdate();

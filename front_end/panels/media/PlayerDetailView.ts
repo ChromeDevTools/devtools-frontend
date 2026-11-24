@@ -88,18 +88,15 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane implements Trigge
     for (const [name, value] of data.properties) {
       this.onProperty({name, value});
     }
-    for (let i = this.#processedEventsCount; i < data.events.length; i++) {
-      this.onEvent(data.events[i]);
+    while (this.#processedEventsCount < data.events.length) {
+      this.onEvent(data.events[this.#processedEventsCount++]);
     }
-    this.#processedEventsCount = data.events.length;
-    for (let i = this.#processedMessagesCount; i < data.messages.length; i++) {
-      this.onMessage(data.messages[i]);
+    while (this.#processedMessagesCount < data.messages.length) {
+      this.onMessage(data.messages[this.#processedMessagesCount++]);
     }
-    this.#processedMessagesCount = data.messages.length;
-    for (let i = this.#processedErrorsCount; i < data.errors.length; i++) {
-      this.onError(data.errors[i]);
+    while (this.#processedErrorsCount < data.errors.length) {
+      this.onError(data.errors[this.#processedErrorsCount++]);
     }
-    this.#processedErrorsCount = data.errors.length;
   }
 
   onProperty(property: Protocol.Media.PlayerProperty): void {

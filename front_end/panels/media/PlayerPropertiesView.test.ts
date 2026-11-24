@@ -180,4 +180,13 @@ describeWithEnvironment('PlayerPropertiesView', () => {
 
     await assertScreenshot('media/PlayerPropertiesViewTextTracks.png');
   });
+
+  it('ignores inherited Object.prototype property names in onProperty', () => {
+    const view = new Media.PlayerPropertiesView.PlayerPropertiesView();
+    assert.doesNotThrow(() => {
+      view.onProperty({name: 'toString', value: 'unexpected'});
+      view.onProperty({name: 'constructor', value: 'unexpected'});
+    });
+    assert.isFunction(view.properties.toString);
+  });
 });

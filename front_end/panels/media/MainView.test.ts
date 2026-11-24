@@ -9,7 +9,7 @@ import sinon from 'sinon';
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -203,5 +203,67 @@ describeWithEnvironment('MediaMainView', () => {
 
     await promise;  // This will time out if the promise is not resolved.
     mainView.detach();
+  });
+
+  it('continues updating player details after receiving an unsupported property', async () => {
+    const model = target.model(Media.MediaModel.MediaModel);
+    assert.exists(model);
+
+    const mainView = new Media.MainView.MainView();
+    renderElementIntoDOM(mainView);
+    try {
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
+      mainView.renderMainPanel(PLAYER_ID);
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_PROPERTIES_CHANGED, {
+        playerId: PLAYER_ID,
+        properties: [{name: 'kVideoPlaybackFreezingRatio', value: '0.1'}],
+      });
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_MESSAGES_LOGGED, {
+        playerId: PLAYER_ID,
+        messages: [{level: Protocol.Media.PlayerMessageLevel.Info, message: 'playback started'}],
+      });
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const detailView =
+          mainView.contentElement
+              .querySelector<UI.Widget.WidgetElement<Media.PlayerDetailView.PlayerDetailView>>('[slot="main"]')
+              ?.getWidget();
+      detailView?.selectTab(Media.PlayerDetailView.PlayerDetailViewTabs.MESSAGES);
+
+      const messages = mainView.contentElement.querySelectorAll('.media-messages-message-container');
+      assert.lengthOf(messages, 1, 'Expected player message to be rendered after unsupported property');
+      assert.include(messages[0].textContent, 'playback started');
+
+      model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_PROPERTIES_CHANGED, {
+        playerId: PLAYER_ID,
+        properties: [{name: Media.PlayerPropertiesView.PlayerPropertyKeys.FRAME_URL, value: 'invalid-url'}],
+      });
+      model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_EVENTS_ADDED, {
+        playerId: PLAYER_ID,
+        events: [
+          {value: 'invalid json', timestamp: 1} as Media.MediaModel.PlayerEvent,
+          {value: JSON.stringify({event: 'kPlay'}), timestamp: 2} as Media.MediaModel.PlayerEvent,
+        ],
+      });
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_MESSAGES_LOGGED, {
+        playerId: PLAYER_ID,
+        messages: [{level: Protocol.Media.PlayerMessageLevel.Info, message: 'playback continued'}],
+      });
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const updatedMessages = mainView.contentElement.querySelectorAll('.media-messages-message-container');
+      assert.lengthOf(updatedMessages, 2);
+      assert.include(updatedMessages[1].textContent, 'playback continued');
+    } finally {
+      mainView.detach();
+    }
   });
 });

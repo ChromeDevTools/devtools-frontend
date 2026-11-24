@@ -56,4 +56,58 @@ describeWithEnvironment('PlayerListView', () => {
     const input = await view.nextInput;
     assert.strictEqual(input.players[0].iconName, 'play');
   });
+
+  it('ignores malformed FRAME_URL properties', async () => {
+    const mainView = new Media.MainView.MainView();
+    const view = createViewFunctionStub(Media.PlayerListView.PlayerListView);
+    const playerListView = new Media.PlayerListView.PlayerListView(mainView, view);
+    playerListView.addMediaElementItem('player1');
+    const initialInput = await view.nextInput;
+    assert.strictEqual(initialInput.players[0].frameTitle, 'FrameTitle');
+
+    playerListView.onProperty('player1', {
+      name: Media.PlayerPropertiesView.PlayerPropertyKeys.FRAME_URL,
+      value: 'invalid-url',
+    });
+    await playerListView.updateComplete;
+    assert.strictEqual(view.input.players[0].frameTitle, 'FrameTitle');
+  });
+
+  it('ignores malformed JSON events and continues processing subsequent events', async () => {
+    const mainView = new Media.MainView.MainView();
+    const view = createViewFunctionStub(Media.PlayerListView.PlayerListView);
+    const playerListView = new Media.PlayerListView.PlayerListView(mainView, view);
+    playerListView.addMediaElementItem('player1');
+    await view.nextInput;
+
+    playerListView.onEvent('player1', {value: 'invalid json', timestamp: 1} as Media.MediaModel.PlayerEvent);
+    playerListView.onEvent('player1', {
+      value: JSON.stringify({event: 'kPlay'}),
+      timestamp: 2,
+    } as Media.MediaModel.PlayerEvent);
+
+    const input = await view.nextInput;
+    assert.strictEqual(input.players[0].iconName, 'play');
+  });
+
+  it('ignores kLoad events without a string url', async () => {
+    const mainView = new Media.MainView.MainView();
+    const view = createViewFunctionStub(Media.PlayerListView.PlayerListView);
+    const playerListView = new Media.PlayerListView.PlayerListView(mainView, view);
+    playerListView.addMediaElementItem('player1');
+    await view.nextInput;
+
+    playerListView.onEvent('player1', {
+      value: JSON.stringify({event: 'kLoad', url: 123}),
+      timestamp: 1,
+    } as Media.MediaModel.PlayerEvent);
+    playerListView.onEvent('player1', {
+      value: JSON.stringify({event: 'kPlay'}),
+      timestamp: 2,
+    } as Media.MediaModel.PlayerEvent);
+
+    const input = await view.nextInput;
+    assert.strictEqual(input.players[0].playerTitle, 'PlayerTitle');
+    assert.strictEqual(input.players[0].iconName, 'play');
+  });
 });

@@ -10,7 +10,8 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment, registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {
   createContentProviderUISourceCodes,
@@ -352,6 +353,48 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
       assert.strictEqual(tagElement?.textContent, 'Workspace');
 
       fileSystemProject.dispose();
+    });
+
+    it('renders items with grid layout, highlights, ignore-listed state, and workspace tag', async () => {
+      const {project: fileSystemProject} = createFileSystemUISourceCode({
+        url: urlString`file:///var/www/utils.js`,
+        mimeType: 'text/javascript',
+        fileSystemPath: 'file:///var/www',
+      });
+      const ignoredUrl = urlString`http://test/ignoredScript.js`;
+      const {project: ignoredProject} = createContentProviderUISourceCodes(
+          {items: [{url: ignoredUrl, mimeType: 'text/javascript'}], projectId: 'IGNORED_PROJECT'});
+      const ignoredSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(ignoredUrl);
+      assert.exists(ignoredSourceCode);
+      Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(ignoredSourceCode);
+
+      const listProvider = new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider();
+      listProvider.attach();
+      registerTestTeardown(() => {
+        listProvider.detach();
+        ignoredProject.removeProject();
+        fileSystemProject.dispose();
+      });
+
+      const container = document.createElement('div');
+      renderElementIntoDOM(container, {includeCommonStyles: true, width: 450, height: 140});
+
+      for (let i = 0; i < listProvider.itemCount(); i++) {
+        const itemWrapper = document.createElement('div');
+        itemWrapper.className = 'filtered-list-widget-item';
+        container.appendChild(itemWrapper);
+        const query = listProvider.itemKeyAt(i) === url1 ? '12' : '';
+        render(listProvider.renderItem(i, query), itemWrapper);
+      }
+
+      await new Promise<void>(resolve => queueMicrotask(resolve));
+      await raf();
+
+      const firstItem = container.querySelector<HTMLElement>('.filtered-ui-source-code-list-item');
+      assert.exists(firstItem);
+      assert.strictEqual(getComputedStyle(firstItem).display, 'grid');
+
+      await assertScreenshot('sources/filtered-ui-source-code-list-provider.png');
     });
   });
 });

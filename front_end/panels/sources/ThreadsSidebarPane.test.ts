@@ -10,7 +10,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {getAxeViolations} from '../../testing/AxeHelpers.js';
-import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
@@ -166,7 +166,7 @@ describe('ThreadsSidebarPane rendering and accessibility', () => {
     assert.isTrue(ThreadsSidebarPane.shouldBeShown());
 
     threadsSidebarPane = new ThreadsSidebarPane();
-    renderElementIntoDOM(threadsSidebarPane, {includeCommonStyles: true});
+    renderElementIntoDOM(threadsSidebarPane, {includeCommonStyles: true, width: 300, height: 100});
     await threadsSidebarPane.updateComplete;
 
     const listbox = threadsSidebarPane.contentElement.querySelector('[role="listbox"]');
@@ -186,5 +186,8 @@ describe('ThreadsSidebarPane rendering and accessibility', () => {
 
     const violations = await getAxeViolations(threadsSidebarPane.contentElement);
     assert.isEmpty(violations);
+
+    await raf();
+    await assertScreenshot('sources/threads-sidebar-pane.png');
   });
 });

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import type {ProtocolMapping} from '../../generated/protocol-mapping.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
@@ -35,6 +35,18 @@ function isPageInputCommand(method: string): boolean {
   return method.startsWith('Input.') || PAGE_INPUT_COMMANDS.has(method);
 }
 
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0;
+}
+
+function isValidTargetInfo(targetInfo: unknown): targetInfo is Protocol.Target.TargetInfo {
+  if (!targetInfo || typeof targetInfo !== 'object' || Array.isArray(targetInfo)) {
+    return false;
+  }
+  const {targetId, type, url} = targetInfo as Partial<Protocol.Target.TargetInfo>;
+  return isNonEmptyString(targetId) && isNonEmptyString(type) && typeof url === 'string';
+}
+
 /**
  * This class serves as a puppeteer.Connection while sending/receiving CDP messages
  * over DevTools' own SessionRouter.
@@ -51,6 +63,9 @@ export class PuppeteerConnectionAdapter extends puppeteer.Connection implements
   #pageInputError?: Error;
 
   constructor(connection: ProtocolClient.CDPConnection.CDPConnection, sessionId: Protocol.Target.SessionID) {
+    if (!sessionId) {
+      throw new Error('PuppeteerConnectionAdapter requires a non-empty sessionId');
+    }
     // url is an empty string in this case parallel to:
     // https://github.com/puppeteer/puppeteer/blob/f63a123ecef86693e6457b07437a96f108f3e3c5/src/common/BrowserConnector.ts#L72
     // Pass a 'null' transport, it should never actually be used, otherwise we do something wrong overwriting connection.
@@ -85,11 +100,23 @@ export class PuppeteerConnectionAdapter extends puppeteer.Connection implements
     if (this.#pageInputError && typeof method === 'string' && isPageInputCommand(method)) {
       return Promise.reject(this.#pageInputError);
     }
+    if (this._closed) {
+      return Promise.reject(new ProtocolError(
+          `Session with given id not found: ${sessionId ?? this.#sessionId}`,
+          ProtocolClient.CDPConnection.CDPErrorStatus.SESSION_NOT_FOUND,
+          ));
+    }
+    if (sessionId !== undefined && (!sessionId || sessionId === this.#sessionId || !this._sessions.has(sessionId))) {
+      return Promise.reject(new ProtocolError(
+          `Session with given id not found: ${sessionId}`,
+          ProtocolClient.CDPConnection.CDPErrorStatus.SESSION_NOT_FOUND,
+          ));
+    }
+    const targetSessionId = sessionId === undefined ? this.#sessionId : sessionId;
     return this.#connection
-        .send(
-            method as ProtocolClient.CDPConnection.Command,
-            params as ProtocolClient.CDPConnection.CommandParams<ProtocolClient.CDPConnection.Command>,
-            sessionId ?? this.#sessionId)
+        .send(method as ProtocolClient.CDPConnection.Command,
+              params as ProtocolClient.CDPConnection.CommandParams<ProtocolClient.CDPConnection.Command>,
+              targetSessionId)
         .then(response => {
           if ('error' in response) {
             throw new ProtocolError(response.error.message, response.error.code, response.error.data);
@@ -100,17 +127,46 @@ export class PuppeteerConnectionAdapter extends puppeteer.Connection implements
   }
 
   onEvent<T extends keyof ProtocolMapping.Events>(event: ProtocolClient.CDPConnection.CDPEvent<T>): void {
+    if (this._closed) {
+      return;
+    }
+
     const {sessionId} = event;
+    let forwardedEvent: ProtocolClient.CDPConnection.CDPEvent<T> = event;
     if (sessionId === this.#sessionId) {
       // Puppeteer is expecting to use the default session, but we give it a non-default session in #connection.
       // Replace that sessionId with undefined so Puppeteer treats it as default.
-      event.sessionId = undefined;
+      forwardedEvent = {...event, sessionId: undefined};
     } else if (!sessionId || !this._sessions.has(sessionId)) {
       // Ignore the root session, or sessions puppeteer doesn't know about.
       return;
     }
 
-    void super.onMessage(JSON.stringify(event));
+    if (forwardedEvent.method === 'Target.attachedToTarget') {
+      const attachedParams = forwardedEvent.params as Protocol.Target.AttachedToTargetEvent | undefined;
+      if (!this.#isValidChildSessionId(attachedParams?.sessionId, sessionId) ||
+          !isValidTargetInfo(attachedParams?.targetInfo)) {
+        return;
+      }
+    }
+
+    void super.onMessage(JSON.stringify(forwardedEvent));
+  }
+
+  #isValidChildSessionId(childSessionId: unknown, parentSessionId: string): boolean {
+    if (!isNonEmptyString(childSessionId)) {
+      return false;
+    }
+    if (childSessionId === this.#sessionId) {
+      return false;
+    }
+    if (childSessionId === parentSessionId) {
+      return false;
+    }
+    if (this._sessions.has(childSessionId)) {
+      return false;
+    }
+    return true;
   }
 
   onDisconnect(): void {
@@ -118,6 +174,9 @@ export class PuppeteerConnectionAdapter extends puppeteer.Connection implements
   }
 
   override dispose(): void {
+    if (this._closed) {
+      return;
+    }
     super.dispose();
     this.#connection.unobserve(this);
     void this.#connection.send('Target.detachFromTarget', {sessionId: this.#sessionId}, this.#sessionId);

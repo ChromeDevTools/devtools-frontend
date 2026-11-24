@@ -17,6 +17,7 @@ node_ts_library("report") {
     "grading-loader.ts",
     "instructions.ts",
     "report-helpers.ts",
+    "scorer.ts",
     "trajectory-builder.ts",
   ]
   ts_deps = [ "../../conductor:implementation" ]

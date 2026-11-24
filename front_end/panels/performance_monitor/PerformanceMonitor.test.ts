@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -133,6 +133,19 @@ describeWithEnvironment('PerformanceMonitor', () => {
 
     performanceMonitor.detach();
     assert.strictEqual(countUpdatesOnThemeChange(), 0);
+  });
+
+  it('populates chart and indicator colors on initial show', async () => {
+    performanceMonitor = new PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl();
+    renderElementIntoDOM(performanceMonitor);
+    await doubleRaf();
+
+    const indicatorValues = performanceMonitor.contentElement.querySelectorAll<HTMLElement>('.perfmon-indicator-value');
+    assert.isNotEmpty(indicatorValues);
+    for (const indicatorValue of indicatorValues) {
+      assert.isNotEmpty(indicatorValue.style.color,
+                        'Expected metric indicator to have a non-empty color on initial show');
+    }
   });
 });
 

@@ -200,6 +200,13 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox<ShadowRoot> implement
     };
     const output = {graphRenderingContext: null, width: 0};
     this.view(input, output, this.contentElement);
+    if (!this.chartInfos[0]?.color) {
+      this.chartInfos = this.createChartInfos();
+      if (this.chartInfos[0]?.color) {
+        input.chartsInfo = this.chartInfos;
+        this.view(input, output, this.contentElement);
+      }
+    }
     this.graphRenderingContext = output.graphRenderingContext;
     this.width = output.width;
     this.draw();

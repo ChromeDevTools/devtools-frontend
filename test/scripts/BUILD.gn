@@ -16,12 +16,14 @@ node_script_test("devtools_script_tests") {
   data = [
     devtools_location_prepend + "config/typescript/",
     devtools_location_prepend + "front_end/application_tokens.css",
+    devtools_location_prepend + "front_end/core/i18n/locales/",
     devtools_location_prepend + "front_end/core/platform/BUILD.gn",
     devtools_location_prepend + "front_end/core/platform/api/BUILD.gn",
     devtools_location_prepend + "front_end/design_system_tokens.css",
     devtools_location_prepend + "front_end/panels/explain/",
     devtools_location_prepend + "front_end/testing/MochaHelpers.ts",
     devtools_location_prepend + "front_end/testing/TestIdGeneration.ts",
+    devtools_location_prepend + "front_end/third_party/intl-messageformat/package/intl-messageformat.esm.js",
     devtools_location_prepend + "front_end/ui/legacy/inspectorCommon.css",
     devtools_location_prepend +
         "front_end/ui/visual_logging/KnownContextValues.ts",
@@ -31,6 +33,7 @@ node_script_test("devtools_script_tests") {
     devtools_location_prepend + "test/conductor/",
     devtools_location_prepend + "test/scripts/",
     devtools_location_prepend + "test/shared/",
+    devtools_location_prepend + "third_party/i18n/bake-ctc-to-lhl.js",
   ]
 
   if (host_os == "linux") {

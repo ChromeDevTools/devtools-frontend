@@ -344,4 +344,82 @@ describe('The Application Tab', () => {
         ['top', 'frameId (main-frame.html)', 'No document detected', 'Other', 'favicon.ico', 'main-frame.html'],
         await getFrameTreeTitles(devToolsPage));
   });
+
+  it('updates the frame tree when an iframe is added', async ({devToolsPage, inspectedPage}) => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
+    expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');
+    const expandFrameTreeItem = async (selector: string) => {
+      const element = await devToolsPage.waitFor(`${selector}[aria-expanded]`);
+      if (await element.evaluate(el => el.getAttribute('aria-expanded')) === 'false') {
+        await devToolsPage.click(selector, {clickOptions: {count: 2}});
+        await devToolsPage.waitFor(`${selector}[aria-expanded="true"]`);
+      }
+    };
+
+    const waitForExpectedFrameTreeTitles = async (expected: string[]) => {
+      const actualTitles = await devToolsPage.waitForFunction(async () => {
+        const titles = (await getFrameTreeTitles(devToolsPage)).filter(t => t !== 'Other' && t !== 'favicon.ico');
+        if (titles.length !== expected.length) {
+          return undefined;
+        }
+        return titles.every((t, i) => t === expected[i]) ? titles : undefined;
+      });
+      assert.deepEqual(actualTitles, expected);
+    };
+
+    await inspectedPage.goToResource('application/resource-tree-non-unique-url-iframe.html');
+    await ensureApplicationPanel(devToolsPage);
+    await navigateToFrame(devToolsPage, 'top');
+    await expandFrameTreeItem('[aria-label="top"]');
+    await expandFrameTreeItem('[aria-label="top"] + ol > [aria-label="CSS"]');
+
+    await waitForExpectedFrameTreeTitles([
+      'top',
+      'CSS',
+      'styles-non-unique-url.css',
+      'resource-tree-non-unique-url-iframe.html',
+    ]);
+
+    await inspectedPage.evaluate(() => {
+      const iframe = document.createElement('iframe');
+      iframe.src = '../search/search.html';
+      // eslint-disable-next-line @devtools/no-document-body-mutation
+      document.body.appendChild(iframe);
+    });
+
+    await expandFrameTreeItem('[aria-label="top"] + ol > [aria-label="search.html"]');
+    await expandFrameTreeItem('[aria-label="top"] + ol > [aria-label="search.html"] + ol > [aria-label="CSS"]');
+    await expandFrameTreeItem('[aria-label="top"] + ol > [aria-label="search.html"] + ol > [aria-label="JavaScript"]');
+
+    await waitForExpectedFrameTreeTitles([
+      'top',
+      'search.html',
+      'CSS',
+      'search.css',
+      'JavaScript',
+      'search.js',
+      'search.html',
+      'CSS',
+      'styles-non-unique-url.css',
+      'resource-tree-non-unique-url-iframe.html',
+    ]);
+
+    await devToolsPage.click('[aria-label="top"] + ol > [aria-label="search.html"]');
+    const childFrameDetails = await devToolsPage.waitForFunction(async () => {
+      const keys = await Promise.all(
+          (await devToolsPage.$$('devtools-report-key')).map(e => e.evaluate(el => el.textContent?.trim())));
+      const values = await Promise.all(
+          (await devToolsPage.$$('devtools-report-value')).map(e => e.evaluate(el => el.deepInnerText())));
+      const url = getTrailingURL(values[0] ?? '');
+      if (!url.endsWith('/search/search.html') || keys[2] !== 'Owner element' || !values[2]) {
+        return undefined;
+      }
+      return [url, values[1], values[2]];
+    });
+    assert.deepEqual(childFrameDetails, [
+      `${inspectedPage.getResourcesPath()}/search/search.html`,
+      `https://localhost:${inspectedPage.serverPort}`,
+      'iframe',
+    ]);
+  });
 });

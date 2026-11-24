@@ -11,10 +11,12 @@ import {
   runCommandWithQuickOpen,
 } from '../helpers/quick_open-helpers.js';
 import {
+  expandSourceTreeItem,
   openFileInSourcesPanel,
   openSnippetsSubPane,
   openSourceCodeEditorForFile,
   openSourcesPanel,
+  readSourcesTreeView,
 } from '../helpers/sources-helpers.js';
 
 describe('The Sources panel', () => {
@@ -117,6 +119,106 @@ describe('The Sources panel', () => {
            // Wait for the file to be selected in the 'Page' tree.
            await devToolsPage.waitFor('.navigator-file-tree-item[aria-label="index.html, file"][aria-selected="true"]');
          });
+
+      it('which updates when an iframe is added', async ({devToolsPage, inspectedPage}) => {
+        const setGroupByFolder = async (checked: boolean) => {
+          await devToolsPage.click('[title="More options"]');
+          await devToolsPage.waitFor('.soft-context-menu');
+          await devToolsPage.click(`[aria-label="Group by folder, ${checked ? 'unchecked' : 'checked'}"]`);
+          await devToolsPage.waitForNone('.soft-context-menu');
+          if (checked) {
+            await devToolsPage.waitFor('[aria-label="test/e2e/resources/application, nw-folder"]');
+          } else {
+            await devToolsPage.waitForNone('[aria-label="test/e2e/resources/application, nw-folder"]');
+          }
+        };
+        const waitForSourcesTreeView = async (expectedTree: string[]) => {
+          const actualTree = await devToolsPage.waitForFunction(async () => {
+            const tree = (await readSourcesTreeView(devToolsPage)).filter(item => !item.startsWith('pptr:'));
+            if (tree.length !== expectedTree.length) {
+              return undefined;
+            }
+            return tree.every((item, index) => item === expectedTree[index]) ? tree : undefined;
+          });
+          assert.deepEqual(actualTree, expectedTree);
+        };
+        const expandAllInitialFolderTree = async () => {
+          await expandSourceTreeItem(devToolsPage, '[aria-label="top, frame"]');
+          await expandSourceTreeItem(
+              devToolsPage,
+              `[aria-label="top, frame"] + ol > [aria-label="localhost:${inspectedPage.serverPort}, domain"]`);
+          await expandSourceTreeItem(devToolsPage, '[aria-label="test/e2e/resources/application, nw-folder"]');
+        };
+
+        await inspectedPage.goToResource('application/resource-tree-non-unique-url-iframe.html');
+        await openSourcesPanel(devToolsPage);
+        await expandAllInitialFolderTree();
+
+        await waitForSourcesTreeView([
+          'top',
+          'localhost:XXXX',
+          'test/e2e/resources/application',
+          'resource-tree-non-unique-url-iframe.html',
+          'styles-non-unique-url.css',
+        ]);
+
+        await setGroupByFolder(false);
+        try {
+          await expandSourceTreeItem(devToolsPage, '[aria-label="top, frame"]');
+          await waitForSourcesTreeView([
+            'top',
+            'resource-tree-non-unique-url-iframe.html',
+            'styles-non-unique-url.css',
+          ]);
+        } finally {
+          await setGroupByFolder(true);
+        }
+
+        await inspectedPage.evaluate(() => {
+          const iframe = document.createElement('iframe');
+          iframe.src = '../search/search.html';
+          // eslint-disable-next-line @devtools/no-document-body-mutation
+          document.body.appendChild(iframe);
+        });
+
+        await expandAllInitialFolderTree();
+        await expandSourceTreeItem(devToolsPage, '[aria-label="search.html, frame"]');
+        await expandSourceTreeItem(
+            devToolsPage,
+            `[aria-label="search.html, frame"] + ol > [aria-label="localhost:${inspectedPage.serverPort}, domain"]`);
+        await expandSourceTreeItem(devToolsPage, '[aria-label="test/e2e/resources/search, nw-folder"]');
+
+        await waitForSourcesTreeView([
+          'top',
+          'localhost:XXXX',
+          'test/e2e/resources/application',
+          'resource-tree-non-unique-url-iframe.html',
+          'styles-non-unique-url.css',
+          'search.html',
+          'localhost:XXXX',
+          'test/e2e/resources/search',
+          'search.html',
+          'search.js',
+          'search.css',
+        ]);
+
+        await setGroupByFolder(false);
+        try {
+          await expandSourceTreeItem(devToolsPage, '[aria-label="top, frame"]');
+          await expandSourceTreeItem(devToolsPage, '[aria-label="search.html, frame"]');
+          await waitForSourcesTreeView([
+            'top',
+            'resource-tree-non-unique-url-iframe.html',
+            'styles-non-unique-url.css',
+            'search.html',
+            'search.html',
+            'search.js',
+            'search.css',
+          ]);
+        } finally {
+          await setGroupByFolder(true);
+        }
+      });
     });
 
     it('which does not automatically reveal when opening a file', async ({devToolsPage, inspectedPage}) => {

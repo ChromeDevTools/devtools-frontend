@@ -38,8 +38,12 @@ describeWithEnvironment('NetworkPanel', () => {
   });
 
   afterEach(async () => {
-    await RenderCoordinator.done();
     networkPanel.detach();
+    for (const activeTarget of SDK.TargetManager.TargetManager.instance().targets()) {
+      activeTarget.dispose('afterEach');
+    }
+    await UI.Widget.Widget.allUpdatesComplete;
+    await RenderCoordinator.done();
   });
 
   const tracingTests = (inScope: boolean) => () => {

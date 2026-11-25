@@ -1701,6 +1701,56 @@ describeWithEnvironment('DOMTreeElementWidget issue management', () => {
     assert.deepEqual(domIssuesManager.issuesForNode(labelNode), [issue]);
   });
 
+  it('highlights the tag name of the parent element for an issue on an inlined text node', async () => {
+    const divNode = SDK.DOMModel.DOMNode.create(testDomModel, labelNode.ownerDocument, false, {
+      nodeId: 3 as Protocol.DOM.NodeId,
+      backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'DIV',
+      localName: 'div',
+      nodeValue: '',
+      childNodeCount: 1,
+      children: [{
+        nodeId: 4 as Protocol.DOM.NodeId,
+        backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.TEXT_NODE,
+        nodeName: '#text',
+        localName: '',
+        nodeValue: 'bad element',
+      }],
+    });
+    const textNode = divNode.firstChild;
+    assert.exists(textNode);
+    (SDK.DOMModel.DeferredDOMNode.prototype.resolvePromise as sinon.SinonStub).resolves(textNode);
+
+    widget.node = divNode;
+    widget.performUpdate();
+    const tagElement = widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
+    assert.strictEqual(tagElement.textContent, 'div');
+    assert.isFalse(tagElement.classList.contains('violating-element'));
+
+    const inspectorIssue = {
+      code: Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
+      details: {
+        elementAccessibilityIssueDetails: {
+          nodeId: 4 as Protocol.DOM.BackendNodeId,
+          elementAccessibilityIssueReason: Protocol.Audits.ElementAccessibilityIssueReason.DisallowedSelectChild,
+          hasDisallowedAttributes: false,
+        },
+      },
+    };
+    const issue = IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue.fromInspectorIssue(
+        mockModel, inspectorIssue)[0];
+    const issueAdded = domIssuesManager.once(IssuesManager.DOMIssuesManager.Events.DOM_ISSUE_ADDED);
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
+                                           {issuesModel: mockModel, issue});
+    assert.strictEqual((await issueAdded).node, textNode);
+
+    assert.isTrue(tagElement.classList.contains('violating-element'));
+    assert.deepEqual(domIssuesManager.issuesForNode(divNode), []);
+    assert.deepEqual(widget.issues, [issue]);
+  });
+
   it('adds attribute-specific issue to tree element and highlights attribute name', async () => {
     const inspectorIssue = {
       code: Protocol.Audits.InspectorIssueCode.GenericIssue,

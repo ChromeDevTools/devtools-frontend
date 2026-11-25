@@ -68,6 +68,15 @@ describe('The elements panel', function() {
     assert.strictEqual(violatingElement, 'button');
   });
 
+  it('displays squiggly lines on the parent element of an inlined text node with issue',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('elements/select-element-with-text-node-issue.html');
+       await expandSelectedNodeRecursively(devToolsPage);
+       const element = await devToolsPage.waitFor('.violating-element');
+       const violatingElement = await element.evaluate(node => node.textContent);
+       assert.strictEqual(violatingElement, 'div');
+     });
+
   it('displays multiple issues when hoverring over squiggly line', async ({devToolsPage, inspectedPage}) => {
     await expandElementsWithIssues(devToolsPage, inspectedPage);
     const elements = await devToolsPage.waitForMany('.violating-element', 2);

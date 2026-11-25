@@ -59,7 +59,7 @@ export class SetElementStylesTool implements DataTool<
   readonly name: ToolName = ToolName.SET_ELEMENT_STYLES;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
-      'Applies CSS style declarations to one or more elements on the inspected page identified by their backend node IDs (uids). Prefer this tool over executeJavaScript whenever modifying or testing CSS styles on elements.';
+      'Applies CSS style declarations to one or more elements on the inspected page identified by their backend node IDs (uids). Only call this tool when the user asks to change, fix, or preview CSS styles live—never on diagnostic ("why") or how-to ("how do I" / "how can I") queries or to speculatively test hypotheses. Prefer this tool over executeJavaScript whenever modifying CSS styles.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof SetElementStylesArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

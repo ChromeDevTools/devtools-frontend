@@ -78,27 +78,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/common/SettingRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const orderValuesBySettingCategory = new Map<SettingCategory, Set<number>>();
-
-export function registerCategoryOrder(category?: SettingCategory, order?: number): void {
-  if (category && typeof order === 'number') {
-    let orderValues = orderValuesBySettingCategory.get(category);
-    if (!orderValues) {
-      orderValues = new Set();
-      orderValuesBySettingCategory.set(category, orderValues);
-    }
-    if (orderValues.has(order)) {
-      throw new Error(`Duplicate order value '${order}' for settings category '${category}'`);
-    }
-    orderValues.add(order);
-  }
-}
-
-export function removeCategoryOrder(category?: SettingCategory, order?: number): void {
-  if (category && typeof order === 'number') {
-    orderValuesBySettingCategory.get(category)?.delete(order);
-  }
-}
 
 export const enum SettingCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.

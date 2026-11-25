@@ -230,6 +230,7 @@ const TimelineDetailsPaneBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.
     );
 
 export class TimelineDetailsPane extends TimelineDetailsPaneBase {
+  delegate?: Pick<TimelineModeViewDelegate, 'highlightEvent'>;
   readonly #summaryTabView: SummaryTabView;
   readonly #detailsLinkifier = new Components.Linkifier.Linkifier();
   private tabbedPane: UI.TabbedPane.TabbedPane;
@@ -294,9 +295,17 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
 
   constructor(
       delegate: Pick<TimelineModeViewDelegate, 'highlightEvent'>,
+      summaryTabView?: SummaryTabView,
+  );
+  constructor(element?: HTMLElement, summaryTabView?: SummaryTabView);
+  constructor(
+      delegateOrElement?: Pick<TimelineModeViewDelegate, 'highlightEvent'>|HTMLElement,
       summaryTabView: SummaryTabView = SUMMARY_TAB_VIEW,
   ) {
-    super();
+    super(delegateOrElement instanceof HTMLElement ? delegateOrElement : undefined);
+    if (delegateOrElement && !(delegateOrElement instanceof HTMLElement)) {
+      this.delegate = delegateOrElement;
+    }
     this.#summaryTabView = summaryTabView;
     this.registerRequiredCSS(detailsViewStyles);
     this.element.classList.add('timeline-details');
@@ -320,7 +329,9 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     this.appendTab(Tab.CallTree, i18nString(UIStrings.callTree), callTreeView);
     this.rangeDetailViews.set(Tab.CallTree, callTreeView);
 
-    const eventsView = new EventsTimelineTreeView(delegate);
+    const eventsView = new EventsTimelineTreeView({
+      highlightEvent: event => this.delegate?.highlightEvent(event),
+    });
     this.appendTab(Tab.EventLog, i18nString(UIStrings.eventLog), eventsView);
     this.rangeDetailViews.set(Tab.EventLog, eventsView);
 

@@ -13,6 +13,7 @@ import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/Enviro
 import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import type * as Components from './components/components.js';
 import * as Timeline from './timeline.js';
@@ -571,5 +572,53 @@ describe('TimelineDetailsView', function() {
 
     clock.restore();
     detailsView.detach(/* overrideHideOnDetach= */ true);
+  });
+
+  it('mounts via widget directive and forwards highlightEvent to delegate', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const delegate = new MockViewDelegate();
+    const highlightEventSpy = sinon.spy(delegate, 'highlightEvent');
+    const container = renderElementIntoDOM(new UI.Widget.VBox());
+
+    render(html`${UI.Widget.widget(Timeline.TimelineDetailsView.TimelineDetailsPane, {
+             delegate,
+           })}`,
+           container.contentElement);
+
+    const widgetElement = container.contentElement
+                              .querySelector<UI.Widget.WidgetElement<Timeline.TimelineDetailsView.TimelineDetailsPane>>(
+                                  'devtools-widget');
+    assert.exists(widgetElement);
+    const detailsView = widgetElement.getWidget();
+    assert.instanceOf(detailsView, Timeline.TimelineDetailsView.TimelineDetailsPane);
+    assert.strictEqual(detailsView.element, widgetElement);
+    assert.isTrue(detailsView.element.classList.contains('timeline-details'));
+
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents: allThreadEntriesInTrace(parsedTrace),
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    });
+    detailsView.selectTab(Timeline.TimelineDetailsView.Tab.EventLog, null);
+    await detailsView.updateComplete;
+
+    const tabbedPane =
+        UI.Widget.Widget.get(detailsView.element.querySelector('.tabbed-pane')!) as UI.TabbedPane.TabbedPane |
+        undefined;
+    assert.exists(tabbedPane);
+    const eventLogView = tabbedPane.tabView(Timeline.TimelineDetailsView.Tab.EventLog);
+    assert.instanceOf(eventLogView, Timeline.EventsTimelineTreeView.EventsTimelineTreeView);
+
+    const firstNode = eventLogView.dataGrid.rootNode().children[0] as Timeline.TimelineTreeView.GridNode | undefined;
+    assert.exists(firstNode);
+    eventLogView.onHover(firstNode.profileNode);
+    sinon.assert.calledOnceWithExactly(highlightEventSpy, firstNode.profileNode.event);
+
+    eventLogView.onHover(null);
+    sinon.assert.calledTwice(highlightEventSpy);
+    sinon.assert.calledWithExactly(highlightEventSpy.secondCall, null);
+
+    container.detach(/* overrideHideOnDetach= */ true);
   });
 });

@@ -896,7 +896,6 @@ export default defineConfig([
             'front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts',
             'front_end/panels/media/PlayerMessagesView.ts',
             'front_end/panels/network/NetworkPanel.ts',
-            'front_end/panels/network/NetworkWaterfallColumn.ts',
             'front_end/panels/network/RequestDeviceBoundSessionsView.ts',
             'front_end/panels/network/RequestPayloadView.ts',
             'front_end/panels/network/RequestTimingView.ts',

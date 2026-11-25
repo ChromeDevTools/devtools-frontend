@@ -7,7 +7,6 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {
-  collectElementsOnThePage,
   getErrorStackOnThePage,
   type GetErrorStackOutput,
   stringifyObjectOnThePage,
@@ -24,6 +23,27 @@ export function formatError(message: string): string {
   return `Error: ${message}`;
 }
 export class SideEffectError extends Error {}
+
+/**
+ * Releases own and internal property `RemoteObject` handles returned by
+ * `RemoteObject#getOwnProperties(false)`.
+ *
+ * `RemoteObject#release()` frees only the receiver handle itself, not child
+ * handles (such as `elements`, individual DOM nodes, or `[[Prototype]]`)
+ * allocated by `Runtime.getProperties`.
+ */
+function releaseProperties(
+    properties: SDK.RemoteObject.RemoteObjectProperty[]|null,
+    internalProperties: SDK.RemoteObject.RemoteObjectProperty[]|null,
+    ): void {
+  for (const property of [...(properties ?? []), ...(internalProperties ?? [])]) {
+    // TODO(b/590037053): Replace manual field releases with `property.release()`.
+    property.value?.release();
+    property.symbol?.release();
+    property.getter?.release();
+    property.setter?.release();
+  }
+}
 
 /**
  * Resolves `backendNodeId` values (`depth: 0`) for an array `RemoteObject` of
@@ -64,15 +84,7 @@ async function resolveElementBackendNodeIds(
     }
     return resolvedUids;
   } finally {
-    // Release own and internal property handles because `getOwnProperties(false)`
-    // allocates separate handles (such as `[[Prototype]]`) that
-    // `elementsArray.release()` does not free.
-    for (const property of [...(properties ?? []), ...(internalProperties ?? [])]) {
-      property.value?.release();
-      property.symbol?.release();
-      property.getter?.release();
-      property.setter?.release();
-    }
+    releaseProperties(properties, internalProperties);
   }
 }
 
@@ -101,42 +113,68 @@ async function callPageFunction<TArgs extends unknown[]>(
 }
 
 /**
- * Serializes a non-error `RemoteObject` on the inspected page, resolving
- * `BackendNodeId` (`uid`) prefixes for any DOM `Element` instances found.
+ * Serializes a non-error `RemoteObject` on the inspected page and prefixes any
+ * DOM `Element` tags with their resolved `BackendNodeId` (`(uid=<id>)`).
  *
- * Collects up to `MAX_SERIALIZED_ELEMENT_UIDS` element handles via
- * `collectElementsOnThePage`, resolves their `BackendNodeId`s via
- * `DOM.describeNode` when non-empty, and serializes via
- * `stringifyObjectOnThePage` with any resolved UIDs. Releases all intermediate
- * handles in `finally`.
+ * Page JavaScript cannot read Blink's internal `backendNodeId`, so this runs
+ * `stringifyObjectOnThePage` once to capture a `StringifiedPageObject`
+ * (`{json, elements}`) where each collected element tag is prefixed with a
+ * unique placeholder (`<prefix><index>__`), resolves each handle in `elements`
+ * with `DOM.describeNode`, and swaps each placeholder for `(uid=<id>) ` (or
+ * `""` on failure). Capturing `json` and `elements` in a single pass ensures
+ * live DOM collections (`HTMLCollection`, `NodeList`) mutating while
+ * `DOM.describeNode` is in flight cannot shift indices and attach UIDs to the
+ * wrong elements. Releases all intermediate `RemoteObject` handles in
+ * `finally`.
  */
 async function stringifyRemoteObjectOnThePage(object: SDK.RemoteObject.RemoteObject): Promise<string> {
-  const elementsArray = await callPageFunction(
+  // Generate the placeholder nonce in DevTools because `stringifyObjectOnThePage`
+  // runs under `throwOnSideEffect: true`, and keeping the nonce out of
+  // main-world reach prevents page content from forging UID prefixes.
+  const uidPlaceholderPrefix = `__devtools_uid_${crypto.randomUUID()}_`;
+  const resultObject = await callPageFunction(
       object,
-      collectElementsOnThePage,
-      [{value: MAX_SERIALIZED_ELEMENT_UIDS}],
+      stringifyObjectOnThePage,
+      [{value: {maxElements: MAX_SERIALIZED_ELEMENT_UIDS, uidPlaceholderPrefix}}],
   );
-  let serialized: SDK.RemoteObject.RemoteObject|undefined;
   try {
-    if (elementsArray.type !== Protocol.Runtime.RemoteObjectType.Object ||
-        elementsArray.subtype !== Protocol.Runtime.RemoteObjectSubtype.Array) {
+    if (resultObject.type !== Protocol.Runtime.RemoteObjectType.Object) {
       throw new Error('Could not stringify the object' + object);
     }
-    const resolvedUids = elementsArray.arrayLength() > 0 ?
-        await resolveElementBackendNodeIds(elementsArray, object.runtimeModel().target().domAgent()) :
-        undefined;
-    serialized = await callPageFunction(
-        object,
-        stringifyObjectOnThePage,
-        resolvedUids ? [{value: resolvedUids}] : undefined,
-    );
-    if (serialized.type !== Protocol.Runtime.RemoteObjectType.String) {
-      throw new Error('Could not stringify the object' + object);
+    const {properties, internalProperties} = await resultObject.getOwnProperties(false);
+    try {
+      const jsonProp = properties?.find(property => property.name === 'json')?.value;
+      const elementsProp = properties?.find(property => property.name === 'elements')?.value;
+      if (!jsonProp || jsonProp.type !== Protocol.Runtime.RemoteObjectType.String ||
+          typeof jsonProp.value !== 'string') {
+        throw new Error('Could not stringify the object' + object);
+      }
+      if (!elementsProp || elementsProp.subtype !== Protocol.Runtime.RemoteObjectSubtype.Array) {
+        throw new Error('Could not stringify the object' + object);
+      }
+      let json = jsonProp.value;
+      const elementCount = elementsProp.arrayLength();
+      if (elementCount > 0) {
+        const resolvedUids = await resolveElementBackendNodeIds(
+            elementsProp,
+            object.runtimeModel().target().domAgent(),
+        );
+        // Bound by `elementCount` (`elementsProp.arrayLength()`) as well as
+        // `resolvedUids.length` so every emitted placeholder is stripped even if
+        // `getOwnProperties()` returns fewer entries than collected elements.
+        // Pass a callback replacer to `replaceAll` to avoid `$`-pattern interpretation.
+        const maxElements = Math.max(elementCount, resolvedUids.length);
+        for (let i = 0; i < maxElements; i++) {
+          const uid = resolvedUids[i];
+          json = json.replaceAll(`${uidPlaceholderPrefix}${i}__`, () => (uid ? `(uid=${uid}) ` : ''));
+        }
+      }
+      return json;
+    } finally {
+      releaseProperties(properties, internalProperties);
     }
-    return serialized.value;
   } finally {
-    elementsArray.release();
-    serialized?.release();
+    resultObject.release();
   }
 }
 

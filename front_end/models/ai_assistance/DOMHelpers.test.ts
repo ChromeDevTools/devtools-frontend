@@ -10,127 +10,191 @@ import * as AiAssistance from './ai_assistance.js';
 describe('DOMHelpers', () => {
   describe('stringifyObjectOnThePage', () => {
     describe('HTMLElement', () => {
-      it('should work with plain nodes', async () => {
+      it('serializes plain nodes without options', () => {
         const el = document.createElement('div');
-        assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply(el), '"<div></div>"');
+        assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(el), {
+          json: '"<div></div>"',
+          elements: [],
+        });
       });
 
-      it('should serialize node with classes', async () => {
+      it('serializes nodes with classes', () => {
         const el = document.createElement('div');
         el.classList.add('section');
         el.classList.add('section-main');
-        assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply(el),
-                           '"<div class=\\"section section-main\\"></div>"');
+        assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(el), {
+          json: '"<div class=\\"section section-main\\"></div>"',
+          elements: [],
+        });
       });
 
-      it('should serialize node with id', async () => {
+      it('serializes nodes with id', () => {
         const el = document.createElement('div');
         el.id = 'promotion-section';
-        assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply(el),
-                           '"<div id=\\"promotion-section\\"></div>"');
+        assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(el), {
+          json: '"<div id=\\"promotion-section\\"></div>"',
+          elements: [],
+        });
       });
 
-      it('should serialize node with class and id', async () => {
+      it('serializes nodes with class and id', () => {
         const el = document.createElement('div');
         el.id = 'promotion-section';
         el.classList.add('section');
-        assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply(el),
-                           '"<div id=\\"promotion-section\\" class=\\"section\\"></div>"');
+        assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(el), {
+          json: '"<div id=\\"promotion-section\\" class=\\"section\\"></div>"',
+          elements: [],
+        });
       });
 
-      it('should serialize node with children', async () => {
+      it('serializes nodes with children', () => {
         const el = document.createElement('div');
         const p = document.createElement('p');
         el.appendChild(p);
-        assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply(el), '"<div>...</div>"');
+        assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(el), {
+          json: '"<div>...</div>"',
+          elements: [],
+        });
       });
     });
 
-    it('should serialize arrays correctly', async () => {
-      assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply([]), '[]');
-      assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply([1]), '[1]');
-      assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply([1, 2]), '[1,2]');
-      assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply([{key: 1}]), '[{"key":1}]');
+    it('serializes arrays correctly', () => {
+      assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call([]), {json: '[]', elements: []});
+      assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call([1]), {json: '[1]', elements: []});
+      assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call([1, 2]), {json: '[1,2]', elements: []});
+      assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call([{key: 1}]), {
+        json: '[{"key":1}]',
+        elements: [],
+      });
     });
 
-    it('should serialize objects correctly', async () => {
-      assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply({key: 'str'}), '{"key":"str"}');
-      assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply({key: 'str', secondKey: 'str2'}),
-                         '{"key":"str","secondKey":"str2"}');
-      assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply({key: 1}), '{"key":1}');
+    it('serializes objects correctly', () => {
+      assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call({key: 'str'}), {
+        json: '{"key":"str"}',
+        elements: [],
+      });
+      assert.deepEqual(
+          AiAssistance.DOMHelpers.stringifyObjectOnThePage.call({key: 'str', secondKey: 'str2'}),
+          {json: '{"key":"str","secondKey":"str2"}', elements: []},
+      );
+      assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call({key: 1}), {
+        json: '{"key":1}',
+        elements: [],
+      });
     });
 
-    it('should not continue serializing cycles', async () => {
+    it('stops serializing cycles', () => {
       const obj: {a: number, itself?: object} = {a: 1};
       obj.itself = obj;
-      assert.strictEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply(obj), '{"a":1,"itself":"(cycle)"}');
+      assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(obj), {
+        json: '{"a":1,"itself":"(cycle)"}',
+        elements: [],
+      });
     });
 
-    it('should not include number keys for CSSStyleDeclaration', async () => {
-      const result = AiAssistance.DOMHelpers.stringifyObjectOnThePage.apply(getComputedStyle(document.body));
-      const parsedResult = JSON.parse(result);
+    it('omits number keys for CSSStyleDeclaration', () => {
+      const {json, elements} = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(getComputedStyle(document.body));
+      if (json === undefined) {
+        assert.fail('Expected JSON string');
+      }
+      const parsedResult = JSON.parse(json);
       assert.isUndefined(parsedResult[0]);
+      assert.deepEqual(elements, []);
     });
 
-    it('serializes SVGElement without resolvedUids as a plain JSON string', () => {
+    it('serializes SVGElement without options as plain JSON with empty elements', () => {
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       svg.id = 'icon';
       svg.classList.add('logo');
-      assert.strictEqual(
-          AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(svg),
-          '"<svg id=\\"icon\\" class=\\"logo\\"></svg>"',
-      );
+      assert.deepEqual(AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(svg), {
+        json: '"<svg id=\\"icon\\" class=\\"logo\\"></svg>"',
+        elements: [],
+      });
     });
 
-    it('formats resolved UIDs while omitting null or excess elements and preserving cycles', () => {
+    it('serializes a plain object with options and collects no elements', () => {
+      const result = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(
+          {key: 'str'},
+          {maxElements: 50, uidPlaceholderPrefix: '__uid_'},
+      );
+      assert.deepEqual(result, {
+        json: '{"key":"str"}',
+        elements: [],
+      });
+    });
+
+    it('collects elements and emits indexed placeholder prefixes when options are provided', () => {
       const el1 = document.createElement('div');
       el1.id = 'hero';
       el1.classList.add('banner');
       el1.appendChild(document.createElement('p'));
       const el2 = document.createElement('span');
-      const el3 = document.createElement('p');
       const result = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(
-          {list: [el1, el2, el3], dup: el1},
-          [15, null],
+          {first: el1, second: el2},
+          {maxElements: 50, uidPlaceholderPrefix: '__uid_'},
       );
       assert.strictEqual(
-          result,
-          '{"list":["(uid=15) <div id=\\"hero\\" class=\\"banner\\">...</div>","<span></span>","<p></p>"],"dup":"(cycle)"}',
+          result.json,
+          '{"first":"__uid_0__<div id=\\"hero\\" class=\\"banner\\">...</div>","second":"__uid_1__<span></span>"}',
       );
-    });
-  });
-
-  describe('collectElementsOnThePage', () => {
-    it('returns an empty array for a plain object without elements', () => {
-      const result = AiAssistance.DOMHelpers.collectElementsOnThePage.call({key: 'str'}, 50);
-      assert.deepEqual(result, []);
+      assert.deepEqual(result.elements, [el1, el2]);
     });
 
-    it('collects a single element handle', () => {
-      const el = document.createElement('div');
-      el.id = 'hero';
-      el.classList.add('banner');
-      el.appendChild(document.createElement('p'));
-      const result = AiAssistance.DOMHelpers.collectElementsOnThePage.call(el, 50);
-      assert.deepEqual(result, [el]);
-    });
-
-    it('deduplicates repeated element references via seenBefore', () => {
+    it('deduplicates repeated element references as cycles while collecting handles', () => {
       const el1 = document.createElement('div');
       const el2 = document.createElement('span');
-      const result = AiAssistance.DOMHelpers.collectElementsOnThePage.call(
+      const result = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(
           {first: el1, list: [el2, el1]},
-          50,
+          {maxElements: 50, uidPlaceholderPrefix: '__uid_'},
       );
-      assert.deepEqual(result, [el1, el2]);
+      assert.strictEqual(
+          result.json,
+          '{"first":"__uid_0__<div></div>","list":["__uid_1__<span></span>","(cycle)"]}',
+      );
+      assert.deepEqual(result.elements, [el1, el2]);
     });
 
-    it('caps collected element handles at maxElements', () => {
+    it('stops collecting elements and emitting placeholders once maxElements is reached', () => {
       const el1 = document.createElement('div');
       const el2 = document.createElement('span');
       const el3 = document.createElement('p');
-      const result = AiAssistance.DOMHelpers.collectElementsOnThePage.call([el1, el2, el3], 2);
-      assert.deepEqual(result, [el1, el2]);
+      const result = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(
+          [el1, el2, el3],
+          {maxElements: 2, uidPlaceholderPrefix: '__uid_'},
+      );
+      assert.strictEqual(
+          result.json,
+          '["__uid_0__<div></div>","__uid_1__<span></span>","<p></p>"]',
+      );
+      assert.deepEqual(result.elements, [el1, el2]);
+    });
+
+    it('snapshots a live HTMLCollection with options before subsequent DOM mutations', () => {
+      const container = document.createElement('div');
+      const first = document.createElement('div');
+      first.id = 'first';
+      const second = document.createElement('span');
+      second.id = 'second';
+      container.append(first, second);
+
+      const result = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(
+          container.children,
+          {maxElements: 50, uidPlaceholderPrefix: '__uid_'},
+      );
+      const prepended = document.createElement('p');
+      prepended.id = 'prepended';
+      container.prepend(prepended);
+
+      assert.strictEqual(
+          result.json,
+          '{"0":"__uid_0__<div id=\\"first\\"></div>","1":"__uid_1__<span id=\\"second\\"></span>"}',
+      );
+      assert.deepEqual(result.elements, [first, second]);
+    });
+
+    it('returns undefined json and empty elements for non-JSON-serializable values', () => {
+      const result = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call({toJSON: () => undefined});
+      assert.deepEqual(result, {json: undefined, elements: []});
     });
   });
 

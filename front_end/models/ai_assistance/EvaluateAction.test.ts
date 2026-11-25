@@ -228,6 +228,10 @@ Cannot read properties of undefined (reading 'bar')`);
 
     describe('stringifyRemoteObject', () => {
       function createStubbedObjectSetup() {
+        const deterministicUuid = '00000000-0000-0000-0000-000000000001';
+        sinon.stub(crypto, 'randomUUID').returns(deterministicUuid);
+        const uidPlaceholderPrefix = `__devtools_uid_${deterministicUuid}_`;
+
         const universe = new TestUniverse();
         const target = universe.createTarget();
         const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
@@ -249,17 +253,56 @@ Cannot read properties of undefined (reading 'bar')`);
         });
         const describeNodeStub = sinon.stub(target.domAgent(), 'invoke_describeNode');
 
-        function stubElementArrayResponse(elementIds: string[], includeProto = true): void {
-          callFunctionOnStub.onFirstCall().resolves({
-            result: {
-              objectId: 'result-array' as Protocol.Runtime.RemoteObjectId,
+        interface StubStringifyResultOptions {
+          json?: string;
+          omitJson?: boolean;
+          elementIds?: string[];
+          elementsArrayLength?: number;
+          nonArrayElements?: boolean;
+          elementsOwnPropertiesEmpty?: boolean;
+          includeResultProto?: boolean;
+          includeElementsProto?: boolean;
+        }
+
+        function stubGetPropertiesForResult({
+          json = '""',
+          omitJson = false,
+          elementIds = [],
+          elementsArrayLength = elementIds.length,
+          nonArrayElements = false,
+          elementsOwnPropertiesEmpty = false,
+          includeResultProto = true,
+          includeElementsProto = true,
+        }: StubStringifyResultOptions): void {
+          const resultProperties: Protocol.Runtime.PropertyDescriptor[] = [];
+          if (!omitJson) {
+            resultProperties.push({
+              name: 'json',
+              configurable: true,
+              enumerable: true,
+              value: {
+                type: Protocol.Runtime.RemoteObjectType.String,
+                value: json,
+              },
+            });
+          }
+          resultProperties.push({
+            name: 'elements',
+            configurable: true,
+            enumerable: true,
+            value: nonArrayElements ? {
+              objectId: 'elements-not-array' as Protocol.Runtime.RemoteObjectId,
               type: Protocol.Runtime.RemoteObjectType.Object,
-              subtype: Protocol.Runtime.RemoteObjectSubtype.Array,
-              description: `Array(${elementIds.length})`,
-            },
-            getError: () => undefined,
+            } :
+                                      {
+                                        objectId: 'elements-array' as Protocol.Runtime.RemoteObjectId,
+                                        type: Protocol.Runtime.RemoteObjectType.Object,
+                                        subtype: Protocol.Runtime.RemoteObjectSubtype.Array,
+                                        description: `Array(${elementsArrayLength})`,
+                                      },
           });
-          const properties: Protocol.Runtime.PropertyDescriptor[] = [
+
+          const elementProperties: Protocol.Runtime.PropertyDescriptor[] = elementsOwnPropertiesEmpty ? [] : [
             ...elementIds.map((elementId, index) => ({
                                 name: String(index),
                                 configurable: true,
@@ -276,32 +319,66 @@ Cannot read properties of undefined (reading 'bar')`);
               enumerable: false,
               value: {
                 type: Protocol.Runtime.RemoteObjectType.Number,
-                value: elementIds.length,
+                value: elementsArrayLength,
               },
             },
           ];
-          getPropertiesStub.resolves({
-            result: properties,
-            internalProperties: includeProto ? [{
-              name: '[[Prototype]]',
-              value: {
-                objectId: 'proto-1' as Protocol.Runtime.RemoteObjectId,
-                type: Protocol.Runtime.RemoteObjectType.Object,
-                description: 'Array(0)',
-              },
-            }] :
-                                               undefined,
+
+          getPropertiesStub.callsFake(async ({objectId}) => {
+            if (objectId === 'result-object') {
+              return {
+                result: resultProperties,
+                internalProperties: includeResultProto ? [{
+                  name: '[[Prototype]]',
+                  value: {
+                    objectId: 'result-proto' as Protocol.Runtime.RemoteObjectId,
+                    type: Protocol.Runtime.RemoteObjectType.Object,
+                    description: 'Object',
+                  },
+                }] :
+                                                         undefined,
+                getError: () => undefined,
+              };
+            }
+            if (objectId === 'elements-array') {
+              return {
+                result: elementProperties,
+                internalProperties: includeElementsProto ? [{
+                  name: '[[Prototype]]',
+                  value: {
+                    objectId: 'elements-proto' as Protocol.Runtime.RemoteObjectId,
+                    type: Protocol.Runtime.RemoteObjectType.Object,
+                    description: 'Array(0)',
+                  },
+                }] :
+                                                           undefined,
+                getError: () => undefined,
+              };
+            }
+            return {result: [], getError: () => undefined};
+          });
+        }
+
+        function stubStringifyResultResponse(options: StubStringifyResultOptions): void {
+          callFunctionOnStub.onFirstCall().resolves({
+            result: {
+              objectId: 'result-object' as Protocol.Runtime.RemoteObjectId,
+              type: Protocol.Runtime.RemoteObjectType.Object,
+            },
             getError: () => undefined,
           });
+          stubGetPropertiesForResult(options);
         }
 
         return {
           object,
+          uidPlaceholderPrefix,
           callFunctionOnStub,
           getPropertiesStub,
           releaseObjectStub,
           describeNodeStub,
-          stubElementArrayResponse,
+          stubGetPropertiesForResult,
+          stubStringifyResultResponse,
         };
       }
 
@@ -358,146 +435,289 @@ Cannot read properties of undefined (reading 'bar')`);
             'Symbol(sym)');
       });
 
-      it('skips DOM.describeNode when collectElementsOnThePage returns an empty array', async () => {
+      it('skips elements getOwnProperties and DOM.describeNode when elements array is empty', async () => {
         const {
           object,
+          uidPlaceholderPrefix,
           callFunctionOnStub,
           getPropertiesStub,
           releaseObjectStub,
           describeNodeStub,
-          stubElementArrayResponse,
+          stubStringifyResultResponse,
         } = createStubbedObjectSetup();
-        stubElementArrayResponse([], false);
-        callFunctionOnStub.onSecondCall().resolves({
-          result: {
-            type: Protocol.Runtime.RemoteObjectType.String,
-            value: 'result',
-          },
-          getError: () => undefined,
-        });
+        stubStringifyResultResponse({json: '"plain"', elementIds: []});
 
         const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
 
-        assert.strictEqual(result, 'result');
+        assert.strictEqual(result, '"plain"');
         assert.strictEqual(AiAssistance.EvaluateAction.MAX_SERIALIZED_ELEMENT_UIDS, 50);
-        sinon.assert.calledTwice(callFunctionOnStub);
+        sinon.assert.calledOnce(callFunctionOnStub);
         assert.strictEqual(
             callFunctionOnStub.firstCall.args[0].functionDeclaration,
-            AiAssistance.DOMHelpers.collectElementsOnThePage.toString(),
-        );
-        assert.deepEqual(callFunctionOnStub.firstCall.args[0].arguments, [{value: 50}]);
-        assert.isTrue(callFunctionOnStub.firstCall.args[0].throwOnSideEffect);
-        assert.strictEqual(
-            callFunctionOnStub.secondCall.args[0].functionDeclaration,
             AiAssistance.DOMHelpers.stringifyObjectOnThePage.toString(),
         );
-        assert.isUndefined(callFunctionOnStub.secondCall.args[0].arguments);
-        assert.isTrue(callFunctionOnStub.secondCall.args[0].throwOnSideEffect);
-        sinon.assert.notCalled(getPropertiesStub);
+        assert.deepEqual(
+            callFunctionOnStub.firstCall.args[0].arguments,
+            [{value: {maxElements: 50, uidPlaceholderPrefix}}],
+        );
+        assert.isTrue(callFunctionOnStub.firstCall.args[0].throwOnSideEffect);
+        sinon.assert.calledOnce(getPropertiesStub);
+        assert.strictEqual(getPropertiesStub.firstCall.args[0].objectId, 'result-object');
         sinon.assert.notCalled(describeNodeStub);
         assert.sameMembers(
             releaseObjectStub.args.map(([arg]) => arg.objectId),
-            ['result-array' as Protocol.Runtime.RemoteObjectId],
-        );
-      });
-
-      it('resolves element backendNodeIds across collection and serialization and releases all handles', async () => {
-        const {object, callFunctionOnStub, releaseObjectStub, describeNodeStub, stubElementArrayResponse} =
-            createStubbedObjectSetup();
-        stubElementArrayResponse(['el-1', 'el-2']);
-        describeNodeStub.withArgs({objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0})
-            .resolves(describeNodeSuccess(15));
-        describeNodeStub.withArgs({objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0})
-            .resolves(describeNodeSuccess(42));
-        const finalJson = JSON.stringify({
-          first: '(uid=15) <div id="hero">...</div>',
-          second: '(uid=42) <svg></svg>',
-        });
-        callFunctionOnStub.onSecondCall().resolves({
-          result: {
-            type: Protocol.Runtime.RemoteObjectType.String,
-            value: finalJson,
-          },
-          getError: () => undefined,
-        });
-
-        const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
-
-        assert.deepEqual(JSON.parse(result), {
-          first: '(uid=15) <div id="hero">...</div>',
-          second: '(uid=42) <svg></svg>',
-        });
-        sinon.assert.calledTwice(callFunctionOnStub);
-        assert.strictEqual(
-            callFunctionOnStub.firstCall.args[0].functionDeclaration,
-            AiAssistance.DOMHelpers.collectElementsOnThePage.toString(),
-        );
-        assert.deepEqual(callFunctionOnStub.firstCall.args[0].arguments, [{value: 50}]);
-        assert.isTrue(callFunctionOnStub.firstCall.args[0].throwOnSideEffect);
-        assert.strictEqual(
-            callFunctionOnStub.secondCall.args[0].functionDeclaration,
-            AiAssistance.DOMHelpers.stringifyObjectOnThePage.toString(),
-        );
-        assert.deepEqual(callFunctionOnStub.secondCall.args[0].arguments, [{value: [15, 42]}]);
-        assert.isTrue(callFunctionOnStub.secondCall.args[0].throwOnSideEffect);
-        sinon.assert.calledTwice(describeNodeStub);
-        sinon.assert.calledWithExactly(describeNodeStub.firstCall,
-                                       {objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0});
-        sinon.assert.calledWithExactly(describeNodeStub.secondCall,
-                                       {objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0});
-        assert.sameMembers(
-            releaseObjectStub.args.map(([arg]) => arg.objectId),
             [
-              'el-1' as Protocol.Runtime.RemoteObjectId,
-              'el-2' as Protocol.Runtime.RemoteObjectId,
-              'proto-1' as Protocol.Runtime.RemoteObjectId,
-              'result-array' as Protocol.Runtime.RemoteObjectId,
+              'result-object' as Protocol.Runtime.RemoteObjectId,
+              'elements-array' as Protocol.Runtime.RemoteObjectId,
+              'result-proto' as Protocol.Runtime.RemoteObjectId,
             ],
         );
       });
 
-      it('passes null in resolvedUids when DOM.describeNode fails or returns zero backendNodeId', async () => {
-        const {object, callFunctionOnStub, releaseObjectStub, describeNodeStub, stubElementArrayResponse} =
-            createStubbedObjectSetup();
-        stubElementArrayResponse(['el-1', 'el-2', 'el-3'], false);
-        describeNodeStub.withArgs({objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0})
-            .resolves(describeNodeSuccess(15));
-        describeNodeStub.withArgs({objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0})
-            .resolves({...describeNodeSuccess(999), getError: () => 'Node not found'});
-        describeNodeStub.withArgs({objectId: 'el-3' as Protocol.Runtime.RemoteObjectId, depth: 0})
-            .resolves(describeNodeSuccess(0));
-        const finalJson = JSON.stringify(['(uid=15) <div></div>', '<span class="x"></span>', '<p></p>']);
-        callFunctionOnStub.onSecondCall().resolves({
-          result: {
-            type: Protocol.Runtime.RemoteObjectType.String,
-            value: finalJson,
-          },
-          getError: () => undefined,
+      it('substitutes resolved element backendNodeIds in a single callFunctionOn pass and releases all handles',
+         async () => {
+           const {
+             object,
+             uidPlaceholderPrefix,
+             callFunctionOnStub,
+             releaseObjectStub,
+             describeNodeStub,
+             stubStringifyResultResponse,
+           } = createStubbedObjectSetup();
+           stubStringifyResultResponse({
+             json: JSON.stringify({
+               first: `${uidPlaceholderPrefix}0__<div id="hero">...</div>`,
+               second: `${uidPlaceholderPrefix}1__<svg></svg>`,
+             }),
+             elementIds: ['el-1', 'el-2'],
+           });
+           describeNodeStub.withArgs({objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0})
+               .resolves(describeNodeSuccess(15));
+           describeNodeStub.withArgs({objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0})
+               .resolves(describeNodeSuccess(42));
+
+           const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+
+           assert.deepEqual(JSON.parse(result), {
+             first: '(uid=15) <div id="hero">...</div>',
+             second: '(uid=42) <svg></svg>',
+           });
+           sinon.assert.calledOnce(callFunctionOnStub);
+           sinon.assert.calledTwice(describeNodeStub);
+           sinon.assert.calledWithExactly(describeNodeStub.firstCall,
+                                          {objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0});
+           sinon.assert.calledWithExactly(describeNodeStub.secondCall,
+                                          {objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0});
+           assert.sameMembers(
+               releaseObjectStub.args.map(([arg]) => arg.objectId),
+               [
+                 'result-object' as Protocol.Runtime.RemoteObjectId,
+                 'elements-array' as Protocol.Runtime.RemoteObjectId,
+                 'result-proto' as Protocol.Runtime.RemoteObjectId,
+                 'elements-proto' as Protocol.Runtime.RemoteObjectId,
+                 'el-1' as Protocol.Runtime.RemoteObjectId,
+                 'el-2' as Protocol.Runtime.RemoteObjectId,
+               ],
+           );
+         });
+
+      it('strips placeholders without leaving raw tokens when DOM.describeNode fails or returns zero backendNodeId',
+         async () => {
+           const {
+             object,
+             uidPlaceholderPrefix,
+             releaseObjectStub,
+             describeNodeStub,
+             stubStringifyResultResponse,
+           } = createStubbedObjectSetup();
+           stubStringifyResultResponse({
+             json: JSON.stringify([
+               `${uidPlaceholderPrefix}0__<div></div>`,
+               `${uidPlaceholderPrefix}1__<span class="x"></span>`,
+               `${uidPlaceholderPrefix}2__<p></p>`,
+             ]),
+             elementIds: ['el-1', 'el-2', 'el-3'],
+             includeElementsProto: false,
+           });
+           describeNodeStub.withArgs({objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0})
+               .resolves(describeNodeSuccess(15));
+           describeNodeStub.withArgs({objectId: 'el-2' as Protocol.Runtime.RemoteObjectId, depth: 0})
+               .resolves({...describeNodeSuccess(999), getError: () => 'Node not found'});
+           describeNodeStub.withArgs({objectId: 'el-3' as Protocol.Runtime.RemoteObjectId, depth: 0})
+               .resolves(describeNodeSuccess(0));
+
+           const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+
+           assert.deepEqual(JSON.parse(result), [
+             '(uid=15) <div></div>',
+             '<span class="x"></span>',
+             '<p></p>',
+           ]);
+           assert.notInclude(result, uidPlaceholderPrefix);
+           assert.sameMembers(
+               releaseObjectStub.args.map(([arg]) => arg.objectId),
+               [
+                 'result-object' as Protocol.Runtime.RemoteObjectId,
+                 'elements-array' as Protocol.Runtime.RemoteObjectId,
+                 'result-proto' as Protocol.Runtime.RemoteObjectId,
+                 'el-1' as Protocol.Runtime.RemoteObjectId,
+                 'el-2' as Protocol.Runtime.RemoteObjectId,
+                 'el-3' as Protocol.Runtime.RemoteObjectId,
+               ],
+           );
+         });
+
+      it('strips placeholders when elements getOwnProperties returns empty despite non-zero arrayLength', async () => {
+        const {
+          object,
+          uidPlaceholderPrefix,
+          releaseObjectStub,
+          describeNodeStub,
+          stubStringifyResultResponse,
+        } = createStubbedObjectSetup();
+        stubStringifyResultResponse({
+          json: JSON.stringify([
+            `${uidPlaceholderPrefix}0__<div></div>`,
+            `${uidPlaceholderPrefix}1__<span></span>`,
+          ]),
+          elementsArrayLength: 2,
+          elementsOwnPropertiesEmpty: true,
+          includeElementsProto: false,
         });
 
         const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
 
-        assert.deepEqual(JSON.parse(result), [
-          '(uid=15) <div></div>',
-          '<span class="x"></span>',
-          '<p></p>',
-        ]);
-        assert.deepEqual(
-            callFunctionOnStub.secondCall.args[0].arguments,
-            [{value: [15, null, null]}],
-        );
+        assert.deepEqual(JSON.parse(result), ['<div></div>', '<span></span>']);
+        assert.notInclude(result, uidPlaceholderPrefix);
+        sinon.assert.notCalled(describeNodeStub);
         assert.sameMembers(
             releaseObjectStub.args.map(([arg]) => arg.objectId),
             [
-              'el-1' as Protocol.Runtime.RemoteObjectId,
-              'el-2' as Protocol.Runtime.RemoteObjectId,
-              'el-3' as Protocol.Runtime.RemoteObjectId,
-              'result-array' as Protocol.Runtime.RemoteObjectId,
+              'result-object' as Protocol.Runtime.RemoteObjectId,
+              'elements-array' as Protocol.Runtime.RemoteObjectId,
+              'result-proto' as Protocol.Runtime.RemoteObjectId,
             ],
         );
       });
 
-      it('throws and releases result object when collectElementsOnThePage reports an exception', async () => {
+      it('preserves the serialized snapshot when a live DOM collection mutates during DOM.describeNode', async () => {
+        const {
+          object,
+          callFunctionOnStub,
+          releaseObjectStub,
+          describeNodeStub,
+          stubGetPropertiesForResult,
+        } = createStubbedObjectSetup();
+
+        class FakeElement {
+          id: string;
+          nodeName: string;
+          constructor(tagName: string, id: string) {
+            this.nodeName = tagName.toUpperCase();
+            this.id = id;
+          }
+          getAttribute(): string|null {
+            return null;
+          }
+          hasChildNodes(): boolean {
+            return false;
+          }
+        }
+        class FakeCSSStyleDeclaration {}
+
+        // `EvaluateAction.test.ts` belongs to `devtools_foundation_module` (compiled without DOM lib types and executed in both Karma and Node).
+        const originalElementDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'Element');
+        const originalCssStyleDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'CSSStyleDeclaration');
+        Object.defineProperty(globalThis, 'Element', {
+          value: FakeElement,
+          configurable: true,
+          writable: true,
+        });
+        Object.defineProperty(globalThis, 'CSSStyleDeclaration', {
+          value: FakeCSSStyleDeclaration,
+          configurable: true,
+          writable: true,
+        });
+        const mutableCollection: Record<string, FakeElement> = {
+          0: new FakeElement('div', 'first'),
+          1: new FakeElement('span', 'second'),
+        };
+
+        try {
+          callFunctionOnStub.onFirstCall().callsFake(async ({functionDeclaration, arguments: callArgs}) => {
+            assert.strictEqual(
+                functionDeclaration,
+                AiAssistance.DOMHelpers.stringifyObjectOnThePage.toString(),
+            );
+            const rawOptions = callArgs?.[0]?.value;
+            if (typeof rawOptions !== 'object' || rawOptions === null || !('maxElements' in rawOptions) ||
+                typeof rawOptions.maxElements !== 'number' || !('uidPlaceholderPrefix' in rawOptions) ||
+                typeof rawOptions.uidPlaceholderPrefix !== 'string') {
+              assert.fail('Expected StringifyObjectOptions argument');
+            }
+            const serializedOutput = AiAssistance.DOMHelpers.stringifyObjectOnThePage.call(mutableCollection, {
+              maxElements: rawOptions.maxElements,
+              uidPlaceholderPrefix: rawOptions.uidPlaceholderPrefix,
+            });
+            stubGetPropertiesForResult({
+              json: serializedOutput.json,
+              elementIds: serializedOutput.elements.map((_, index) => `el-${index + 1}`),
+              includeResultProto: false,
+              includeElementsProto: false,
+            });
+            return {
+              result: {
+                objectId: 'result-object' as Protocol.Runtime.RemoteObjectId,
+                type: Protocol.Runtime.RemoteObjectType.Object,
+              },
+              getError: () => undefined,
+            };
+          });
+
+          describeNodeStub.callsFake(async ({objectId}) => {
+            if (objectId === 'el-1') {
+              mutableCollection['2'] = mutableCollection['1'];
+              mutableCollection['1'] = mutableCollection['0'];
+              mutableCollection['0'] = new FakeElement('p', 'prepended');
+              return describeNodeSuccess(15);
+            }
+            if (objectId === 'el-2') {
+              return describeNodeSuccess(42);
+            }
+            return describeNodeSuccess(0);
+          });
+
+          const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+
+          assert.deepEqual(JSON.parse(result), {
+            0: '(uid=15) <div id="first"></div>',
+            1: '(uid=42) <span id="second"></span>',
+          });
+          sinon.assert.calledOnce(callFunctionOnStub);
+          assert.sameMembers(
+              releaseObjectStub.args.map(([arg]) => arg.objectId),
+              [
+                'result-object' as Protocol.Runtime.RemoteObjectId,
+                'elements-array' as Protocol.Runtime.RemoteObjectId,
+                'el-1' as Protocol.Runtime.RemoteObjectId,
+                'el-2' as Protocol.Runtime.RemoteObjectId,
+              ],
+          );
+        } finally {
+          if (originalElementDescriptor) {
+            Object.defineProperty(globalThis, 'Element', originalElementDescriptor);
+          } else {
+            Reflect.deleteProperty(globalThis, 'Element');
+          }
+          if (originalCssStyleDescriptor) {
+            Object.defineProperty(globalThis, 'CSSStyleDeclaration', originalCssStyleDescriptor);
+          } else {
+            Reflect.deleteProperty(globalThis, 'CSSStyleDeclaration');
+          }
+        }
+      });
+
+      it('throws and releases error handle when stringifyObjectOnThePage reports an exception', async () => {
         const {object, callFunctionOnStub, releaseObjectStub} = createStubbedObjectSetup();
         callFunctionOnStub.onFirstCall().resolves({
           result: {
@@ -532,27 +752,9 @@ Cannot read properties of undefined (reading 'bar')`);
         );
       });
 
-      it('throws and releases both handles when stringifyObjectOnThePage reports an exception', async () => {
-        const {object, callFunctionOnStub, releaseObjectStub, describeNodeStub, stubElementArrayResponse} =
-            createStubbedObjectSetup();
-        stubElementArrayResponse(['el-1']);
-        describeNodeStub.withArgs({objectId: 'el-1' as Protocol.Runtime.RemoteObjectId, depth: 0})
-            .resolves(describeNodeSuccess(15));
-        callFunctionOnStub.onSecondCall().resolves({
-          result: {
-            objectId: 'err-2' as Protocol.Runtime.RemoteObjectId,
-            type: Protocol.Runtime.RemoteObjectType.Object,
-            subtype: Protocol.Runtime.RemoteObjectSubtype.Error,
-            description: 'SideEffectError: Possible side-effect in stringifyObjectOnThePage',
-          },
-          exceptionDetails: {
-            exceptionId: 2,
-            text: 'Uncaught',
-            lineNumber: 0,
-            columnNumber: 0,
-          },
-          getError: () => undefined,
-        });
+      it('throws and releases handles when result object omits json string', async () => {
+        const {object, releaseObjectStub, stubStringifyResultResponse} = createStubbedObjectSetup();
+        stubStringifyResultResponse({omitJson: true, elementIds: []});
 
         let caughtError: unknown;
         try {
@@ -563,17 +765,37 @@ Cannot read properties of undefined (reading 'bar')`);
         if (!(caughtError instanceof Error)) {
           assert.fail('Expected Error to be thrown');
         }
-        assert.strictEqual(
-            caughtError.message,
-            'Could not stringify the object: SideEffectError: Possible side-effect in stringifyObjectOnThePage',
-        );
+        assert.include(caughtError.message, 'Could not stringify the object');
         assert.sameMembers(
             releaseObjectStub.args.map(([arg]) => arg.objectId),
             [
-              'el-1' as Protocol.Runtime.RemoteObjectId,
-              'proto-1' as Protocol.Runtime.RemoteObjectId,
-              'result-array' as Protocol.Runtime.RemoteObjectId,
-              'err-2' as Protocol.Runtime.RemoteObjectId,
+              'result-object' as Protocol.Runtime.RemoteObjectId,
+              'elements-array' as Protocol.Runtime.RemoteObjectId,
+              'result-proto' as Protocol.Runtime.RemoteObjectId,
+            ],
+        );
+      });
+
+      it('throws and releases handles when result object has non-array elements', async () => {
+        const {object, releaseObjectStub, stubStringifyResultResponse} = createStubbedObjectSetup();
+        stubStringifyResultResponse({json: '"plain"', nonArrayElements: true});
+
+        let caughtError: unknown;
+        try {
+          await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
+        } catch (err) {
+          caughtError = err;
+        }
+        if (!(caughtError instanceof Error)) {
+          assert.fail('Expected Error to be thrown');
+        }
+        assert.include(caughtError.message, 'Could not stringify the object');
+        assert.sameMembers(
+            releaseObjectStub.args.map(([arg]) => arg.objectId),
+            [
+              'result-object' as Protocol.Runtime.RemoteObjectId,
+              'elements-not-array' as Protocol.Runtime.RemoteObjectId,
+              'result-proto' as Protocol.Runtime.RemoteObjectId,
             ],
         );
       });

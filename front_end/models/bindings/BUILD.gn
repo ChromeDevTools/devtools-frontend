@@ -147,12 +147,18 @@ devtools_foundation_module("foundation_unittests") {
 }
 
 devtools_api_test_module("api_tests") {
-  sources = [ "ResourceMapping.test.api.ts" ]
+  sources = [
+    "CSSWorkspaceBinding.test.api.ts",
+    "ResourceMapping.test.api.ts",
+  ]
 
   ts_deps = [
+    ":bundle",
     "../../../test/api",
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../core/text_utils:bundle",
+    "../workspace:bundle",
   ]
 }

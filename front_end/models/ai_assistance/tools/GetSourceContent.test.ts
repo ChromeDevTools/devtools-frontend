@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
@@ -42,6 +42,10 @@ describe('GetSourceContentTool', () => {
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(debuggerWorkspaceBinding);
     sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(networkLog);
+  });
+
+  afterEach(() => {
+    AiAssistance.ListSources.ListSourcesTool.reset();
   });
 
   it('retrieves and formats source content for matching origin and valid ID', async () => {
@@ -301,6 +305,37 @@ describe('GetSourceContentTool', () => {
       it('uses a generic title for an id that listSources has not returned', () => {
         assert.strictEqual(tool.displayInfoFromArgs({id: 999}).title, 'Reading source content');
       });
+    });
+
+    it('pages a truncated FileContext directly without calling listSources', async () => {
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/script.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+            content: 'a'.repeat(5_000) + 'b'.repeat(20),
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+      await uiSourceCodes[0].requestContentData();
+
+      const fileContext = new AiAssistance.FileContext.FileContext(uiSourceCodes[0], universe.debuggerWorkspaceBinding);
+      const promptDetails = await fileContext.getPromptDetails();
+      if (promptDetails === null) {
+        assert.fail('Expected non-null prompt details');
+      }
+      assert.include(promptDetails, '# Selected file\nFile ID: 1\n');
+      assert.include(promptDetails, 'The next part starts at offset 5000.');
+
+      const response = await tool.handler({id: 1, offset: 5_000}, context);
+      assertIsResult(response);
+      assert.include(response.result.content,
+                     '```\n' +
+                         'b'.repeat(20) + '\n```');
+      assert.notInclude(response.result.content, 'Content truncated');
     });
   });
 });

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, beforeEach, describe, it} from 'mocha';
+import {after, afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Host from '../../../core/host/host.js';
@@ -18,7 +18,7 @@ import {
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import * as Logs from '../../logs/logs.js';
-import {AiAgent, FileAgent, FileContext} from '../ai_assistance.js';
+import {AiAgent, FileAgent, FileContext, ListSources} from '../ai_assistance.js';
 
 describe('FileAgent', () => {
   setupRuntimeHooks();
@@ -36,10 +36,15 @@ describe('FileAgent', () => {
 
   beforeEach(() => {
     universe = new TestUniverse();
+    ListSources.ListSourcesTool.reset();
     const {targetManager} = universe;
 
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(targetManager);
     sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(universe.networkLog);
+  });
+
+  afterEach(() => {
+    ListSources.ListSourcesTool.reset();
   });
 
   after(async () => {
@@ -188,6 +193,7 @@ content
             role: 1,
             parts: [{
               text: `# Selected file
+File ID: 1
 File name: script.js
 URL: http://example.test/script.js
 File content:

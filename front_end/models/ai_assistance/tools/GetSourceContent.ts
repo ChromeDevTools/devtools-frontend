@@ -62,7 +62,7 @@ export class GetSourceContentTool implements
   readonly name: ToolName = ToolName.GET_SOURCE_CONTENT;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
-      'Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources. Long files are returned in parts. If the result ends with a "Content truncated" notice, call this function again with the same id and the offset given in the notice to read the next part.';
+      'Retrieves the formatted content and metadata of a source file by its numeric ID (from listSources or the File ID in # Selected file). Long files are returned in parts. If the result ends with a "Content truncated" notice, call this function again with the same id and the offset given in the notice to read the next part.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetSourceContentArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

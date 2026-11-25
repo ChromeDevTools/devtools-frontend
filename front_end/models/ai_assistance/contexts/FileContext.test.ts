@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {createUISourceCode} from '../../../testing/AiAssistanceHelpers.js';
@@ -24,6 +25,11 @@ describe('FileContext', () => {
 
   beforeEach(() => {
     universe = new TestUniverse();
+    AiAssistance.ListSources.ListSourcesTool.reset();
+  });
+
+  afterEach(() => {
+    AiAssistance.ListSources.ListSourcesTool.reset();
   });
 
   it('should return origin, item, and title correctly', async () => {
@@ -49,6 +55,7 @@ describe('FileContext', () => {
 
     const promptDetails = await context.getPromptDetails();
     assert.strictEqual(promptDetails, `# Selected file
+File ID: 1
 File name: script.js
 URL: https://example.com/script.js
 File content:
@@ -135,5 +142,36 @@ console.log("hello");
 
     const origin = context.getOrigin();
     assert.isTrue(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://trusted-site.com')));
+  });
+
+  it('reuses the assigned File ID across repeated getPromptDetails calls', async () => {
+    const uiSourceCode = await createUISourceCode({
+      url: urlString`https://example.com/script.js`,
+      content: 'console.log("hello");',
+      requestContentData: true,
+    });
+    const context = new AiAssistance.FileContext.FileContext(uiSourceCode, universe.debuggerWorkspaceBinding);
+
+    const firstDetails = await context.getPromptDetails();
+    const secondDetails = await context.getPromptDetails();
+    assert.include(firstDetails ?? '', '# Selected file\nFile ID: 1\n');
+    assert.include(secondDetails ?? '', '# Selected file\nFile ID: 1\n');
+  });
+
+  it('omits File ID when the file is not eligible for source registration', async () => {
+    const uiSourceCode = await createUISourceCode({
+      url: urlString`https://example.com/logo.png`,
+      mimeType: 'image/png',
+      resourceType: Common.ResourceType.resourceTypes.Image,
+      requestContentData: true,
+    });
+
+    const context = new AiAssistance.FileContext.FileContext(uiSourceCode, universe.debuggerWorkspaceBinding);
+    const promptDetails = await context.getPromptDetails();
+    if (promptDetails === null) {
+      assert.fail('Expected non-null prompt details');
+    }
+    assert.isTrue(promptDetails.startsWith('# Selected file\nFile name: logo.png'));
+    assert.notInclude(promptDetails, 'File ID:');
   });
 });

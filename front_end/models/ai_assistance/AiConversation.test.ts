@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, beforeEach, describe, it} from 'mocha';
+import {after, afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -41,6 +41,7 @@ describe('AiConversation', () => {
   let universe: TestUniverse;
 
   beforeEach(() => {
+    AiAssistance.ListSources.ListSourcesTool.reset();
     universe = new TestUniverse();
     const {targetManager, workspace, settings, networkLog, ignoreListManager, debuggerWorkspaceBinding} = universe;
 
@@ -51,6 +52,10 @@ describe('AiConversation', () => {
     sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(ignoreListManager);
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(debuggerWorkspaceBinding);
+  });
+
+  afterEach(() => {
+    AiAssistance.ListSources.ListSourcesTool.reset();
   });
 
   it('should be able to switch agent type based on context', async () => {
@@ -348,6 +353,7 @@ describe('AiConversation', () => {
       type: () => Workspace.Workspace.projectTypes.Network,
       uiSourceCodes: () => [file],
       fullDisplayName: () => 'script.js',
+      mimeType: () => 'application/javascript',
     } as unknown as Workspace.Workspace.Project;
     const file = new Workspace.UISourceCode.UISourceCode(
         project, Platform.DevToolsPath.urlString`https://example.com/script.js`,

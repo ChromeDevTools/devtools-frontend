@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
@@ -40,6 +40,10 @@ describe('ListSourcesTool', () => {
 
     sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(workspace);
     sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(ignoreListManager);
+  });
+
+  afterEach(() => {
+    AiAssistance.ListSources.ListSourcesTool.reset();
   });
 
   it('lists network files matching the origin lock and assigns unique IDs', async () => {
@@ -661,5 +665,130 @@ describe('ListSourcesTool', () => {
          assert.isTrue(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[1]));
          assert.isTrue(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[2]));
        });
+  });
+
+  describe('registerSource', () => {
+    it('assigns a positive ID to a readable non-opaque source and reuses it', () => {
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/script.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+
+      const firstId = AiAssistance.ListSources.ListSourcesTool.registerSource(uiSourceCodes[0]);
+      const secondId = AiAssistance.ListSources.ListSourcesTool.registerSource(uiSourceCodes[0]);
+      assert.strictEqual(firstId, 1);
+      assert.strictEqual(secondId, 1);
+
+      const originLock: AiAssistance.Tool.OriginLockState = {
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      };
+      assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.getSourceById(1, originLock), uiSourceCodes[0]);
+    });
+
+    it('returns null without assigning an ID for binary sources', () => {
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/logo.png`,
+            mimeType: 'image/png',
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+
+      assert.isNull(AiAssistance.ListSources.ListSourcesTool.registerSource(uiSourceCodes[0]));
+      assert.isFalse(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[0]));
+      assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.idToUiSourceCode.size, 0);
+    });
+
+    it('returns null without assigning an ID for opaque-origin sources', () => {
+      const attackerOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const {project, uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://victim.example/api/account`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+          },
+        ],
+        projectId: 'jsSourceMaps::target:https://attacker.com',
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+      sinon.stub(project, 'securityOrigin').returns(attackerOrigin);
+      assert.isTrue(uiSourceCodes[0].securityOrigin().isOpaque());
+
+      assert.isNull(AiAssistance.ListSources.ListSourcesTool.registerSource(uiSourceCodes[0]));
+      assert.isFalse(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[0]));
+      assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.idToUiSourceCode.size, 0);
+    });
+
+    it('shares the ID namespace with listSources without collision', async () => {
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/a.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+          {
+            url: urlString`https://example.com/b.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+
+      assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.registerSource(uiSourceCodes[0]), 1);
+
+      const context = {
+        getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+          status: 'ESTABLISHED_ORIGIN',
+          origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        }),
+      };
+      const response = await tool.handler({}, context);
+      assertIsResult(response);
+      assert.strictEqual(response.result, [
+        'id;name',
+        '1;/a.js',
+        '2;/b.js',
+      ].join('\n'));
+      assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.registerSource(uiSourceCodes[1]), 2);
+    });
+
+    it('assigns an ID to an ignore-listed readable source', () => {
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/vendor.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+      sinon.stub(uiSourceCodes[0], 'isIgnoreListed').returns(true);
+
+      assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.registerSource(uiSourceCodes[0]), 1);
+
+      const originLock: AiAssistance.Tool.OriginLockState = {
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      };
+      assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.getSourceById(1, originLock), uiSourceCodes[0]);
+    });
   });
 });

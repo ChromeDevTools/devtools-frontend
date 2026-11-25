@@ -7,6 +7,7 @@ import type * as Bindings from '../../bindings/bindings.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {type ContextDetail, ConversationContext} from '../agents/AiAgent.js';
 import {FileFormatter} from '../data_formatters/FileFormatter.js';
+import {ListSourcesTool} from '../tools/ListSources.js';
 
 export class FileContext extends ConversationContext<Workspace.UISourceCode.UISourceCode> {
   override readonly jslogContext = 'ai-context-file' as const;
@@ -35,8 +36,15 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
     return this.#file.displayName();
   }
 
+  /**
+   * Registers the selected file and includes its `File ID` so the model can page
+   * truncated content with `getSourceContent` and match `listSources` rows without
+   * an extra `listSources` call.
+   */
   override async getPromptDetails(): Promise<string|null> {
-    return `# Selected file\n${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
+    const fileId = ListSourcesTool.registerSource(this.#file);
+    const header = fileId !== null ? `# Selected file\nFile ID: ${fileId}` : '# Selected file';
+    return `${header}\n${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
   }
 
   override async getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]]|null> {

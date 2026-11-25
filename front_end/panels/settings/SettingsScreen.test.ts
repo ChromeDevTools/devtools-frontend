@@ -20,6 +20,7 @@ import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as PanelUtils from '../utils/utils.js';
 
 import * as Settings from './settings.js';
@@ -559,14 +560,16 @@ describe('GENERIC_SETTINGS_TAB_DEFAULT_VIEW', () => {
 
   it('highlights a setting control on the first render', () => {
     const highlightStub = sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
-    const setting = Common.Settings.Settings.instance().createSetting('test-highlight-setting', false);
-    setting.setRegistration({
-      settingName: 'test-highlight-setting',
-      settingType: Common.Settings.SettingType.BOOLEAN,
+    const descriptor: Common.Settings.SettingDescriptor<boolean> = {
+      name: 'test-highlight-setting',
+      type: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
+    };
+    SettingsUI.SettingUIRegistration.register(descriptor, {
       title: () => i18n.i18n.lockedString('Test highlight setting'),
       category: Common.Settings.SettingCategory.DEBUGGER,
     });
+    const setting = Common.Settings.Settings.instance().resolve(descriptor);
 
     const target = document.createElement('div');
     renderElementIntoDOM(target);

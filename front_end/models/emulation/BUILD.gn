@@ -11,6 +11,7 @@ devtools_foundation_module("emulation") {
   sources = [
     "DeviceModeModel.ts",
     "EmulatedDevices.ts",
+    "UserAgentGroups.ts",
   ]
 
   ts_deps = [
@@ -52,6 +53,7 @@ devtools_foundation_module("foundation_unittests") {
   sources = [
     "DeviceModeModel.test.ts",
     "EmulatedDevices.test.ts",
+    "UserAgentGroups.test.ts",
   ]
 
   ts_deps = [

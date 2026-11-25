@@ -187,6 +187,29 @@ describe('Button', () => {
     assert.isNull(innerButton.getAttribute('aria-expanded'));
   });
 
+  it('sets aria-description on the internal button', () => {
+    const button = renderButton({
+      variant: Buttons.Button.Variant.PRIMARY,
+      accessibleDescription: 'Press Ctrl+Enter to queue',
+    });
+    const innerButton = button.shadowRoot?.querySelector('button');
+    assert.isOk(innerButton);
+    assert.strictEqual(innerButton.getAttribute('aria-description'), 'Press Ctrl+Enter to queue');
+
+    button.accessibleDescription = 'Updated description';
+    assert.strictEqual(innerButton.getAttribute('aria-description'), 'Updated description');
+
+    button.accessibleDescription = undefined;
+    assert.isNull(innerButton.getAttribute('aria-description'));
+  });
+
+  it('does not set aria-description on the internal button when accessibleDescription is not provided', () => {
+    const button = renderButton();
+    const innerButton = button.shadowRoot?.querySelector('button');
+    assert.isOk(innerButton);
+    assert.isNull(innerButton.getAttribute('aria-description'));
+  });
+
   it('gets the text-with-icon class set for the inner button if text and icon is provided', () => {
     const button = renderButton(
         {

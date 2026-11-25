@@ -72,6 +72,12 @@ const UIStrings = {
    */
   queueCommentsPlaceholder: '{PH1} + \u21b5 to queue comments',
   /**
+   * @description Accessible description for the Send to agent button, informing screen reader users of the keyboard
+   * shortcut to queue the comment instead of sending it immediately.
+   * @example {Ctrl} PH1
+   */
+  queueCommentAriaDescription: 'Press {PH1}+Enter to queue the comment',
+  /**
    * @description Banner text shown at the bottom of a comment thread when the element the comment was
    * attached to has been removed and can no longer be found.
    */
@@ -112,6 +118,8 @@ export interface ViewInput {
   commentText: string;
   /** Placeholder for the comment text area, including the platform-specific queue shortcut. */
   placeholder: string;
+  /** Accessible description for the submit button, explaining the platform-specific queue shortcut. */
+  queueCommentDescription: string;
   /** Whether Cmd (Mac) or Ctrl (other platforms) is currently held, switching submit to "queue". */
   isQueueModifierPressed: boolean;
   /** True when the element the thread is anchored to has been removed. */
@@ -264,6 +272,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
           </devtools-tooltip>
           <devtools-button
             aria-label=${buttonText}
+            .accessibleDescription=${input.isEditing ? undefined : input.queueCommentDescription}
             .disabled=${!input.commentText.trim()}
             @mousedown=${(event: MouseEvent) => {
               event.preventDefault();
@@ -434,6 +443,8 @@ export class CommentThreadWidget extends UI.Widget.Widget {
       comments: this.#comments,
       commentText: this.#commentText,
       placeholder: i18nString(UIStrings.queueCommentsPlaceholder, {PH1: Host.Platform.isMac() ? '⌘' : 'Ctrl'}),
+      queueCommentDescription:
+          i18nString(UIStrings.queueCommentAriaDescription, {PH1: Host.Platform.isMac() ? 'Command' : 'Ctrl'}),
       isQueueModifierPressed: this.#isQueueModifierPressed,
       elementRemoved: this.#elementRemoved,
       textAreaRef: this.#textAreaRef,

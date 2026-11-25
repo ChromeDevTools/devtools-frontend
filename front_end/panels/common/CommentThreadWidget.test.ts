@@ -11,6 +11,7 @@ import type * as CommentManager from '../../models/comment_manager/comment_manag
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import * as PanelCommon from './common.js';
@@ -38,6 +39,7 @@ function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> 
         transmitted: false,
         commentText: '',
         placeholder: 'Ctrl + \u21b5 to queue comments',
+        queueCommentDescription: 'Press Ctrl+Enter to queue the comment',
         isEditing: false,
         isQueueModifierPressed: false,
         elementRemoved: false,
@@ -263,6 +265,20 @@ describeWithEnvironment('CommentThreadWidget queue interactions in DEFAULT_VIEW'
 
     renderView({commentText: 'some text', isQueueModifierPressed: true}, target);
     assert.strictEqual(button.textContent?.trim(), 'Queue comment');
+  });
+
+  it('sets accessibleDescription on the Send to agent button and omits it while editing', () => {
+    const target = renderView({
+      commentText: 'some text',
+      queueCommentDescription: 'Press Ctrl+Enter to queue the comment',
+      isEditing: false,
+    });
+    const button = target.querySelector<Buttons.Button.Button>('.footer devtools-button');
+    assert.isOk(button);
+    assert.strictEqual(button.accessibleDescription, 'Press Ctrl+Enter to queue the comment');
+
+    renderView({commentText: 'some text', isEditing: true}, target);
+    assert.isUndefined(button.accessibleDescription);
   });
 
   it('calls onQueueComment when Cmd/Ctrl+Enter is pressed in the textarea', () => {
@@ -625,5 +641,13 @@ describeWithEnvironment('CommentThreadWidget presenter', () => {
     widget.elementRemoved = true;
     await widget.updateComplete;
     assert.isTrue(view.input.elementRemoved);
+  });
+
+  it('passes platform-specific queueCommentDescription to view input', () => {
+    const view = createViewFunctionStub(CommentThreadWidget);
+    const widget = new CommentThreadWidget(undefined, view);
+    widget.performUpdate();
+    const expectedModifier = Host.Platform.isMac() ? 'Command' : 'Ctrl';
+    assert.strictEqual(view.input.queueCommentDescription, `Press ${expectedModifier}+Enter to queue the comment`);
   });
 });

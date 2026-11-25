@@ -64,6 +64,7 @@ interface ButtonState {
   longClickable?: boolean;
   inverseColorTheme?: boolean;
   accessibleExpanded?: boolean;
+  accessibleDescription?: string;
 }
 
 interface CommonButtonData {
@@ -100,6 +101,10 @@ interface CommonButtonData {
    * Sets aria-expanded on the internal <button> element.
    */
   accessibleExpanded?: boolean;
+  /**
+   * Sets aria-description on the internal <button> element.
+   */
+  accessibleDescription?: string;
 }
 
 export type ButtonData = CommonButtonData&(|{
@@ -181,6 +186,7 @@ export class Button extends HTMLElement {
     }
 
     this.#props.accessibleExpanded = data.accessibleExpanded;
+    this.#props.accessibleDescription = data.accessibleDescription;
     this.#props.jslogContext = data.jslogContext;
     this.#props.longClickable = data.longClickable;
     this.#props.inverseColorTheme = data.inverseColorTheme;
@@ -241,6 +247,15 @@ export class Button extends HTMLElement {
 
   get accessibleExpanded(): boolean|undefined {
     return this.#props.accessibleExpanded;
+  }
+
+  set accessibleDescription(description: string|undefined) {
+    this.#props.accessibleDescription = description;
+    this.#render();
+  }
+
+  get accessibleDescription(): string|undefined {
+    return this.#props.accessibleDescription;
   }
 
   set reducedFocusRing(reducedFocusRing: boolean) {
@@ -442,6 +457,7 @@ export class Button extends HTMLElement {
                   aria-pressed=${ifDefined(this.#props.toggled)}
                   aria-expanded=${ifDefined(this.#props.accessibleExpanded)}
                   aria-label=${ifDefined(this.accessibleLabel || this.title || undefined)}
+                  aria-description=${ifDefined(this.#props.accessibleDescription)}
                   jslog=${ifDefined(jslog)}>
             ${hasIcon ? html`
               <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>

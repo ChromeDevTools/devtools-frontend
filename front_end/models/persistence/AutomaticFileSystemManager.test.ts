@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, describe, it} from 'mocha';
+import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -36,19 +36,10 @@ describe('Persistence', () => {
       const root = '/path/to/bar' as Platform.DevToolsPath.RawPathString;
       const uuid = '549bbf9b-48b2-4af7-aebd-d3ba68993094';
 
-      afterEach(() => {
-        AutomaticFileSystemManager.removeInstance();
-      });
-
       it('initially doesn\'t report an automatic file system', () => {
         const {inspectorFrontendHost, projectSettingsModel} = createStubInstances('available', {});
 
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
 
         assert.isNull(manager.automaticFileSystem);
       });
@@ -56,12 +47,7 @@ describe('Persistence', () => {
       it('listens to FileSystemRemoved events', () => {
         const {inspectorFrontendHost, projectSettingsModel} = createStubInstances('available', {});
 
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const automaticFileSystemManager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const automaticFileSystemManager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
 
         sinon.assert.calledOnceWithMatch(
             inspectorFrontendHost.events.addEventListener, Host.InspectorFrontendHostAPI.Events.FileSystemRemoved,
@@ -72,12 +58,7 @@ describe('Persistence', () => {
         const {inspectorFrontendHost, projectSettingsModel} =
             createStubInstances('available', {workspace: {root, uuid}});
 
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
 
         assert.deepEqual(manager.automaticFileSystem, {root, uuid, state: 'connecting'});
         sinon.assert.calledOnceWithMatch(
@@ -88,12 +69,7 @@ describe('Persistence', () => {
         const {inspectorFrontendHost, projectSettingsModel} =
             createStubInstances('available', {workspace: {root, uuid}});
 
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
         const [, , , setupCallback] = inspectorFrontendHost.connectAutomaticFileSystem.lastCall.args;
         setupCallback({success: true});
         const automaticFileSystem = await manager.once(AUTOMATIC_FILE_SYSTEM_CHANGED);
@@ -106,12 +82,7 @@ describe('Persistence', () => {
         const {inspectorFrontendHost, projectSettingsModel} =
             createStubInstances('available', {workspace: {root, uuid}});
 
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
         const [, , , setupCallback] = inspectorFrontendHost.connectAutomaticFileSystem.lastCall.args;
         setupCallback({success: false});
         const automaticFileSystem = await manager.once(AUTOMATIC_FILE_SYSTEM_CHANGED);
@@ -123,12 +94,7 @@ describe('Persistence', () => {
       it('performs first-time setup of automatic file system correctly', async () => {
         const {inspectorFrontendHost, projectSettingsModel} =
             createStubInstances('available', {workspace: {root, uuid}});
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
         const [, , , setupCallback] = inspectorFrontendHost.connectAutomaticFileSystem.lastCall.args;
         setupCallback({success: false});
         await manager.once(AUTOMATIC_FILE_SYSTEM_CHANGED);
@@ -151,12 +117,7 @@ describe('Persistence', () => {
       it('correctly disconnects automatic file systems', async () => {
         const {inspectorFrontendHost, projectSettingsModel} =
             createStubInstances('available', {workspace: {root, uuid}});
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
         const [, , , setupCallback] = inspectorFrontendHost.connectAutomaticFileSystem.lastCall.args;
         setupCallback({success: true});
         await manager.once(AUTOMATIC_FILE_SYSTEM_CHANGED);
@@ -173,12 +134,7 @@ describe('Persistence', () => {
       it('reflects disconnected state correctly when the file system is removed', async () => {
         const {inspectorFrontendHost, projectSettingsModel} =
             createStubInstances('available', {workspace: {root, uuid}});
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
         const [, fileSystemRemoved] = inspectorFrontendHost.events.addEventListener.lastCall.args;
         const [, , , setupCallback] = inspectorFrontendHost.connectAutomaticFileSystem.lastCall.args;
         setupCallback({success: true});
@@ -195,12 +151,7 @@ describe('Persistence', () => {
       it('reports available when project settings are available', () => {
         const {inspectorFrontendHost, projectSettingsModel} = createStubInstances('available', {});
 
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
 
         assert.strictEqual(manager.availability, 'available');
       });
@@ -208,12 +159,7 @@ describe('Persistence', () => {
       it('reports unavailable when project settings are unavailable', () => {
         const {inspectorFrontendHost, projectSettingsModel} = createStubInstances('unavailable', {});
 
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
+        const manager = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
 
         assert.strictEqual(manager.availability, 'unavailable');
       });

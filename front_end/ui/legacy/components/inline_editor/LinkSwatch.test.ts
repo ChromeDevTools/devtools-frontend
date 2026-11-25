@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
@@ -86,5 +86,41 @@ describe('LinkSwatch', () => {
     element.click();
 
     assert.isTrue(callbackCalled);
+  });
+
+  describe('screenshots', () => {
+    it('renders a defined link swatch', async () => {
+      const container = document.createElement('div');
+      container.style.padding = '4px';
+      const component = new InlineEditor.LinkSwatch.LinkSwatch();
+      container.appendChild(component);
+      renderElementIntoDOM(container, {includeCommonStyles: true});
+      component.data = {
+        text: '--my-var',
+        tooltip: undefined,
+        isDefined: true,
+        onLinkActivate: () => {},
+        jslogContext: 'test',
+      };
+
+      await assertScreenshot('inline_editor/link_swatch_defined.png');
+    });
+
+    it('renders an undefined link swatch', async () => {
+      const container = document.createElement('div');
+      container.style.padding = '4px';
+      const component = new InlineEditor.LinkSwatch.LinkSwatch();
+      container.appendChild(component);
+      renderElementIntoDOM(container, {includeCommonStyles: true});
+      component.data = {
+        text: '--undefined-var',
+        tooltip: {title: '--undefined-var is not defined'},
+        isDefined: false,
+        onLinkActivate: () => {},
+        jslogContext: 'test',
+      };
+
+      await assertScreenshot('inline_editor/link_swatch_undefined.png');
+    });
   });
 });

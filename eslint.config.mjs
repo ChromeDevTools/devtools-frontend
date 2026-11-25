@@ -919,8 +919,6 @@ export default defineConfig([
             'front_end/ui/legacy/RootView.ts',
             'front_end/ui/legacy/components/cookie_table/CookiesTable.ts',
             'front_end/ui/legacy/components/data_grid/DataGrid.ts',
-            'front_end/ui/legacy/components/inline_editor/CSSAngle.ts',
-            'front_end/ui/legacy/components/inline_editor/LinkSwatch.ts',
             'front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.ts',
             'front_end/ui/legacy/components/perf_ui/ChartViewport.ts',
             'front_end/ui/legacy/components/perf_ui/OverviewGrid.ts',

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
 
@@ -127,6 +127,37 @@ describe('CSSAngle', () => {
     const arrowDownShift = new KeyboardEvent('keydown', {key: 'ArrowDown', shiftKey: true});
     angleContainer.dispatchEvent(arrowDownShift);
     assert.strictEqual(cssAngleText, '36deg', 'angle value should increase by 1 when ArrowUp is pressed');
+  });
+
+  describe('screenshots', () => {
+    it('renders the swatch', async () => {
+      const container = document.createElement('div');
+      container.style.padding = '8px';
+      const component = new InlineEditor.CSSAngle.CSSAngle();
+      container.appendChild(component);
+      renderElementIntoDOM(container, {includeCommonStyles: true});
+      component.data = {
+        angleText: '45deg',
+        containingPane: container,
+      };
+
+      await assertScreenshot('inline_editor/css_angle_swatch.png');
+    });
+
+    it('renders the popover editor', async () => {
+      const container = document.createElement('div');
+      container.style.padding = '8px 70px';
+      const component = new InlineEditor.CSSAngle.CSSAngle();
+      container.appendChild(component);
+      renderElementIntoDOM(container, {includeCommonStyles: true, width: 160, height: 140});
+      component.data = {
+        angleText: '45deg',
+        containingPane: container,
+      };
+      component.popOver();
+
+      await assertScreenshot('inline_editor/css_angle_popover.png');
+    });
   });
 
   describe('#CSSAngleUtils', () => {

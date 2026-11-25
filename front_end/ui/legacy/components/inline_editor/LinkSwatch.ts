@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Buttons from '../../../components/buttons/buttons.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
@@ -62,7 +61,6 @@ export class LinkSwatch extends HTMLElement {
 
     // clang-format off
     render(html`
-        <style>${Buttons.textButtonStyles}</style>
         <style>${linkSwatchStyles}</style>
         <button .disabled=${!isDefined} class=${classes} type="button" title=${ifDefined(title)}
                 aria-details=${ifDefined(tooltipId)} @click=${onActivate} @keydown=${onActivate}

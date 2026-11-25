@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -13,12 +13,17 @@ import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelUtils from '../utils/utils.js';
 
 import * as Network from './network.js';
 
 describeWithEnvironment('NetworkConfigView', () => {
+  beforeEach(() => {
+    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+  });
+
   describe('accessibility', () => {
     it('has no aXe violations', async () => {
       const networkConfigView = Network.NetworkConfigView.NetworkConfigView.instance({forceNew: true});
@@ -273,5 +278,66 @@ describeWithEnvironment('NetworkConfigView', () => {
     sinon.assert.calledOnceWithExactly(showViewStub, 'network.config');
     assert.strictEqual(networkConfigView.element.shadowRoot?.activeElement, uaSelect);
     sinon.assert.calledOnceWithExactly(highlightStub, uaSelect);
+  });
+
+  it('checks browser default when custom user agent override is disabled externally', async () => {
+    const view = createViewFunctionStub(Network.NetworkConfigView.NetworkConfigView);
+    const networkConfigView = new Network.NetworkConfigView.NetworkConfigView(view);
+    renderElementIntoDOM(networkConfigView);
+
+    (await view.nextInput).onAutoCheckboxChange(false);
+    (await view.nextInput).onCustomUserAgentInput('Custom UA Test');
+    assert.isTrue((await view.nextInput).useCustomUA);
+
+    SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentEnabled(false);
+
+    assert.isFalse((await view.nextInput).useCustomUA);
+  });
+
+  it('keeps browser default unchecked when user clears the custom user agent input', async () => {
+    const view = createViewFunctionStub(Network.NetworkConfigView.NetworkConfigView);
+    const networkConfigView = new Network.NetworkConfigView.NetworkConfigView(view);
+    renderElementIntoDOM(networkConfigView);
+
+    (await view.nextInput).onAutoCheckboxChange(false);
+    (await view.nextInput).onCustomUserAgentInput('Custom UA Test');
+    (await view.nextInput).onCustomUserAgentInput('');
+
+    assert.isTrue((await view.nextInput).useCustomUA);
+  });
+
+  it('unsubscribes from custom user agent changes when hidden', async () => {
+    const view = createViewFunctionStub(Network.NetworkConfigView.NetworkConfigView);
+    const networkConfigView = new Network.NetworkConfigView.NetworkConfigView(view);
+    const requestUpdateSpy = sinon.spy(networkConfigView, 'requestUpdate');
+    renderElementIntoDOM(networkConfigView);
+
+    (await view.nextInput).onAutoCheckboxChange(false);
+    (await view.nextInput).onCustomUserAgentInput('Custom UA Test');
+    await view.nextInput;
+
+    requestUpdateSpy.resetHistory();
+    networkConfigView.detach();
+
+    SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentEnabled(false);
+
+    sinon.assert.notCalled(requestUpdateSpy);
+  });
+
+  it('checks browser default when custom user agent override is disabled while hidden', async () => {
+    const view = createViewFunctionStub(Network.NetworkConfigView.NetworkConfigView);
+    const networkConfigView = new Network.NetworkConfigView.NetworkConfigView(view);
+    renderElementIntoDOM(networkConfigView);
+
+    (await view.nextInput).onAutoCheckboxChange(false);
+    (await view.nextInput).onCustomUserAgentInput('Custom UA Test');
+    assert.isTrue((await view.nextInput).useCustomUA);
+
+    networkConfigView.detach();
+    SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentEnabled(false);
+
+    renderElementIntoDOM(networkConfigView);
+
+    assert.isFalse((await view.nextInput).useCustomUA);
   });
 });

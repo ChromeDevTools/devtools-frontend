@@ -1656,6 +1656,35 @@ describe('MultitargetNetworkManager', () => {
 
       sinon.assert.notCalled(listener);
     });
+
+    it('clears the custom user agent override when disabled', () => {
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('CustomAgent');
+      assert.isTrue(universe.multitargetNetworkManager.customUserAgentEnabled());
+
+      universe.multitargetNetworkManager.setCustomUserAgentEnabled(false);
+
+      assert.isFalse(universe.multitargetNetworkManager.customUserAgentEnabled());
+      assert.strictEqual(universe.multitargetNetworkManager.currentUserAgent(), '');
+    });
+
+    it('keeps custom user agent enabled when the override string is cleared', () => {
+      universe.multitargetNetworkManager.setCustomUserAgentEnabled(true);
+
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('');
+
+      assert.isTrue(universe.multitargetNetworkManager.customUserAgentEnabled());
+    });
+
+    it('emits CUSTOM_USER_AGENT_CHANGED when enabled state changes', () => {
+      const listener = sinon.spy();
+      universe.multitargetNetworkManager.addEventListener(
+          SDK.NetworkManager.MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED, listener);
+
+      universe.multitargetNetworkManager.setCustomUserAgentEnabled(true);
+      universe.multitargetNetworkManager.setCustomUserAgentEnabled(true);
+
+      sinon.assert.calledOnce(listener);
+    });
   });
 
   describe('Trust Token done event', () => {

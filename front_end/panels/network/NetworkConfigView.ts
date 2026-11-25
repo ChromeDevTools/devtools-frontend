@@ -240,7 +240,6 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
   readonly #view: View;
   readonly #viewOutput: NetworkConfigViewOutput = {};
-  #useCustomUA = false;
   #customSelectValue = 'custom';
   #validationError = '';
   #clientHintsValue: EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsFormData;
@@ -254,12 +253,13 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
     this.#cacheDisabledSetting.addChangeListener(() => this.requestUpdate());
     this.#customUserAgentSetting.addChangeListener(() => {
-      if (!this.#useCustomUA) {
+      const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+      if (!networkManager.customUserAgentEnabled()) {
         return;
       }
       const customUA = this.#customUserAgentSetting.get();
       const userAgentMetadata = EmulationModel.UserAgentGroups.getUserAgentMetadata(customUA);
-      SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
+      networkManager.setCustomUserAgentOverride(customUA, userAgentMetadata);
     });
 
     this.#updateCustomSelectValue();
@@ -290,7 +290,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     const input: NetworkConfigViewInput = {
       disableCache: this.#cacheDisabledSetting.get(),
       onDisableCacheChange: (checked: boolean) => this.#onDisableCacheChange(checked),
-      useCustomUA: this.#useCustomUA,
+      useCustomUA: SDK.NetworkManager.MultitargetNetworkManager.instance().customUserAgentEnabled(),
       onAutoCheckboxChange: (checked: boolean) => this.#onAutoCheckboxChange(checked),
       customSelectValue: this.#customSelectValue,
       onUserAgentSelect: (value: string) => this.#onUserAgentSelect(value),
@@ -311,12 +311,15 @@ export class NetworkConfigView extends UI.Widget.VBox {
   }
 
   #onAutoCheckboxChange(checked: boolean): void {
+    const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+    // The checkbox is "Use browser default", so checking it disables the custom user agent.
     const useCustomUA = !checked;
-    this.#useCustomUA = useCustomUA;
-    const customUA = useCustomUA ? this.#customUserAgentSetting.get() : '';
-    const userAgentMetadata = useCustomUA ? EmulationModel.UserAgentGroups.getUserAgentMetadata(customUA) : null;
-    SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
-    this.requestUpdate();
+    networkManager.setCustomUserAgentEnabled(useCustomUA);
+    if (useCustomUA) {
+      const customUA = this.#customUserAgentSetting.get();
+      const userAgentMetadata = EmulationModel.UserAgentGroups.getUserAgentMetadata(customUA);
+      networkManager.setCustomUserAgentOverride(customUA, userAgentMetadata);
+    }
   }
 
   #onUserAgentSelect(value: string): void {
@@ -381,8 +384,16 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
+    SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED, this.requestUpdate, this);
     this.requestUpdate();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkConditionsPanelShown));
+  }
+
+  override willHide(): void {
+    super.willHide();
+    SDK.NetworkManager.MultitargetNetworkManager.instance().removeEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED, this.requestUpdate, this);
   }
 
   revealUserAgent(): void {

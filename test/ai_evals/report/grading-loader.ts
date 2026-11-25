@@ -9,6 +9,7 @@
  *
  * Levels that are loaded:
  * - general: `<evalsDir>/grading/` (applies to every test, optional)
+ * - domain: `<evalsDir>/grading/<domain>/` (applies to every test in `<domain>`, optional)
  * - test: `<evalsDir>/<taskId>/grading/` (or `<evalsDir>/<evalFolder>/<taskId>/grading/`)
  */
 
@@ -37,7 +38,7 @@ export interface TurnExpectation {
  */
 export type Expectation = string|TurnExpectation;
 
-export type GradingLevel = 'general'|'test';
+export type GradingLevel = 'general'|'domain'|'test';
 
 export interface GradingItem {
   id: string;
@@ -211,20 +212,32 @@ export function getTaskGradingDir(evalsDir: string, taskId: string, evalFolder =
 }
 
 /**
- * Loads and validates the general and test-level grading files of a task.
- * Returns null if neither level has grading files (the task is ungraded by Grading V1).
- * Throws a `GradingConfigError` if the files are incomplete or invalid.
+ * Loads and validates the general, domain, and test-level grading files of a task.
+ * Returns null if the task has no test-level grading files (so unmigrated tasks
+ * stay on legacy grading even when general or domain files exist).
+ * Throws a `GradingConfigError` if any loaded grading files are incomplete or invalid.
  */
 export function loadTaskGrading(evalsDir: string, taskId: string, evalFolder = ''): TaskGrading|null {
-  const levels: Array<[GradingLevel, string]> = [
-    ['general', path.join(evalsDir, GRADING_DIR)],
-    ['test', getTaskGradingDir(evalsDir, taskId, evalFolder)],
+  const testGradingDir = getTaskGradingDir(evalsDir, taskId, evalFolder);
+  const testItems = loadGradingLevel(testGradingDir, 'test');
+  if (!testItems) {
+    return null;
+  }
+
+  const generalDir = path.join(evalsDir, GRADING_DIR);
+  const levels: Array<[GradingLevel, string, GradingItem[] | null]> = [
+    ['general', generalDir, loadGradingLevel(generalDir, 'general')],
   ];
+  if (evalFolder) {
+    const domainDir = path.join(evalsDir, GRADING_DIR, evalFolder);
+    levels.push(['domain', domainDir, loadGradingLevel(domainDir, 'domain')]);
+  }
+  levels.push(['test', testGradingDir, testItems]);
+
   const gradingDirs: string[] = [];
   const items: GradingItem[] = [];
   const levelById = new Map<string, GradingLevel>();
-  for (const [level, gradingDir] of levels) {
-    const levelItems = loadGradingLevel(gradingDir, level);
+  for (const [level, gradingDir, levelItems] of levels) {
     if (!levelItems) {
       continue;
     }
@@ -239,5 +252,5 @@ export function loadTaskGrading(evalsDir: string, taskId: string, evalFolder = '
     gradingDirs.push(gradingDir);
     items.push(...levelItems);
   }
-  return gradingDirs.length ? {taskId, gradingDirs, items} : null;
+  return {taskId, gradingDirs, items};
 }

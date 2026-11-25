@@ -25,6 +25,7 @@ node_ts_library("unittests") {
   sources = [
     "eval-logger.test.ts",
     "eval-task-recorder.test.ts",
+    "grading-loader.test.ts",
     "report-helpers.test.ts",
     "scorer.test.ts",
     "trajectory-builder.test.ts",

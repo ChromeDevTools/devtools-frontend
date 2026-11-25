@@ -56,8 +56,7 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTy
   #maxStorageSize: number;
 
   constructor(
-      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-      settings: Common.Settings.Settings = Common.Settings.Settings.instance(),
+      settings: Common.Settings.Settings,
       maxStorageSize: number = DEFAULT_MAX_STORAGE_SIZE,
   ) {
     super();

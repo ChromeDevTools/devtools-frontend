@@ -537,8 +537,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   readonly #eventListenerBreakpoints: DOMEventListenerBreakpoint[] = [];
   readonly #targetManager: TargetManager;
 
-  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-  constructor(targetManager: TargetManager = TargetManager.instance()) {
+  constructor(targetManager: TargetManager) {
     this.#targetManager = targetManager;
     this.#xhrBreakpointsSetting = this.#targetManager.settings.createLocalSetting('xhr-breakpoints', []);
     for (const breakpoint of this.#xhrBreakpointsSetting.get()) {

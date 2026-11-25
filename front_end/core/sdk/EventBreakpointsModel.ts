@@ -87,8 +87,7 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
   readonly #eventListenerBreakpoints: EventListenerBreakpoint[] = [];
   readonly #targetManager: TargetManager;
 
-  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-  constructor(targetManager: TargetManager = TargetManager.instance()) {
+  constructor(targetManager: TargetManager) {
     this.#targetManager = targetManager;
     this.#createInstrumentationBreakpoints(Category.AUCTION_WORKLET, [
       InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START,

@@ -14,6 +14,7 @@ import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.j
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import * as Network from './network.js';
 
@@ -249,5 +250,28 @@ describeWithEnvironment('NetworkConfigView', () => {
     uaSelect.dispatchEvent(new Event('change'));
     assert.strictEqual(uaInput.selectionStart, 0);
     assert.strictEqual(uaInput.selectionEnd, uaInput.value.length);
+  });
+
+  it('reveals the custom user agent field', async () => {
+    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    const highlightStub = sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
+    const networkConfigView = Network.NetworkConfigView.NetworkConfigView.instance({forceNew: true});
+    renderElementIntoDOM(networkConfigView);
+    await UI.Widget.Widget.allUpdatesComplete;
+    const autoCheckbox = networkConfigView.contentElement.querySelector<UI.UIUtils.CheckboxLabel>(
+        '.network-config-ua devtools-checkbox');
+    assert.isOk(autoCheckbox);
+    autoCheckbox.click();
+    await UI.Widget.Widget.allUpdatesComplete;
+    const uaSelect =
+        networkConfigView.contentElement.querySelector<HTMLSelectElement>('.network-config-ua-custom select');
+    assert.isOk(uaSelect);
+
+    const revealer = new Network.NetworkConfigView.UserAgentRevealer();
+    await revealer.reveal();
+
+    sinon.assert.calledOnceWithExactly(showViewStub, 'network.config');
+    assert.strictEqual(networkConfigView.element.shadowRoot?.activeElement, uaSelect);
+    sinon.assert.calledOnceWithExactly(highlightStub, uaSelect);
   });
 });

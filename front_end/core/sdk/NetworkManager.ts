@@ -2530,6 +2530,12 @@ export namespace MultitargetNetworkManager {
   }
 }
 
+/**
+ * Passed to `Common.Revealer.reveal` to open and highlight the user
+ * agent setting in the Network Conditions drawer.
+ */
+export class RevealableCustomUserAgent {}
+
 export class InterceptedRequest {
   readonly #multitargetNetworkManager: MultitargetNetworkManager;
   readonly #fetchAgent: ProtocolProxyApi.FetchApi;

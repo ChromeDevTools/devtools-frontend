@@ -619,3 +619,13 @@ Common.Revealer.registerRevealer({
     return new Network.RequestConditionsDrawer.AppliedConditionsRevealer();
   },
 });
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [SDK.NetworkManager.RevealableCustomUserAgent];
+  },
+  async loadRevealer() {
+    const Network = await loadNetworkModule();
+    return new Network.NetworkConfigView.UserAgentRevealer();
+  },
+});

@@ -13,6 +13,7 @@ import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as EmulationComponents from '../settings/emulation/components/components.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import networkConfigViewStyles from './networkConfigView.css.js';
 
@@ -81,6 +82,7 @@ export interface NetworkConfigViewInput {
 
 export interface NetworkConfigViewOutput {
   selectCustomUserAgentInput?: () => void;
+  focusAndHighlightCustomUserAgentSelect?: () => void;
 }
 
 export type View = (input: NetworkConfigViewInput, output: NetworkConfigViewOutput, target: HTMLElement) => void;
@@ -96,7 +98,13 @@ function renderUserAgentSelectAndInput(
         jslog=${VisualLogging.dropDown().track({change: true}).context('custom-user-agent')}
         aria-label=${title}
         ?disabled=${!input.useCustomUA}
-        @change=${(e: Event) => input.onUserAgentSelect((e.target as HTMLSelectElement).value)}>
+        @change=${(e: Event) => input.onUserAgentSelect((e.target as HTMLSelectElement).value)}
+        ${ref(el => {
+          output.focusAndHighlightCustomUserAgentSelect = el instanceof HTMLSelectElement ? () => {
+            el.focus();
+            PanelUtils.PanelUtils.highlightElement(el);
+          } : undefined;
+        })}>
       <option
           value=${customOverride.value}
           .selected=${input.customSelectValue === customOverride.value}
@@ -375,5 +383,18 @@ export class NetworkConfigView extends UI.Widget.VBox {
     super.wasShown();
     this.requestUpdate();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkConditionsPanelShown));
+  }
+
+  revealUserAgent(): void {
+    this.#viewOutput.focusAndHighlightCustomUserAgentSelect?.();
+  }
+}
+
+export class UserAgentRevealer implements Common.Revealer.Revealer<SDK.NetworkManager.RevealableCustomUserAgent> {
+  async reveal(): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('network.config');
+    const view = NetworkConfigView.instance();
+    await view.updateComplete;
+    view.revealUserAgent();
   }
 }

@@ -1610,7 +1610,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
 
     // Do not show this Context menu on FlameChart entries because we have a different context menu for FlameChart entries
     const mouseEvent = (event as MouseEvent);
-    if (this.flameChart.getMainFlameChart().coordinatesToEntryIndex(mouseEvent.offsetX, mouseEvent.offsetY) !== -1) {
+    if (this.flameChart.hasMainEntryAt(mouseEvent.offsetX, mouseEvent.offsetY)) {
       return;
     }
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -2621,7 +2621,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
 
     const maybeOverlay = createHiddenTracksOverlay(parsedTrace, {
       onClose: () => {
-        this.flameChart.overlays().removeOverlaysOfType('BOTTOM_INFO_BAR');
+        this.flameChart.removeOverlaysOfType('BOTTOM_INFO_BAR');
         this.#hiddenTracksInfoBarByParsedTrace.set(parsedTrace, 'DISMISSED');
       },
       onShowAllTracks: () => {
@@ -2760,7 +2760,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     // resolving source maps). Thus, we must reappend the flamechart
     // entries.
     this.flameChart.getMainDataProvider().timelineData(true);
-    this.flameChart.getMainFlameChart().update();
+    this.flameChart.refreshMainFlameChart();
   }
 
   /**

@@ -558,6 +558,30 @@ describe('TimelineFlameChartView', function() {
     sinon.assert.calledOnce(mouseOutSpy);
   });
 
+  it('delegates main entry hit-testing', () => {
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+
+    const coordsStub = sinon.stub(flameChartView.getMainFlameChart(), 'coordinatesToEntryIndex');
+    coordsStub.withArgs(10, 20).returns(3);
+    coordsStub.withArgs(0, 0).returns(-1);
+    assert.isTrue(flameChartView.hasMainEntryAt(10, 20));
+    assert.isFalse(flameChartView.hasMainEntryAt(0, 0));
+  });
+
+  it('removes overlays by type', () => {
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+
+    flameChartView.addTimestampMarkerOverlay(Trace.Types.Timing.Micro(100));
+    assert.strictEqual(flameChartView.removeOverlaysOfType('TIMESTAMP_MARKER'), 1);
+    assert.strictEqual(flameChartView.removeOverlaysOfType('TIMESTAMP_MARKER'), 0);
+  });
+
   it('coalesces overlay updates when main and network flame charts redraw in the same turn', async () => {
     const mockViewDelegate = new MockViewDelegate();
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(

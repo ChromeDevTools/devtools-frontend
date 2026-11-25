@@ -1697,6 +1697,14 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     void this.#overlays.update();
   }
 
+  removeOverlaysOfType(type: Trace.Types.Overlays.Overlay['type']): number {
+    return this.#overlays.removeOverlaysOfType(type);
+  }
+
+  hasMainEntryAt(x: number, y: number): boolean {
+    return this.mainFlameChart.coordinatesToEntryIndex(x, y) !== -1;
+  }
+
   updateExistingOverlay<T extends Trace.Types.Overlays.Overlay>(existingOverlay: T, newData: Partial<T>): void {
     this.#overlays.updateExisting(existingOverlay, newData);
     void this.#overlays.update();

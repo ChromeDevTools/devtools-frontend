@@ -128,4 +128,12 @@ describeWithEnvironment('CountersGraph', () => {
     assert.strictEqual(counter.x[1], 100);
     assert.strictEqual(counter.x[2], 200);
   });
+
+  it('accepts an optional host element in its constructor', () => {
+    const hostElement = document.createElement('devtools-widget');
+    const countersGraph = new Timeline.CountersGraph.CountersGraph(hostElement);
+    assert.strictEqual(countersGraph.element, hostElement);
+    assert.strictEqual(countersGraph.element.id, 'memory-graphs-container');
+    countersGraph.detach();
+  });
 });

@@ -60,7 +60,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CountersGraph extends UI.Widget.VBox {
-  private readonly delegate: TimelineModeViewDelegate;
+  delegate?: TimelineModeViewDelegate;
   private readonly calculator: Calculator;
   private readonly header: UI.Widget.HBox;
   readonly toolbar: UI.Toolbar.Toolbar;
@@ -81,15 +81,19 @@ export class CountersGraph extends UI.Widget.VBox {
   #showNoEventsMessage = false;
   #defaultNumberFormatter: Intl.NumberFormat;
 
-  constructor(delegate: TimelineModeViewDelegate) {
-    super();
+  constructor(delegate: TimelineModeViewDelegate);
+  constructor(element?: HTMLElement);
+  constructor(delegateOrElement?: TimelineModeViewDelegate|HTMLElement) {
+    super(delegateOrElement instanceof HTMLElement ? delegateOrElement : undefined);
     this.#defaultNumberFormatter = new Intl.NumberFormat(
         i18n.DevToolsLocale.DevToolsLocale.instance().locale,
     );
 
     this.element.id = 'memory-graphs-container';
 
-    this.delegate = delegate;
+    if (delegateOrElement && !(delegateOrElement instanceof HTMLElement)) {
+      this.delegate = delegateOrElement;
+    }
     this.calculator = new Calculator();
 
     // Create selectors
@@ -274,7 +278,7 @@ export class CountersGraph extends UI.Widget.VBox {
       }
     }
     if (bestTime !== undefined && this.#events) {
-      this.delegate.selectEntryAtTime(this.#events, bestTime);
+      this.delegate?.selectEntryAtTime(this.#events, bestTime);
     }
   }
 

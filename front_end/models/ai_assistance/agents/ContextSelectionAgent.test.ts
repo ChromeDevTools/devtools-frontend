@@ -104,7 +104,7 @@ describe('ContextSelectionAgent', function() {
       sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
       const agent = new ContextSelectionAgent.ContextSelectionAgent({
         aidaClient: mockAidaClient([[{explanation: 'answer'}]]),
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAgent.ServerSideLoggingPolicy(true),
       });
       await Array.fromAsync(agent.run('question', {selected: null}));
 

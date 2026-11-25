@@ -989,7 +989,7 @@ describe('StorageAgent', function() {
       sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
       const agent = new AiAssistance.StorageAgent.StorageAgent({
         aidaClient,
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(true),
         confirmSideEffectForTest: sinon.stub().returns(sideEffectPromise),
         targetManager: universe.targetManager,
       });

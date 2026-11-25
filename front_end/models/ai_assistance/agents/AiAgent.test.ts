@@ -116,7 +116,7 @@ describe('AiAgent', () => {
     it('builds a request with logging', async () => {
       const agent = new AiAgentMock({
         aidaClient: mockAidaClient(),
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(true),
       });
       assert.isFalse(
           agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.disable_user_content_logging);
@@ -125,7 +125,7 @@ describe('AiAgent', () => {
     it('builds a request without logging', async () => {
       const agent = new AiAgentMock({
         aidaClient: mockAidaClient(),
-        serverSideLoggingAllowed: false,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(false),
       });
       assert.isTrue(agent
                         .buildRequest(
@@ -136,10 +136,18 @@ describe('AiAgent', () => {
                         .metadata?.disable_user_content_logging);
     });
 
+    it('disables logging by default when serverSideLogging is omitted', async () => {
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
+      });
+      assert.isTrue(
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.disable_user_content_logging);
+    });
+
     it('builds a request with input', async () => {
       const agent = new AiAgentMock({
         aidaClient: mockAidaClient(),
-        serverSideLoggingAllowed: false,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(false),
       });
       const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
       assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
@@ -205,7 +213,7 @@ describe('AiAgent', () => {
         aidaClient: mockAidaClient([[{
           explanation: 'answer',
         }]]),
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(true),
       });
       const fact: Host.AidaClient.RequestFact = {text: 'This is a fact', metadata: {source: 'devtools'}};
       agent.addFact(fact);
@@ -219,7 +227,7 @@ describe('AiAgent', () => {
         aidaClient: mockAidaClient([[{
           explanation: 'answer',
         }]]),
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(true),
       });
       const f1: Host.AidaClient.RequestFact = {text: 'f1', metadata: {source: 'devtools'}};
       const f2 = {text: 'f2', metadata: {source: 'devtools'}};
@@ -246,7 +254,7 @@ describe('AiAgent', () => {
         aidaClient: mockAidaClient([[{
           explanation: 'answer',
         }]]),
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(true),
       });
       await Array.fromAsync(agent.run('question', {selected: null}));
 
@@ -269,7 +277,7 @@ describe('AiAgent', () => {
         aidaClient: mockAidaClient([[{
           explanation: 'answer',
         }]]),
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(true),
       });
 
       const controller = new AbortController();
@@ -286,7 +294,7 @@ describe('AiAgent', () => {
     it('disables server-side logging when called', async () => {
       const agent = new AiAgentMock({
         aidaClient: mockAidaClient(),
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(true),
       });
 
       assert.isFalse(
@@ -297,12 +305,16 @@ describe('AiAgent', () => {
           agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.disable_user_content_logging);
     });
 
-    it('keeps logging disabled when initialized with serverSideLoggingAllowed: false', async () => {
+    it('delegates to disable() when logging is already disallowed', async () => {
+      const serverSideLogging = new AiAssistance.AiAgent.ServerSideLoggingPolicy(false);
+      const disable = sinon.spy(serverSideLogging, 'disable');
       const agent = new AiAgentMock({
         aidaClient: mockAidaClient(),
-        serverSideLoggingAllowed: false,
+        serverSideLogging,
       });
 
+      agent.disableServerSideLoggingForTest();
+      sinon.assert.calledOnce(disable);
       assert.isTrue(
           agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.disable_user_content_logging);
     });
@@ -1008,7 +1020,7 @@ describe('AiAgent', () => {
 
       const agent = new DisableLoggingAgent({
         aidaClient,
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAssistance.AiAgent.ServerSideLoggingPolicy(true),
       });
 
       await Array.fromAsync(agent.run('start', {selected: mockConversationContext()}));

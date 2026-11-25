@@ -24,6 +24,7 @@ import {
   type ResponseData,
   ResponseType,
   type SerializedResponseData,
+  ServerSideLoggingPolicy,
   type UserQuery,
 } from './agents/AiAgent.js';
 import {ContextSelectionAgent} from './agents/ContextSelectionAgent.js';
@@ -85,13 +86,15 @@ export interface AiConversationOptions {
   alwaysAllowedTools?: AlwaysAllowedTools;
   targetManager?: SDK.TargetManager.TargetManager;
   /**
-   * Whether server-side content logging is allowed for this conversation.
-   * Setting this to `false` disables logging and cannot override a global `disallowLogging` policy.
+   * Whether server-side logging starts enabled (default `true`).
+   *
+   * Global `disallowLogging` in `hostConfig` at construction overrides `true`.
    */
   serverSideLoggingAllowed?: boolean;
 }
 
 export class AiConversation {
+  /** Restores a read-only conversation with server-side logging disabled. */
   static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation {
     const history = (serializedConversation.history as SerializedResponseData[]).map(entry => {
       if (entry.type === ResponseType.SIDE_EFFECT) {
@@ -109,6 +112,8 @@ export class AiConversation {
       data: history,
       id: serializedConversation.id,
       isReadOnly: true,
+      // Serialized history does not track prior sensitive tool calls; keep logging off.
+      serverSideLoggingAllowed: false,
     });
   }
 
@@ -135,7 +140,7 @@ export class AiConversation {
   readonly #aiHistoryStorage: AiHistoryStorage;
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #alwaysAllowedTools?: AlwaysAllowedTools;
-  readonly #serverSideLoggingAllowed: boolean;
+  readonly #serverSideLogging: ServerSideLoggingPolicy;
 
   constructor(options: AiConversationOptions) {
     const {
@@ -164,7 +169,9 @@ export class AiConversation {
     this.#aiHistoryStorage = aiHistoryStorage;
     this.#targetManager = targetManager;
     this.#alwaysAllowedTools = alwaysAllowedTools;
-    this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
+    // For the duration of the conversation, we don't re-check `hostConfig`.
+    this.#serverSideLogging =
+        new ServerSideLoggingPolicy(serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed());
 
     this.id = id;
     this.#isReadOnly = isReadOnly;
@@ -175,6 +182,16 @@ export class AiConversation {
 
   get isReadOnly(): boolean {
     return this.#isReadOnly;
+  }
+
+  /**
+   * Whether server-side logging is allowed for this conversation.
+   *
+   * Reads `hostConfig` once at construction and flips permanently to `false`
+   * when an agent disables logging.
+   */
+  get serverSideLoggingAllowed(): boolean {
+    return this.#serverSideLogging.isAllowed();
   }
 
   static titleForSerialized(serialized: SerializedConversation): string|undefined {
@@ -411,7 +428,7 @@ export class AiConversation {
 
     const baseOptions = {
       aidaClient: this.#aidaClient,
-      serverSideLoggingAllowed: this.#serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed(),
+      serverSideLogging: this.#serverSideLogging,
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,
@@ -629,12 +646,7 @@ export class AiConversation {
   };
 }
 
-/**
- * Checks whether server-side logging is allowed by the global system policy.
- * Note that even if this returns true, individual agents can still dynamically
- * deactivate/activate logging during their execution (e.g., when handling
- * sensitive tools).
- */
+/** Returns whether `hostConfig` allows server-side logging (`true` if unset). */
 function isAiAssistanceServerSideLoggingAllowed(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }

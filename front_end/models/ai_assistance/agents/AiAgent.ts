@@ -379,9 +379,32 @@ export type AllowedOriginResult = {
   blocked: true,
 };
 
+/**
+ * Controls whether server-side logging is allowed (defaults to `false`).
+ *
+ * Once `disable()` runs, `isAllowed()` stays `false`.
+ */
+export class ServerSideLoggingPolicy {
+  #allowed: boolean;
+
+  constructor(allowed = false) {
+    this.#allowed = allowed;
+  }
+
+  isAllowed(): boolean {
+    return this.#allowed;
+  }
+
+  disable(): void {
+    // Irreversible: earlier turns remain in history and would leak if re-enabled.
+    this.#allowed = false;
+  }
+}
+
 export interface AgentOptions {
   aidaClient: Host.AidaClient.AidaClient;
-  serverSideLoggingAllowed?: boolean;
+  /** Disables server-side logging when omitted. */
+  serverSideLogging?: ServerSideLoggingPolicy;
   sessionId?: string;
   confirmSideEffectForTest?: typeof Promise.withResolvers;
   onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
@@ -822,11 +845,7 @@ export abstract class AiAgent<T> {
 
   readonly #sessionId: string;
   readonly #aidaClient: Host.AidaClient.AidaClient;
-  /**
-   * Tracks the dynamic runtime state of logging. Even if logging is allowed
-   * by policy, tools or sensitive contexts can deactivate this to avoid logging sensitive data.
-   */
-  #serverSideLoggingActive: boolean;
+  readonly #serverSideLogging: ServerSideLoggingPolicy;
   readonly confirmSideEffect: typeof Promise.withResolvers;
   readonly #functionDeclarations = new Map<string, FunctionDeclaration<Record<string, unknown>, unknown>>();
   readonly #allowedOrigin?: () => AllowedOriginResult;
@@ -856,7 +875,7 @@ export abstract class AiAgent<T> {
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
-    this.#serverSideLoggingActive = opts.serverSideLoggingAllowed ?? false;
+    this.#serverSideLogging = opts.serverSideLogging ?? new ServerSideLoggingPolicy();
     this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
@@ -910,15 +929,9 @@ export abstract class AiAgent<T> {
   clearCache(): void {
   }
 
-  /**
-   * Disables server-side logging for the remainder of this agent instance's lifetime.
-   *
-   * Logging deactivation is irreversible for the session. Conversation history
-   * accumulates across turns; re-enabling logging later would leak sensitive
-   * data from prior turns to AIDA.
-   */
+  /** Permanently disables server-side logging for subsequent requests. */
   protected disableServerSideLogging(): void {
-    this.#serverSideLoggingActive = false;
+    this.#serverSideLogging.disable();
   }
 
   /**
@@ -981,7 +994,7 @@ export abstract class AiAgent<T> {
         model_id: this.options.modelId || undefined,
       },
       metadata: {
-        disable_user_content_logging: !(this.#serverSideLoggingActive ?? false),
+        disable_user_content_logging: !this.#serverSideLogging.isAllowed(),
         string_session_id: this.#sessionId,
         user_tier: userTier,
         client_version:

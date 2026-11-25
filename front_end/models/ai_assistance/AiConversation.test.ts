@@ -328,6 +328,73 @@ describe('AiConversation', () => {
     assert.isTrue(aidaClient.doConversation.firstCall.firstArg.metadata?.disable_user_content_logging);
   });
 
+  it('disables server-side logging after a V2 cookie tool call', async () => {
+    updateHostConfig({
+      devToolsAiV2Architecture: {enabled: true},
+      aidaAvailability: {disallowLogging: false},
+    });
+
+    const url = Platform.DevToolsPath.urlString`https://example.com/`;
+    const target = universe.createTarget({url});
+    target.setInspectedURL(url);
+
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['storage']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'listCookies', args: {}}],
+      }],
+      [{explanation: 'Cookies listed.'}],
+    ]);
+
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      aidaClient,
+    });
+    assert.isTrue(conversation.serverSideLoggingAllowed);
+
+    await Array.fromAsync(conversation.run('list cookies'));
+
+    sinon.assert.callCount(aidaClient.doConversation, 3);
+    assert.isFalse(aidaClient.doConversation.firstCall.firstArg.metadata?.disable_user_content_logging);
+    assert.isFalse(aidaClient.doConversation.secondCall.firstArg.metadata?.disable_user_content_logging);
+    assert.isTrue(aidaClient.doConversation.thirdCall.firstArg.metadata?.disable_user_content_logging);
+    assert.isFalse(conversation.serverSideLoggingAllowed);
+  });
+
+  it('always disables server-side logging when restoring a historic conversation', () => {
+    updateHostConfig({
+      aidaAvailability: {disallowLogging: false},
+    });
+
+    const restored = AiAssistance.AiConversation.AiConversation.fromSerializedConversation({
+      id: 'historic-id',
+      type: AiAssistance.AiHistoryStorage.ConversationType.STYLING,
+      history: [],
+    });
+
+    assert.isFalse(restored.serverSideLoggingAllowed);
+  });
+
+  it('keeps server-side logging disabled when started under disallowLogging: true', () => {
+    updateHostConfig({
+      aidaAvailability: {disallowLogging: true},
+    });
+
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.STYLING,
+    });
+    assert.isFalse(conversation.serverSideLoggingAllowed);
+
+    updateHostConfig({
+      aidaAvailability: {disallowLogging: false},
+    });
+    assert.isFalse(conversation.serverSideLoggingAllowed);
+  });
+
   it('should be able to switch agent type when context is removed', async () => {
     updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
 

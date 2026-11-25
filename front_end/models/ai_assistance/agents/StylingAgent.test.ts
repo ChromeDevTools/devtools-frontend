@@ -123,7 +123,7 @@ describe('StylingAgent', function() {
         aidaClient: mockAidaClient([[{
           explanation: 'answer',
         }]]),
-        serverSideLoggingAllowed: true,
+        serverSideLogging: new AiAgent.ServerSideLoggingPolicy(true),
       });
       await Array.fromAsync(agent.run('question', {selected: null}));
 

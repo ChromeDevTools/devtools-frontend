@@ -629,3 +629,14 @@ Common.Revealer.registerRevealer({
     return new Network.NetworkConfigView.UserAgentRevealer();
   },
 });
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [SDK.NetworkManager.RevealableNetworkThrottling];
+  },
+  destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
+  async loadRevealer() {
+    const Network = await loadNetworkModule();
+    return new Network.NetworkPanel.NetworkThrottlingRevealer();
+  },
+});

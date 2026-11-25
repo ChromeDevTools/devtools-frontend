@@ -2560,6 +2560,12 @@ export namespace MultitargetNetworkManager {
  */
 export class RevealableCustomUserAgent {}
 
+/**
+ * Passed to `Common.Revealer.reveal` to open and highlight the
+ * throttling control in the Network panel.
+ */
+export class RevealableNetworkThrottling {}
+
 export class InterceptedRequest {
   readonly #multitargetNetworkManager: MultitargetNetworkManager;
   readonly #fetchAgent: ProtocolProxyApi.FetchApi;

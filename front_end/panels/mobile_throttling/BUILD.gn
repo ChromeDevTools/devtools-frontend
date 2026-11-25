@@ -40,6 +40,7 @@ devtools_ui_module("mobile_throttling") {
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
     "../common:bundle",
+    "../utils:bundle",
   ]
   deps = [ ":css_files" ]
 }
@@ -94,5 +95,6 @@ devtools_ui_module("unittests") {
     "../../testing",
     "../../ui/legacy:bundle",
     "../common:bundle",
+    "../utils:bundle",
   ]
 }

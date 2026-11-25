@@ -21,6 +21,7 @@ import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import * as NetworkForward from './forward/forward.js';
 import * as Network from './network.js';
@@ -170,6 +171,20 @@ describeWithEnvironment('NetworkPanel', () => {
     showFilmstripSetting.set(true);
     assert.isTrue(isOverviewShowing());
     assert.isTrue(isFilmstripShowing());
+  });
+
+  it('reveals the network throttling select', async () => {
+    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    const highlightStub = sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
+    const throttlingSelect = networkPanel.throttlingSelectForTest().element.querySelector('select');
+    assert.isOk(throttlingSelect);
+
+    const revealer = new Network.NetworkPanel.NetworkThrottlingRevealer();
+    await revealer.reveal();
+
+    sinon.assert.calledOnceWithExactly(showViewStub, 'network');
+    assert.strictEqual(document.activeElement, throttlingSelect);
+    sinon.assert.calledOnceWithExactly(highlightStub, throttlingSelect);
   });
 });
 

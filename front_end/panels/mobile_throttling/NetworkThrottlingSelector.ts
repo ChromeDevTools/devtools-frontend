@@ -10,6 +10,7 @@ import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import {ThrottlingManager} from './ThrottlingManager.js';
 import type {NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';
@@ -69,7 +70,10 @@ interface ViewInput {
   onSelect: (conditions: SDK.NetworkManager.ThrottlingConditions) => void;
   onAddCustomConditions: () => void;
 }
-export type ViewFunction = (input: ViewInput, output: undefined, target: HTMLSelectElement) => void;
+export interface ViewOutput {
+  focusAndHighlight?: () => void;
+}
+export type ViewFunction = (input: ViewInput, output: ViewOutput, target: HTMLSelectElement) => void;
 
 const optionsMap = new WeakMap<HTMLOptionElement, SDK.NetworkManager.ThrottlingConditions>();
 
@@ -105,6 +109,11 @@ export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
       }
     }
   }
+
+  output.focusAndHighlight = () => {
+    target.focus();
+    PanelUtils.PanelUtils.highlightElement(target);
+  };
 
   render(
       // clang-format off
@@ -189,6 +198,7 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
   #currentConditions: SDK.NetworkManager.ThrottlingConditions|undefined;
   #title?: string;
   readonly #view: ViewFunction;
+  readonly #viewOutput: ViewOutput = {};
   #variant: NetworkThrottlingSelect.Variant = NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS;
   #disabled = false;
   #boundToGlobalConditions = false;
@@ -346,6 +356,10 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
     this.requestUpdate();
   }
 
+  focusAndHighlight(): void {
+    this.#viewOutput.focusAndHighlight?.();
+  }
+
   override performUpdate(): void {
     const customNetworkConditionsSetting = SDK.NetworkManager.customUserNetworkConditionsSetting(this.#settings);
     const customNetworkConditions = customNetworkConditionsSetting.get();
@@ -399,7 +413,7 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
       throttlingGroups,
       customConditionsGroup,
     };
-    this.#view(viewInput, undefined, this.contentElement as HTMLSelectElement);
+    this.#view(viewInput, this.#viewOutput, this.contentElement as HTMLSelectElement);
   }
 }
 export namespace NetworkThrottlingSelect {

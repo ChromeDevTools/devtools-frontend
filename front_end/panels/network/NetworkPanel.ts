@@ -364,7 +364,10 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private readonly detailsWidget: UI.Widget.VBox;
   private preserveLogSetting: Common.Settings.Setting<boolean>;
   recordLogSetting: Common.Settings.Setting<boolean>;
-  private readonly throttlingSelect: UI.Toolbar.ToolbarItem;
+  readonly #throttlingSelector: {
+    toolbarItem: UI.Toolbar.ToolbarItem,
+    widget: MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect,
+  };
   private readonly displayScreenshotDelay: number;
   readonly backendLinking: BackendLinking|null;
   readonly #settingsPaneView: SettingsPaneView;
@@ -479,7 +482,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
         Common.Settings.Settings.instance().resolve(Logs.NetworkLog.recordNetworkLogSettingDescriptor);
     this.recordLogSetting.addChangeListener(({data}) => this.toggleRecord(data));
 
-    this.throttlingSelect = this.createThrottlingConditionsSelect();
+    this.#throttlingSelector = this.createThrottlingConditionsSelect();
     this.setupToolbarButtons(splitWidget);
 
     this.toggleRecord(this.recordLogSetting.get());
@@ -535,7 +538,11 @@ export class NetworkPanel extends UI.Panel.Panel implements
   }
 
   throttlingSelectForTest(): UI.Toolbar.ToolbarItem {
-    return this.throttlingSelect;
+    return this.#throttlingSelector.toolbarItem;
+  }
+
+  revealNetworkThrottling(): void {
+    this.#throttlingSelector.widget.focusAndHighlight();
   }
 
   private updateNetworkLogWindow(startTimeMs: number, endTimeMs: number): void {
@@ -593,7 +600,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
         i18nString(UIStrings.disableCacheWhileDevtoolsIsOpen), i18nString(UIStrings.disableCache));
     this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
 
-    this.panelToolbar.appendToolbarItem(this.throttlingSelect);
+    this.panelToolbar.appendToolbarItem(this.#throttlingSelector.toolbarItem);
 
     const networkConditionsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.moreNetworkConditions),
                                                                  'network-settings', undefined, 'network-conditions');
@@ -648,13 +655,16 @@ export class NetworkPanel extends UI.Panel.Panel implements
     updateShowOptionsToGenerateHarWithSensitiveData();
   }
 
-  private createThrottlingConditionsSelect(): UI.Toolbar.ToolbarItem {
+  private createThrottlingConditionsSelect(): {
+    toolbarItem: UI.Toolbar.ToolbarItem,
+    widget: MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect,
+  } {
     const toolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     toolbarItem.setMaxWidth(160);
 
-    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+    const widget = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
         toolbarItem.element, i18nString(UIStrings.throttling));
-    return toolbarItem;
+    return {toolbarItem, widget};
   }
 
   toggleRecord(toggled: boolean): void {
@@ -1189,6 +1199,14 @@ export class RequestLocationRevealer implements
     if (location.header) {
       view.revealHeader(location.header.section, location.header.header?.name);
     }
+  }
+}
+
+export class NetworkThrottlingRevealer implements
+    Common.Revealer.Revealer<SDK.NetworkManager.RevealableNetworkThrottling> {
+  async reveal(): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('network');
+    NetworkPanel.instance().revealNetworkThrottling();
   }
 }
 

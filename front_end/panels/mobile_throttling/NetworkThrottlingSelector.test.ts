@@ -12,6 +12,7 @@ import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import * as MobileThrottling from './mobile_throttling.js';
 
@@ -110,6 +111,28 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     sinon.assert.calledOnce(onConditionsChanged);
     const event = onConditionsChanged.firstCall.args[0] as CustomEvent;
     assert.strictEqual(event.detail, SDK.NetworkManager.Slow4GConditions);
+  });
+
+  it('focuses the select element when focusAndHighlight is called', () => {
+    sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
+    const selectElement = document.createElement('select');
+    renderElementIntoDOM(selectElement);
+    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect(selectElement);
+
+    widget.focusAndHighlight();
+
+    assert.strictEqual(document.activeElement, selectElement);
+  });
+
+  it('highlights the select element when focusAndHighlight is called', () => {
+    const highlightStub = sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
+    const selectElement = document.createElement('select');
+    renderElementIntoDOM(selectElement);
+    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect(selectElement);
+
+    widget.focusAndHighlight();
+
+    sinon.assert.calledOnceWithExactly(highlightStub, selectElement);
   });
 });
 

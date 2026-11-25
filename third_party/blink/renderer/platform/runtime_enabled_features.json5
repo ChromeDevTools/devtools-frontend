@@ -1143,6 +1143,12 @@
       status: "stable",
     },
     {
+      // Kill switch for freeing unused 2D canvas recording memory when the
+      // page is hidden.
+      name: "Canvas2dShrinkRecordingWhenHidden",
+      status: "stable",
+    },
+    {
       // https://github.com/WICG/html-in-canvas/blob/main/README.md
       // Note the API name has changed to `drawElementImage`.
       name: "CanvasDrawElement",
@@ -1580,6 +1586,10 @@
     {
       name: "ContentIndex",
       status:  {"Android": "stable", "default": "experimental"},
+    },
+    {
+      name: "ContentVisibilityMediaPlayback",
+      status: "experimental",
     },
     {
       name: "ContextMenu",
@@ -3019,6 +3029,13 @@
       name: "EndpointInclusiveCommitStyles",
       status: "stable",
     },
+    {
+      // Reports violations of the slot assignment recalc rules (R1-R7 in the
+      // SlotAssignment class comment in slot_assignment.h). Violations are
+      // fatal in all builds. Kill switch.
+      name: "EnforceSlotAssignmentInvariants",
+      status: "stable",
+    },
     // When enabled, the LCP algorithm ignores image entropy for the first
     // video frame. See crbug.com/434659232.
     {
@@ -4389,6 +4406,13 @@
       name: "LocalNetworkAccessWebSocketsTargetAddressSpace",
       status: "experimental",
       depends_on: ["WebSocketOptionBag"],
+    },
+    {
+      // Kill switch for https://crbug.com/41293729 which makes the
+      // location.protocol setter stop navigating for non-HTTP(S) schemes,
+      // as required by the HTML spec.
+      name: "LocationProtocolSetterHttpOnly",
+      status: "stable",
     },
     {
       name: "LockedMode",
@@ -5907,6 +5931,10 @@
       origin_trial_feature_name: "RTCDiagnosticLogging",
       status: "experimental",
     },
+    {
+      name: "RTCRequireSessionDescriptionType",
+      status: "experimental",
+    },
     // Enables the use of |RTCRtpEncodingParameters.codec|
     {
       name: "RTCRtpEncodingParametersCodec",
@@ -5923,6 +5951,10 @@
     {
       name: "RTCRtpScriptTransform",
       status: "stable",
+    },
+    {
+      name: "RTCRtpScriptTransformerGenerateKeyFrame",
+      status: "experimental",
     },
     {
       name: "RTCRtpTransport",

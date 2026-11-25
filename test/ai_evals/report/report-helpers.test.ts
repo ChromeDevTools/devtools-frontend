@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import {TaskOutputFile} from './gcs-upload.js';
 import {
   aggregateRunMetrics,
+  buildChromeVersionTags,
   buildRunTags,
   buildTaskTags,
   formatError,
@@ -123,6 +124,23 @@ describe('report-helpers', () => {
       assert.strictEqual(formatVerificationStderr(''), '');
       assert.strictEqual(formatVerificationStderr('AssertionError: expected 200'),
                          '[Error]: AssertionError: expected 200\n');
+    });
+  });
+
+  describe('buildChromeVersionTags', () => {
+    it('extracts chrome_version and chrome_milestone from Puppeteer and bare version strings', () => {
+      assert.deepEqual(buildChromeVersionTags('Chrome/100.0.1234.56'), [
+        'chrome_version:100.0.1234.56',
+        'chrome_milestone:100',
+      ]);
+      assert.deepEqual(buildChromeVersionTags('HeadlessChrome/200.0.9999.0'), [
+        'chrome_version:200.0.9999.0',
+        'chrome_milestone:200',
+      ]);
+      assert.deepEqual(buildChromeVersionTags('100.0.1234.56'), [
+        'chrome_version:100.0.1234.56',
+        'chrome_milestone:100',
+      ]);
     });
   });
 

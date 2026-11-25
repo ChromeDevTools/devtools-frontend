@@ -189,6 +189,8 @@ export class AiEvalStateProvider extends StateProvider {
   #taskToolCallStats = new Map<string, ToolCallStats>();
   #taskTokens = new Map<string, TurnTokens>();
   #resolvedModel: string|null = null;
+  #chromeVersion?: string;
+  #runStartedUploaded = false;
   // Target types of all registered eval tests. Suites are registered while the test files
   // are loaded, i.e. before `startEvalRun` is called from the global setup.
   #evalTypes = new Set<string>();
@@ -203,6 +205,23 @@ export class AiEvalStateProvider extends StateProvider {
     }
   }
 
+  #ensureRunStarted(): void {
+    if (this.#runStartedUploaded || !this.#runId) {
+      return;
+    }
+    this.#runStartedUploaded = true;
+    const targets = [...this.#evalTypes];
+    const agent = targets.length === 1 ? `devtools-${targets[0]}` : MIXED_TARGETS_AGENT;
+    uploadRunStarted({
+      project: PROJECT_ID,
+      runId: this.#runId,
+      agent,
+      startTime: this.#runStartTimestamp,
+      status: 'RUNNING',
+      tags: buildRunTags(targets, this.#chromeVersion),
+    });
+  }
+
   startEvalRun(): void {
     this.#runId = generateRunId();
     this.#runStartTimestamp = new Date().toISOString();
@@ -212,19 +231,13 @@ export class AiEvalStateProvider extends StateProvider {
     this.#taskToolCallStats = new Map();
     this.#taskTokens = new Map();
     this.#resolvedModel = null;
+    this.#chromeVersion = undefined;
+    this.#runStartedUploaded = false;
     this.#visitedOrigins = new Set();
     const targets = [...this.#evalTypes];
     const agent = targets.length === 1 ? `devtools-${targets[0]}` : MIXED_TARGETS_AGENT;
     this.#logger.append(`Evaluation run started for ${this.#runId} at ${this.#runStartTimestamp}`);
     this.#logger.append(`Target: ${targets.join(', ')}, Agent: ${agent}`);
-    uploadRunStarted({
-      project: PROJECT_ID,
-      runId: this.#runId,
-      agent,
-      startTime: this.#runStartTimestamp,
-      status: 'RUNNING',
-      tags: buildRunTags(targets),
-    });
     this.#logger.head(`Running examples sequentially... (run: ${this.#runId})`);
   }
 
@@ -232,6 +245,7 @@ export class AiEvalStateProvider extends StateProvider {
     if (!this.#runId) {
       return;
     }
+    this.#ensureRunStarted();
     const totalTasks = this.#taskStatuses.length;
     const failedTasks = this.#taskStatuses.filter(t => t.status === 'FAILED').length;
     const passedTasks = totalTasks - failedTasks;
@@ -249,7 +263,7 @@ export class AiEvalStateProvider extends StateProvider {
       startTime: this.#runStartTimestamp,
       endTime: new Date().toISOString(),
       model: this.#resolvedModel ?? 'unknown',
-      tags: buildRunTags(this.#evalTypes),
+      tags: buildRunTags(this.#evalTypes, this.#chromeVersion),
       totalTasks,
       passedTasks,
       failedTasks,
@@ -265,13 +279,22 @@ export class AiEvalStateProvider extends StateProvider {
     if (!enabledFeatures.includes('DevToolsUseGcaApi') && !settings.disabledFeatures?.includes('DevToolsUseGcaApi')) {
       enabledFeatures.push('DevToolsUseGcaApi');
     }
-    return await Launcher.browserSetup({
+    const browser = await Launcher.browserSetup({
       ...settings,
       enabledFeatures,
       chromeUsername: TestConfig.otaUsername ?? getDefaultOtaAccount(),
       chromePassword: TestConfig.otaPassword,
     },
-                                       StateProvider.serverPort);
+                                                StateProvider.serverPort);
+    if (!this.#chromeVersion) {
+      try {
+        this.#chromeVersion = await browser.browser.version();
+      } catch {
+        // Best-effort metadata: proceed without version tags if CDP query fails.
+      }
+    }
+    this.#ensureRunStarted();
+    return browser;
   }
 
   override async browsingContext(browser: BrowserWrapper): Promise<puppeteer.BrowserContext> {
@@ -319,6 +342,7 @@ export class AiEvalStateProvider extends StateProvider {
   }
 
   #recordPreparationFailure(evalConfig: AiEvalConfig, error: unknown): void {
+    this.#ensureRunStarted();
     const errorMessage = formatError(error);
     this.#logger.taskError(evalConfig.taskId, `Preparation failed.\n${errorMessage}`);
     handleTaskFailure({

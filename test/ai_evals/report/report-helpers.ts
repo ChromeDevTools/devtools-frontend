@@ -94,11 +94,38 @@ export function formatVerificationStderr(errorMessage?: string): string {
 }
 
 /**
- * Builds the Gleam Eval Dashboard `agent_type:devtools-<target>` filter tags
- * for a run across all registered eval targets.
+ * Builds the Gleam Eval Dashboard `chrome_version:<version>` and
+ * `chrome_milestone:<major>` run tags from a browser version string
+ * (e.g. Puppeteer's `browser.version()`, such as `'Chrome/142.0.7444.60'` or
+ * `'HeadlessChrome/142.0.7444.60'`, or a bare version `'142.0.7444.60'`).
  */
-export function buildRunTags(evalTargets: Iterable<string>): string[] {
-  return Array.from(evalTargets, t => `agent_type:devtools-${t}`);
+export function buildChromeVersionTags(browserVersion?: string): string[] {
+  if (!browserVersion) {
+    return [];
+  }
+  const slashIndex = browserVersion.indexOf('/');
+  const version = (slashIndex >= 0 ? browserVersion.slice(slashIndex + 1) : browserVersion).trim();
+  if (!version) {
+    return [];
+  }
+  const tags = [`chrome_version:${version}`];
+  const milestoneMatch = /^(\d+)(?:\.|$)/.exec(version);
+  if (milestoneMatch) {
+    tags.push(`chrome_milestone:${milestoneMatch[1]}`);
+  }
+  return tags;
+}
+
+/**
+ * Builds the Gleam Eval Dashboard `agent_type:devtools-<target>` and optional
+ * Chrome build (`chrome_version`, `chrome_milestone`) filter tags for a run
+ * across all registered eval targets.
+ */
+export function buildRunTags(evalTargets: Iterable<string>, browserVersion?: string): string[] {
+  return [
+    ...Array.from(evalTargets, t => `agent_type:devtools-${t}`),
+    ...buildChromeVersionTags(browserVersion),
+  ];
 }
 
 /**

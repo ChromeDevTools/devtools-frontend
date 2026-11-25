@@ -19,6 +19,7 @@ import {
 } from '../../../testing/EnvironmentHelpers.js';
 import {withNoMutations} from '../../../testing/MutationHelpers.js';
 import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -315,6 +316,27 @@ describe('ElementsBreadcrumbs', () => {
       assert.isFalse(input.canScrollRight);
     });
 
+    it('keeps the overflow state and scrolls to the selected crumb in the first render after re-show', async () => {
+      const view = createViewFunctionStub(ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs);
+      const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs(undefined, view);
+      const wrapper = renderElementIntoDOM(document.createElement('div'));
+      component.markAsRoot();
+      component.show(wrapper);
+      component.selectedNode = divCrumb;
+      await view.nextInput;
+      view.input.onViewportChange({windowWidth: 100, contentWidth: 300, scrollLeft: 200});
+      assert.isTrue((await view.nextInput).overflowing);
+
+      component.detach();
+      component.show(wrapper);
+
+      // A single render settles the re-show: the overflow buttons stay visible,
+      // and the view scrolls straight to the selected crumb.
+      const input = await view.nextInput;
+      assert.isTrue(input.overflowing);
+      assert.isTrue(input.scrollSelectedCrumbIntoView);
+    });
+
     it('does not overflow when the crumbs are empty or hidden', async () => {
       const {view, component} = createPresenter();
       component.selectedNode = divCrumb;
@@ -480,21 +502,62 @@ describe('ElementsBreadcrumbs', () => {
         assert.strictEqual(crumbsWindow.scrollLeft, scrollLeftAfterManualScroll);
       });
 
-      it('scrolls the selected crumb into view again after being detached and re-attached', async () => {
-        const {component, wrapper} = await renderBreadcrumbs(longDivCrumb, '400px');
-        const {rightButton} = getOverflowButtons(component);
-        // The selected node is the last crumb, so the crumbs start scrolled to the end.
-        assert.isTrue(rightButton.disabled);
+      it('scrolls the selected crumb into view again after a parent widget is detached and re-attached', async () => {
+        const wrapper = document.createElement('div');
+        wrapper.style.width = '400px';
+        renderElementIntoDOM(wrapper);
+        const parentWidget = new UI.Widget.Widget();
+        parentWidget.markAsRoot();
+        parentWidget.show(wrapper);
 
-        // Removing the element from the DOM resets its scroll position.
-        component.detach();
-        component.show(wrapper);
+        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
+        component.show(parentWidget.contentElement);
+        component.selectedNode = longDivCrumb;
+        await settle(component);
+        // The selected node is the last crumb, so the crumbs start scrolled to the end.
+        assert.isTrue(getOverflowButtons(component).rightButton.disabled);
+
+        // Like switching panels: the ancestor is removed from the DOM, which resets
+        // the scroll position, and the breadcrumbs only get willHide()/wasShown().
+        parentWidget.detach();
+        parentWidget.show(wrapper);
         await settle(component);
 
         const crumbsWindow = component.contentElement.querySelector('.crumbs-window');
         assert.instanceOf(crumbsWindow, HTMLDivElement);
         assert.isAbove(crumbsWindow.scrollLeft, 0);
         assert.isTrue(getOverflowButtons(component).rightButton.disabled);
+      });
+
+      it('does not hide or toggle the overflow buttons when a parent widget is re-shown', async () => {
+        const wrapper = document.createElement('div');
+        wrapper.style.width = '400px';
+        renderElementIntoDOM(wrapper);
+        const parentWidget = new UI.Widget.Widget();
+        parentWidget.markAsRoot();
+        parentWidget.show(wrapper);
+
+        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
+        component.show(parentWidget.contentElement);
+        component.selectedNode = longDivCrumb;
+        await settle(component);
+
+        const {leftButton, rightButton} = getOverflowButtons(component);
+        const changedAttributes: Array<string|null> = [];
+        const observer = new MutationObserver(records => {
+          changedAttributes.push(...records.map(record => record.attributeName));
+        });
+        for (const button of [leftButton, rightButton]) {
+          observer.observe(button, {attributes: true, attributeFilter: ['class', 'disabled']});
+        }
+
+        parentWidget.detach();
+        parentWidget.show(wrapper);
+        await settle(component);
+        changedAttributes.push(...observer.takeRecords().map(record => record.attributeName));
+        observer.disconnect();
+
+        assert.deepEqual(changedAttributes, []);
       });
 
       it('does not keep re-rendering once the overflow state has settled', async () => {

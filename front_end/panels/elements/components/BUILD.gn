@@ -99,5 +99,6 @@ devtools_ui_module("unittests") {
     "../../../generated",
     "../../../testing",
     "../../../ui/components/tooltips:bundle",
+    "../../../ui/legacy:bundle",
   ]
 }

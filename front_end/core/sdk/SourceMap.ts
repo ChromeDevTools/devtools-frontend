@@ -11,7 +11,11 @@ import type {CallFrame, Location, Scope, ScopeChainEntry} from './DebuggerModel.
 import {scopeTreeForScript} from './ScopeTreeCache.js';
 import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
-import {decodeRangeMappings, interpolateOriginalPosition} from './SourceMapRangeMappings.js';
+import {
+  decodeRangeMappings,
+  interpolateGeneratedPosition,
+  interpolateOriginalPosition,
+} from './SourceMapRangeMappings.js';
 import {
   type PositionRange,
   type RawFrameTranslation,
@@ -129,11 +133,48 @@ export class SourceMapEntry {
   }
 }
 
+export const UNBOUNDED: number = 2 ** 31 - 1;
+
+/**
+ * The original text covered by a single range mapping, used by the reverse (original to
+ * generated) lookups.
+ *
+ * A range mapping maps every position from its entry up to the next generated entry, but the
+ * source map only stores where it starts. Its end in the original source is never written
+ * down and has to be interpolated from the next generated entry. The reverse index
+ * ({@link SourceInfo.reverseMappings}) only knows where entries start, so on its own it can't
+ * tell whether an original position falls inside a range mapping.
+ *
+ * Each record holds the original start and the interpolated end of one range mapping, so
+ * lookups don't have to interpolate again on every query. The records of a source are sorted
+ * by start position and carry the running maximum end, so the range mappings covering a
+ * position can be found with a binary search plus a short backwards scan, without walking
+ * every mapping.
+ */
+interface RangeMappingRecord {
+  /** Index of the range mapping's entry in {@link SourceMap.mappings}. */
+  mappingIndex: number;
+  // Those are cache to avoid recalculating the interpolation
+  // every time we need such kind of information.
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+  /**
+   * The furthest end position of this record and all records preceding it in the (start
+   * position ordered) list. Range mappings may overlap, so this is what bounds the backwards
+   * scan in {@link SourceMap.findCoveringRangeMappings}.
+   */
+  maxEndLine: number;
+  maxEndColumn: number;
+}
+
 interface SourceInfo {
   sourceURL: Platform.DevToolsPath.UrlString;
   content: string|null;
   ignoreListHint: boolean;
   reverseMappings: number[]|null;
+  rangeMappings: RangeMappingRecord[]|null;
 }
 
 export const enum SourceMapProvenance {
@@ -150,6 +191,7 @@ export class SourceMap {
   readonly #sourceMappingURL: Platform.DevToolsPath.UrlString;
   readonly #baseURL: Platform.DevToolsPath.UrlString;
   #mappings: SourceMapEntry[]|null = null;
+  #hasRangeMappings = false;
 
   readonly #sourceInfos: SourceInfo[] = [];
   readonly #sourceInfoByURL = new Map<Platform.DevToolsPath.UrlString, SourceInfo>();
@@ -322,8 +364,8 @@ export class SourceMap {
     }
 
     // Let us compute the range that contains the source position in the compiled code.
-    const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
-    const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
+    const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : UNBOUNDED;
+    const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : UNBOUNDED;
     const range = new TextUtils.TextRange.TextRange(
         mappings[startIndex].lineNumber, mappings[startIndex].columnNumber, endLine, endColumn);
 
@@ -351,14 +393,74 @@ export class SourceMap {
     }
     const endSourceLine = endReverseIndex < reverseMappings.length ?
         mappings[reverseMappings[endReverseIndex]].sourceLineNumber :
-        2 ** 31 - 1;
+        UNBOUNDED;
     const endSourceColumn = endReverseIndex < reverseMappings.length ?
         mappings[reverseMappings[endReverseIndex]].sourceColumnNumber :
-        2 ** 31 - 1;
+        UNBOUNDED;
 
     const sourceRange =
         new TextUtils.TextRange.TextRange(startSourceLine, startSourceColumn, endSourceLine, endSourceColumn);
     return {range, sourceRange, sourceURL};
+  }
+
+  /**
+   * @returns the range mappings of {@link sourceURL} that cover the given original position,
+   *          ordered by their start position.
+   */
+  #findCoveringRangeMappings(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number,
+                             columnNumber: number): RangeMappingRecord[] {
+    this.#ensureSourceMapProcessed();
+    const records = this.#sourceInfoByURL.get(sourceURL)?.rangeMappings;
+    if (!records) {
+      return [];
+    }
+    // The records are ordered by start position, so everything before `index` starts at or
+    // before the position. They may overlap though, so walk backwards from there and use
+    // `maxEnd` to stop as soon as none of the remaining records can still reach the position.
+    let index = Platform.ArrayUtilities.upperBound(
+        records, undefined,
+        (_, record) => comparePositions(lineNumber, columnNumber, record.startLine, record.startColumn));
+    const covering: RangeMappingRecord[] = [];
+    while (index > 0) {
+      const record = records[--index];
+      if (comparePositions(lineNumber, columnNumber, record.maxEndLine, record.maxEndColumn) >= 0) {
+        break;
+      }
+      if (comparePositions(lineNumber, columnNumber, record.endLine, record.endColumn) < 0) {
+        covering.unshift(record);
+      }
+    }
+    return covering;
+  }
+
+  /**
+   * @returns the entry describing the given original position within the range mapping, which
+   *          is the range mapping's own entry if the position is exactly where it starts, and
+   *          a synthesized one otherwise.
+   */
+  #reverseEntryForRangeMapping(record: RangeMappingRecord, lineNumber: number, columnNumber: number): SourceMapEntry {
+    const entry = this.mappings()[record.mappingIndex];
+    if (entry.sourceLineNumber === lineNumber && entry.sourceColumnNumber === columnNumber) {
+      return entry;
+    }
+    const generated = interpolateGeneratedPosition(entry, lineNumber, columnNumber);
+    return new SourceMapEntry(generated.lineNumber, generated.columnNumber, entry.sourceIndex, entry.sourceURL,
+                              lineNumber, columnNumber, undefined, true);
+  }
+
+  /**
+   * @returns the indices of the reverse mappings to report for the given original position,
+   *          given the range mappings that cover it. Once a range mapping maps the position
+   *          exactly, entries that merely precede it are no longer equivalent to it, and the
+   *          range mappings themselves are reported separately.
+   */
+  #filterReverseIndices(indices: number[], lineNumber: number, columnNumber: number): number[] {
+    const mappings = this.mappings();
+    return indices.filter(index => {
+      const entry = mappings[index];
+      return !entry.isRangeMapping && entry.sourceLineNumber === lineNumber &&
+          entry.sourceColumnNumber === columnNumber;
+    });
   }
 
   sourceLineMapping(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
@@ -406,17 +508,28 @@ export class SourceMap {
       sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number,
       filterContiguous = false): SourceMapEntry[] {
     const mappings = this.mappings();
+    const covering = this.#findCoveringRangeMappings(sourceURL, lineNumber, columnNumber);
     let indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
+    if (covering.length > 0) {
+      indices = this.#filterReverseIndices(indices, lineNumber, columnNumber);
+    }
     if (filterContiguous) {
       indices = indices.filter((index, i) => i === 0 || index !== indices[i - 1] + 1);
     }
-    return indices.map(i => mappings[i]);
+    return [
+      ...indices.map(i => mappings[i]),
+      ...covering.map(record => this.#reverseEntryForRangeMapping(record, lineNumber, columnNumber)),
+    ];
   }
 
   findReverseRanges(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
       TextUtils.TextRange.TextRange[] {
     const mappings = this.mappings();
-    const indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
+    const covering = this.#findCoveringRangeMappings(sourceURL, lineNumber, columnNumber);
+    let indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
+    if (covering.length > 0) {
+      indices = this.#filterReverseIndices(indices, lineNumber, columnNumber);
+    }
     const ranges: TextUtils.TextRange.TextRange[] = [];
 
     for (let i = 0; i < indices.length; ++i) {
@@ -438,9 +551,21 @@ export class SourceMap {
       // the skip list we send to V8 with `Debugger.stepOver` (http://crbug.com/1305956).
       const startLine = mappings[startIndex].lineNumber;
       const startColumn = mappings[startIndex].columnNumber;
-      const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
-      const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
+      const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : UNBOUNDED;
+      const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : UNBOUNDED;
       ranges.push(new TextUtils.TextRange.TextRange(startLine, startColumn, endLine, endColumn));
+    }
+
+    for (const record of covering) {
+      // A range mapping maps the generated code character by character, so a single original
+      // character corresponds to a single generated character rather than to the whole span
+      // between this entry and the next one.
+      const {lineNumber: line, columnNumber: column} =
+          interpolateGeneratedPosition(mappings[record.mappingIndex], lineNumber, columnNumber);
+      ranges.push(new TextUtils.TextRange.TextRange(line, column, line, column + 1));
+    }
+    if (covering.length > 0) {
+      ranges.sort(TextUtils.TextRange.TextRange.comparator);
     }
 
     return ranges;
@@ -490,6 +615,9 @@ export class SourceMap {
       this.mappings().sort(SourceMapEntry.compare);
 
       this.#computeReverseMappings(this.#mappings);
+      if (this.#hasRangeMappings) {
+        this.#computeRangeMappingRecords(this.#mappings);
+      }
     }
 
     if (!SourceMap.retainRawSourceMaps) {
@@ -526,6 +654,58 @@ export class SourceMap {
       const b = mappings[indexB];
       return a.sourceLineNumber - b.sourceLineNumber || a.sourceColumnNumber - b.sourceColumnNumber ||
           a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
+    }
+  }
+
+  /**
+   * Builds, per source, the {@link RangeMappingRecord}s of the range mappings covering that
+   * source, ordered by original start position. Expects `mappings` to be sorted by generated
+   * position, since a range mapping extends until the next generated entry.
+   */
+  #computeRangeMappingRecords(mappings: SourceMapEntry[]): void {
+    const rangeMappingsPerUrl = new Map<Platform.DevToolsPath.UrlString, RangeMappingRecord[]>();
+    for (let i = 0; i < mappings.length; i++) {
+      const entry = mappings[i];
+      const entryUrl = entry?.sourceURL;
+      if (!entryUrl || !entry.isRangeMapping) {
+        continue;
+      }
+      const next = mappings[i + 1];
+      const end = next ? interpolateOriginalPosition(entry, next.lineNumber, next.columnNumber) :
+                         {lineNumber: UNBOUNDED, columnNumber: UNBOUNDED};
+      let records = rangeMappingsPerUrl.get(entryUrl);
+      if (!records) {
+        records = [];
+        rangeMappingsPerUrl.set(entryUrl, records);
+      }
+      records.push({
+        mappingIndex: i,
+        startLine: entry.sourceLineNumber,
+        startColumn: entry.sourceColumnNumber,
+        endLine: end.lineNumber,
+        endColumn: end.columnNumber,
+        maxEndLine: end.lineNumber,
+        maxEndColumn: end.columnNumber,
+      });
+    }
+
+    for (const [url, records] of rangeMappingsPerUrl.entries()) {
+      const info = this.#sourceInfoByURL.get(url);
+      if (!info) {
+        continue;
+      }
+      records.sort((a, b) => comparePositions(a.startLine, a.startColumn, b.startLine, b.startColumn));
+      let maxEndLine = -1;
+      let maxEndColumn = -1;
+      for (const record of records) {
+        if (comparePositions(record.endLine, record.endColumn, maxEndLine, maxEndColumn) > 0) {
+          maxEndLine = record.endLine;
+          maxEndColumn = record.endColumn;
+        }
+        record.maxEndLine = maxEndLine;
+        record.maxEndColumn = maxEndColumn;
+      }
+      info.rangeMappings = records;
     }
   }
 
@@ -571,6 +751,7 @@ export class SourceMap {
         content: source ?? null,
         ignoreListHint: ignoreList.has(i),
         reverseMappings: null,
+        rangeMappings: null,
       };
       this.#sourceInfos.push(sourceInfo);
       if (!this.#sourceInfoByURL.has(url)) {
@@ -699,6 +880,7 @@ export class SourceMap {
           continue;
         }
         mappings[mappingIndex] = asRangeMapping(mappings[mappingIndex]);
+        this.#hasRangeMappings = true;
       }
     }
   }
@@ -935,6 +1117,11 @@ export class SourceMap {
   artificialFunctionRanges(): PositionRange[] {
     return this.hasEncodedScopeInfo() ? this.#scopesInfo?.artificialFunctionRanges() ?? [] : [];
   }
+}
+
+/** @returns 0 if both positions are equal, a negative number if a < b and a positive one if a > b */
+function comparePositions(lineA: number, columnA: number, lineB: number, columnB: number): number {
+  return lineA - lineB || columnA - columnB;
 }
 
 /** @returns a copy of the {@link entry} that is marked as a range mapping. */

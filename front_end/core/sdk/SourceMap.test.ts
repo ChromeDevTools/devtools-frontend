@@ -1712,6 +1712,68 @@ describe('SourceMap', () => {
       });
     });
 
+    describe('reverse lookups', () => {
+      /*
+       * A range mapping starting at generated 0:4, mapping to original 1:2, and ending where
+       * the next mapping starts at generated 2:6. It therefore covers the original text from
+       * 1:2 up to (but excluding) 3:6.
+       */
+      function createSourceMapWithRangeOverLines() {
+        return createSourceMap(encodeSourceMap([
+          '0:4 => example.js:1:2 (range)',
+          '2:6 => example.js:9:0',
+        ]));
+      }
+
+      describe('findReverseEntries', () => {
+        it('interpolates a position covered by a range mapping', () => {
+          const sourceMap = createSourceMapWithRangeOverLines();
+
+          const entries = sourceMap.findReverseEntries(sourceUrlExample, 2, 0);
+
+          assert.deepEqual(entries.map(entry => [entry.lineNumber, entry.columnNumber]), [[1, 0]]);
+        });
+
+        it('returns the original entry for the exact start of a range mapping', () => {
+          const sourceMap = createSourceMapWithRangeOverLines();
+
+          const entries = sourceMap.findReverseEntries(sourceUrlExample, 1, 2);
+
+          assert.deepEqual(entries.map(entry => [entry.lineNumber, entry.columnNumber]), [[0, 4]]);
+        });
+
+        it('reports every range mapping that covers the position', () => {
+          // Both range mappings cover the original text from 0:0 up to 0:10, as happens when
+          // a bundler duplicates code.
+          const sourceMap = createSourceMap(encodeSourceMap([
+            '0:0 => example.js:0:0 (range)',
+            '0:10 => example.js:0:0 (range)',
+            '0:20 => example.js:5:0',
+          ]));
+
+          const entries = sourceMap.findReverseEntries(sourceUrlExample, 0, 3);
+
+          assert.deepEqual(entries.map(entry => [entry.lineNumber, entry.columnNumber]), [[0, 3], [0, 13]]);
+        });
+      });
+
+      describe('findReverseRanges', () => {
+        it('reports a single character for a position covered by a range mapping', () => {
+          const sourceMap = createSourceMapWithRangeOverLines();
+
+          assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 2, 0),
+                           [new TextUtils.TextRange.TextRange(1, 0, 1, 1)]);
+        });
+
+        it('still reports the full span of regular mappings', () => {
+          const sourceMap = createSourceMapWithRangeOverLines();
+
+          assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 9, 0),
+                           [new TextUtils.TextRange.TextRange(2, 6, 2 ** 31 - 1, 2 ** 31 - 1)]);
+        });
+      });
+    });
+
     describe('malformed input', () => {
       /**
        * A malformed field never takes the source map with it, so this parses the

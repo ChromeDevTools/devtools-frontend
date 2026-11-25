@@ -66,6 +66,22 @@ function updateLocalCacheIfNeeded() {
   }
 }
 
+const SETTING_DESCRIPTOR_TYPES = new Set(['SettingDescriptor', 'ConditionalSettingDescriptor']);
+
+function isSettingDescriptorType(typeNode: TSESTree.TypeNode): boolean {
+  if (typeNode.type !== 'TSTypeReference') {
+    return false;
+  }
+  const {typeName} = typeNode;
+  if (typeName.type === 'Identifier') {
+    return SETTING_DESCRIPTOR_TYPES.has(typeName.name);
+  }
+  if (typeName.type === 'TSQualifiedName') {
+    return SETTING_DESCRIPTOR_TYPES.has(typeName.right.name);
+  }
+  return false;
+}
+
 export default createRule({
   name: 'jslog-context-list',
   meta: {
@@ -152,6 +168,17 @@ export default createRule({
       },
       ObjectExpression(node) {
         checkPropertyValue('jslogContext', node);
+      },
+      VariableDeclarator(node) {
+        if (node.id.type === 'Identifier' && node.id.typeAnnotation &&
+            isSettingDescriptorType(node.id.typeAnnotation.typeAnnotation) && node.init?.type === 'ObjectExpression') {
+          checkPropertyValue('name', node.init);
+        }
+      },
+      TSSatisfiesExpression(node) {
+        if (isSettingDescriptorType(node.typeAnnotation) && node.expression.type === 'ObjectExpression') {
+          checkPropertyValue('name', node.expression);
+        }
       },
       'Program:exit'() {
         // Don't write to file if fail is enabled

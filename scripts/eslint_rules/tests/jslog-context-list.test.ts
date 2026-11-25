@@ -114,6 +114,75 @@ new RuleTester().run('jslog-context-list', rule, {
       ],
       filename: 'front_end/components/test.ts',
     },
+    {
+      name: 'disallows unknown setting name in qualified SettingDescriptor',
+      code: `
+        export const mySetting: Common.Settings.SettingDescriptor<boolean> = {
+          name: 'uNkNownSetting1',
+          type: Common.Settings.SettingType.BOOLEAN,
+          defaultValue: false,
+        };
+      `,
+      errors: [
+        {
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNownSetting1'},
+        },
+      ],
+      filename: 'front_end/components/test.ts',
+    },
+    {
+      name: 'disallows unknown setting name in unqualified SettingDescriptor',
+      code: `
+        export const mySetting: SettingDescriptor<boolean> = {
+          name: 'uNkNownSetting2',
+          type: SettingType.BOOLEAN,
+          defaultValue: false,
+        };
+      `,
+      errors: [
+        {
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNownSetting2'},
+        },
+      ],
+      filename: 'front_end/components/test.ts',
+    },
+    {
+      name: 'disallows unknown setting name in ConditionalSettingDescriptor',
+      code: `
+        export const mySetting: Common.Settings.ConditionalSettingDescriptor<boolean, string> = {
+          name: 'uNkNownSetting3',
+          type: Common.Settings.SettingType.BOOLEAN,
+          defaultValue: false,
+          isAvailable: () => ({available: true}),
+        };
+      `,
+      errors: [
+        {
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNownSetting3'},
+        },
+      ],
+      filename: 'front_end/components/test.ts',
+    },
+    {
+      name: 'disallows unknown setting name with satisfies SettingDescriptor',
+      code: `
+        export const mySetting = {
+          name: 'uNkNownSetting4',
+          type: Common.Settings.SettingType.BOOLEAN,
+          defaultValue: false,
+        } satisfies Common.Settings.SettingDescriptor<boolean>;
+      `,
+      errors: [
+        {
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNownSetting4'},
+        },
+      ],
+      filename: 'front_end/components/test.ts',
+    },
   ],
   valid: [
     {
@@ -199,6 +268,37 @@ new RuleTester().run('jslog-context-list', rule, {
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.refresh), this.refreshCallback.bind(this), {jslogContext});
             `,
+      filename: 'front_end/components/test.ts',
+    },
+    {
+      name: 'allows known setting name in SettingDescriptor',
+      code: `
+        export const mySetting: Common.Settings.SettingDescriptor<boolean> = {
+          name: 'network-messages',
+          type: Common.Settings.SettingType.BOOLEAN,
+          defaultValue: true,
+        };
+      `,
+      filename: 'front_end/components/test.ts',
+    },
+    {
+      name: 'allows variable setting name in SettingDescriptor',
+      code: `
+        export const mySetting: Common.Settings.SettingDescriptor<boolean> = {
+          name: settingName,
+          type: Common.Settings.SettingType.BOOLEAN,
+          defaultValue: false,
+        };
+      `,
+      filename: 'front_end/components/test.ts',
+    },
+    {
+      name: 'ignores name property on unrelated typed objects',
+      code: `
+        export const other: SomeOtherDescriptor = {
+          name: 'uNkNownNotASetting',
+        };
+      `,
       filename: 'front_end/components/test.ts',
     },
   ],

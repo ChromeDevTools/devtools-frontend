@@ -1233,21 +1233,54 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#updateDetailViews();
   }
 
-  setModel(
-      newParsedTrace: Trace.TraceModel.ParsedTrace,
-      eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap): void {
-    if (newParsedTrace === this.#parsedTrace) {
+  /**
+   * Sets the active trace and rebuilds the flame charts, or releases all
+   * trace-scoped references when `data` is `null`.
+   */
+  setModel(data: {
+    parsedTrace: Trace.TraceModel.ParsedTrace,
+    eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap,
+  }|null): void {
+    if (!data) {
+      this.#reset();
       return;
     }
 
-    this.#parsedTrace = newParsedTrace;
-    this.#eventToRelatedInsightsMap = eventToRelatedInsightsMap;
+    if (data.parsedTrace === this.#parsedTrace) {
+      return;
+    }
+
+    this.#parsedTrace = data.parsedTrace;
+    this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
     for (const dimmer of this.#flameChartDimmers) {
       dimmer.active = false;
       dimmer.mainChartIndices = [];
       dimmer.networkChartIndices = [];
     }
     this.rebuildDataForTrace({updateType: 'NEW_TRACE'});
+  }
+
+  #reset(): void {
+    this.#parsedTrace = null;
+    this.#eventToRelatedInsightsMap = null;
+    this.#entityMapper = null;
+    this.#selectedGroupName = null;
+    this.#selectedEvents = null;
+    this.#currentSelection = null;
+    this.#activeInsight = null;
+    this.#currentInsightOverlays = [];
+    this.#markers = [];
+    this.#clearLinkSelectionAnnotation(/* deleteCurrentLink= */ false);
+    this.mainDataProvider.reset();
+    this.networkDataProvider.reset();
+    this.mainFlameChart.enableRuler(true);
+    this.networkSplitWidget.hideSidebar();
+    this.#overlays.reset();
+    this.mainFlameChart.reset();
+    this.networkFlameChart.reset();
+    // Must run after clearing the trace and selection fields above, which #updateDetailViews() forwards.
+    this.#updateDetailViews();
+    this.#commentController.setParsedTrace(null);
   }
 
   /**
@@ -1267,16 +1300,25 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#selectedGroupName = null;
     this.#selectedEvents = null;
     this.#entityMapper = new Trace.EntityMapper.EntityMapper(this.#parsedTrace);
-    // order is important: |reset| needs to be called after the trace
-    // model has been set in the data providers.
+    // Populate networkDataProvider before isEmpty() and resizeToPreferredHeights() compute the split-widget layout.
     this.mainDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
     this.networkDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
-    this.reset();
+    if (this.networkDataProvider.isEmpty()) {
+      this.mainFlameChart.enableRuler(true);
+      this.networkSplitWidget.hideSidebar();
+    } else {
+      this.mainFlameChart.enableRuler(false);
+      this.networkSplitWidget.showBoth();
+      this.resizeToPreferredHeights();
+    }
+    this.#overlays.reset();
+    this.mainFlameChart.reset();
+    this.networkFlameChart.reset();
 
-    // The order here is quite subtle; but the reset() call above clears out
-    // any state in the flame charts. We then need to provide it with any
-    // persisted group settings here, before it recalculates the timeline data
-    // and draws the UI.
+    // The order here is quite subtle; resetting the flame charts above clears
+    // out any state in them. We then need to provide them with any persisted
+    // group settings here, before they recalculate the timeline data and draw
+    // the UI.
     const mainChartConfig = this.#mainPersistedGroupConfigSetting.get();
     if (mainChartConfig) {
       this.mainFlameChart.setPersistedConfig(mainChartConfig);
@@ -1306,21 +1348,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     const main = this.#mainPersistedGroupConfigSetting.get();
     const network = this.#networkPersistedGroupConfigSetting.get();
     return {main, network};
-  }
-
-  reset(): void {
-    if (this.networkDataProvider.isEmpty()) {
-      this.mainFlameChart.enableRuler(true);
-      this.networkSplitWidget.hideSidebar();
-    } else {
-      this.mainFlameChart.enableRuler(false);
-      this.networkSplitWidget.showBoth();
-      this.resizeToPreferredHeights();
-    }
-    this.#overlays.reset();
-    this.mainFlameChart.reset();
-    this.networkFlameChart.reset();
-    this.updateSearchResults(false, false);
   }
 
   // TODO(paulirish): It's possible this is being called more than necessary. Attempt to clean up the lifecycle.

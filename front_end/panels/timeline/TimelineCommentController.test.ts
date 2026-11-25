@@ -58,7 +58,7 @@ async function setupFlameChartView(context: Mocha.Context): Promise<Setup> {
       new Timeline.TimelineFlameChartView.TimelineFlameChartView(new MockViewDelegate(), commentManager);
   activeFlameChartViews.push(flameChartView);
   renderWidgetInVbox(flameChartView, {width: 1500, height: 2000});
-  flameChartView.setModel(parsedTrace, new Map());
+  flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
   // Matches the trace ID format that TimelineCommentController stores on anchors.
   const {min, max} = parsedTrace.data.Meta.traceBounds;
   return {commentManager, flameChartView, parsedTrace, traceId: `trace-${min}-${max}`};
@@ -577,7 +577,7 @@ describe('TimelineCommentController', function() {
       const nextTrace = await TraceLoader.traceEngine(this, 'basic.json.gz', {withModificationsManager: true});
       movedListener.resetHistory();
 
-      setup.flameChartView.setModel(nextTrace, new Map());
+      setup.flameChartView.setModel({parsedTrace: nextTrace, eventToRelatedInsightsMap: new Map()});
 
       sinon.assert.calledOnce(movedListener);
       assert.isEmpty(commentPins(setup.flameChartView));

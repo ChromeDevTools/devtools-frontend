@@ -2332,9 +2332,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     this.#instantiateNewModel();
     ModificationsManager.reset();
     this.#uninstallSourceMapsResolver();
-    this.flameChart.getMainDataProvider().reset();
-    this.flameChart.getNetworkDataProvider().reset();
-    this.flameChart.reset();
+    this.flameChart.setModel(null);
     this.#changeView({mode: 'LANDING_PAGE'});
     UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, null);
   }
@@ -2408,7 +2406,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     }
     this.statusDialog?.updateProgressBar(i18nString(UIStrings.processed), 70);
 
-    this.flameChart.setModel(parsedTrace, this.#eventToRelatedInsights);
+    this.flameChart.setModel({parsedTrace, eventToRelatedInsightsMap: this.#eventToRelatedInsights});
     this.flameChart.resizeToPreferredHeights();
     // Reset the visual selection as we've just swapped to a new trace.
     void this.flameChart.setSelectionAndReveal(null);

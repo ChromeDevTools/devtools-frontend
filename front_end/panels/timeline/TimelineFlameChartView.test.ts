@@ -152,7 +152,7 @@ describe('TimelineFlameChartView', function() {
       // IMPORTANT: order is important; for the flame chart view to render properly
       // it must be in the DOM before we set the model, so it can calculate and
       // set heights.
-      flameChartView.setModel(parsedTrace, new Map());
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
       // Most of the network content is in the first ~700ms of this trace
       const {min} = parsedTrace.data.Meta.traceBounds;
@@ -189,7 +189,7 @@ describe('TimelineFlameChartView', function() {
           mockViewDelegate, new CommentManager.CommentManager.CommentManager());
       activeWidgets.push(flameChartView);
       renderWidgetInVbox(flameChartView, {width: 1500, height: 2000});
-      flameChartView.setModel(parsedTrace, new Map());
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
       await raf();
       flameChartView.updateCountersGraphToggle(false);
       await flameChartView.updateComplete;
@@ -220,7 +220,7 @@ describe('TimelineFlameChartView', function() {
       // it must be in the DOM before we set the model, so it can calculate and
       // set heights.
       flameChartView.show(searchableView.element);
-      flameChartView.setModel(parsedTrace, new Map());
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
       flameChartView.getNetworkFlameChart().toggleGroupExpand(0);
 
       // Most of the network content is in the first ~700ms of this trace
@@ -266,7 +266,7 @@ describe('TimelineFlameChartView', function() {
       // it must be in the DOM before we set the model, so it can calculate and
       // set heights.
       flameChartView.show(searchableView.element);
-      flameChartView.setModel(parsedTrace, new Map());
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
       flameChartView.getNetworkFlameChart().toggleGroupExpand(0);
 
       // Most of the network content is in the first ~700ms of this trace
@@ -304,7 +304,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     assert.isFalse(flameChartView.hasHiddenTracks());
     // Ensure it is true when something in the main flame chart is hidden
@@ -319,6 +319,75 @@ describe('TimelineFlameChartView', function() {
     assert.isTrue(flameChartView.hasHiddenTracks());
   });
 
+  it('clears overlays and rebuilds cleanly when the model is cleared and set again', async function() {
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+    const commentManager = new CommentManager.CommentManager.CommentManager();
+    const flameChartView =
+        new Timeline.TimelineFlameChartView.TimelineFlameChartView(new MockViewDelegate(), commentManager);
+    renderElementIntoDOM(flameChartView);
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+
+    const mainProvider = flameChartView.getMainDataProvider();
+    const event = mainProvider.eventByIndex(0);
+    assert.isOk(event);
+    const traceEventKey = new Trace.EventsSerializer.EventsSerializer().keyForEvent(event);
+    assert.isNotNull(traceEventKey);
+    const {min, max} = parsedTrace.data.Meta.traceBounds;
+    commentManager.createCommentThread({
+      vePath: 'Panel: timeline > FlameChart: main',
+      timeline: {
+        traceId: `trace-${min}-${max}`,
+        traceEventKey,
+        entryName: event.name,
+        startTimeMicro: event.ts,
+        chartLocation: 'main',
+      },
+    },
+                                       'Comment');
+    await flameChartView.setSelectionAndReveal(Timeline.TimelineSelection.selectionFromEvent(event));
+
+    assert.isNotEmpty(mainProvider.timelineData().groups);
+    assert.isFalse(flameChartView.getNetworkDataProvider().isEmpty());
+    const markerCountBeforeClear = flameChartView.overlays().overlaysOfType('TIMINGS_MARKER').length;
+    assert.isAbove(markerCountBeforeClear, 0);
+    assert.lengthOf(flameChartView.overlays().overlaysOfType('COMMENT_PIN'), 1);
+    assert.lengthOf(flameChartView.overlays().overlaysOfType('ENTRY_SELECTED'), 1);
+
+    const countersSetModelSpy = sinon.spy(Timeline.CountersGraph.CountersGraph.prototype, 'setModel');
+    const detailsSetModelSpy = sinon.spy(Timeline.TimelineDetailsView.TimelineDetailsPane.prototype, 'setModel');
+    const commentSetTraceSpy =
+        sinon.spy(Timeline.TimelineCommentController.TimelineCommentController.prototype, 'setParsedTrace');
+
+    flameChartView.setModel(null);
+    assert.isEmpty(flameChartView.overlays().overlaysOfType('TIMINGS_MARKER'));
+    assert.isEmpty(flameChartView.overlays().overlaysOfType('COMMENT_PIN'));
+    assert.isEmpty(flameChartView.overlays().overlaysOfType('ENTRY_SELECTED'));
+    assert.isEmpty(mainProvider.timelineData().groups);
+    assert.isTrue(flameChartView.getNetworkDataProvider().isEmpty());
+    sinon.assert.calledOnceWithExactly(countersSetModelSpy, null, null);
+    sinon.assert.calledOnceWithExactly(detailsSetModelSpy, {
+      parsedTrace: null,
+      selectedEvents: null,
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    });
+    sinon.assert.calledOnceWithExactly(commentSetTraceSpy, null);
+
+    flameChartView.rebuildDataForTrace({updateType: 'REDRAW_EXISTING_TRACE'});
+    assert.isEmpty(flameChartView.overlays().overlaysOfType('TIMINGS_MARKER'));
+    assert.isEmpty(mainProvider.timelineData().groups);
+
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+    assert.isNotEmpty(mainProvider.timelineData().groups);
+    assert.isFalse(flameChartView.getNetworkDataProvider().isEmpty());
+    assert.lengthOf(flameChartView.overlays().overlaysOfType('TIMINGS_MARKER'), markerCountBeforeClear);
+    assert.lengthOf(flameChartView.overlays().overlaysOfType('COMMENT_PIN'), 1);
+
+    await flameChartView.setSelectionAndReveal(Timeline.TimelineSelection.selectionFromEvent(event));
+    assert.lengthOf(flameChartView.overlays().overlaysOfType('ENTRY_SELECTED'), 1);
+  });
+
   it('can gather the visual track config to store as metadata', async function() {
     const parsedTrace =
         await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
@@ -326,7 +395,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     const mainChart = flameChartView.getMainFlameChart();
     mainChart.hideGroup(0);
@@ -403,7 +472,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
-    flameChartView.setModel({...parsedTrace, metadata}, new Map());
+    flameChartView.setModel({parsedTrace: {...parsedTrace, metadata}, eventToRelatedInsightsMap: new Map()});
 
     const metadataInSetting = flameChartView.getPersistedConfigMetadata();
     assert.deepEqual(metadataInSetting, {main: null, network: [USER_VISUAL_CONFIG_NETWORK]});
@@ -427,7 +496,7 @@ describe('TimelineFlameChartView', function() {
     // it must be in the DOM before we set the model, so it can calculate and
     // set heights.
     flameChartView.show(searchableView.element);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
     const modifications = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modifications);
     const labelAnnotation = modifications.getAnnotations().find(a => a.type === 'ENTRY_LABEL');
@@ -543,7 +612,7 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(flameChartView);
     const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
     flameChartView.setSearchableView(searchableView);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     const searchQuery = 'Paint';
     const searchConfig = new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false,
@@ -585,7 +654,7 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(flameChartView);
     const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
     flameChartView.setSearchableView(searchableView);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     const searchQuery = 'app.js';
     const searchConfig = new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false,
@@ -609,7 +678,7 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(flameChartView);
     const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
     flameChartView.setSearchableView(searchableView);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     // This text is only present in the `tooltipText` of the entries on the
     // 'An Extension Track' track; it is not part of their name.
@@ -635,7 +704,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     // Find the main track to later collapse entries of
     const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -678,7 +747,7 @@ describe('TimelineFlameChartView', function() {
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
            mockViewDelegate, new CommentManager.CommentManager.CommentManager());
        renderElementIntoDOM(flameChartView);
-       flameChartView.setModel(parsedTrace, new Map());
+       flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
        // Find the main track to later collapse entries of
        const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -724,7 +793,7 @@ describe('TimelineFlameChartView', function() {
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
            mockViewDelegate, new CommentManager.CommentManager.CommentManager());
        renderElementIntoDOM(flameChartView);
-       flameChartView.setModel(parsedTrace, new Map());
+       flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
        Timeline.ModificationsManager.ModificationsManager.activeManager();
 
        // Find the main track to later collapse entries of
@@ -781,7 +850,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     const tooltips =
         [...flameChartView.element.querySelectorAll('.overlay-type-TIMINGS_MARKER .marker-title')].map(el => {
@@ -819,7 +888,7 @@ describe('TimelineFlameChartView', function() {
       // where the animations are not correctly cancelled when the component is
       // destroyed.
       flameChartView.forceAnimationsForTest();
-      flameChartView.setModel(parsedTrace, new Map());
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
       flameChartView.markAsRoot();
       // IMPORTANT: we show the widget within the div, but the div is never
       // added to the DOM.
@@ -1298,7 +1367,7 @@ describe('TimelineFlameChartView', function() {
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
           mockViewDelegate, new CommentManager.CommentManager.CommentManager());
       renderElementIntoDOM(flameChartView);
-      flameChartView.setModel(parsedTrace, new Map());
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
       // Find some task in the main thread that we can build an AI Call Tree from
       const task = allThreadEntriesInTrace(parsedTrace).find(event => {
         return Trace.Types.Events.isRunTask(event) && event.dur > 5_000 &&
@@ -1327,7 +1396,7 @@ describe('TimelineFlameChartView', function() {
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
           mockViewDelegate, new CommentManager.CommentManager.CommentManager());
       renderElementIntoDOM(flameChartView);
-      flameChartView.setModel(parsedTrace, new Map());
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
       Timeline.ModificationsManager.ModificationsManager.activeManager();
     });
 
@@ -1417,7 +1486,7 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(flameChartView);
     const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
     flameChartView.setSearchableView(searchableView);
-    flameChartView.setModel(parsedTrace, new Map());
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     const searchConfig = new UI.SearchableView.SearchConfig('app.js', false, false, false);
     flameChartView.performSearch(searchConfig, false);

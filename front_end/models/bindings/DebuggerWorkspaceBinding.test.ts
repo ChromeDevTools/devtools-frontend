@@ -37,8 +37,7 @@ describe('DebuggerWorkspaceBinding', () => {
     const debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
     const target =
         backend.createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
-    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    backend.universe.targetManager.setScopeTarget(target);
     const scriptUrl = urlString`http://script-host/script.js`;
     const scriptInfo = {url: scriptUrl, content: 'console.log(1);', startLine: 0, startColumn: 0, hasSourceURL: false};
 

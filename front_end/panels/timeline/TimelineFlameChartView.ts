@@ -227,9 +227,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#tooltipElement.classList.add('timeline-entry-tooltip-element');
     flameChartsContainer.element.appendChild(this.#tooltipElement);
 
-    // Ensure that the network panel & resizer appears above the main thread.
-    this.networkSplitWidget.sidebarElement().style.zIndex = '120';
-
     this.#mainPersistedGroupConfigSetting =
         Common.Settings.Settings.instance().createSetting<PerfUI.FlameChart.PersistedGroupConfig[]|null>(
             'timeline-persisted-main-flamechart-track-config', null);

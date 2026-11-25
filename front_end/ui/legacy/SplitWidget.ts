@@ -236,10 +236,6 @@ export class SplitWidget extends SplitWidgetBase {
     return this.#sidebarWidget;
   }
 
-  sidebarElement(): HTMLElement {
-    return this.#sidebarElement;
-  }
-
   override childWasDetached(widget: Widget): void {
     if (this.#detaching) {
       return;

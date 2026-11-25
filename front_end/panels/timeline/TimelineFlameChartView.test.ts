@@ -31,6 +31,7 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import * as Overlays from './overlays/overlays.js';
 import * as Timeline from './timeline.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -516,6 +517,45 @@ describe('TimelineFlameChartView', function() {
     });
     dispatchClickEvent(overlayElement);
     sinon.assert.calledOnceWithExactly(labelAnnotationClickedStub, labelAnnotation.entry);
+  });
+
+  it('forwards main entry hover events', () => {
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+
+    const hoveredSpy = sinon.spy();
+    flameChartView.addEventListener(Timeline.TimelineFlameChartView.Events.MAIN_ENTRY_HOVERED, hoveredSpy);
+
+    flameChartView.getMainFlameChart().dispatchEventToListeners(PerfUI.FlameChart.Events.ENTRY_HOVERED, 42);
+    sinon.assert.calledOnce(hoveredSpy);
+    assert.strictEqual(hoveredSpy.firstCall.args[0].data, 42);
+  });
+
+  it('forwards time range overlay hover events', () => {
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+
+    const mouseOverSpy = sinon.spy();
+    const mouseOutSpy = sinon.spy();
+    flameChartView.addEventListener(Timeline.TimelineFlameChartView.Events.TIME_RANGE_MOUSE_OVER, mouseOverSpy);
+    flameChartView.addEventListener(Timeline.TimelineFlameChartView.Events.TIME_RANGE_MOUSE_OUT, mouseOutSpy);
+
+    const timeRangeOverlay: Trace.Types.Overlays.TimeRangeLabel = {
+      type: 'TIME_RANGE',
+      label: '',
+      showDuration: true,
+      bounds: microsecondsTraceWindow(Trace.Types.Timing.Micro(0), Trace.Types.Timing.Micro(10)),
+    };
+    flameChartView.overlays().dispatchEvent(new Overlays.Overlays.TimeRangeMouseOverEvent(timeRangeOverlay));
+    sinon.assert.calledOnce(mouseOverSpy);
+    assert.strictEqual(mouseOverSpy.firstCall.args[0].data, timeRangeOverlay);
+
+    flameChartView.overlays().dispatchEvent(new Overlays.Overlays.TimeRangeMouseOutEvent());
+    sinon.assert.calledOnce(mouseOutSpy);
   });
 
   it('coalesces overlay updates when main and network flame charts redraw in the same turn', async () => {

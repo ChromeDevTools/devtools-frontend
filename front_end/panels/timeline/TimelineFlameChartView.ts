@@ -333,6 +333,13 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
           },
       );
     });
+    this.#overlays.addEventListener(Overlays.Overlays.TimeRangeMouseOverEvent.eventName, event => {
+      this.dispatchEventToListeners(Events.TIME_RANGE_MOUSE_OVER,
+                                    (event as Overlays.Overlays.TimeRangeMouseOverEvent).overlay);
+    });
+    this.#overlays.addEventListener(Overlays.Overlays.TimeRangeMouseOutEvent.eventName, () => {
+      this.dispatchEventToListeners(Events.TIME_RANGE_MOUSE_OUT);
+    });
 
     this.#overlays.addEventListener(Overlays.Overlays.AnnotationOverlayActionEvent.eventName, event => {
       const {overlay, action} = (event as Overlays.Overlays.AnnotationOverlayActionEvent);
@@ -450,6 +457,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_HOVERED, event => {
       this.onEntryHovered(event);
       this.updateLinkSelectionAnnotationWithToEntry(this.mainDataProvider, event.data);
+      this.dispatchEventToListeners(Events.MAIN_ENTRY_HOVERED, event.data);
     }, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_HOVERED, event => {
       this.updateLinkSelectionAnnotationWithToEntry(this.networkDataProvider, event.data);
@@ -2110,9 +2118,15 @@ export function groupForLevel(groups: PerfUI.FlameChart.Group[], level: number):
 
 export const enum Events {
   ENTRY_LABEL_ANNOTATION_CLICKED = 'EntryLabelAnnotationClicked',
+  MAIN_ENTRY_HOVERED = 'MainEntryHovered',
+  TIME_RANGE_MOUSE_OVER = 'TimeRangeMouseOver',
+  TIME_RANGE_MOUSE_OUT = 'TimeRangeMouseOut',
 }
 export interface EventTypes {
   [Events.ENTRY_LABEL_ANNOTATION_CLICKED]: {
     entry: Trace.Types.Events.Event,
   };
+  [Events.MAIN_ENTRY_HOVERED]: number;
+  [Events.TIME_RANGE_MOUSE_OVER]: Trace.Types.Overlays.TimeRangeLabel;
+  [Events.TIME_RANGE_MOUSE_OUT]: void;
 }

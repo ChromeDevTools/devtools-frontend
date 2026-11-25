@@ -791,8 +791,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
         'toggle-popover', event => this.flameChart.togglePopover((event as CustomEvent).detail));
 
     this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
-    this.flameChart.getMainFlameChart().addEventListener(
-        PerfUI.FlameChart.Events.ENTRY_HOVERED, this.#onMainEntryHovered);
+    this.flameChart.addEventListener(TimelineFlameChartViewEvents.MAIN_ENTRY_HOVERED, this.#onMainEntryHovered);
 
     this.flameChart.addEventListener(TimelineFlameChartViewEvents.ENTRY_LABEL_ANNOTATION_CLICKED, event => {
       const selection = selectionFromEvent(event.data.entry);
@@ -813,16 +812,15 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     this.#splitWidget.enableShowModeSaving();
     this.#splitWidget.show(this.element);
 
-    this.flameChart.overlays().addEventListener(Overlays.Overlays.TimeRangeMouseOverEvent.eventName, event => {
-      const {overlay} = event as Overlays.Overlays.TimeRangeMouseOverEvent;
-      const overlayBounds = Overlays.Overlays.traceWindowContainingOverlays([overlay]);
+    this.flameChart.addEventListener(TimelineFlameChartViewEvents.TIME_RANGE_MOUSE_OVER, event => {
+      const overlayBounds = Overlays.Overlays.traceWindowContainingOverlays([event.data]);
       if (!overlayBounds) {
         return;
       }
       this.#minimapComponent.highlightBounds(overlayBounds, /* withBracket */ false);
     });
 
-    this.flameChart.overlays().addEventListener(Overlays.Overlays.TimeRangeMouseOutEvent.eventName, () => {
+    this.flameChart.addEventListener(TimelineFlameChartViewEvents.TIME_RANGE_MOUSE_OUT, () => {
       this.#minimapComponent.clearBoundsHighlight();
     });
 

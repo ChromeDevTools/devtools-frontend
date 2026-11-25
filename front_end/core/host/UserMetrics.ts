@@ -167,21 +167,6 @@ export class UserMetrics {
     });
   }
 
-  recordingToggled(value: RecordingToggled): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingToggled, value,
-                                                            RecordingToggled.MAX_VALUE);
-  }
-
-  recordingReplayFinished(value: RecordingReplayFinished): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingReplayFinished, value,
-                                                            RecordingReplayFinished.MAX_VALUE);
-  }
-
-  recordingReplayStarted(value: RecordingReplayStarted): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingReplayStarted, value,
-                                                            RecordingReplayStarted.MAX_VALUE);
-  }
-
   lighthouseModeRun(type: LighthouseModeRun): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.LighthouseModeRun, type,
                                                             LighthouseModeRun.MAX_VALUE);
@@ -436,44 +421,6 @@ export const Language: typeof Enums.Language =
 export type SyncSetting = Enums.SyncSetting;
 export const SyncSetting: typeof Enums.SyncSetting =
     createDynamicEnumProxy<typeof Enums.SyncSetting>('SyncSetting', Enums.SyncSetting);
-
-export type RecordingToggled = Enums.RecordingToggled;
-export const RecordingToggled: typeof Enums.RecordingToggled =
-    createDynamicEnumProxy<typeof Enums.RecordingToggled>('RecordingToggled', Enums.RecordingToggled);
-
-export type RecordingAssertion = Enums.RecordingAssertion;
-export const RecordingAssertion: typeof Enums.RecordingAssertion =
-    createDynamicEnumProxy<typeof Enums.RecordingAssertion>('RecordingAssertion', Enums.RecordingAssertion);
-
-export type RecordingReplayFinished = Enums.RecordingReplayFinished;
-export const RecordingReplayFinished: typeof Enums.RecordingReplayFinished =
-    createDynamicEnumProxy<typeof Enums.RecordingReplayFinished>('RecordingReplayFinished',
-                                                                 Enums.RecordingReplayFinished);
-
-export type RecordingReplaySpeed = Enums.RecordingReplaySpeed;
-export const RecordingReplaySpeed: typeof Enums.RecordingReplaySpeed =
-    createDynamicEnumProxy<typeof Enums.RecordingReplaySpeed>('RecordingReplaySpeed', Enums.RecordingReplaySpeed);
-
-export type RecordingReplayStarted = Enums.RecordingReplayStarted;
-export const RecordingReplayStarted: typeof Enums.RecordingReplayStarted =
-    createDynamicEnumProxy<typeof Enums.RecordingReplayStarted>('RecordingReplayStarted', Enums.RecordingReplayStarted);
-
-export type RecordingEdited = Enums.RecordingEdited;
-export const RecordingEdited: typeof Enums.RecordingEdited =
-    createDynamicEnumProxy<typeof Enums.RecordingEdited>('RecordingEdited', Enums.RecordingEdited);
-
-export type RecordingExported = Enums.RecordingExported;
-export const RecordingExported: typeof Enums.RecordingExported =
-    createDynamicEnumProxy<typeof Enums.RecordingExported>('RecordingExported', Enums.RecordingExported);
-
-export type RecordingCodeToggled = Enums.RecordingCodeToggled;
-export const RecordingCodeToggled: typeof Enums.RecordingCodeToggled =
-    createDynamicEnumProxy<typeof Enums.RecordingCodeToggled>('RecordingCodeToggled', Enums.RecordingCodeToggled);
-
-export type RecordingCopiedToClipboard = Enums.RecordingCopiedToClipboard;
-export const RecordingCopiedToClipboard: typeof Enums.RecordingCopiedToClipboard =
-    createDynamicEnumProxy<typeof Enums.RecordingCopiedToClipboard>('RecordingCopiedToClipboard',
-                                                                    Enums.RecordingCopiedToClipboard);
 
 export type ManifestSectionCodes = Enums.ManifestSectionCodes;
 export const ManifestSectionCodes: typeof Enums.ManifestSectionCodes =

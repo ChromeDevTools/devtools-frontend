@@ -1122,7 +1122,6 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
     extension.replay(this.currentRecording.flow);
     const descriptor = await promise;
     this.viewDescriptor = descriptor;
-    Host.userMetrics.recordingReplayStarted(Host.UserMetrics.RecordingReplayStarted.REPLAY_VIA_EXTENSION);
   }
 
   async #onPlayRecording(event: ViewPlayRecordingEvent): Promise<void> {
@@ -1142,10 +1141,6 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
     if (event.extension) {
       return await this.#onPlayViaExtension(event.extension);
     }
-    Host.userMetrics.recordingReplayStarted(
-        event.targetPanel !== TargetPanel.DEFAULT ?
-            Host.UserMetrics.RecordingReplayStarted.REPLAY_WITH_PERFORMANCE_TRACING :
-            Host.UserMetrics.RecordingReplayStarted.REPLAY_ONLY);
     this.#replayState.isPlaying = true;
     this.currentStep = undefined;
     this.recordingError = undefined;
@@ -1191,14 +1186,6 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
         this.recordingPlayer = undefined;
       }
       this.lastReplayResult = Models.RecordingPlayer.ReplayResult.FAILURE;
-      const errorMessage = error.message.toLowerCase();
-      if (errorMessage.startsWith('could not find element')) {
-        Host.userMetrics.recordingReplayFinished(Host.UserMetrics.RecordingReplayFinished.TIMEOUT_ERROR_SELECTORS);
-      } else if (errorMessage.startsWith('waiting for target failed')) {
-        Host.userMetrics.recordingReplayFinished(Host.UserMetrics.RecordingReplayFinished.TIMEOUT_ERROR_TARGET);
-      } else {
-        Host.userMetrics.recordingReplayFinished(Host.UserMetrics.RecordingReplayFinished.OTHER_ERROR);
-      }
       // Dispatch an event for e2e testing.
       this.element.dispatchEvent(new Events.ReplayFinishedEvent());
     });
@@ -1211,7 +1198,6 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
       this.lastReplayResult = Models.RecordingPlayer.ReplayResult.SUCCESS;
       // Dispatch an event for e2e testing.
       this.element.dispatchEvent(new Events.ReplayFinishedEvent());
-      Host.userMetrics.recordingReplayFinished(Host.UserMetrics.RecordingReplayFinished.SUCCESS);
     });
 
     this.recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ABORT, () => {
@@ -1500,7 +1486,6 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
     this.#clearError();
 
     // -- Recording logic starts here --
-    Host.userMetrics.recordingToggled(Host.UserMetrics.RecordingToggled.RECORDING_STARTED);
     this.currentRecordingSession = new Models.RecordingSession.RecordingSession(this.#getMainTarget(), {
       title: data.name,
       selectorAttribute: data.selectorAttribute,
@@ -1581,7 +1566,6 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
     this.#clearError();
 
     // -- Recording logic starts here --
-    Host.userMetrics.recordingToggled(Host.UserMetrics.RecordingToggled.RECORDING_FINISHED);
     await this.currentRecordingSession.stop();
     this.currentRecordingSession = undefined;
     // -- Recording logic ends here --

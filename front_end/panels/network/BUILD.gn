@@ -230,4 +230,6 @@ devtools_ui_module("unittests") {
     "../utils:bundle",
     "./forward:bundle",
   ]
+
+  deps = [ ":css_files" ]
 }

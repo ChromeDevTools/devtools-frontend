@@ -9,13 +9,14 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Network from './network.js';
+import networkPanelStyles from './networkPanel.css.js';
 
 // Fails compilation if a RequestTimeRangeNames enum value is missing.
 const ALL_REQUEST_TIME_RANGE_NAMES: Record<NetworkTimeCalculator.RequestTimeRangeNames, true> = {
@@ -178,6 +179,81 @@ describeWithEnvironment('NetworkWaterfallColumn', () => {
     });
 
     column.detach();
+  });
+
+  it('renders waterfall timing bars and scroll overlay', async () => {
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    calculator.setWindow(new NetworkTimeCalculator.NetworkTimeBoundary(0, 1));
+    const column = new Network.NetworkWaterfallColumn.NetworkWaterfallColumn(calculator);
+    column.setRowHeight(21);
+    column.setHeaderHeight(27);
+
+    renderElementIntoDOM(column, {
+      includeCommonStyles: true,
+      extraStyles: [networkPanelStyles],
+      width: 400,
+      height: 120,
+    });
+
+    const scroller = column.contentElement.createChild('div', 'network-waterfall-v-scroll small');
+    const scrollerContent = scroller.createChild('div', 'network-waterfall-v-scroll-content');
+    scrollerContent.style.height = '300px';
+
+    const createTimedNode = (requestTime: number, endTime: number): Network.NetworkDataGridNode.NetworkRequestNode => {
+      const timing: Protocol.Network.ResourceTiming = {
+        requestTime,
+        proxyStart: -1,
+        proxyEnd: -1,
+        dnsStart: 20,
+        dnsEnd: 60,
+        connectStart: 60,
+        connectEnd: 140,
+        sslStart: 90,
+        sslEnd: 140,
+        workerStart: -1,
+        workerReady: -1,
+        workerFetchStart: -1,
+        workerRespondWithSettled: -1,
+        sendStart: 140,
+        sendEnd: 150,
+        pushStart: 0,
+        pushEnd: 0,
+        receiveHeadersStart: 260,
+        receiveHeadersEnd: 270,
+      };
+      const node = createRequestNode(timing);
+      const request = node.request();
+      assert.exists(request);
+      request.setIssueTime(requestTime - 0.02, requestTime - 0.02);
+      request.responseReceivedTime = requestTime + 0.27;
+      request.endTime = endTime;
+      return node;
+    };
+
+    const nodes = [
+      createTimedNode(0.05, 0.45),
+      createTimedNode(0.2, 0.7),
+      createTimedNode(0.35, 0.9),
+    ];
+
+    column.update(0, new Map(), nodes);
+    await assertScreenshot('network/network_waterfall_column.png');
+    column.detach();
+  });
+
+  it('applies dark-theme background to the waterfall scroller overlay', () => {
+    const column = createColumn();
+    const scroller = column.contentElement.createChild('div', 'network-waterfall-v-scroll');
+    const hadDarkTheme = document.documentElement.classList.contains('theme-with-dark-background');
+    document.documentElement.classList.add('theme-with-dark-background');
+    try {
+      assert.strictEqual(getComputedStyle(scroller).backgroundColor, 'rgba(0, 0, 0, 0.01)');
+    } finally {
+      if (!hadDarkTheme) {
+        document.documentElement.classList.remove('theme-with-dark-background');
+      }
+      column.detach();
+    }
   });
 
   describe('presenter', () => {

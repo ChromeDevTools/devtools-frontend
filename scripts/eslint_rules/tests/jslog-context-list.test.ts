@@ -87,24 +87,6 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
-      name: 'disallows unknown settingName in registerSettingExtension',
-      code: `
-        Common.Settings.registerSettingExtension({
-          storageType: Common.Settings.SettingStorageType.Synced,
-          settingName: 'uNkNown5',
-          settingType: Common.Settings.SettingType.REGEX,
-          defaultValue: '/node_modules/|/bower_components/',
-        });
-            `,
-      errors: [
-        {
-          messageId: 'unknownJslogContextValue',
-          data: {value: 'uNkNown5'},
-        },
-      ],
-      filename: 'front_end/components/test.ts',
-    },
-    {
       name: 'disallows unknown setting name in createSetting',
       code: `
     this.disableCaptureJSProfileSetting =
@@ -199,17 +181,6 @@ new RuleTester().run('jslog-context-list', rule, {
 	    const Sources = await loadSourcesModule();
 	    return Sources.SourcesPanel.SourcesPanel.instance();
 	  },
-	});
-            `,
-      filename: 'front_end/components/test.ts',
-    },
-    {
-      name: 'allows omitting settingName in registerSettingExtension',
-      code: `
-	Common.Settings.registerSettingExtension({
-	  storageType: Common.Settings.SettingStorageType.Synced,
-	  settingType: Common.Settings.SettingType.REGEX,
-	  defaultValue: '/node_modules/|/bower_components/',
 	});
             `,
       filename: 'front_end/components/test.ts',

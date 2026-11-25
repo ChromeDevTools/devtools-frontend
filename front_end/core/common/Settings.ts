@@ -10,14 +10,9 @@ import type {EventDescriptor, EventTargetEvent, GenericEvents} from './EventTarg
 import {ObjectWrapper} from './Object.js';
 import {
   getLocalizedSettingsCategory,
-  maybeRemoveSettingExtension,
   type RegExpSettingItem,
-  registerSettingExtension,
-  registerSettingsForTest,
-  resetSettings,
   SettingCategory,
   type SettingExtensionOption,
-  type SettingRegistration,
   SettingType,
 } from './SettingRegistration.js';
 import {VersionController} from './VersionController.js';
@@ -95,7 +90,6 @@ export interface SettingsCreationOptions {
   syncedStorage: SettingsStorage;
   globalStorage: SettingsStorage;
   localStorage: SettingsStorage;
-  settingRegistrations: SettingRegistration[];
   logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
   runSettingsMigration?: boolean;
   console: Console;
@@ -138,7 +132,6 @@ export class Settings {
   readonly globalStorage: SettingsStorage;
   readonly localStorage: SettingsStorage;
 
-  readonly #settingRegistrations: SettingRegistration[];
   readonly #sessionStorage = new SettingsStorage({});
   settingNameSet: Set<string> = new Set<string>();
   #eventSupport = new SettingsEventSupport();
@@ -151,7 +144,6 @@ export class Settings {
     syncedStorage,
     globalStorage,
     localStorage,
-    settingRegistrations,
     logSettingAccess,
     runSettingsMigration,
     console,
@@ -160,31 +152,11 @@ export class Settings {
     this.syncedStorage = syncedStorage;
     this.globalStorage = globalStorage;
     this.localStorage = localStorage;
-    this.#settingRegistrations = settingRegistrations;
     this.#logSettingAccess = logSettingAccess;
-
-    for (const registration of this.#settingRegistrations) {
-      const {settingName, defaultValue, storageType} = registration;
-      const isRegex = registration.settingType === SettingType.REGEX;
-
-      const evaluatedDefaultValue =
-          typeof defaultValue === 'function' ? defaultValue(Root.Runtime.hostConfig) : defaultValue;
-      const setting = isRegex && typeof evaluatedDefaultValue === 'string' ?
-          this.createRegExpSetting(settingName, evaluatedDefaultValue, undefined, storageType) :
-          this.createSetting(settingName, evaluatedDefaultValue, storageType);
-
-      setting.setRegistration(registration);
-
-      this.registerModuleSetting(setting);
-    }
 
     if (runSettingsMigration) {
       new VersionController(this).updateVersion();
     }
-  }
-
-  getRegisteredSettings(): SettingRegistration[] {
-    return this.#settingRegistrations;
   }
 
   static hasInstance(): boolean {
@@ -196,7 +168,6 @@ export class Settings {
     syncedStorage: SettingsStorage|null,
     globalStorage: SettingsStorage|null,
     localStorage: SettingsStorage|null,
-    settingRegistrations: SettingRegistration[]|null,
     console: Console|null,
     logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>,
     runSettingsMigration?: boolean,
@@ -205,7 +176,6 @@ export class Settings {
     syncedStorage: null,
     globalStorage: null,
     localStorage: null,
-    settingRegistrations: null,
     console: null,
   }): Settings {
     const {
@@ -213,13 +183,12 @@ export class Settings {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations,
       logSettingAccess,
       runSettingsMigration,
       console,
     } = opts;
     if (!Root.DevToolsContext.globalInstance().has(Settings) || forceNew) {
-      if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations || !console) {
+      if (!syncedStorage || !globalStorage || !localStorage || !console) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
 
@@ -227,7 +196,6 @@ export class Settings {
                                                   syncedStorage,
                                                   globalStorage,
                                                   localStorage,
-                                                  settingRegistrations,
                                                   logSettingAccess,
                                                   runSettingsMigration,
                                                   console,
@@ -527,7 +495,6 @@ export class SettingsStorage {
 }
 
 export class Setting<V> {
-  #registration: SettingRegistration|null = null;
   #type: SettingType|null = null;
   #requiresUserAction?: boolean;
   #value?: V;
@@ -549,7 +516,6 @@ export class Setting<V> {
       name: this.name,
       type: this.type() ?? SettingType.BOOLEAN,
       defaultValue: this.defaultValue,
-      storageType: this.#registration?.storageType,
     };
   }
 
@@ -649,15 +615,8 @@ export class Setting<V> {
     this.#type = type;
   }
 
-  setRegistration(registration: SettingRegistration): void {
-    this.#registration = registration;
-    if (registration.settingType) {
-      this.#type = registration.settingType;
-    }
-  }
-
   type(): SettingType|null {
-    return this.#type ?? this.#registration?.settingType ?? null;
+    return this.#type ?? null;
   }
 
   private printSettingsSavingError(message: string, value: string): void {
@@ -741,13 +700,8 @@ export const enum SettingStorageType {
 
 export {
   getLocalizedSettingsCategory,
-  maybeRemoveSettingExtension,
   RegExpSettingItem,
-  registerSettingExtension,
-  registerSettingsForTest,
-  resetSettings,
   SettingCategory,
   SettingExtensionOption,
-  SettingRegistration,
   SettingType,
 };

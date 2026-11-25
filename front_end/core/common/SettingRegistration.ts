@@ -5,8 +5,6 @@
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
 
-import type {SettingStorageType} from './Settings.js';
-
 const UIStrings = {
   /**
    * @description Title of the Elements panel.
@@ -80,8 +78,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/common/SettingRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let registeredSettings: SettingRegistration[] = [];
-const settingNameSet = new Set<string>();
 const orderValuesBySettingCategory = new Map<SettingCategory, Set<number>>();
 
 export function registerCategoryOrder(category?: SettingCategory, order?: number): void {
@@ -102,47 +98,6 @@ export function removeCategoryOrder(category?: SettingCategory, order?: number):
   if (category && typeof order === 'number') {
     orderValuesBySettingCategory.get(category)?.delete(order);
   }
-}
-
-export function registerSettingExtension(registration: SettingRegistration): void {
-  const settingName = registration.settingName;
-  if (settingNameSet.has(settingName)) {
-    throw new Error(`Duplicate setting name '${settingName}'`);
-  }
-  registerCategoryOrder(registration.category, registration.order);
-  settingNameSet.add(settingName);
-  registeredSettings.push(registration);
-}
-
-export function getRegisteredSettings(): SettingRegistration[] {
-  return registeredSettings;
-}
-
-export function registerSettingsForTest(settings: SettingRegistration[], forceReset = false): void {
-  if (registeredSettings.length === 0 || forceReset) {
-    resetSettings();
-    for (const setting of settings) {
-      registerSettingExtension(setting);
-    }
-  }
-}
-
-export function resetSettings(): void {
-  for (const setting of registeredSettings) {
-    removeCategoryOrder(setting.category, setting.order);
-  }
-  registeredSettings = [];
-  settingNameSet.clear();
-}
-
-export function maybeRemoveSettingExtension(settingName: string): boolean {
-  const settingIndex = registeredSettings.findIndex(setting => setting.settingName === settingName);
-  if (settingIndex < 0 || !settingNameSet.delete(settingName)) {
-    return false;
-  }
-  const [removed] = registeredSettings.splice(settingIndex, 1);
-  removeCategoryOrder(removed.category, removed.order);
-  return true;
 }
 
 export const enum SettingCategory {
@@ -233,59 +188,6 @@ export interface RegExpSettingItem {
    * enable ignore listing, the rule can be reenabled.
    */
   disabledForUrl?: Platform.DevToolsPath.UrlString;
-}
-
-export interface SettingRegistration {
-  /**
-   * The category with which the setting is displayed in the UI.
-   */
-  category?: SettingCategory;
-  /**
-   * Used to sort on screen the settings that belong to the same category.
-   */
-  order?: number;
-  /**
-   * The title with which the setting is shown on screen.
-   */
-  title?: () => Platform.UIString.LocalizedString;
-  /**
-   * The identifier of the setting.
-   */
-  settingName: string;
-  /**
-   * Determines how the possible values of the setting are expressed.
-   *
-   * - If the setting can only be enabled and disabled use BOOLEAN
-   * - If the setting has a list of possible values use ENUM
-   * - If each setting value is a set of objects use ARRAY
-   * - If the setting value is a regular expression use REGEX
-   */
-  settingType: SettingType;
-  /**
-   * The value set by default to the setting.
-   */
-  defaultValue: unknown;
-  /**
-   * Words used to find a setting in the Command Menu.
-   */
-  tags?: Array<() => Platform.UIString.LocalizedString>;
-  /**
-   * The possible values the setting can have, each with a description composed of a title and an optional text.
-   */
-  options?: SettingExtensionOption[];
-  /**
-   * Whether DevTools must be reloaded for a change in the setting to take effect.
-   */
-  reloadRequired?: boolean;
-  /**
-   * Determines if the setting value is stored in the global, local or session storage.
-   */
-  storageType?: SettingStorageType;
-
-  /**
-   * See {@link LearnMore} for more info.
-   */
-  learnMore?: LearnMore;
 }
 
 /**

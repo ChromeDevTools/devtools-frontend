@@ -87,7 +87,6 @@ devtools_foundation_module("foundation_unittests") {
     "ResourceType.test.ts",
     "Revealer.test.ts",
     "SegmentedRange.test.ts",
-    "SettingRegistration.test.ts",
     "Settings.test.ts",
     "SimpleHistoryManager.test.ts",
     "Srcset.test.ts",

@@ -2,36 +2,38 @@
 
 Settings can alter the functionality of DevTools.
 Some of the settings default values can be changed with the command menu or in the settings tab.
-A settings registration is represented by the `SettingRegistration` interface, declared in [common/SettingRegistration.ts](./SettingRegistration.ts).
 
-All settings have to be registered using the function `Common.Settings.registerSettingExtension` which expects an object of type `SettingRegistration` as parameter.
+Settings are defined via a `SettingDescriptor` (`Common.Settings.SettingDescriptor`) and resolved lazily using `settings.resolve(descriptor)` or `settings.maybeResolve(descriptor)`.
 
-As an example, take the registration of the `show-html-comments` setting, which allows users to determine if HTML comments are shown in the Elements tree:
+Settings that should be surfaced in the Settings UI or Command Menu register UI metadata using `SettingsUI.SettingUIRegistration.register`:
 
 ```ts
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  order: 3,
-  title: ls`HTML comments`,
-  settingName: 'show-html-comments',
-  settingType: Common.Settings.SettingType.BOOLEAN,
+export const showHtmlCommentsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-html-comments',
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};
+
+SettingsUI.SettingUIRegistration.register(showHtmlCommentsSettingDescriptor, {
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  order: 3,
+  title: i18nLazyString(UIStrings.htmlComments),
   options: [
     {
       value: true,
-      title: ls`Show HTML comments`,
+      title: i18nLazyString(UIStrings.showHtmlComments),
     },
     {
       value: false,
-      title: ls`Hide HTML comments`,
+      title: i18nLazyString(UIStrings.hideHtmlComments),
     },
   ],
 });
 ```
 
-A controller for the each setting is added to the 'preferences' tab if they are visible, that is, they have a `title` and a `category`.
-They can also be set with the command menu if they have `options` and a `category` (options’ names are added as commands).
+A controller for each setting is added to the 'preferences' tab if it has a `title` and a `category`.
+It can also be set with the command menu if it has `options` and a `category` (options' names are added as commands).
 
 ---
 

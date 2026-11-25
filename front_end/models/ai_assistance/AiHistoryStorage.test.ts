@@ -84,7 +84,6 @@ describe('AiHistoryStorage', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
-      settingRegistrations: [],
       console: new Common.Console.Console(),
     });
   });

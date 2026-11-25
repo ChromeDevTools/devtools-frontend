@@ -99,7 +99,6 @@ function createStubBreakpointManagerAndSettings() {
     syncedStorage: dummyStorage,
     globalStorage: dummyStorage,
     localStorage: dummyStorage,
-    settingRegistrations: [],
     console: Common.Console.Console.instance(),
   });
   return {breakpointManager, settings};

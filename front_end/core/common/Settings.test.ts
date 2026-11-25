@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Root from '../root/root.js';
@@ -85,10 +85,6 @@ describe('SettingsStorage class', () => {
 });
 
 describe('Settings instance', () => {
-  afterEach(() => {
-    Common.Settings.resetSettings();  // Clear SettingsRegistrations.
-  });
-
   it('can be instantiated in a test', () => {
     const dummyStorage = new SettingsStorage({});
 
@@ -96,7 +92,6 @@ describe('Settings instance', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       console: new Common.Console.Console(),
     });
 
@@ -113,7 +108,6 @@ describe('Settings instance', () => {
       syncedStorage: null,
       globalStorage: null,
       localStorage: null,
-      settingRegistrations: null,
       console: null,
     }));
   });
@@ -121,30 +115,28 @@ describe('Settings instance', () => {
   it('stores synced settings in the correct storage', () => {
     const syncedStorage = new SettingsStorage({});
     const dummyStorage = new SettingsStorage({});
-    Common.Settings.registerSettingExtension({
-      settingName: 'static-synced-setting',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-      storageType: Common.Settings.SettingStorageType.SYNCED,
-    });
     const settings = new Common.Settings.Settings({
       syncedStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       console: new Common.Console.Console(),
     });
 
     const dynamicSetting: Common.Settings.Setting<string> =
         settings.createSetting('dynamic-synced-setting', 'default val', Common.Settings.SettingStorageType.SYNCED);
     dynamicSetting.set('foo value');
-    const staticSetting: Common.Settings.Setting<boolean> = settings.moduleSetting('static-synced-setting');
-    staticSetting.set(true);
+    const resolvedSetting: Common.Settings.Setting<boolean> = settings.resolve({
+      name: 'resolved-synced-setting',
+      type: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      storageType: Common.Settings.SettingStorageType.SYNCED,
+    });
+    resolvedSetting.set(true);
 
     assert.isFalse(dummyStorage.has('dynamic-synced-setting'));
-    assert.isFalse(dummyStorage.has('static-synced-setting'));
+    assert.isFalse(dummyStorage.has('resolved-synced-setting'));
     assert.strictEqual(syncedStorage.get('dynamic-synced-setting'), '"foo value"');
-    assert.strictEqual(syncedStorage.get('static-synced-setting'), 'true');
+    assert.strictEqual(syncedStorage.get('resolved-synced-setting'), 'true');
   });
 
   it('registers settings with the backing store when creating them', async () => {
@@ -152,23 +144,22 @@ describe('Settings instance', () => {
     const spy = sinon.spy(inMemoryStorage, 'register');
 
     const storage = new SettingsStorage({}, inMemoryStorage, '__prefix__.');
-    Common.Settings.registerSettingExtension({
-      settingName: 'static-global-setting',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-      storageType: Common.Settings.SettingStorageType.GLOBAL,
-    });
     const settings = new Common.Settings.Settings({
       syncedStorage: storage,
       globalStorage: storage,
       localStorage: storage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       console: new Common.Console.Console(),
+    });
+    settings.resolve({
+      name: 'resolved-global-setting',
+      type: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      storageType: Common.Settings.SettingStorageType.GLOBAL,
     });
     settings.createSetting('dynamic-local-setting', 42, Common.Settings.SettingStorageType.LOCAL);
     settings.createSetting('dynamic-synced-setting', 'foo', Common.Settings.SettingStorageType.SYNCED);
 
-    sinon.assert.calledWith(spy.firstCall, '__prefix__.static-global-setting');
+    sinon.assert.calledWith(spy.firstCall, '__prefix__.resolved-global-setting');
     sinon.assert.calledWith(spy.secondCall, '__prefix__.dynamic-local-setting');
     sinon.assert.calledWith(spy.thirdCall, '__prefix__.dynamic-synced-setting');
   });
@@ -183,7 +174,6 @@ describe('Settings instance', () => {
            syncedStorage: settingsStorage,
            globalStorage: settingsStorage,
            localStorage: settingsStorage,
-           settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
            console: new Common.Console.Console(),
          });
          const testSetting: Common.Settings.Setting<string> =
@@ -207,7 +197,6 @@ describe('Settings instance', () => {
       syncedStorage: storage,
       globalStorage: storage,
       localStorage: storage,
-      settingRegistrations: [],
       console: new Common.Console.Console(),
     });
     const setting = settings.createSetting('test-setting', 'initial value');
@@ -233,7 +222,6 @@ describe('Settings instance', () => {
         syncedStorage: storage,
         globalStorage: storage,
         localStorage: storage,
-        settingRegistrations: [],
         console: new Common.Console.Console(),
       });
       changes = [];
@@ -303,32 +291,6 @@ describe('Settings instance', () => {
     });
   });
 
-  it('retrieves registered settings', () => {
-    const storage = new Common.Settings.SettingsStorage({});
-    const settings = new Common.Settings.Settings({
-      syncedStorage: storage,
-      globalStorage: storage,
-      localStorage: storage,
-      settingRegistrations: [{
-        category: Common.Settings.SettingCategory.CONSOLE,
-        settingType: Common.Settings.SettingType.BOOLEAN,
-        settingName: 'test-setting',
-        defaultValue: false,
-      }],
-      console: new Common.Console.Console(),
-    });
-
-    const setting = settings.moduleSetting('test-setting');
-
-    assert.isFalse(setting.get());
-    assert.deepEqual(setting.descriptor(), {
-      name: 'test-setting',
-      type: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-      storageType: undefined,
-    });
-  });
-
   describe('resolve', () => {
     let dummyStorage: Common.Settings.SettingsStorage;
     let settings: Common.Settings.Settings;
@@ -339,7 +301,6 @@ describe('Settings instance', () => {
         syncedStorage: dummyStorage,
         globalStorage: dummyStorage,
         localStorage: dummyStorage,
-        settingRegistrations: [],
         console: new Common.Console.Console(),
       });
     });
@@ -390,7 +351,6 @@ describe('Settings instance', () => {
         syncedStorage: dummyStorage,
         globalStorage: dummyStorage,
         localStorage: dummyStorage,
-        settingRegistrations: [],
         console: new Common.Console.Console(),
       });
       const setting1 = settings.resolve(descriptor);
@@ -422,6 +382,11 @@ describe('Settings instance', () => {
       };
       const setting = settings.resolve(descriptor);
       assert.strictEqual(setting.type(), Common.Settings.SettingType.BOOLEAN);
+      assert.deepEqual(setting.descriptor(), {
+        name: 'test-setting-type-from-descriptor',
+        type: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: true,
+      });
     });
 
     it('returns the same setting instance when resolving two different descriptors with the same name', () => {
@@ -441,29 +406,16 @@ describe('Settings instance', () => {
       assert.isFalse(setting2.get());
     });
 
-    it('produces the same setting instance as moduleSetting when resolving a descriptor matching a registration',
-       () => {
-         const registration: Common.SettingRegistration.SettingRegistration = {
-           settingName: 'registered-setting',
-           settingType: Common.Settings.SettingType.BOOLEAN,
-           defaultValue: false,
-         };
-         const settingsWithReg = new Common.Settings.Settings({
-           syncedStorage: dummyStorage,
-           globalStorage: dummyStorage,
-           localStorage: dummyStorage,
-           settingRegistrations: [registration],
-           console: new Common.Console.Console(),
-         });
-         const descriptor: Common.Settings.SettingDescriptor<boolean> = {
-           name: 'registered-setting',
-           type: Common.Settings.SettingType.BOOLEAN,
-           defaultValue: false,
-         };
-         const settingFromModule = settingsWithReg.moduleSetting('registered-setting');
-         const settingFromResolve = settingsWithReg.resolve(descriptor);
-         assert.strictEqual(settingFromModule, settingFromResolve);
-       });
+    it('produces the same setting instance as moduleSetting when resolving a descriptor', () => {
+      const descriptor: Common.Settings.SettingDescriptor<boolean> = {
+        name: 'resolved-setting',
+        type: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: false,
+      };
+      const settingFromResolve = settings.resolve(descriptor);
+      const settingFromModule = settings.moduleSetting('resolved-setting');
+      assert.strictEqual(settingFromModule, settingFromResolve);
+    });
 
     it('fails TS compilation if the setting type is a function', () => {
       const descriptor: Common.Settings.SettingDescriptor<() => void> = {
@@ -486,7 +438,6 @@ describe('Settings instance', () => {
         syncedStorage: dummyStorage,
         globalStorage: dummyStorage,
         localStorage: dummyStorage,
-        settingRegistrations: [],
         console: new Common.Console.Console(),
       });
     });

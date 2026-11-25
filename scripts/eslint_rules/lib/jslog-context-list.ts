@@ -143,8 +143,6 @@ export default createRule({
             checkPropertyValue('actionId', firstArg);
           } else if (propertyName === 'registerViewExtension') {
             checkPropertyValue('id', firstArg);
-          } else if (propertyName === 'registerSettingExtension') {
-            checkPropertyValue('settingName', firstArg);
           } else if (propertyName === 'createSetting') {
             if (firstArg.type === 'Literal') {
               checkValue(firstArg.value, node);

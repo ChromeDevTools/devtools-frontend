@@ -26,7 +26,6 @@ describe('AiSetting', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
-      settingRegistrations: [],
       console: new Common.Console.Console(),
     });
     hostConfigTracker = new Host.AidaClient.HostConfigTracker();

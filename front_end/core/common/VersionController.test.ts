@@ -25,7 +25,6 @@ describe('VersionController', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -365,7 +364,6 @@ describe('updateVersionFrom37To38', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -429,7 +427,6 @@ describe('updateVersionFrom37To38', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: [],
       runSettingsMigration: true,
       console: new Common.Console.Console(),
     });
@@ -452,7 +449,6 @@ describe('updateVersionFrom38To39', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -511,7 +507,6 @@ describe('updateVersionFrom38To39', () => {
         syncedStorage,
         globalStorage,
         localStorage,
-        settingRegistrations: [],
         runSettingsMigration: false,
         console: new Common.Console.Console(),
       });
@@ -563,7 +558,6 @@ describe('updateVersionFrom38To39', () => {
         syncedStorage,
         globalStorage,
         localStorage,
-        settingRegistrations: [],
         runSettingsMigration: true,
         console: new Common.Console.Console(),
       });
@@ -673,7 +667,6 @@ describe('updateVersionFrom40To41', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -736,7 +729,6 @@ describe('updateVersionFrom41To42', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: [],
       runSettingsMigration: false,
       console: new Common.Console.Console(),
     });
@@ -784,7 +776,6 @@ describe('access logging', () => {
       syncedStorage,
       globalStorage,
       localStorage,
-      settingRegistrations: [],
       logSettingAccess,
       console: new Common.Console.Console(),
     });

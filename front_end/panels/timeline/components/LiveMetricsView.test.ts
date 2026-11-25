@@ -178,7 +178,6 @@ describeWithEnvironment('LiveMetricsView', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
-      settingRegistrations: [],
       console: Common.Console.Console.instance({forceNew: true}),
     });
 

@@ -27,7 +27,6 @@ describe('Universe', () => {
       syncedStorage: new Common.Settings.SettingsStorage({}),
       globalStorage: new Common.Settings.SettingsStorage({}),
       localStorage: new Common.Settings.SettingsStorage({}),
-      settingRegistrations: [],
     };
   }
 

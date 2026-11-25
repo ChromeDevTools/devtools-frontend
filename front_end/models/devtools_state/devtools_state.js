@@ -52,6 +52,11 @@ var CPUThrottlingStateProvider = class extends Common.ObjectWrapper.ObjectWrappe
   allStates() {
     return [this.#toState()];
   }
+  async reveal(kind) {
+    if (kind === "cpu-throttling" /* CPU_THROTTLING */) {
+      await Common.Revealer.reveal(this.#cpuThrottlingManager);
+    }
+  }
   reset(kind) {
     if (kind === "cpu-throttling" /* CPU_THROTTLING */ && this.#cpuThrottlingManager.cpuThrottlingRate() !== NO_CPU_THROTTLING_RATE) {
       this.#cpuThrottlingManager.setCPUThrottlingRate(NO_CPU_THROTTLING_RATE);
@@ -100,6 +105,13 @@ var SettingsStateProvider = class extends Common2.ObjectWrapper.ObjectWrapper {
   }
   allStates() {
     return TRACKED_SETTINGS.map((entry) => this.#toState(entry));
+  }
+  async reveal(kind) {
+    for (const entry of TRACKED_SETTINGS) {
+      if (entry.kind === kind) {
+        await Common2.Revealer.reveal(this.#settings.resolve(entry.descriptor));
+      }
+    }
   }
   reset(kind) {
     for (const entry of TRACKED_SETTINGS) {
@@ -153,6 +165,11 @@ var StateManager = class extends Common3.ObjectWrapper.ObjectWrapper {
   }
   nonDefaultStates() {
     return this.allStates().filter((state) => !state.isDefault);
+  }
+  async reveal(kind) {
+    for (const provider of this.#providers) {
+      await provider.reveal(kind);
+    }
   }
   reset(kind) {
     for (const provider of this.#providers) {

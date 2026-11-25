@@ -21,9 +21,11 @@ export declare class ColorSwatch extends HTMLElement {
     #private;
     private readonly shadow;
     private tooltip;
-    private readonly;
     constructor(tooltip?: string);
     static isColorSwatch(element: Element): element is ColorSwatch;
+    /** Whether clicking the swatch is ignored instead of opening the color editor. */
+    get readonly(): boolean;
+    set readonly(readonly: boolean);
     setReadonly(readonly: boolean): void;
     set color(color: Common.Color.Color);
     get color(): Common.Color.Color | null;

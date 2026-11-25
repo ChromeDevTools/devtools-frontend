@@ -6908,14 +6908,20 @@
   "panels/common/StateChangesStatusBarPills.ts | enableJavaScript": {
     "message": "Enable JavaScript"
   },
+  "panels/common/StateChangesStatusBarPills.ts | inspectMenuItem": {
+    "message": "Inspect"
+  },
   "panels/common/StateChangesStatusBarPills.ts | javaScriptDisabled": {
     "message": "JavaScript disabled"
   },
   "panels/common/StateChangesStatusBarPills.ts | morePills": {
-    "message": "More changed settings"
+    "message": "Show more"
   },
   "panels/common/StateChangesStatusBarPills.ts | resetAll": {
     "message": "Reset all"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | resetMenuItem": {
+    "message": "Reset"
   },
   "panels/common/StateChangesStatusBarPills.ts | stopCpuThrottling": {
     "message": "Stop CPU throttling"

@@ -6,12 +6,16 @@ export interface Pill {
     id: string;
     title: Platform.UIString.LocalizedString;
     resetTitle: Platform.UIString.LocalizedString;
+    onReveal: () => void;
     onReset: () => void;
 }
 export interface ViewInput {
     pills: Pill[];
     visiblePillCount: number;
+    showMoreMenuOpen: boolean;
     onResetAll: () => void;
+    onShowMoreMenuOpen: () => void;
+    onShowMoreMenuClosed: () => void;
 }
 export interface ViewOutput {
     containerWidth?: () => number;
@@ -23,7 +27,7 @@ export interface ViewOutput {
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
-/** Shows a pill for each state change in the status bar. The user can reset one change or all changes. */
+/** Shows a pill for each state change in the status bar. The user can reveal or reset a change, or reset all changes. */
 export declare class StateChangesStatusBarPills extends UI.Widget.Widget {
     #private;
     static readonly INJECT: readonly [typeof DevToolsState.StateManager.StateManager];

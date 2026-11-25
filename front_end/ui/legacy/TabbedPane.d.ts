@@ -270,6 +270,7 @@ export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     set headerJslog(jslog: string);
     constructor();
     attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
+    resizerElement(): Element;
     connectedCallback(): void;
     disconnectedCallback(): void;
 }

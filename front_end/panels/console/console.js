@@ -4764,6 +4764,49 @@ var { widget: widget2, widgetRef } = UI3.Widget;
 function ensureWidgetCreated() {
 }
 var SELECTABLE_ATTRIBUTE = "data-console-selectable";
+function tokenizeMessageText(string) {
+  const { tokenizerRegexes: tokenizerRegexes2, tokenizerTypes: tokenizerTypes2 } = getOrCreateTokenizers();
+  if (string.length > getMaxTokenizableStringLength()) {
+    return [{ text: string, type: void 0 }];
+  }
+  const results = TextUtils3.TextUtils.Utils.splitStringByRegexes(string, tokenizerRegexes2);
+  return results.map((result) => ({ text: result.value, type: tokenizerTypes2[result.regexIndex] }));
+}
+function tokenizeAndLinkify(string, linkifier) {
+  const nodes = [];
+  const tokens = tokenizeMessageText(string);
+  let isBlob = false;
+  for (const token of tokens) {
+    if (!token.text) {
+      continue;
+    }
+    if (isBlob) {
+      token.text = `blob:${token.text}`;
+      isBlob = !isBlob;
+    }
+    if (token.text === "'blob:" && token === tokens[0]) {
+      isBlob = true;
+      token.text = "'";
+    }
+    switch (token.type) {
+      case "url": {
+        const realURL = token.text.startsWith("www.") ? "http://" + token.text : token.text;
+        const splitResult = Common2.ParsedURL.ParsedURL.splitLineAndColumn(realURL);
+        const sourceURL = Common2.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(splitResult.url);
+        if (splitResult) {
+          nodes.push(linkifier(token.text, sourceURL, splitResult.lineNumber, splitResult.columnNumber));
+        } else {
+          nodes.push(linkifier(token.text, Platform2.DevToolsPath.EmptyUrlString));
+        }
+        break;
+      }
+      default:
+        nodes.push(token.text);
+        break;
+    }
+  }
+  return nodes;
+}
 function selectableRank(element) {
   if (element.closest(".console-message-text")) {
     return 0;
@@ -6086,7 +6129,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
               wrapper.style.setProperty("contain", "paint");
               wrapper.style.setProperty("display", "inline-block");
               wrapper.style.setProperty("max-width", "100%");
-              render3(html3`${this.linkifyStringAsFragment(lines[i])}`, wrapper);
+              render3(this.linkifyStringAsFragment(lines[i]), wrapper);
               for (const [property, { value, priority }] of currentStyle) {
                 wrapper.style.setProperty(property, value, priority);
               }
@@ -6658,38 +6701,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       return propertyValue;
     }
     const container = document.createDocumentFragment();
-    const tokens = _ConsoleViewMessage.tokenizeMessageText(string);
-    let isBlob = false;
-    for (const token of tokens) {
-      if (!token.text) {
-        continue;
-      }
-      if (isBlob) {
-        token.text = `blob:${token.text}`;
-        isBlob = !isBlob;
-      }
-      if (token.text === "'blob:" && token === tokens[0]) {
-        isBlob = true;
-        token.text = "'";
-      }
-      switch (token.type) {
-        case "url": {
-          const realURL = token.text.startsWith("www.") ? "http://" + token.text : token.text;
-          const splitResult = Common2.ParsedURL.ParsedURL.splitLineAndColumn(realURL);
-          const sourceURL = Common2.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(splitResult.url);
-          let linkNode;
-          if (splitResult) {
-            linkNode = linkifier(token.text, sourceURL, splitResult.lineNumber, splitResult.columnNumber);
-          } else {
-            linkNode = linkifier(token.text, Platform2.DevToolsPath.EmptyUrlString);
-          }
-          container.appendChild(linkNode);
-          break;
-        }
-        default:
-          container.appendChild(document.createTextNode(token.text));
-          break;
-      }
+    for (const item2 of tokenizeAndLinkify(string, linkifier)) {
+      container.appendChild(typeof item2 === "string" ? document.createTextNode(item2) : item2);
     }
     return container;
   }
@@ -6720,21 +6733,14 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       })}`;
     }
     const initiatorId = () => this.initiatorId();
-    return _ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
-      const options = { text, lineNumber, columnNumber, initiatorId };
-      const linkElement = Components2.Linkifier.Linkifier.linkifyURL(url, options);
-      linkElement.tabIndex = -1;
-      linkElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
-      return linkElement;
-    });
-  }
-  static tokenizeMessageText(string) {
-    const { tokenizerRegexes: tokenizerRegexes2, tokenizerTypes: tokenizerTypes2 } = getOrCreateTokenizers();
-    if (string.length > getMaxTokenizableStringLength()) {
-      return [{ text: string, type: void 0 }];
-    }
-    const results = TextUtils3.TextUtils.Utils.splitStringByRegexes(string, tokenizerRegexes2);
-    return results.map((result) => ({ text: result.value, type: tokenizerTypes2[result.regexIndex] }));
+    const parts = tokenizeAndLinkify(
+      string,
+      (text, url, lineNumber, columnNumber) => Components2.Linkifier.Linkifier.renderLinkifiedUrl(
+        url,
+        { text, lineNumber, columnNumber, initiatorId, onRef: (link) => link.setAttribute(SELECTABLE_ATTRIBUTE, "") }
+      )
+    );
+    return html3`${parts}`;
   }
   groupKey() {
     if (!this.groupKeyInternal) {
@@ -6743,7 +6749,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return this.groupKeyInternal;
   }
   groupTitle() {
-    const tokens = _ConsoleViewMessage.tokenizeMessageText(this.message.messageText);
+    const tokens = tokenizeMessageText(this.message.messageText);
     const result = tokens.reduce((acc, token) => {
       let text = token.text;
       if (token.type === "url") {

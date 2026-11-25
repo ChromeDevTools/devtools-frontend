@@ -64,6 +64,8 @@ export declare class SearchableView extends VBox implements SearchResultsListene
     setPlaceholder(placeholder: string, ariaLabel?: string): void;
     get placeholder(): string;
     set placeholder(placeholder: string);
+    get searchAriaLabel(): string | undefined;
+    set searchAriaLabel(ariaLabel: string | undefined);
     setReplaceable(replaceable: boolean): void;
     updateSearchMatchesCount(matches: number): void;
     updateCurrentMatchIndex(currentMatchIndex: number): void;

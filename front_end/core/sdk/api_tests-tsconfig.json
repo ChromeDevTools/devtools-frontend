@@ -50,6 +50,7 @@
     "../../../../../../front_end/core/sdk/DOMModel.test.api.ts",
     "../../../../../../front_end/core/sdk/DebuggerModel.test.api.ts",
     "../../../../../../front_end/core/sdk/HeapProfilerModel.test.api.ts",
+    "../../../../../../front_end/core/sdk/NetworkManager.test.api.ts",
     "../../../../../../front_end/core/sdk/NetworkRequest.test.api.ts",
     "../../../../../../front_end/core/sdk/RemoteObject.test.api.ts",
     "../../../../../../front_end/core/sdk/TargetManager.test.api.ts",
@@ -64,6 +65,9 @@
     },
     {
       "path": "../../../test/api/api-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"

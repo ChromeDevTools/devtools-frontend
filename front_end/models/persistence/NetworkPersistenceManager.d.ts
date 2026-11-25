@@ -31,6 +31,12 @@ export declare class NetworkPersistenceManager extends Common.ObjectWrapper.Obje
     fileUrlFromNetworkUrl(url: Platform.DevToolsPath.UrlString, ignoreInactive?: boolean): Platform.DevToolsPath.UrlString;
     getHeadersUISourceCodeFromUrl(url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode | null;
     getOrCreateHeadersUISourceCodeFromUrl(url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode | null>;
+    /**
+     * Returns the host an override file belongs to, read from the first segment of its path in the
+     * overrides folder (e.g. `example.com` for `<overrides>/example.com/app.js`), or null if the
+     * UISourceCode is not in the overrides folder. Returns an empty string if no host can be read.
+     */
+    hostForOverrideFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): string | null;
     private decodeLocalPathToUrlPath;
     private onUISourceCodeWorkingCopyCommitted;
     isActiveHeaderOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean;

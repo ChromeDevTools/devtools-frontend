@@ -56,7 +56,7 @@ export class Switch extends HTMLElement {
     };
     #render() {
         const jslog = this.#jslogContext && VisualLogging.toggle(this.#jslogContext).track({ change: true });
-        /* eslint-disable @devtools/inject-checkbox-styles */
+        /* eslint-disable @devtools/no-raw-checkbox-input -- Toggle control around native checkbox in shadow DOM. */
         // clang-format off
         render(html `
     <style>${switchStyles}</style>
@@ -71,7 +71,7 @@ export class Switch extends HTMLElement {
     </label>
     `, this.#shadow, { host: this });
         // clang-format on
-        /* eslint-enable @devtools/inject-checkbox-styles */
+        /* eslint-enable @devtools/no-raw-checkbox-input */
     }
 }
 customElements.define('devtools-switch', Switch);

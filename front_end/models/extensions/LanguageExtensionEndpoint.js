@@ -81,14 +81,16 @@ export class LanguageExtensionEndpoint {
     supportedScriptTypes;
     endpoint;
     extensionOrigin;
+    #canInspectScript;
     allowFileAccess;
     name;
-    constructor(allowFileAccess, extensionOrigin, name, supportedScriptTypes, port, pluginManager) {
+    constructor(extensionOrigin, name, supportedScriptTypes, port, pluginManager, policy) {
         this.name = name;
         this.extensionOrigin = extensionOrigin;
         this.supportedScriptTypes = supportedScriptTypes;
         this.endpoint = new LanguageExtensionEndpointImpl(this, port, pluginManager);
-        this.allowFileAccess = allowFileAccess;
+        this.allowFileAccess = policy.allowFileAccess;
+        this.#canInspectScript = policy.canInspectScript;
     }
     canAccessURL(url) {
         try {
@@ -100,6 +102,9 @@ export class LanguageExtensionEndpoint {
         }
     }
     handleScript(script) {
+        if (!this.#canInspectScript(script)) {
+            return false;
+        }
         try {
             if (!this.canAccessURL(script.contentURL()) || (script.hasSourceURL && !this.canAccessURL(script.sourceURL)) ||
                 (script.debugSymbols?.externalURL && !this.canAccessURL(script.debugSymbols.externalURL))) {
@@ -125,9 +130,6 @@ export class LanguageExtensionEndpoint {
      * Notify the plugin about a new script
      */
     addRawModule(rawModuleId, symbolsURL, rawModule) {
-        if (!this.canAccessURL(symbolsURL) || !this.canAccessURL(rawModule.url)) {
-            return Promise.resolve([]);
-        }
         return this.endpoint.sendRequest("addRawModule" /* PrivateAPI.LanguageExtensionPluginCommands.AddRawModule */, { rawModuleId, symbolsURL, rawModule }, isAddRawModuleResult);
     }
     /**

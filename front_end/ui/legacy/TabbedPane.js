@@ -1713,6 +1713,10 @@ export class TabbedPaneElement extends WidgetElement {
             this.selectedTab = newValue;
         }
     }
+    resizerElement() {
+        const widget = Widget.getOrCreateWidget(this);
+        return widget.headerElement();
+    }
     connectedCallback() {
         super.connectedCallback();
         this.#syncTabs();

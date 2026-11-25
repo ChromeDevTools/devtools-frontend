@@ -12,30 +12,7 @@ export function register(settingDescriptor, settingUIDescriptor) {
     registeredSettings.set(settingName, { descriptor: settingDescriptor, uiDescriptor: settingUIDescriptor });
 }
 export function getRegisteredSettings() {
-    const combined = new Map();
-    for (const legacy of Common.SettingRegistration.getRegisteredSettings()) {
-        combined.set(legacy.settingName, {
-            descriptor: {
-                name: legacy.settingName,
-                type: legacy.settingType,
-                defaultValue: legacy.defaultValue,
-                storageType: legacy.storageType,
-            },
-            uiDescriptor: {
-                category: legacy.category,
-                order: legacy.order,
-                title: legacy.title,
-                tags: legacy.tags,
-                options: legacy.options,
-                reloadRequired: legacy.reloadRequired,
-                learnMore: legacy.learnMore,
-            },
-        });
-    }
-    for (const [name, registeredUI] of registeredSettings) {
-        combined.set(name, registeredUI);
-    }
-    return Array.from(combined.values());
+    return Array.from(registeredSettings.values());
 }
 export class SettingUI {
     #raw;
@@ -71,8 +48,7 @@ export class SettingUI {
     }
 }
 export function maybeResolve(settingDescriptor) {
-    const settingUI = registeredSettings.get(settingDescriptor.name) ??
-        getRegisteredSettings().find(registered => registered.descriptor.name === settingDescriptor.name);
+    const settingUI = registeredSettings.get(settingDescriptor.name);
     return settingUI ? new SettingUI(settingUI.uiDescriptor) : null;
 }
 export function resolve(settingDescriptor) {

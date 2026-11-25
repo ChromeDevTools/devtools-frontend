@@ -2,16 +2,21 @@ import type { Chrome } from '../../../extension-api/ExtensionAPI.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Bindings from '../bindings/bindings.js';
+export interface LanguageExtensionPolicy {
+    allowFileAccess: boolean;
+    canInspectScript: (script: SDK.Script.Script) => boolean;
+}
 export declare class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
+    #private;
     private readonly supportedScriptTypes;
     private readonly endpoint;
     private readonly extensionOrigin;
     readonly allowFileAccess: boolean;
     readonly name: string;
-    constructor(allowFileAccess: boolean, extensionOrigin: string, name: string, supportedScriptTypes: {
+    constructor(extensionOrigin: string, name: string, supportedScriptTypes: {
         language: string;
         symbol_types: string[];
-    }, port: Platform.HostRuntime.WorkerMessagePort, pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager);
+    }, port: Platform.HostRuntime.WorkerMessagePort, pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager, policy: LanguageExtensionPolicy);
     canAccessURL(url: string): boolean;
     handleScript(script: SDK.Script.Script): boolean;
     createPageResourceLoadInitiator(): SDK.PageResourceLoader.PageResourceLoadInitiator;

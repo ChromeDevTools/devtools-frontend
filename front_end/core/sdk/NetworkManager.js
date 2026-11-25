@@ -1822,7 +1822,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     #requestConditions;
     #urlsForRequestInterceptor = new Platform.MapUtilities.Multimap();
     #extraHeaders;
-    #customUserAgent;
+    #customUserAgent = '';
     #isBlocking = false;
     constructor(targetManager) {
         super();
@@ -1978,9 +1978,13 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         }
     }
     setCustomUserAgentOverride(userAgent, userAgentMetadataOverride = null) {
+        const uaChanged = this.#customUserAgent !== userAgent;
         this.#customUserAgent = userAgent;
         this.#userAgentMetadataOverride = userAgentMetadataOverride;
         this.updateUserAgentOverride();
+        if (uaChanged) {
+            this.dispatchEventToListeners("CustomUserAgentChanged" /* MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED */);
+        }
     }
     get requestConditions() {
         return this.#requestConditions;
@@ -2067,6 +2071,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     (function (Events) {
         Events["BLOCKED_PATTERNS_CHANGED"] = "BlockedPatternsChanged";
         Events["CONDITIONS_CHANGED"] = "ConditionsChanged";
+        /** Fired when the custom user agent changes (set from the Network Conditions panel). */
+        Events["CUSTOM_USER_AGENT_CHANGED"] = "CustomUserAgentChanged";
+        /** Fired when the user agent changes (set from device emulation). */
         Events["USER_AGENT_CHANGED"] = "UserAgentChanged";
         Events["INTERCEPTORS_CHANGED"] = "InterceptorsChanged";
         Events["REQUEST_INTERCEPTED"] = "RequestIntercepted";

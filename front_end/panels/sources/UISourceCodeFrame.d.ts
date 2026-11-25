@@ -17,6 +17,7 @@ export declare class UISourceCodeFrame extends UISourceCodeFrameBase {
     protected onBlur(): void;
     private installMessageAndDecorationListeners;
     uiSourceCode(): Workspace.UISourceCode.UISourceCode;
+    displayedUISourceCode(): Workspace.UISourceCode.UISourceCode;
     setUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     private unloadUISourceCode;
     private initializeUISourceCode;

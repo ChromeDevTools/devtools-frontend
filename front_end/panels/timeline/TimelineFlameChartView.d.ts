@@ -27,7 +27,6 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
      * Defaults to undefined which indicates the user has not searched.
      */
     private searchResults;
-    private eventListeners;
     private readonly networkSplitWidget;
     private mainDataProvider;
     private readonly mainFlameChart;

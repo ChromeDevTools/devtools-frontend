@@ -284,6 +284,22 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         }
         return uiSourceCode;
     }
+    /**
+     * Returns the host an override file belongs to, read from the first segment of its path in the
+     * overrides folder (e.g. `example.com` for `<overrides>/example.com/app.js`), or null if the
+     * UISourceCode is not in the overrides folder. Returns an empty string if no host can be read.
+     */
+    hostForOverrideFile(uiSourceCode) {
+        if (!this.#project || uiSourceCode.project() !== this.#project) {
+            return null;
+        }
+        const [firstPart] = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
+        if (!firstPart) {
+            return '';
+        }
+        // Decode twice, see patternForFileSystemUISourceCode.
+        return this.decodeLocalPathToUrlPath(this.decodeLocalPathToUrlPath(firstPart));
+    }
     decodeLocalPathToUrlPath(path) {
         try {
             return unescape(path);

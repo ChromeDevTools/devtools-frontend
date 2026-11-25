@@ -25,7 +25,6 @@ import * as ProjectSettings from '../models/project_settings/project_settings.js
 import * as SourceMapScopes from '../models/source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
-import { DEFAULT_SETTING_REGISTRATIONS_FOR_TEST } from './SettingsHelpers.js';
 import { createTarget } from './TargetHelpers.js';
 /**
  * Similar to a `Foundation.Universe` but creates instances lazily as required.
@@ -33,9 +32,8 @@ import { createTarget } from './TargetHelpers.js';
  * IMPORTANT: Do not add any `.instance()` singleton access here. Only add classes
  * that take all their dependencies via constructor (including Settings)!
  *
- * Registered settings need to be passed via constructor. By default `TestUniverse`
- * uses DEFAULT_SETTING_REGISTRATIONS_FOR_TEST, but it will not read the global
- * registered settings (on purpose).
+ * Registered settings can be passed via constructor, but by default `TestUniverse`
+ * uses an empty list and will not read the global registered settings (on purpose).
  */
 export class TestUniverse {
     #context = new Root.DevToolsContext.WritableDevToolsContext();
@@ -111,7 +109,7 @@ export class TestUniverse {
                     syncedStorage: storage,
                     globalStorage: storage,
                     localStorage: storage,
-                    settingRegistrations: [...DEFAULT_SETTING_REGISTRATIONS_FOR_TEST],
+                    settingRegistrations: [],
                     console: this.console,
                     ...this.#creationOptions?.settingsCreationOptions,
                 };

@@ -57,6 +57,7 @@ import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as PanelUtils from '../utils/utils.js';
 import { ActiveFilters } from './ActiveFilters.js';
 import * as AnnotationHelpers from './AnnotationHelpers.js';
 import { TraceLoadEvent } from './BenchmarkEvents.js';
@@ -341,7 +342,13 @@ function renderSettingsPane(input, output) {
           jslog=${VisualLogging.pane('timeline-settings-pane').track({ resize: true })}>
         <div>
           ${i18nString(UIStrings.cpu)}
-          <select ${widget(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}></select>
+          <select ${widget(MobileThrottling.CPUThrottlingSelector.CPUThrottlingSelector)}
+              ${ref(el => {
+        output.focusAndHighlightCPUThrottling = el instanceof HTMLSelectElement ? () => {
+            el.focus();
+            PanelUtils.PanelUtils.highlightElement(el);
+        } : undefined;
+    })}></select>
         </div>
         <devtools-checkbox title=${i18nString(UIStrings.capturesSelectorStats)}
             .ariaLabel=${input.captureSelectorStatsTitle || i18nString(UIStrings.capturesSelectorStats)}
@@ -1479,6 +1486,16 @@ export class TimelinePanel extends TimelinePanelBase {
                 });
             }
         }
+    }
+    async revealCPUThrottling() {
+        // The capture settings pane is not rendered in Node mode or when recording is unavailable.
+        if (this.#isNode || !this.canRecord()) {
+            return;
+        }
+        this.showSettingsPaneSetting.set(true);
+        this.updateSettingsPaneVisibility();
+        await this.updateComplete;
+        this.#settingsPaneOutput.focusAndHighlightCPUThrottling?.();
     }
     revealParsedTrace(revealable) {
         const index = this.model.indexForTrace(revealable.parsedTrace);
@@ -2875,6 +2892,12 @@ export class ProfileFinishedRevealer {
         });
         ProfileFinishedRevealer.#consoleProfilePromiseChain = taskPromise.catch(() => { });
         return await taskPromise;
+    }
+}
+export class CPUThrottlingRevealer {
+    async reveal() {
+        await UI.ViewManager.ViewManager.instance().showView('timeline');
+        await TimelinePanel.instance().revealCPUThrottling();
     }
 }
 export class ActionDelegate {

@@ -42,10 +42,20 @@ const UIStrings = {
      */
     enableJavaScript: 'Enable JavaScript',
     /**
+     * @description Label of a menu item in a submenu in the status bar at the bottom of DevTools.
+     * Clicking it opens the panel or setting where the changed setting is configured.
+     */
+    inspectMenuItem: 'Inspect',
+    /**
+     * @description Label of a menu item in a submenu in the status bar at the bottom of DevTools.
+     * Clicking it resets the changed setting back to its default value.
+     */
+    resetMenuItem: 'Reset',
+    /**
      * @description Tooltip and accessible name of the button in the status bar at the bottom of DevTools.
      * The button opens a menu with the changed settings pills that do not fit.
      */
-    morePills: 'More changed settings',
+    morePills: 'Show more',
     /**
      * @description Text and tooltip of a button in the status bar at the bottom of DevTools. The button
      * changes all settings that have a pill in the status bar back to their default values.
@@ -56,24 +66,32 @@ const str_ = i18n.i18n.registerUIStrings('panels/common/StateChangesStatusBarPil
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { classMap, ref, repeat } = Directives;
 const cpuThrottlingRateFormatter = i18n.NumberFormatter.defineFormatter({ maximumFractionDigits: 1 });
-function showOverflowMenu(event, overflowPills) {
-    const target = event.currentTarget;
-    const rect = target.getBoundingClientRect();
-    const menu = new UI.ContextMenu.ContextMenu(event, { x: rect.left, y: rect.bottom });
+function openShowMoreMenu(event, overflowPills, onOpen, onClosed) {
+    const button = event.currentTarget;
+    const rect = button.getBoundingClientRect();
+    const menu = new UI.ContextMenu.ContextMenu(event, {
+        x: rect.left,
+        y: rect.bottom,
+        onSoftMenuClosed: onClosed,
+    });
     for (const pill of overflowPills) {
-        menu.defaultSection().appendItem(pill.resetTitle, pill.onReset, {
+        const subMenu = menu.defaultSection().appendSubMenuItem(pill.title, false, pill.id);
+        subMenu.defaultSection().appendItem(i18nString(UIStrings.inspectMenuItem), pill.onReveal, {
+            jslogContext: 'inspect',
+        });
+        subMenu.defaultSection().appendItem(i18nString(UIStrings.resetMenuItem), pill.onReset, {
             jslogContext: 'reset',
         });
     }
+    onOpen();
     void menu.show();
 }
 export const DEFAULT_VIEW = (input, output, target) => {
     const overflowPills = input.pills.slice(input.visiblePillCount);
     const focusableElements = [];
     const handlePillReset = (pill, index) => {
-        const currElement = focusableElements[index];
         const nextElement = focusableElements[index + 1];
-        if (currElement?.hasFocus() && nextElement instanceof HTMLElement) {
+        if (target.hasFocus() && nextElement instanceof HTMLElement) {
             nextElement.focus();
         }
         pill.onReset();
@@ -96,7 +114,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
     })}
           class=${classMap({ 'devtools-pill': true, pill: true, collapsed: index >= input.visiblePillCount })}
           jslog=${VisualLogging.item(pill.id)}>
-          ${pill.title}
+          <button
+            class="pill-label"
+            type="button"
+            jslog=${VisualLogging.action('reveal').track({ click: true })}
+            ${ref(element => {
+        if (index < input.visiblePillCount) {
+            focusableElements[index] = element;
+        }
+    })}
+            @click=${pill.onReveal}>${pill.title}</button>
           <devtools-button
             .iconName=${'cross'}
             .variant=${"icon" /* Buttons.Button.Variant.ICON */}
@@ -104,11 +131,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
             .title=${pill.resetTitle}
             .accessibleLabel=${pill.resetTitle}
             .jslogContext=${'reset'}
-            ${ref(element => {
-        if (index < input.visiblePillCount) {
-            focusableElements[index] = element;
-        }
-    })}
             @click=${() => handlePillReset(pill, index)}></devtools-button>
         </span>`)}</div>
       <devtools-button
@@ -124,8 +146,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
         .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
         .title=${i18nString(UIStrings.morePills)}
         .accessibleLabel=${i18nString(UIStrings.morePills)}
+        .accessibleExpanded=${input.showMoreMenuOpen}
         .jslogContext=${'more'}
-        @click=${(event) => showOverflowMenu(event, overflowPills)}></devtools-button>
+        @click=${(event) => openShowMoreMenu(event, overflowPills, input.onShowMoreMenuOpen, input.onShowMoreMenuClosed)}></devtools-button>
       <devtools-button
         ${ref(element => {
         output.resetAllButtonWidth = element instanceof HTMLElement ? () => element.offsetWidth : undefined;
@@ -164,9 +187,6 @@ function pillResetTitle(state) {
             Platform.assertNever(state.kind, 'Unknown state');
     }
 }
-function toPill(state, onReset) {
-    return { id: state.kind, title: pillTitle(state), resetTitle: pillResetTitle(state), onReset };
-}
 function countFittingPills(pillWidths, maxWidth, gap) {
     let usedWidth = 0;
     for (let i = 0; i < pillWidths.length; i++) {
@@ -177,7 +197,7 @@ function countFittingPills(pillWidths, maxWidth, gap) {
     }
     return pillWidths.length;
 }
-/** Shows a pill for each state change in the status bar. The user can reset one change or all changes. */
+/** Shows a pill for each state change in the status bar. The user can reveal or reset a change, or reset all changes. */
 export class StateChangesStatusBarPills extends UI.Widget.Widget {
     static INJECT = [DevToolsState.StateManager.StateManager];
     #view;
@@ -189,6 +209,19 @@ export class StateChangesStatusBarPills extends UI.Widget.Widget {
         }
     });
     #visiblePillCount = Infinity;
+    #showMoreMenuOpen = false;
+    #onShowMoreMenuOpen = () => {
+        if (!this.#showMoreMenuOpen) {
+            this.#showMoreMenuOpen = true;
+            this.requestUpdate();
+        }
+    };
+    #onShowMoreMenuClosed = () => {
+        if (this.#showMoreMenuOpen) {
+            this.#showMoreMenuOpen = false;
+            this.requestUpdate();
+        }
+    };
     constructor(element, [stateManager], view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
@@ -206,7 +239,13 @@ export class StateChangesStatusBarPills extends UI.Widget.Widget {
         super.willHide();
     }
     performUpdate() {
-        const pills = this.#stateManager.nonDefaultStates().map(state => toPill(state, () => this.#stateManager.reset(state.kind)));
+        const pills = this.#stateManager.nonDefaultStates().map(state => ({
+            id: state.kind,
+            title: pillTitle(state),
+            resetTitle: pillResetTitle(state),
+            onReveal: () => void this.#stateManager.reveal(state.kind),
+            onReset: () => this.#stateManager.reset(state.kind),
+        }));
         const onResetAll = () => {
             for (const pill of pills) {
                 pill.onReset();
@@ -214,7 +253,14 @@ export class StateChangesStatusBarPills extends UI.Widget.Widget {
         };
         const renderView = () => {
             const visiblePillCount = Math.min(this.#visiblePillCount, pills.length);
-            this.#view({ pills, visiblePillCount, onResetAll }, this.#viewOutput, this.contentElement);
+            this.#view({
+                pills,
+                visiblePillCount,
+                showMoreMenuOpen: this.#showMoreMenuOpen,
+                onResetAll,
+                onShowMoreMenuOpen: this.#onShowMoreMenuOpen,
+                onShowMoreMenuClosed: this.#onShowMoreMenuClosed,
+            }, this.#viewOutput, this.contentElement);
         };
         renderView();
         if (this.#updateVisiblePillCount()) {

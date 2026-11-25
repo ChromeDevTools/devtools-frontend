@@ -256,6 +256,18 @@ export function instantiateWidget(element, widgetConfig) {
     return newWidget;
 }
 const trackerDetachingWidgets = new WeakSet();
+/**
+ * Detaches `widget` from its parent widget, but keeps its element in the DOM.
+ */
+function detachWidgetWithoutRemovingElementFromDOM(widget) {
+    trackerDetachingWidgets.add(widget);
+    try {
+        widget.detach();
+    }
+    finally {
+        trackerDetachingWidgets.delete(widget);
+    }
+}
 function setUpLifecycleTracking(element) {
     let tracker;
     if (element instanceof WidgetElement) {
@@ -272,13 +284,7 @@ function setUpLifecycleTracking(element) {
         }
         const widget = Widget.get(element);
         if (widget) {
-            trackerDetachingWidgets.add(widget);
-            try {
-                widget.detach();
-            }
-            finally {
-                trackerDetachingWidgets.delete(widget);
-            }
+            detachWidgetWithoutRemovingElementFromDOM(widget);
         }
     };
     tracker.onConnect = () => {
@@ -308,6 +314,9 @@ export class WidgetElement extends HTMLElement {
     }
     controlsChildWidget(_child) {
         return false;
+    }
+    resizerElement() {
+        return this;
     }
     connectedCallback() {
         if (this.#disconnectTimeout) {
@@ -879,7 +888,14 @@ export class Widget {
     detachChildWidgets() {
         const children = this.#children.slice();
         for (let i = 0; i < children.length; ++i) {
-            children[i].detach();
+            // A Lit template owns the position of the widget elements that it
+            // creates and does not insert them again, so keep them in the DOM.
+            if (widgetConfigs.has(children[i].element)) {
+                detachWidgetWithoutRemovingElementFromDOM(children[i]);
+            }
+            else {
+                children[i].detach();
+            }
         }
     }
     elementsToRestoreScrollPositionsFor() {

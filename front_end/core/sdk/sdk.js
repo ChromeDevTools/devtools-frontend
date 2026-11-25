@@ -12990,7 +12990,53 @@ var cornerShapeValuePresetMap = /* @__PURE__ */ new Map([
   ["superellipse(0.5)", "superellipse(|0.5|)"],
   ["superellipse(infinity)", "superellipse(|infinity|)"]
 ]);
-var valuePresets = /* @__PURE__ */ new Map([
+var cornerShapeAwareProperties = [
+  "corner-shape",
+  "corner-top-shape",
+  "corner-bottom-shape",
+  "corner-left-shape",
+  "corner-right-shape",
+  "corner-block-start-shape",
+  "corner-block-end-shape",
+  "corner-inline-start-shape",
+  "corner-inline-end-shape",
+  "corner-top-left-shape",
+  "corner-top-right-shape",
+  "corner-bottom-left-shape",
+  "corner-bottom-right-shape",
+  "corner-start-start-shape",
+  "corner-start-end-shape",
+  "corner-end-start-shape",
+  "corner-end-end-shape",
+  "corner",
+  "corner-top",
+  "corner-bottom",
+  "corner-left",
+  "corner-right",
+  "corner-block-start",
+  "corner-block-end",
+  "corner-inline-start",
+  "corner-inline-end",
+  "corner-top-left",
+  "corner-top-right",
+  "corner-bottom-left",
+  "corner-bottom-right",
+  "corner-start-start",
+  "corner-start-end",
+  "corner-end-start",
+  "corner-end-end"
+];
+var cornerShapeKeywords = /* @__PURE__ */ new Set([
+  "round",
+  "scoop",
+  "bevel",
+  "notch",
+  "square",
+  "squircle",
+  "superellipse(0.5)",
+  "superellipse(infinity)"
+]);
+var valuePresets = new Map([
   ["filter", filterValuePresetMap],
   ["backdrop-filter", filterValuePresetMap],
   ["background", imageValuePresetMap],
@@ -13026,7 +13072,7 @@ var valuePresets = /* @__PURE__ */ new Map([
       ["perspective", "perspective(|10px|)"]
     ])
   ],
-  ["corner-shape", cornerShapeValuePresetMap],
+  ...cornerShapeAwareProperties.map((name) => [name, cornerShapeValuePresetMap]),
   [
     "font-variant-alternates",
     /* @__PURE__ */ new Map([
@@ -13320,7 +13366,7 @@ var listStyleTypeValues = /* @__PURE__ */ new Set([
   "hiragana-iroha",
   "katakana-iroha"
 ]);
-var extraPropertyValues = /* @__PURE__ */ new Map([
+var extraPropertyValues = new Map([
   ["background-repeat", /* @__PURE__ */ new Set(["repeat", "repeat-x", "repeat-y", "no-repeat", "space", "round"])],
   ["content", /* @__PURE__ */ new Set(["normal", "close-quote", "no-close-quote", "no-open-quote", "open-quote"])],
   ["baseline-shift", /* @__PURE__ */ new Set(["baseline"])],
@@ -14134,19 +14180,7 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
       "stable"
     ])
   ],
-  [
-    "corner-shape",
-    /* @__PURE__ */ new Set([
-      "round",
-      "scoop",
-      "bevel",
-      "notch",
-      "square",
-      "squircle",
-      "superellipse(0.5)",
-      "superellipse(infinity)"
-    ])
-  ],
+  ...cornerShapeAwareProperties.map((name) => [name, cornerShapeKeywords]),
   ["outline-style", /* @__PURE__ */ new Set(["auto"])],
   ["overflow-block", /* @__PURE__ */ new Set(["auto", "hidden", "visible", "overlay", "scroll", "clip"])],
   ["overflow-inline", /* @__PURE__ */ new Set(["auto", "hidden", "visible", "overlay", "scroll", "clip"])],
@@ -37008,7 +37042,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   #requestConditions;
   #urlsForRequestInterceptor = new Platform18.MapUtilities.Multimap();
   #extraHeaders;
-  #customUserAgent;
+  #customUserAgent = "";
   #isBlocking = false;
   constructor(targetManager) {
     super();
@@ -37171,9 +37205,13 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     }
   }
   setCustomUserAgentOverride(userAgent, userAgentMetadataOverride = null) {
+    const uaChanged = this.#customUserAgent !== userAgent;
     this.#customUserAgent = userAgent;
     this.#userAgentMetadataOverride = userAgentMetadataOverride;
     this.updateUserAgentOverride();
+    if (uaChanged) {
+      this.dispatchEventToListeners(_MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED);
+    }
   }
   get requestConditions() {
     return this.#requestConditions;
@@ -37265,6 +37303,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   ((Events37) => {
     Events37["BLOCKED_PATTERNS_CHANGED"] = "BlockedPatternsChanged";
     Events37["CONDITIONS_CHANGED"] = "ConditionsChanged";
+    Events37["CUSTOM_USER_AGENT_CHANGED"] = "CustomUserAgentChanged";
     Events37["USER_AGENT_CHANGED"] = "UserAgentChanged";
     Events37["INTERCEPTORS_CHANGED"] = "InterceptorsChanged";
     Events37["REQUEST_INTERCEPTED"] = "RequestIntercepted";

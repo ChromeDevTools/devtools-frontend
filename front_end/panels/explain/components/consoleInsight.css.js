@@ -142,10 +142,6 @@ export default `/*
       span {
         vertical-align: middle;
       }
-
-      input[type="checkbox"] {
-        margin-top: 0.3em;
-      }
     }
   }
 

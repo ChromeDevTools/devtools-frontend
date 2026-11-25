@@ -12,9 +12,54 @@ export function getErrorStackOnThePage() {
     // Using this.stack causes side effect checks to throw.
     return { stack: '', message: this.message };
 }
+/**
+ * Collects DOM `Element` handles from `this` inside the inspected page via
+ * `RemoteObject#callFunction` with `throwOnSideEffect: true`.
+ *
+ * Walks `this` in `JSON.stringify` order, deduplicating cycles via
+ * `seenBefore` and skipping numeric `CSSStyleDeclaration` keys, and returns up
+ * to `maxElements` `Element` instances typed as `unknown[]` so DOM types do not
+ * leak from `DOMHelpers.d.ts` into the DOM-free `ai_assistance` foundation
+ * module.
+ */
 /* istanbul ignore next */
-export function stringifyObjectOnThePage() {
+export function collectElementsOnThePage(maxElements) {
     const seenBefore = new Map();
+    const elements = [];
+    JSON.stringify(this, function replacer(key, value) {
+        if (typeof value === 'object' && value !== null) {
+            if (seenBefore.has(value)) {
+                return '(cycle)';
+            }
+            seenBefore.set(value, true);
+        }
+        if (value instanceof Element) {
+            if (elements.length < maxElements) {
+                elements.push(value);
+            }
+            return '';
+        }
+        if (this instanceof CSSStyleDeclaration) {
+            // Do not add number keys to the output.
+            if (!isNaN(Number(key))) {
+                return undefined;
+            }
+        }
+        return value;
+    });
+    return elements;
+}
+/**
+ * Serializes `this` to JSON inside the inspected page via
+ * `RemoteObject#callFunction` with `throwOnSideEffect: true`.
+ *
+ * When `resolvedUids` is provided, prepends `(uid=<id>) ` to each encountered
+ * `Element` in traversal order when the corresponding UID is non-null.
+ */
+/* istanbul ignore next */
+export function stringifyObjectOnThePage(resolvedUids) {
+    const seenBefore = new Map();
+    let elementIndex = 0;
     return JSON.stringify(this, function replacer(key, value) {
         if (typeof value === 'object' && value !== null) {
             if (seenBefore.has(value)) {
@@ -22,10 +67,17 @@ export function stringifyObjectOnThePage() {
             }
             seenBefore.set(value, true);
         }
-        if (value instanceof HTMLElement) {
+        if (value instanceof Element) {
+            const uid = resolvedUids?.[elementIndex++];
+            const uidPrefix = uid ? `(uid=${uid}) ` : '';
             const idAttribute = value.id ? ` id="${value.id}"` : '';
-            const classAttribute = value.classList.value ? ` class="${value.classList.value}"` : '';
-            return `<${value.nodeName.toLowerCase()}${idAttribute}${classAttribute}>${value.hasChildNodes() ? '...' : ''}</${value.nodeName.toLowerCase()}>`;
+            // Read the raw attribute rather than `classList` to avoid allocating a
+            // DOMTokenList under throwOnSideEffect, and to handle `SVGElement`
+            // uniformly (where `className` is an `SVGAnimatedString`).
+            const classAttr = value.getAttribute('class');
+            const classAttribute = classAttr ? ` class="${classAttr}"` : '';
+            const tag = value.nodeName.toLowerCase();
+            return `${uidPrefix}<${tag}${idAttribute}${classAttribute}>${value.hasChildNodes() ? '...' : ''}</${tag}>`;
         }
         if (this instanceof CSSStyleDeclaration) {
             // Do not add number keys to the output.

@@ -1,3 +1,5 @@
+import '../../ui/components/buttons/buttons.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as HAR from '../../models/har/har.js';
@@ -57,10 +59,7 @@ export interface NetworkLogViewInterface extends Common.EventTarget.EventTarget<
     linkifier(): Components.Linkifier.Linkifier;
 }
 export declare class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode> {
-    private readonly parentViewInternal;
-    private isHovered;
-    private showingInitiatorChainInternal;
-    private requestOrFirstKnownChildRequestInternal;
+    #private;
     constructor(parentView: NetworkLogViewInterface);
     displayName(): string;
     displayType(): string;
@@ -89,16 +88,8 @@ export declare class NetworkNode extends DataGrid.SortableDataGrid.SortableDataG
 export declare const _backgroundColors: Record<string, string>;
 export declare class NetworkRequestNode extends NetworkNode {
     #private;
-    private initiatorCell;
-    private requestInternal;
-    private readonly isNavigationRequestInternal;
     selectable: boolean;
-    private isOnInitiatorPathInternal;
-    private isOnInitiatedPathInternal;
-    private linkifiedInitiatorAnchor?;
-    private static readonly requestNumberByRequest;
     constructor(parentView: NetworkLogViewInterface, request: SDK.NetworkRequest.NetworkRequest);
-    private static requestNumber;
     static NameComparator(a: NetworkNode, b: NetworkNode): number;
     static RemoteAddressComparator(a: NetworkNode, b: NetworkNode): number;
     static SizeComparator(a: NetworkNode, b: NetworkNode): number;
@@ -124,41 +115,20 @@ export declare class NetworkRequestNode extends NetworkNode {
     static ResponseHeaderDateComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number;
     static OverrideTypesComparator(a: NetworkNode, b: NetworkNode): number;
     static isConsoleOriginated(request: SDK.NetworkRequest.NetworkRequest): boolean;
-    private isConsoleOriginated;
     showingInitiatorChainChanged(): void;
-    private setIsOnInitiatorPath;
     isOnInitiatorPath(): boolean;
-    private setIsOnInitiatedPath;
     isOnInitiatedPath(): boolean;
     displayType(): string;
     displayName(): string;
     request(): SDK.NetworkRequest.NetworkRequest;
     isNavigationRequest(): boolean;
     nodeSelfHeight(): number;
-    private isPrefetch;
-    private isPreload;
     throttlingConditions(): SDK.NetworkManager.AppliedNetworkConditions | undefined;
     isWarning(): boolean;
     isError(): boolean;
     createCells(trElement: HTMLElement): void;
-    private setTextAndTitle;
-    private setTextAndTitleAsLink;
     renderCell(c: Element, columnId: string): void;
-    private arrayLength;
     select(suppressSelectedEvent?: boolean): void;
-    private openInNewTab;
-    private isFailed;
-    private renderPrimaryCell;
-    private renderStatusCell;
-    private renderProtocolCell;
-    private renderRenderBlockingCell;
-    private renderInitiatorCell;
-    private renderAddressSpaceCell;
-    private renderSizeCell;
-    private renderTimeCell;
-    private renderExecutionContextCell;
-    private appendSubtitle;
-    private createAiButtonIfAvailable;
 }
 export declare class NetworkGroupNode extends NetworkNode {
     createCells(element: Element): void;

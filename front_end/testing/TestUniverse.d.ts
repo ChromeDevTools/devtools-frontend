@@ -39,9 +39,8 @@ export interface CreationOptions extends Partial<Foundation.Universe.CreationOpt
  * IMPORTANT: Do not add any `.instance()` singleton access here. Only add classes
  * that take all their dependencies via constructor (including Settings)!
  *
- * Registered settings need to be passed via constructor. By default `TestUniverse`
- * uses DEFAULT_SETTING_REGISTRATIONS_FOR_TEST, but it will not read the global
- * registered settings (on purpose).
+ * Registered settings can be passed via constructor, but by default `TestUniverse`
+ * uses an empty list and will not read the global registered settings (on purpose).
  */
 export declare class TestUniverse implements Foundation.Universe.Universe {
     #private;

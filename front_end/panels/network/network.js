@@ -5209,6 +5209,8 @@ __export(NetworkDataGridNode_exports, {
   RequestPanelBehavior: () => RequestPanelBehavior,
   _backgroundColors: () => _backgroundColors
 });
+import "../../ui/components/buttons/buttons.js";
+import "../../ui/kit/kit.js";
 import * as Common5 from "../../core/common/common.js";
 import * as Host3 from "../../core/host/host.js";
 import * as i18n11 from "../../core/i18n/i18n.js";
@@ -5219,14 +5221,14 @@ import * as Bindings from "../../models/bindings/bindings.js";
 import * as Logs2 from "../../models/logs/logs.js";
 import * as StackTrace from "../../models/stack_trace/stack_trace.js";
 import * as NetworkForward from "./forward/forward.js";
-import * as Buttons4 from "../../ui/components/buttons/buttons.js";
-import { createIcon } from "../../ui/kit/kit.js";
 import * as DataGrid from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components from "../../ui/legacy/components/utils/utils.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
-import { render as render6 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html6, nothing as nothing4, render as render6 } from "../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 import { PanelUtils as PanelUtils3 } from "../utils/utils.js";
+var { classMap: classMap2, ifDefined: ifDefined2 } = Directives5;
 var UIStrings6 = {
   /**
    * @description Text in Network Data Grid Node of the Network panel
@@ -5529,16 +5531,16 @@ var RequestPanelBehavior = /* @__PURE__ */ ((RequestPanelBehavior2) => {
   return RequestPanelBehavior2;
 })(RequestPanelBehavior || {});
 var NetworkNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
-  parentViewInternal;
-  isHovered;
-  showingInitiatorChainInternal;
-  requestOrFirstKnownChildRequestInternal;
+  #parentViewInternal;
+  #isHovered;
+  #showingInitiatorChainInternal;
+  #requestOrFirstKnownChildRequestInternal;
   constructor(parentView) {
     super({});
-    this.parentViewInternal = parentView;
-    this.isHovered = false;
-    this.showingInitiatorChainInternal = false;
-    this.requestOrFirstKnownChildRequestInternal = null;
+    this.#parentViewInternal = parentView;
+    this.#isHovered = false;
+    this.#showingInitiatorChainInternal = false;
+    this.#requestOrFirstKnownChildRequestInternal = null;
   }
   displayName() {
     return "";
@@ -5597,7 +5599,7 @@ var NetworkNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
       return;
     }
     element.style.backgroundColor = `var(${this.backgroundColor()})`;
-    this.parentViewInternal.stylesChanged();
+    this.#parentViewInternal.stylesChanged();
   }
   setStriped(isStriped) {
     super.setStriped(isStriped);
@@ -5606,7 +5608,7 @@ var NetworkNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
   select(suppressSelectedEvent) {
     super.select(suppressSelectedEvent);
     this.updateBackgroundColor();
-    this.parentViewInternal.updateNodeSelectedClass(
+    this.#parentViewInternal.updateNodeSelectedClass(
       /* isSelected */
       true
     );
@@ -5614,38 +5616,38 @@ var NetworkNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
   deselect(suppressSelectedEvent) {
     super.deselect(suppressSelectedEvent);
     this.updateBackgroundColor();
-    this.parentViewInternal.updateNodeSelectedClass(
+    this.#parentViewInternal.updateNodeSelectedClass(
       /* isSelected */
       false
     );
   }
   parentView() {
-    return this.parentViewInternal;
+    return this.#parentViewInternal;
   }
   hovered() {
-    return this.isHovered;
+    return this.#isHovered;
   }
   showingInitiatorChain() {
-    return this.showingInitiatorChainInternal;
+    return this.#showingInitiatorChainInternal;
   }
   nodeSelfHeight() {
-    return this.parentViewInternal.rowHeight();
+    return this.#parentViewInternal.rowHeight();
   }
   setHovered(hovered, showInitiatorChain) {
-    if (this.isHovered === hovered && this.showingInitiatorChainInternal === showInitiatorChain) {
+    if (this.#isHovered === hovered && this.#showingInitiatorChainInternal === showInitiatorChain) {
       return;
     }
-    if (this.isHovered !== hovered) {
-      this.isHovered = hovered;
+    if (this.#isHovered !== hovered) {
+      this.#isHovered = hovered;
       if (this.attached()) {
         this.element().classList.toggle("hover", hovered);
       }
     }
-    if (this.showingInitiatorChainInternal !== showInitiatorChain) {
-      this.showingInitiatorChainInternal = showInitiatorChain;
+    if (this.#showingInitiatorChainInternal !== showInitiatorChain) {
+      this.#showingInitiatorChainInternal = showInitiatorChain;
       this.showingInitiatorChainChanged();
     }
-    this.parentViewInternal.stylesChanged();
+    this.#parentViewInternal.stylesChanged();
     this.updateBackgroundColor();
   }
   showingInitiatorChainChanged() {
@@ -5664,16 +5666,16 @@ var NetworkNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
   }
   clearFlatNodes() {
     super.clearFlatNodes();
-    this.requestOrFirstKnownChildRequestInternal = null;
+    this.#requestOrFirstKnownChildRequestInternal = null;
   }
   requestOrFirstKnownChildRequest() {
-    if (this.requestOrFirstKnownChildRequestInternal) {
-      return this.requestOrFirstKnownChildRequestInternal;
+    if (this.#requestOrFirstKnownChildRequestInternal) {
+      return this.#requestOrFirstKnownChildRequestInternal;
     }
     let request = this.request();
     if (request || !this.hasChildren()) {
-      this.requestOrFirstKnownChildRequestInternal = request;
-      return this.requestOrFirstKnownChildRequestInternal;
+      this.#requestOrFirstKnownChildRequestInternal = request;
+      return this.#requestOrFirstKnownChildRequestInternal;
     }
     let firstChildRequest = null;
     const flatChildren = this.flatChildren();
@@ -5683,8 +5685,8 @@ var NetworkNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
         firstChildRequest = request;
       }
     }
-    this.requestOrFirstKnownChildRequestInternal = firstChildRequest;
-    return this.requestOrFirstKnownChildRequestInternal;
+    this.#requestOrFirstKnownChildRequestInternal = firstChildRequest;
+    return this.#requestOrFirstKnownChildRequestInternal;
   }
 };
 var _backgroundColors = {
@@ -5711,32 +5713,130 @@ function isFirstPrimaryColumn(dataGrid, columnId) {
   }
   return firstPrimary.id === columnId;
 }
+var stopPropagationInCapture = {
+  handleEvent: (event) => event.stopPropagation(),
+  capture: true
+};
+function renderCellLink(link2) {
+  switch (link2.kind) {
+    case "url":
+      return Components.Linkifier.Linkifier.renderLinkifiedUrl(link2.url, link2.options);
+    case "reveal": {
+      const onClick = (event) => {
+        event.consume(true);
+        link2.onClick();
+      };
+      const onKeyDown = (event) => {
+        if (Platform3.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+          onClick(event);
+        }
+      };
+      const classes = `devtools-link text-button link-style ${link2.className ?? ""}`;
+      return html6`
+        <button class=${classes} tabindex="-1" role="link" title=${ifDefined2(link2.title)}
+                aria-label=${ifDefined2(link2.iconName ? link2.title : void 0)}
+                jslog=${VisualLogging6.link(link2.jslogContext).track({ click: true })}
+                @click=${onClick} @keydown=${onKeyDown}>${link2.iconName ? html6`<devtools-icon name=${link2.iconName}></devtools-icon>` : link2.text}</button>`;
+    }
+    case "script-location":
+      return html6`${link2.stackTrace ? link2.linkifier.linkifyStackTraceTopFrame(link2.target, link2.stackTrace) : link2.linkifier.linkifyScriptLocation(
+        link2.target,
+        link2.scriptId,
+        link2.url,
+        link2.lineNumber,
+        { columnNumber: link2.columnNumber }
+      )}`;
+  }
+}
+var CELL_VIEW = (input, _output, target) => {
+  const primary = input.primary;
+  const onAiButtonClick = {
+    handleEvent: (event) => {
+      event.stopPropagation();
+      primary?.onAiButtonClick();
+    },
+    capture: true
+  };
+  const classes = [];
+  if (input.dimmed) {
+    classes.push("network-dim-cell");
+  }
+  if (input.scriptInitiated) {
+    classes.push("network-script-initiated");
+  }
+  if (input.disclosure) {
+    classes.push("disclosure");
+  }
+  const attributes = { title: input.title };
+  if (primary) {
+    attributes.tabindex = "-1";
+  }
+  const leftPadding = (primary ?? input.disclosure)?.leftPadding;
+  if (leftPadding !== void 0) {
+    attributes.style = leftPadding ? `padding-left: ${leftPadding}px` : void 0;
+  }
+  render6(
+    html6`
+    ${primary?.icon ?? nothing4}
+    ${primary?.isConsoleOriginated ? html6`
+      <devtools-icon name="terminal" class="network-console-icon"
+                     title=${i18nString6(UIStrings6.requestOriginatedFromConsole)}></devtools-icon>` : nothing4}
+    ${primary?.aiButton ? html6`
+      <span class="ai-button-container">
+        <devtools-floating-button icon-name=${primary.aiButton.iconName} title=${primary.aiButton.title}
+                                  jslogcontext="ask-ai"
+                                  @click=${onAiButtonClick}
+                                  @dblclick=${stopPropagationInCapture}
+                                  @mousedown=${stopPropagationInCapture}></devtools-floating-button>
+      </span>` : nothing4}
+    ${input.throttling ? html6`
+      <devtools-icon name="watch" title=${input.throttling.title}
+                     @click=${input.throttling.onClick}></devtools-icon>` : nothing4}
+    ${input.onLinkClick ? html6`
+      <button class="devtools-link text-button link-style" tabindex="-1"
+              jslog=${VisualLogging6.link(input.linkJslogContext).track({ click: true })}
+              @click=${input.onLinkClick}>${input.text}</button>` : input.text}
+    ${input.link ? renderCellLink(input.link) : nothing4}
+    ${input.subtitle !== void 0 ? html6`
+      <div class=${classMap2({ "network-cell-subtitle": true, "always-visible": Boolean(input.subtitleAlwaysVisible) })}
+           title=${ifDefined2(input.subtitleTitle)}>${input.subtitle}</div>` : nothing4}`,
+    target,
+    {
+      container: {
+        classes,
+        attributes,
+        listeners: primary ? {
+          dblclick: () => primary.onDoubleClick(),
+          mousedown: (event) => primary.onMouseDown(event.button),
+          focus: () => primary.onFocus()
+        } : void 0
+      }
+    }
+  );
+};
 var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
-  initiatorCell;
-  requestInternal;
-  isNavigationRequestInternal;
+  #requestInternal;
+  #isNavigationRequestInternal;
   selectable;
-  isOnInitiatorPathInternal;
-  isOnInitiatedPathInternal;
-  linkifiedInitiatorAnchor;
-  static requestNumberByRequest = /* @__PURE__ */ new WeakMap();
+  #isOnInitiatorPathInternal;
+  #isOnInitiatedPathInternal;
+  static #requestNumberByRequest = /* @__PURE__ */ new WeakMap();
   constructor(parentView, request) {
     super(parentView);
-    this.initiatorCell = null;
-    this.requestInternal = request;
-    this.isNavigationRequestInternal = false;
+    this.#requestInternal = request;
+    this.#isNavigationRequestInternal = false;
     this.selectable = true;
-    this.isOnInitiatorPathInternal = false;
-    this.isOnInitiatedPathInternal = false;
+    this.#isOnInitiatorPathInternal = false;
+    this.#isOnInitiatedPathInternal = false;
   }
-  static requestNumber(request) {
-    const cachedRequestNumber = _NetworkRequestNode.requestNumberByRequest.get(request);
+  static #requestNumber(request) {
+    const cachedRequestNumber = _NetworkRequestNode.#requestNumberByRequest.get(request);
     if (cachedRequestNumber !== void 0) {
       return cachedRequestNumber;
     }
     const requestNumber = Logs2.NetworkLog.NetworkLog.instance().requests().indexOf(request) + 1;
     if (requestNumber > 0) {
-      _NetworkRequestNode.requestNumberByRequest.set(request, requestNumber);
+      _NetworkRequestNode.#requestNumberByRequest.set(request, requestNumber);
       return requestNumber;
     }
     return 0;
@@ -5790,8 +5890,8 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     if (!aRequest || !bRequest) {
       return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
-    const aRequestNumber = _NetworkRequestNode.requestNumber(aRequest);
-    const bRequestNumber = _NetworkRequestNode.requestNumber(bRequest);
+    const aRequestNumber = _NetworkRequestNode.#requestNumber(aRequest);
+    const bRequestNumber = _NetworkRequestNode.#requestNumber(bRequest);
     return aRequestNumber - bRequestNumber || aRequest.identityCompare(bRequest);
   }
   static TypeComparator(a, b) {
@@ -5816,16 +5916,30 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     if (!aRequest || !bRequest) {
       return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
-    const aHasInitiatorCell = a instanceof _NetworkRequestNode && a.initiatorCell;
-    const bHasInitiatorCell = b instanceof _NetworkRequestNode && b.initiatorCell;
-    if (!aHasInitiatorCell || !bHasInitiatorCell) {
-      return !aHasInitiatorCell ? -1 : 1;
+    return _NetworkRequestNode.#initiatorSortKey(aRequest).localeCompare(_NetworkRequestNode.#initiatorSortKey(bRequest));
+  }
+  /**
+   * Returns the text that the initiator column sorts by. The text comes from
+   * the initiator data, so that the sort order does not depend on rendered cells.
+   */
+  static #initiatorSortKey(request) {
+    const initiator = Logs2.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
+    switch (initiator.type) {
+      case SDK5.NetworkRequest.InitiatorType.SCRIPT: {
+        const name = Bindings.ResourceUtils.displayNameForURL(initiator.url);
+        return initiator.lineNumber === void 0 ? name : `${name}:${initiator.lineNumber + 1}`;
+      }
+      case SDK5.NetworkRequest.InitiatorType.REDIRECT:
+        return initiator.url;
+      case SDK5.NetworkRequest.InitiatorType.PRELOAD:
+        return i18nString6(UIStrings6.preload);
+      case SDK5.NetworkRequest.InitiatorType.PARSER:
+      case SDK5.NetworkRequest.InitiatorType.SIGNED_EXCHANGE:
+      case SDK5.NetworkRequest.InitiatorType.PREFLIGHT:
+        return "";
+      default:
+        return request.fromEarlyHints() ? i18nString6(UIStrings6.earlyHints) : i18nString6(UIStrings6.otherC);
     }
-    const networkRequestNodeA = a;
-    const networkRequestNodeB = b;
-    const aText = networkRequestNodeA.linkifiedInitiatorAnchor ? networkRequestNodeA.linkifiedInitiatorAnchor.textContent || "" : networkRequestNodeA.initiatorCell.title;
-    const bText = networkRequestNodeB.linkifiedInitiatorAnchor ? networkRequestNodeB.linkifiedInitiatorAnchor.textContent || "" : networkRequestNodeB.initiatorCell.title;
-    return aText.localeCompare(bText);
   }
   static InitiatorAddressSpaceComparator(a, b) {
     const aRequest = a.requestOrFirstKnownChildRequest();
@@ -6074,262 +6188,242 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     }
     return StackTrace.StackTrace.isConsoleOriginated(initiator.stack);
   }
-  isConsoleOriginated() {
-    return _NetworkRequestNode.isConsoleOriginated(this.requestInternal);
+  #isConsoleOriginated() {
+    return _NetworkRequestNode.isConsoleOriginated(this.#requestInternal);
   }
   showingInitiatorChainChanged() {
     const showInitiatorChain = this.showingInitiatorChain();
-    const initiatorGraph = Logs2.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.requestInternal);
+    const initiatorGraph = Logs2.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#requestInternal);
     for (const request of initiatorGraph.initiators) {
-      if (request === this.requestInternal) {
+      if (request === this.#requestInternal) {
         continue;
       }
       const node = this.parentView().nodeForRequest(request);
       if (!node) {
         continue;
       }
-      node.setIsOnInitiatorPath(showInitiatorChain);
+      node.#setIsOnInitiatorPath(showInitiatorChain);
     }
     for (const request of initiatorGraph.initiated.keys()) {
-      if (request === this.requestInternal) {
+      if (request === this.#requestInternal) {
         continue;
       }
       const node = this.parentView().nodeForRequest(request);
       if (!node) {
         continue;
       }
-      node.setIsOnInitiatedPath(showInitiatorChain);
+      node.#setIsOnInitiatedPath(showInitiatorChain);
     }
   }
-  setIsOnInitiatorPath(isOnInitiatorPath) {
-    if (this.isOnInitiatorPathInternal === isOnInitiatorPath || !this.attached()) {
+  #setIsOnInitiatorPath(isOnInitiatorPath) {
+    if (this.#isOnInitiatorPathInternal === isOnInitiatorPath || !this.attached()) {
       return;
     }
-    this.isOnInitiatorPathInternal = isOnInitiatorPath;
+    this.#isOnInitiatorPathInternal = isOnInitiatorPath;
     this.updateBackgroundColor();
   }
   isOnInitiatorPath() {
-    return this.isOnInitiatorPathInternal;
+    return this.#isOnInitiatorPathInternal;
   }
-  setIsOnInitiatedPath(isOnInitiatedPath) {
-    if (this.isOnInitiatedPathInternal === isOnInitiatedPath || !this.attached()) {
+  #setIsOnInitiatedPath(isOnInitiatedPath) {
+    if (this.#isOnInitiatedPathInternal === isOnInitiatedPath || !this.attached()) {
       return;
     }
-    this.isOnInitiatedPathInternal = isOnInitiatedPath;
+    this.#isOnInitiatedPathInternal = isOnInitiatedPath;
     this.updateBackgroundColor();
   }
   isOnInitiatedPath() {
-    return this.isOnInitiatedPathInternal;
+    return this.#isOnInitiatedPathInternal;
   }
   displayType() {
-    const mimeType = this.requestInternal.mimeType || this.requestInternal.requestContentType() || "";
-    const resourceType = this.requestInternal.resourceType();
+    const mimeType = this.#requestInternal.mimeType || this.#requestInternal.requestContentType() || "";
+    const resourceType = this.#requestInternal.resourceType();
     let simpleType = resourceType.name();
     if (resourceType === Common5.ResourceType.resourceTypes.Other || resourceType === Common5.ResourceType.resourceTypes.Image) {
       simpleType = mimeType.replace(/^(application|image)\//, "");
     }
-    if (this.requestInternal.isRedirect()) {
+    if (this.#requestInternal.isRedirect()) {
       simpleType += " / " + i18nString6(UIStrings6.redirect);
     }
     return simpleType;
   }
   displayName() {
-    return this.requestInternal.name();
+    return this.#requestInternal.name();
   }
   request() {
-    return this.requestInternal;
+    return this.#requestInternal;
   }
   isNavigationRequest() {
-    const pageLoad = SDK5.PageLoad.PageLoad.forRequest(this.requestInternal);
-    return pageLoad ? pageLoad.mainRequest === this.requestInternal : false;
+    const pageLoad = SDK5.PageLoad.PageLoad.forRequest(this.#requestInternal);
+    return pageLoad ? pageLoad.mainRequest === this.#requestInternal : false;
   }
   nodeSelfHeight() {
     return this.parentView().rowHeight();
   }
-  isPrefetch() {
-    return this.requestInternal.resourceType() === Common5.ResourceType.resourceTypes.Prefetch;
+  #isPrefetch() {
+    return this.#requestInternal.resourceType() === Common5.ResourceType.resourceTypes.Prefetch;
   }
-  isPreload() {
-    return this.requestInternal.isPreloadRequest();
+  #isPreload() {
+    return this.#requestInternal.isPreloadRequest();
   }
   throttlingConditions() {
-    return SDK5.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(this.requestInternal);
+    return SDK5.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(this.#requestInternal);
   }
   isWarning() {
-    return this.isFailed() && (this.isPrefetch() || this.isPreload());
+    return this.#isFailed() && (this.#isPrefetch() || this.#isPreload());
   }
   isError() {
-    return this.isFailed() && !this.isPrefetch() && !this.isPreload();
+    return this.#isFailed() && !this.#isPrefetch() && !this.#isPreload();
   }
   createCells(trElement) {
-    this.initiatorCell = null;
-    trElement.setAttribute("data-network-request-id", this.requestInternal.requestId());
+    trElement.setAttribute("data-network-request-id", this.#requestInternal.requestId());
     trElement.classList.toggle("network-throttled-row", Boolean(this.throttlingConditions()?.urlPattern));
     trElement.classList.toggle("network-warning-row", this.isWarning());
     trElement.classList.toggle("network-error-row", this.isError());
-    trElement.classList.toggle("network-navigation-row", this.isNavigationRequestInternal);
+    trElement.classList.toggle("network-navigation-row", this.#isNavigationRequestInternal);
     super.createCells(trElement);
     this.updateBackgroundColor();
   }
-  setTextAndTitle(element, text, title) {
-    UI6.UIUtils.createTextChild(element, text);
-    UI6.Tooltip.Tooltip.install(element, title || text);
-  }
-  setTextAndTitleAsLink(element, cellText, titleText, handler) {
-    const link = document.createElement("span");
-    link.classList.add("devtools-link");
-    link.textContent = cellText;
-    link.addEventListener("click", handler);
-    element.appendChild(link);
-    UI6.Tooltip.Tooltip.install(element, titleText);
+  #renderTextCell(cell, text, title) {
+    CELL_VIEW({ text, title: title || text }, void 0, cell);
   }
   renderCell(c, columnId) {
     const cell = c;
     switch (columnId) {
       case "name": {
-        this.renderPrimaryCell(cell, columnId);
+        this.#renderPrimaryCell(cell, columnId);
         break;
       }
       case "path": {
-        this.renderPrimaryCell(cell, columnId, this.requestInternal.pathname);
+        this.#renderPrimaryCell(cell, columnId, this.#requestInternal.pathname);
         break;
       }
       case "url": {
-        this.renderPrimaryCell(cell, columnId, this.requestInternal.url());
+        this.#renderPrimaryCell(cell, columnId, this.#requestInternal.url());
         break;
       }
       case "request-number": {
-        const requestNumber = _NetworkRequestNode.requestNumber(this.requestInternal);
-        this.setTextAndTitle(cell, requestNumber ? String(requestNumber) : "");
+        const requestNumber = _NetworkRequestNode.#requestNumber(this.#requestInternal);
+        this.#renderTextCell(cell, requestNumber ? String(requestNumber) : "");
         break;
       }
       case "method": {
-        const preflightRequest = this.requestInternal.preflightRequest();
+        const preflightRequest = this.#requestInternal.preflightRequest();
         if (preflightRequest) {
-          this.setTextAndTitle(
-            cell,
-            `${this.requestInternal.requestMethod} + `,
-            i18nString6(UIStrings6.sPreflight, { PH1: this.requestInternal.requestMethod })
+          CELL_VIEW(
+            {
+              text: `${this.#requestInternal.requestMethod} + `,
+              title: i18nString6(UIStrings6.sPreflight, { PH1: this.#requestInternal.requestMethod }),
+              link: {
+                kind: "reveal",
+                text: i18nString6(UIStrings6.preflight),
+                title: i18nString6(UIStrings6.selectPreflightRequest),
+                jslogContext: "preflight-request",
+                onClick: () => void Common5.Revealer.reveal(preflightRequest)
+              }
+            },
+            void 0,
+            cell
           );
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
-            preflightRequest,
-            i18nString6(UIStrings6.preflight),
-            void 0,
-            i18nString6(UIStrings6.selectPreflightRequest),
-            void 0,
-            "preflight-request"
-          ));
         } else {
-          this.setTextAndTitle(cell, this.requestInternal.requestMethod);
+          this.#renderTextCell(cell, this.#requestInternal.requestMethod);
         }
         break;
       }
       case "status": {
-        this.renderStatusCell(cell);
+        this.#renderStatusCell(cell);
         break;
       }
       case "protocol": {
-        this.renderProtocolCell(cell);
+        this.#renderProtocolCell(cell);
         break;
       }
       case "scheme": {
-        this.setTextAndTitle(cell, this.requestInternal.scheme);
+        this.#renderTextCell(cell, this.#requestInternal.scheme);
         break;
       }
       case "domain": {
-        this.setTextAndTitle(cell, this.requestInternal.domain);
+        this.#renderTextCell(cell, this.#requestInternal.domain);
         break;
       }
       case "remote-address": {
-        this.setTextAndTitle(cell, this.requestInternal.remoteAddress());
+        this.#renderTextCell(cell, this.#requestInternal.remoteAddress());
         break;
       }
       case "remote-address-space": {
-        this.renderAddressSpaceCell(cell, this.requestInternal.remoteAddressSpace());
+        this.#renderAddressSpaceCell(cell, this.#requestInternal.remoteAddressSpace());
         break;
       }
       case "is-ad-related": {
-        this.setTextAndTitle(cell, this.requestInternal.isAdRelated().toLocaleString());
+        this.#renderTextCell(cell, this.#requestInternal.isAdRelated().toLocaleString());
         break;
       }
       case "is-preloaded": {
-        this.setTextAndTitle(cell, this.requestInternal.isLinkPreload().toLocaleString());
+        this.#renderTextCell(cell, this.#requestInternal.isLinkPreload().toLocaleString());
         break;
       }
       case "render-blocking": {
-        this.renderRenderBlockingCell(cell);
+        this.#renderRenderBlockingCell(cell);
         break;
       }
       case "cookies": {
-        this.setTextAndTitle(cell, this.arrayLength(this.requestInternal.includedRequestCookies()));
+        this.#renderTextCell(cell, this.#arrayLength(this.#requestInternal.includedRequestCookies()));
         break;
       }
       case "set-cookies": {
-        this.setTextAndTitle(cell, this.arrayLength(this.requestInternal.nonBlockedResponseCookies()));
+        this.#renderTextCell(cell, this.#arrayLength(this.#requestInternal.nonBlockedResponseCookies()));
         break;
       }
       case "priority": {
-        const priority = this.requestInternal.priority();
-        const initialPriority = this.requestInternal.initialPriority();
-        if (priority && initialPriority) {
-          this.setTextAndTitle(
-            cell,
-            PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
-            i18nString6(
-              UIStrings6.initialPriorityToolTip,
-              {
-                PH1: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
-                PH2: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority)
-              }
-            )
-          );
-        } else {
-          this.setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : "");
-        }
-        this.appendSubtitle(
-          cell,
-          initialPriority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority) : ""
-        );
+        const priority = this.#requestInternal.priority();
+        const initialPriority = this.#requestInternal.initialPriority();
+        const text = priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : "";
+        const subtitle = initialPriority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority) : "";
+        const title = priority && initialPriority ? i18nString6(UIStrings6.initialPriorityToolTip, { PH1: text, PH2: subtitle }) : text;
+        CELL_VIEW({ text, title, subtitle }, void 0, cell);
         break;
       }
       case "connection-id": {
-        this.setTextAndTitle(cell, this.requestInternal.connectionId === "0" ? "" : this.requestInternal.connectionId);
+        this.#renderTextCell(
+          cell,
+          this.#requestInternal.connectionId === "0" ? "" : this.#requestInternal.connectionId
+        );
         break;
       }
       case "type": {
-        this.setTextAndTitle(cell, this.displayType());
+        this.#renderTextCell(cell, this.displayType());
         break;
       }
       case "initiator": {
-        this.renderInitiatorCell(cell);
+        this.#renderInitiatorCell(cell);
         break;
       }
       case "initiator-address-space": {
-        const clientSecurityState = this.requestInternal.clientSecurityState();
-        this.renderAddressSpaceCell(
+        const clientSecurityState = this.#requestInternal.clientSecurityState();
+        this.#renderAddressSpaceCell(
           cell,
           clientSecurityState ? clientSecurityState.initiatorIPAddressSpace : Network.IPAddressSpace.Unknown
         );
         break;
       }
       case "size": {
-        this.renderSizeCell(cell);
+        this.#renderSizeCell(cell);
         break;
       }
       case "time": {
-        this.renderTimeCell(cell);
+        this.#renderTimeCell(cell);
         break;
       }
       case "timeline": {
-        this.setTextAndTitle(cell, "");
+        this.#renderTextCell(cell, "");
         break;
       }
       case "has-overrides": {
-        this.setTextAndTitle(cell, this.requestInternal.overrideTypes.join(", "));
+        this.#renderTextCell(cell, this.#requestInternal.overrideTypes.join(", "));
         break;
       }
       case "execution-context": {
-        this.renderExecutionContextCell(cell);
+        this.#renderExecutionContextCell(cell);
         break;
       }
       default: {
@@ -6339,103 +6433,105 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
           let headerValue = "";
           if (columnConfig.id.startsWith("request-header-")) {
             headerName = columnId.substring("request-header-".length);
-            headerValue = this.requestInternal.requestHeaderValue(headerName) || "";
+            headerValue = this.#requestInternal.requestHeaderValue(headerName) || "";
           } else {
             headerName = columnId.substring("response-header-".length);
-            headerValue = this.requestInternal.responseHeaderValue(headerName) || "";
+            headerValue = this.#requestInternal.responseHeaderValue(headerName) || "";
           }
-          this.setTextAndTitle(cell, headerValue);
+          this.#renderTextCell(cell, headerValue);
         } else {
-          this.setTextAndTitle(cell, "");
+          this.#renderTextCell(cell, "");
         }
         break;
       }
     }
   }
-  arrayLength(array) {
+  #arrayLength(array) {
     return array ? String(array.length) : "";
   }
   select(suppressSelectedEvent) {
     super.select(suppressSelectedEvent);
-    this.parentView().dispatchEventToListeners("RequestSelected" /* RequestSelected */, this.requestInternal);
+    this.parentView().dispatchEventToListeners("RequestSelected" /* RequestSelected */, this.#requestInternal);
   }
-  openInNewTab() {
-    if (!Common5.ParsedURL.hasWebSafeScheme(this.requestInternal.url())) {
+  #openInNewTab() {
+    if (!Common5.ParsedURL.hasWebSafeScheme(this.#requestInternal.url())) {
       return;
     }
     Host3.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-      this.requestInternal.url(),
-      Components.Linkifier.openInNewTabInitiatorId(this.requestInternal)
+      this.#requestInternal.url(),
+      Components.Linkifier.openInNewTabInitiatorId(this.#requestInternal)
     );
   }
-  isFailed() {
-    return PanelUtils3.isFailedNetworkRequest(this.requestInternal);
+  #isFailed() {
+    return PanelUtils3.isFailedNetworkRequest(this.#requestInternal);
   }
-  renderPrimaryCell(cell, columnId, text) {
+  #renderPrimaryCell(cell, columnId, text = "") {
+    const input = { text };
     const dataGrid = this.dataGrid;
     if (isFirstPrimaryColumn(dataGrid, columnId)) {
-      const leftPadding = this.leftPadding ? this.leftPadding + "px" : "";
-      cell.style.setProperty("padding-left", leftPadding);
-      cell.tabIndex = -1;
-      cell.addEventListener("dblclick", this.openInNewTab.bind(this), false);
-      cell.addEventListener("mousedown", (event) => {
-        this.select();
-        const showPanel = event.button ? "Unchanged" /* Unchanged */ : "ShowPanel" /* ShowPanel */;
-        this.parentView().dispatchEventToListeners("RequestActivated" /* RequestActivated */, { showPanel });
-      });
-      cell.addEventListener("focus", () => this.parentView().resetFocus());
-      const iconElement = PanelUtils3.getIconForNetworkRequest(this.requestInternal);
-      render6(iconElement, cell);
-      if (this.isConsoleOriginated()) {
-        const consoleIcon = createIcon("terminal", "network-console-icon");
-        UI6.Tooltip.Tooltip.install(consoleIcon, i18nString6(UIStrings6.requestOriginatedFromConsole));
-        cell.appendChild(consoleIcon);
-      }
-      const aiButtonContainer = this.createAiButtonIfAvailable();
-      if (aiButtonContainer) {
-        cell.appendChild(aiButtonContainer);
-      }
+      const actionRegistry = UI6.ActionRegistry.ActionRegistry.instance();
+      const aiAction = actionRegistry.hasAction("drjones.network-floating-button") ? actionRegistry.getAction("drjones.network-floating-button") : void 0;
+      input.primary = {
+        icon: PanelUtils3.getIconForNetworkRequest(this.#requestInternal),
+        leftPadding: this.leftPadding,
+        isConsoleOriginated: this.#isConsoleOriginated(),
+        aiButton: aiAction ? { iconName: AiAssistance.AiUtils.getIconName(), title: aiAction.title() } : void 0,
+        onAiButtonClick: () => {
+          this.select();
+          void aiAction?.execute();
+        },
+        onDoubleClick: () => this.#openInNewTab(),
+        onMouseDown: (button) => {
+          this.select();
+          const showPanel = button ? "Unchanged" /* Unchanged */ : "ShowPanel" /* ShowPanel */;
+          this.parentView().dispatchEventToListeners("RequestActivated" /* RequestActivated */, { showPanel });
+        },
+        onFocus: () => this.parentView().resetFocus()
+      };
     }
     if (columnId === "name") {
-      const name = Platform3.StringUtilities.trimMiddle(this.requestInternal.name(), 100);
-      const networkManager = SDK5.NetworkManager.NetworkManager.forRequest(this.requestInternal);
-      UI6.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);
-      this.appendSubtitle(cell, this.requestInternal.path());
-      if (!this.requestInternal.url().startsWith("data")) {
-        UI6.Tooltip.Tooltip.install(cell, this.requestInternal.url());
+      const name = Platform3.StringUtilities.trimMiddle(this.#requestInternal.name(), 100);
+      const networkManager = SDK5.NetworkManager.NetworkManager.forRequest(this.#requestInternal);
+      input.text = networkManager ? networkManager.target().decorateLabel(name) : name;
+      input.subtitle = this.#requestInternal.path();
+      if (!this.#requestInternal.url().startsWith("data")) {
+        input.title = this.#requestInternal.url();
       }
-    } else if (text) {
-      UI6.UIUtils.createTextChild(cell, text);
     }
+    CELL_VIEW(input, void 0, cell);
   }
-  renderStatusCell(cell) {
-    cell.classList.toggle(
-      "network-dim-cell",
-      !this.isFailed() && (this.requestInternal.cached() || !this.requestInternal.statusCode)
-    );
-    const corsErrorStatus = this.requestInternal.corsErrorStatus();
-    if (this.requestInternal.failed && !this.requestInternal.canceled && !this.requestInternal.wasBlocked() && !corsErrorStatus) {
+  #renderStatusCell(cell) {
+    const request = this.#requestInternal;
+    const input = {
+      text: "",
+      dimmed: !this.#isFailed() && (request.cached() || !request.statusCode)
+    };
+    const setTextAndTitle = (text, title) => {
+      input.text = text;
+      input.title = title || text;
+    };
+    const corsErrorStatus = request.corsErrorStatus();
+    if (request.failed && !request.canceled && !request.wasBlocked() && !corsErrorStatus) {
       const failText = i18nString6(UIStrings6.failed);
-      if (this.requestInternal.localizedFailDescription) {
-        UI6.UIUtils.createTextChild(cell, failText);
-        this.appendSubtitle(cell, this.requestInternal.localizedFailDescription, true);
-        UI6.Tooltip.Tooltip.install(cell, failText + " " + this.requestInternal.localizedFailDescription);
+      if (request.localizedFailDescription) {
+        setTextAndTitle(failText, failText + " " + request.localizedFailDescription);
+        input.subtitle = request.localizedFailDescription;
+        input.subtitleAlwaysVisible = true;
       } else {
-        this.setTextAndTitle(cell, failText);
+        setTextAndTitle(failText);
       }
-    } else if (this.requestInternal.statusCode && this.requestInternal.statusCode >= 400) {
-      const statusText = this.requestInternal.getInferredStatusText();
-      UI6.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
-      this.appendSubtitle(cell, statusText);
-      UI6.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + " " + statusText);
-    } else if (!this.requestInternal.statusCode && this.requestInternal.parsedURL.isDataURL()) {
-      this.setTextAndTitle(cell, i18nString6(UIStrings6.data));
-    } else if (!this.requestInternal.statusCode && this.requestInternal.canceled) {
-      this.setTextAndTitle(cell, i18nString6(UIStrings6.canceled));
-    } else if (this.requestInternal.wasBlocked()) {
+    } else if (request.statusCode && request.statusCode >= 400) {
+      const statusText = request.getInferredStatusText();
+      setTextAndTitle(String(request.statusCode), request.statusCode + " " + statusText);
+      input.subtitle = statusText;
+    } else if (!request.statusCode && request.parsedURL.isDataURL()) {
+      setTextAndTitle(i18nString6(UIStrings6.data));
+    } else if (!request.statusCode && request.canceled) {
+      setTextAndTitle(i18nString6(UIStrings6.canceled));
+    } else if (request.wasBlocked()) {
       let reason = i18nString6(UIStrings6.other);
       let displayShowHeadersLink = false;
-      switch (this.requestInternal.blockedReason()) {
+      switch (request.blockedReason()) {
         case Network.BlockedReason.Other:
           reason = i18nString6(UIStrings6.other);
           break;
@@ -6483,323 +6579,266 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
           break;
       }
       if (displayShowHeadersLink) {
-        this.setTextAndTitleAsLink(
-          cell,
-          i18nString6(UIStrings6.blockeds, { PH1: reason }),
-          i18nString6(UIStrings6.blockedTooltip),
-          () => {
-            this.parentView().dispatchEventToListeners("RequestActivated" /* RequestActivated */, {
-              showPanel: "ShowPanel" /* ShowPanel */,
-              tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT
-            });
-          }
-        );
+        setTextAndTitle(i18nString6(UIStrings6.blockeds, { PH1: reason }), i18nString6(UIStrings6.blockedTooltip));
+        input.linkJslogContext = "headers-component";
+        input.onLinkClick = () => {
+          this.parentView().dispatchEventToListeners("RequestActivated" /* RequestActivated */, {
+            showPanel: "ShowPanel" /* ShowPanel */,
+            tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT
+          });
+        };
       } else {
-        this.setTextAndTitle(cell, i18nString6(UIStrings6.blockeds, { PH1: reason }));
+        setTextAndTitle(i18nString6(UIStrings6.blockeds, { PH1: reason }));
       }
     } else if (corsErrorStatus) {
-      this.setTextAndTitle(
-        cell,
+      setTextAndTitle(
         i18nString6(UIStrings6.corsError),
         i18nString6(UIStrings6.crossoriginResourceSharingErrorS, { PH1: corsErrorStatus.corsError })
       );
-    } else if (this.requestInternal.statusCode) {
-      UI6.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
-      const statusText = this.requestInternal.getInferredStatusText();
-      this.appendSubtitle(cell, statusText);
-      UI6.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + " " + statusText);
-    } else if (this.requestInternal.statusText) {
-      this.setTextAndTitle(cell, this.requestInternal.statusText);
-    } else if (this.requestInternal.finished) {
-      this.setTextAndTitle(cell, i18nString6(UIStrings6.finished));
-    } else if (this.requestInternal.preserved) {
-      this.setTextAndTitle(cell, i18nString6(UIStrings6.unknown), i18nString6(UIStrings6.unknownExplanation));
+    } else if (request.statusCode) {
+      const statusText = request.getInferredStatusText();
+      setTextAndTitle(String(request.statusCode), request.statusCode + " " + statusText);
+      input.subtitle = statusText;
+    } else if (request.statusText) {
+      setTextAndTitle(request.statusText);
+    } else if (request.finished) {
+      setTextAndTitle(i18nString6(UIStrings6.finished));
+    } else if (request.preserved) {
+      setTextAndTitle(i18nString6(UIStrings6.unknown), i18nString6(UIStrings6.unknownExplanation));
     } else {
-      this.setTextAndTitle(cell, i18nString6(UIStrings6.pendingq));
+      setTextAndTitle(i18nString6(UIStrings6.pendingq));
     }
+    CELL_VIEW(input, void 0, cell);
   }
-  renderProtocolCell(cell) {
-    UI6.UIUtils.createTextChild(cell, this.requestInternal.protocol);
-    switch (this.requestInternal.alternateProtocolUsage) {
+  #renderProtocolCell(cell) {
+    let title = this.#requestInternal.protocol;
+    switch (this.#requestInternal.alternateProtocolUsage) {
       case Network.AlternateProtocolUsage.AlternativeJobWonWithoutRace: {
-        UI6.Tooltip.Tooltip.install(cell, UIStrings6.alternativeJobWonWithoutRace);
+        title = UIStrings6.alternativeJobWonWithoutRace;
         break;
       }
       case Network.AlternateProtocolUsage.AlternativeJobWonRace: {
-        UI6.Tooltip.Tooltip.install(cell, UIStrings6.alternativeJobWonRace);
+        title = UIStrings6.alternativeJobWonRace;
         break;
       }
       case Network.AlternateProtocolUsage.MainJobWonRace: {
-        UI6.Tooltip.Tooltip.install(cell, UIStrings6.mainJobWonRace);
+        title = UIStrings6.mainJobWonRace;
         break;
       }
       case Network.AlternateProtocolUsage.MappingMissing: {
-        UI6.Tooltip.Tooltip.install(cell, UIStrings6.mappingMissing);
+        title = UIStrings6.mappingMissing;
         break;
       }
       case Network.AlternateProtocolUsage.Broken: {
-        UI6.Tooltip.Tooltip.install(cell, UIStrings6.broken);
+        title = UIStrings6.broken;
         break;
       }
       case Network.AlternateProtocolUsage.DnsAlpnH3JobWonWithoutRace: {
-        UI6.Tooltip.Tooltip.install(cell, UIStrings6.dnsAlpnH3JobWonWithoutRace);
+        title = UIStrings6.dnsAlpnH3JobWonWithoutRace;
         break;
       }
       case Network.AlternateProtocolUsage.DnsAlpnH3JobWonRace: {
-        UI6.Tooltip.Tooltip.install(cell, UIStrings6.dnsAlpnH3JobWonRace);
-        break;
-      }
-      default: {
-        UI6.Tooltip.Tooltip.install(cell, this.requestInternal.protocol);
+        title = UIStrings6.dnsAlpnH3JobWonRace;
         break;
       }
     }
+    CELL_VIEW({ text: this.#requestInternal.protocol, title }, void 0, cell);
   }
-  renderRenderBlockingCell(cell) {
-    switch (this.requestInternal.renderBlockingBehavior()) {
+  #renderRenderBlockingCell(cell) {
+    let text = "";
+    switch (this.#requestInternal.renderBlockingBehavior()) {
       case Network.RenderBlockingBehavior.Blocking:
-        UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.blocking));
+        text = i18nString6(UIStrings6.blocking);
         break;
       case Network.RenderBlockingBehavior.InBodyParserBlocking:
-        UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.inBodyParserBlocking));
+        text = i18nString6(UIStrings6.inBodyParserBlocking);
         break;
       case Network.RenderBlockingBehavior.NonBlocking:
-        UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.nonBlocking));
+        text = i18nString6(UIStrings6.nonBlocking);
         break;
       case Network.RenderBlockingBehavior.NonBlockingDynamic:
-        UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.nonBlockingDynamic));
+        text = i18nString6(UIStrings6.nonBlockingDynamic);
         break;
       case Network.RenderBlockingBehavior.PotentiallyBlocking:
-        UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.potentiallyBlocking));
-        break;
-      default:
-        UI6.UIUtils.createTextChild(cell, "");
+        text = i18nString6(UIStrings6.potentiallyBlocking);
         break;
     }
+    CELL_VIEW({ text }, void 0, cell);
   }
   #getLinkifierMetric() {
-    if (this.requestInternal.resourceType().isStyleSheet()) {
+    if (this.#requestInternal.resourceType().isStyleSheet()) {
       return Host3.UserMetrics.Action.StyleSheetInitiatorLinkClicked;
     }
     return void 0;
   }
-  renderInitiatorCell(cell) {
-    this.initiatorCell = cell;
-    const request = this.requestInternal;
+  #renderInitiatorCell(cell) {
+    const request = this.#requestInternal;
     const initiator = Logs2.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
-    const timing = request.timing;
-    if (timing?.pushStart) {
-      cell.appendChild(document.createTextNode(i18nString6(UIStrings6.push)));
-    }
+    const input = { text: request.timing?.pushStart ? i18nString6(UIStrings6.push) : "" };
     switch (initiator.type) {
       case SDK5.NetworkRequest.InitiatorType.PARSER: {
-        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
-          lineNumber: initiator.lineNumber,
-          columnNumber: initiator.columnNumber,
-          userMetric: this.#getLinkifierMetric()
-        }));
-        this.appendSubtitle(cell, i18nString6(UIStrings6.parser));
+        input.link = {
+          kind: "url",
+          url: initiator.url,
+          options: {
+            lineNumber: initiator.lineNumber,
+            columnNumber: initiator.columnNumber,
+            userMetric: this.#getLinkifierMetric()
+          }
+        };
+        input.subtitle = i18nString6(UIStrings6.parser);
         break;
       }
       case SDK5.NetworkRequest.InitiatorType.REDIRECT: {
-        UI6.Tooltip.Tooltip.install(cell, initiator.url);
+        input.title = initiator.url;
         const redirectSource = request.redirectSource();
         console.assert(redirectSource !== null);
         if (this.parentView().nodeForRequest(redirectSource)) {
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
-            redirectSource,
-            Bindings.ResourceUtils.displayNameForURL(redirectSource.url()),
-            void 0,
-            void 0,
-            void 0,
-            "redirect-source-request"
-          ));
+          input.link = {
+            kind: "reveal",
+            text: Platform3.StringUtilities.trimMiddle(
+              Bindings.ResourceUtils.displayNameForURL(redirectSource.url()),
+              UI6.UIUtils.MaxLengthForDisplayedURLs
+            ),
+            jslogContext: "redirect-source-request",
+            onClick: () => void Common5.Revealer.reveal(redirectSource)
+          };
         } else {
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(
-            redirectSource.url(),
-            { jslogContext: "redirect-source-request-url" }
-          ));
+          input.link = { kind: "url", url: redirectSource.url(), options: { jslogContext: "redirect-source-request-url" } };
         }
-        this.appendSubtitle(cell, i18nString6(UIStrings6.redirect));
+        input.subtitle = i18nString6(UIStrings6.redirect);
         break;
       }
       case SDK5.NetworkRequest.InitiatorType.SCRIPT: {
-        const target = SDK5.NetworkManager.NetworkManager.forRequest(request)?.target() || null;
-        const linkifier = this.parentView().linkifier();
-        if (initiator.stack?.callFrames.length) {
-          this.linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(target, initiator.stack);
-        } else {
-          this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
-            target,
-            initiator.scriptId,
-            initiator.url,
-            initiator.lineNumber,
-            { columnNumber: initiator.columnNumber }
-          );
-        }
-        UI6.Tooltip.Tooltip.install(this.linkifiedInitiatorAnchor, "");
-        cell.appendChild(this.linkifiedInitiatorAnchor);
-        this.appendSubtitle(
-          cell,
-          this.isConsoleOriginated() ? i18nString6(UIStrings6.console) : i18nString6(UIStrings6.script)
-        );
-        cell.classList.add("network-script-initiated");
+        input.link = {
+          kind: "script-location",
+          linkifier: this.parentView().linkifier(),
+          target: SDK5.NetworkManager.NetworkManager.forRequest(request)?.target() || null,
+          stackTrace: initiator.stack?.callFrames.length ? initiator.stack : null,
+          scriptId: initiator.scriptId,
+          url: initiator.url,
+          lineNumber: initiator.lineNumber,
+          columnNumber: initiator.columnNumber
+        };
+        input.subtitle = this.#isConsoleOriginated() ? i18nString6(UIStrings6.console) : i18nString6(UIStrings6.script);
+        input.scriptInitiated = true;
         break;
       }
       case SDK5.NetworkRequest.InitiatorType.PRELOAD: {
-        UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.preload));
-        cell.classList.add("network-dim-cell");
-        cell.appendChild(document.createTextNode(i18nString6(UIStrings6.preload)));
+        input.title = i18nString6(UIStrings6.preload);
+        input.dimmed = true;
+        input.text += i18nString6(UIStrings6.preload);
         break;
       }
       case SDK5.NetworkRequest.InitiatorType.SIGNED_EXCHANGE: {
-        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url));
-        this.appendSubtitle(cell, i18nString6(UIStrings6.signedexchange));
+        input.link = { kind: "url", url: initiator.url };
+        input.subtitle = i18nString6(UIStrings6.signedexchange);
         break;
       }
       case SDK5.NetworkRequest.InitiatorType.PREFLIGHT: {
-        cell.appendChild(document.createTextNode(i18nString6(UIStrings6.preflight)));
-        if (initiator.initiatorRequest) {
-          const icon = createIcon("arrow-up-down-circle");
-          const link = Components.Linkifier.Linkifier.linkifyRevealable(
-            initiator.initiatorRequest,
-            icon,
-            void 0,
-            i18nString6(UIStrings6.selectTheRequestThatTriggered),
-            "trailing-link-icon",
-            "initator-request"
-          );
-          UI6.ARIAUtils.setLabel(link, i18nString6(UIStrings6.selectTheRequestThatTriggered));
-          cell.appendChild(link);
+        input.text += i18nString6(UIStrings6.preflight);
+        const initiatorRequest = initiator.initiatorRequest;
+        if (initiatorRequest) {
+          input.link = {
+            kind: "reveal",
+            iconName: "arrow-up-down-circle",
+            title: i18nString6(UIStrings6.selectTheRequestThatTriggered),
+            className: "trailing-link-icon",
+            jslogContext: "initator-request",
+            onClick: () => void Common5.Revealer.reveal(initiatorRequest)
+          };
         }
         break;
       }
       default: {
         const initiatorText = request.fromEarlyHints() ? i18nString6(UIStrings6.earlyHints) : i18nString6(UIStrings6.otherC);
-        UI6.Tooltip.Tooltip.install(cell, initiatorText);
-        cell.classList.add("network-dim-cell");
-        cell.appendChild(document.createTextNode(initiatorText));
+        input.title = initiatorText;
+        input.dimmed = true;
+        input.text += initiatorText;
       }
     }
+    CELL_VIEW(input, void 0, cell);
   }
-  renderAddressSpaceCell(cell, ipAddressSpace) {
-    if (ipAddressSpace !== Network.IPAddressSpace.Unknown) {
-      UI6.UIUtils.createTextChild(cell, ipAddressSpace);
-    }
+  #renderAddressSpaceCell(cell, ipAddressSpace) {
+    const text = ipAddressSpace !== Network.IPAddressSpace.Unknown ? ipAddressSpace : "";
+    CELL_VIEW({ text }, void 0, cell);
   }
-  renderSizeCell(cell) {
-    const resourceSize = i18n11.ByteUtilities.formatBytesToKb(this.requestInternal.resourceSize);
-    if (this.requestInternal.cachedInMemory()) {
-      UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.memoryCache));
-      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromMemoryCacheResource, { PH1: resourceSize }));
-      cell.classList.add("network-dim-cell");
-    } else if (this.requestInternal.hasMatchingServiceWorkerRouter()) {
-      const ruleIdMatched = this.requestInternal.serviceWorkerRouterInfo?.ruleIdMatched;
-      const matchedSourceType = this.requestInternal.serviceWorkerRouterInfo?.matchedSourceType;
-      UI6.UIUtils.createTextChild(cell, i18n11.i18n.lockedString("(ServiceWorker router)"));
-      let tooltipText;
+  #renderSizeCell(cell) {
+    const resourceSize = i18n11.ByteUtilities.formatBytesToKb(this.#requestInternal.resourceSize);
+    const input = { text: "", subtitle: resourceSize };
+    if (this.#requestInternal.cachedInMemory()) {
+      input.text = i18nString6(UIStrings6.memoryCache);
+      input.title = i18nString6(UIStrings6.servedFromMemoryCacheResource, { PH1: resourceSize });
+      input.dimmed = true;
+    } else if (this.#requestInternal.hasMatchingServiceWorkerRouter()) {
+      const ruleIdMatched = this.#requestInternal.serviceWorkerRouterInfo?.ruleIdMatched;
+      const matchedSourceType = this.#requestInternal.serviceWorkerRouterInfo?.matchedSourceType;
+      input.text = i18n11.i18n.lockedString("(ServiceWorker router)");
       if (matchedSourceType === Network.ServiceWorkerRouterSource.Network) {
-        const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
-        tooltipText = i18nString6(
+        const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.#requestInternal.transferSize);
+        input.title = i18nString6(
           UIStrings6.matchedToServiceWorkerRouterWithNetworkSource,
           { PH1: ruleIdMatched, PH2: transferSize, PH3: resourceSize }
         );
       } else {
-        tooltipText = i18nString6(UIStrings6.matchedToServiceWorkerRouter, { PH1: ruleIdMatched, PH2: resourceSize });
+        input.title = i18nString6(UIStrings6.matchedToServiceWorkerRouter, { PH1: ruleIdMatched, PH2: resourceSize });
       }
-      UI6.Tooltip.Tooltip.install(cell, tooltipText);
-      cell.classList.add("network-dim-cell");
-    } else if (this.requestInternal.fetchedViaServiceWorker) {
-      UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.serviceWorker));
-      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromServiceWorkerResource, { PH1: resourceSize }));
-      cell.classList.add("network-dim-cell");
-    } else if (this.requestInternal.serviceWorkerRouterInfo) {
-      const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
-      UI6.UIUtils.createTextChild(cell, transferSize);
-      UI6.Tooltip.Tooltip.install(
-        cell,
-        i18nString6(UIStrings6.servedFromNetworkMissingServiceWorkerRoute, { PH1: transferSize, PH2: resourceSize })
-      );
-    } else if (this.requestInternal.redirectSourceSignedExchangeInfoHasNoErrors()) {
-      UI6.UIUtils.createTextChild(cell, i18n11.i18n.lockedString("(signed-exchange)"));
-      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromSignedHttpExchange, { PH1: resourceSize }));
-      cell.classList.add("network-dim-cell");
-    } else if (this.requestInternal.fromPrefetchCache()) {
-      UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.prefetchCache));
-      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromPrefetchCacheResource, { PH1: resourceSize }));
-      cell.classList.add("network-dim-cell");
-    } else if (this.requestInternal.cached()) {
-      UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.diskCache));
-      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromDiskCacheResourceSizeS, { PH1: resourceSize }));
-      cell.classList.add("network-dim-cell");
+      input.dimmed = true;
+    } else if (this.#requestInternal.fetchedViaServiceWorker) {
+      input.text = i18nString6(UIStrings6.serviceWorker);
+      input.title = i18nString6(UIStrings6.servedFromServiceWorkerResource, { PH1: resourceSize });
+      input.dimmed = true;
+    } else if (this.#requestInternal.serviceWorkerRouterInfo) {
+      const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.#requestInternal.transferSize);
+      input.text = transferSize;
+      input.title = i18nString6(UIStrings6.servedFromNetworkMissingServiceWorkerRoute, { PH1: transferSize, PH2: resourceSize });
+    } else if (this.#requestInternal.redirectSourceSignedExchangeInfoHasNoErrors()) {
+      input.text = i18n11.i18n.lockedString("(signed-exchange)");
+      input.title = i18nString6(UIStrings6.servedFromSignedHttpExchange, { PH1: resourceSize });
+      input.dimmed = true;
+    } else if (this.#requestInternal.fromPrefetchCache()) {
+      input.text = i18nString6(UIStrings6.prefetchCache);
+      input.title = i18nString6(UIStrings6.servedFromPrefetchCacheResource, { PH1: resourceSize });
+      input.dimmed = true;
+    } else if (this.#requestInternal.cached()) {
+      input.text = i18nString6(UIStrings6.diskCache);
+      input.title = i18nString6(UIStrings6.servedFromDiskCacheResourceSizeS, { PH1: resourceSize });
+      input.dimmed = true;
     } else {
-      const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
-      UI6.UIUtils.createTextChild(cell, transferSize);
-      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromNetwork, { PH1: transferSize, PH2: resourceSize }));
+      const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.#requestInternal.transferSize);
+      input.text = transferSize;
+      input.title = i18nString6(UIStrings6.servedFromNetwork, { PH1: transferSize, PH2: resourceSize });
     }
-    this.appendSubtitle(cell, resourceSize);
+    CELL_VIEW(input, void 0, cell);
   }
-  renderTimeCell(cell) {
+  #renderTimeCell(cell) {
+    const input = { text: "" };
     const throttlingConditions = this.throttlingConditions();
     if (throttlingConditions?.urlPattern) {
       const throttlingConditionsTitle = typeof throttlingConditions.conditions.title === "string" ? throttlingConditions.conditions.title : throttlingConditions.conditions.title();
-      const icon = createIcon("watch");
-      icon.title = i18nString6(UIStrings6.wasThrottled, { PH1: throttlingConditionsTitle });
-      icon.addEventListener("click", () => void Common5.Revealer.reveal(throttlingConditions));
-      cell.append(icon);
+      input.throttling = {
+        title: i18nString6(UIStrings6.wasThrottled, { PH1: throttlingConditionsTitle }),
+        onClick: () => void Common5.Revealer.reveal(throttlingConditions)
+      };
     }
-    if (this.requestInternal.duration > 0) {
-      this.setTextAndTitle(cell, i18n11.TimeUtilities.secondsToString(this.requestInternal.duration));
-      this.appendSubtitle(
-        cell,
-        i18n11.TimeUtilities.secondsToString(this.requestInternal.latency),
-        false,
-        i18nString6(UIStrings6.timeSubtitleTooltipText)
-      );
-    } else if (this.requestInternal.preserved) {
-      this.setTextAndTitle(cell, i18nString6(UIStrings6.unknown), i18nString6(UIStrings6.unknownExplanation));
+    if (this.#requestInternal.duration > 0) {
+      input.text = i18n11.TimeUtilities.secondsToString(this.#requestInternal.duration);
+      input.title = input.text;
+      input.subtitle = i18n11.TimeUtilities.secondsToString(this.#requestInternal.latency);
+      input.subtitleTitle = i18nString6(UIStrings6.timeSubtitleTooltipText);
+    } else if (this.#requestInternal.preserved) {
+      input.text = i18nString6(UIStrings6.unknown);
+      input.title = i18nString6(UIStrings6.unknownExplanation);
     } else {
-      cell.classList.add("network-dim-cell");
-      this.setTextAndTitle(cell, i18nString6(UIStrings6.pending));
+      input.text = i18nString6(UIStrings6.pending);
+      input.title = input.text;
+      input.dimmed = true;
     }
+    CELL_VIEW(input, void 0, cell);
   }
-  renderExecutionContextCell(cell) {
-    const contextDescription = _NetworkRequestNode.getExecutionContextDescription(this.requestInternal);
-    this.setTextAndTitle(cell, contextDescription);
-  }
-  appendSubtitle(cellElement, subtitleText, alwaysVisible = false, tooltipText = "") {
-    const subtitleElement = document.createElement("div");
-    subtitleElement.classList.add("network-cell-subtitle");
-    if (alwaysVisible) {
-      subtitleElement.classList.add("always-visible");
-    }
-    subtitleElement.textContent = subtitleText;
-    if (tooltipText) {
-      UI6.Tooltip.Tooltip.install(subtitleElement, tooltipText);
-    }
-    cellElement.appendChild(subtitleElement);
-  }
-  createAiButtonIfAvailable() {
-    if (UI6.ActionRegistry.ActionRegistry.instance().hasAction("drjones.network-floating-button")) {
-      const action3 = UI6.ActionRegistry.ActionRegistry.instance().getAction("drjones.network-floating-button");
-      const aiButtonContainer = document.createElement("span");
-      aiButtonContainer.classList.add("ai-button-container");
-      const icon = AiAssistance.AiUtils.getIconName();
-      const floatingButton = Buttons4.FloatingButton.create(icon, action3.title(), "ask-ai");
-      floatingButton.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        this.select();
-        void action3.execute();
-      }, { capture: true });
-      floatingButton.addEventListener("dblclick", (ev) => {
-        ev.stopPropagation();
-      }, { capture: true });
-      floatingButton.addEventListener("mousedown", (ev) => {
-        ev.stopPropagation();
-      }, { capture: true });
-      aiButtonContainer.appendChild(floatingButton);
-      return aiButtonContainer;
-    }
+  #renderExecutionContextCell(cell) {
+    const contextDescription = _NetworkRequestNode.getExecutionContextDescription(this.#requestInternal);
+    this.#renderTextCell(cell, contextDescription);
   }
 };
 var NetworkGroupNode = class extends NetworkNode {
@@ -6816,9 +6855,7 @@ var NetworkGroupNode = class extends NetworkNode {
     const primaryColumn = firstPrimaryColumn(dataGrid) ?? dataGrid.visibleColumnsArray[0];
     if (primaryColumn.id === columnId) {
       const cell = c;
-      const leftPadding = this.leftPadding ? this.leftPadding + "px" : "";
-      cell.style.setProperty("padding-left", leftPadding);
-      cell.classList.add("disclosure");
+      CELL_VIEW({ text: "", disclosure: { leftPadding: this.leftPadding } }, void 0, cell);
       this.setCellAccessibleName(cell.textContent || "", cell, columnId);
     }
   }
@@ -6846,8 +6883,8 @@ import * as Platform14 from "../../core/platform/platform.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as NetworkForward6 from "./forward/forward.js";
 import * as UI24 from "../../ui/legacy/legacy.js";
-import { Directives as Directives15, html as html22, nothing as nothing13, render as render22 } from "../../ui/lit/lit.js";
-import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives16, html as html23, nothing as nothing14, render as render22 } from "../../ui/lit/lit.js";
+import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents2 from "./components/components.js";
 
 // ../../front_end/panels/network/RequestCookiesView.ts
@@ -6863,7 +6900,7 @@ import * as uiI18n2 from "../../ui/i18n/i18n.js";
 import * as CookieTable from "../../ui/legacy/components/cookie_table/cookie_table.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 import * as Lit from "../../ui/lit/lit.js";
-import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestCookiesView.css.js
 var requestCookiesView_css_default = `/*
@@ -6908,7 +6945,7 @@ var requestCookiesView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestCookiesView.css")} */`;
 
 // ../../front_end/panels/network/RequestCookiesView.ts
-var { render: render7, html: html6 } = Lit;
+var { render: render7, html: html7 } = Lit;
 var { widget: widget3 } = UI7.Widget;
 var UIStrings7 = {
   /**
@@ -6965,7 +7002,7 @@ var str_7 = i18n13.i18n.registerUIStrings("panels/network/RequestCookiesView.ts"
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var DEFAULT_VIEW6 = (input, _output, target) => {
   render7(
-    html6`
+    html7`
     <style>${requestCookiesView_css_default}</style>
     <div class="request-cookies-view">
       ${input.gotCookies ? Lit.nothing : widget3(UI7.EmptyWidget.EmptyWidget, {
@@ -6987,7 +7024,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         ${i18nString7(UIStrings7.noRequestCookiesWereSent)}
       </div>
 
-      ${input.requestCookies.cookies.length > 0 ? html6`
+      ${input.requestCookies.cookies.length > 0 ? html7`
         <devtools-widget ${widget3(CookieTable.CookiesTable.CookiesTable, {
       cookiesData: input.requestCookies,
       inline: true
@@ -6996,7 +7033,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
 
       <div class="cookies-panel-item site-has-cookies-in-other-partition ${input.siteHasCookieInOtherPartition ? "" : "hidden"}">
         ${uiI18n2.getFormatLocalizedStringTemplate(str_7, UIStrings7.siteHasCookieInOtherPartition, {
-      PH1: html6`<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${"learn-more"}>${i18nString7(UIStrings7.learnMore)}</devtools-link>`
+      PH1: html7`<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${"learn-more"}>${i18nString7(UIStrings7.learnMore)}</devtools-link>`
     })}
       </div>
 
@@ -7005,7 +7042,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           ${i18nString7(UIStrings7.responseCookies)}
       </div>
 
-      ${input.responseCookies.cookies.length ? html6`
+      ${input.responseCookies.cookies.length ? html7`
         <devtools-widget ${widget3(CookieTable.CookiesTable.CookiesTable, {
       cookiesData: input.responseCookies,
       inline: true
@@ -7017,7 +7054,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       </div>
 
       <div class=${input.malformedResponseCookies.length ? "" : "hidden"}>
-        ${input.malformedResponseCookies.map((malformedCookie) => html6`
+        ${input.malformedResponseCookies.map((malformedCookie) => html7`
           <span class="cookie-line source-code" title=${getMalformedCookieTooltip(malformedCookie)}>
             <devtools-icon class="cookie-warning-icon small" .name=${"cross-circle-filled"}></devtools-icon>
             ${malformedCookie.cookieLine}
@@ -7027,7 +7064,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     </div>
   `,
     target,
-    { container: { attributes: { jslog: `${VisualLogging6.pane("cookies").track({ resize: true })}` } } }
+    { container: { attributes: { jslog: `${VisualLogging7.pane("cookies").track({ resize: true })}` } } }
   );
 };
 function getMalformedCookieTooltip(malformedCookie) {
@@ -7198,10 +7235,10 @@ import * as SDK13 from "../../core/sdk/sdk.js";
 import * as Persistence2 from "../../models/persistence/persistence.js";
 import * as Workspace3 from "../../models/workspace/workspace.js";
 import * as NetworkForward5 from "./forward/forward.js";
-import * as Buttons8 from "../../ui/components/buttons/buttons.js";
+import * as Buttons7 from "../../ui/components/buttons/buttons.js";
 import * as UI17 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
-import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 import * as Sources2 from "../sources/sources.js";
 import * as NetworkComponents from "./components/components.js";
 
@@ -7444,9 +7481,9 @@ import * as NetworkForward4 from "./forward/forward.js";
 import * as Tracing2 from "../../services/tracing/tracing.js";
 import * as PerfUI5 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
-import { Directives as Directives10, html as html12, render as render13 } from "../../ui/lit/lit.js";
+import { Directives as Directives11, html as html13, render as render13 } from "../../ui/lit/lit.js";
 import * as Settings12 from "../../ui/settings/settings.js";
-import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling3 from "../mobile_throttling/mobile_throttling.js";
 import * as Search from "../search/search.js";
 
@@ -7479,7 +7516,7 @@ import * as Persistence from "../../models/persistence/persistence.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as NetworkForward2 from "./forward/forward.js";
 import * as Sources from "../sources/sources.js";
-import * as Buttons6 from "../../ui/components/buttons/buttons.js";
+import * as Buttons5 from "../../ui/components/buttons/buttons.js";
 import * as RenderCoordinator3 from "../../ui/components/render_coordinator/render_coordinator.js";
 import * as DataGrid4 from "../../ui/legacy/components/data_grid/data_grid.js";
 
@@ -7511,9 +7548,9 @@ var dataGridAiButton_css_default = `/*
 import * as PerfUI4 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
-import { Directives as Directives9, html as html11, nothing as nothing7, render as render12 } from "../../ui/lit/lit.js";
+import { Directives as Directives10, html as html12, nothing as nothing8, render as render12 } from "../../ui/lit/lit.js";
 import * as Settings10 from "../../ui/settings/settings.js";
-import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/network/FetchHeaderCommenting.ts
 var FetchHeaderCommenting_exports = {};
@@ -7810,7 +7847,7 @@ __export(NetworkFrameGrouper_exports, {
 });
 import * as Common8 from "../../core/common/common.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
-import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
+import { createIcon } from "../../ui/kit/kit.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
 var NetworkFrameGrouper = class {
   parentView;
@@ -7850,7 +7887,7 @@ var FrameGroupNode = class extends NetworkGroupNode {
     const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
       const name = this.displayName();
-      cell.appendChild(createIcon2("frame", "network-frame-group-icon"));
+      cell.appendChild(createIcon("frame", "network-frame-group-icon"));
       UI8.UIUtils.createTextChild(cell, name);
       UI8.Tooltip.Tooltip.install(cell, name);
       this.setCellAccessibleName(cell.textContent || "", cell, columnId);
@@ -8331,7 +8368,7 @@ import * as DataGrid2 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport5 from "../../ui/legacy/theme_support/theme_support.js";
-import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/network/NetworkManageCustomHeadersView.ts
 var NetworkManageCustomHeadersView_exports = {};
@@ -8342,9 +8379,9 @@ __export(NetworkManageCustomHeadersView_exports, {
 import "../../ui/components/lists/lists.js";
 import "../../ui/legacy/legacy.js";
 import * as i18n17 from "../../core/i18n/i18n.js";
-import * as Buttons5 from "../../ui/components/buttons/buttons.js";
+import * as Buttons4 from "../../ui/components/buttons/buttons.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html7, render as render8 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html8, render as render8 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/networkManageCustomHeadersView.css.js
 var networkManageCustomHeadersView_css_default = `/*
@@ -8407,7 +8444,7 @@ devtools-prompt.custom-header-name[editing] {
 /*# sourceURL=${import.meta.resolve("./networkManageCustomHeadersView.css")} */`;
 
 // ../../front_end/panels/network/NetworkManageCustomHeadersView.ts
-var { ifDefined: ifDefined2, repeat: repeat2 } = Directives5;
+var { ifDefined: ifDefined3, repeat: repeat2 } = Directives6;
 var UIStrings9 = {
   /**
    * @description Text in Network Manage Custom Headers View of the Network panel
@@ -8447,17 +8484,17 @@ function renderCustomHeaderItem(item4, input) {
     input.onBeginEdit(item4.header);
     event.consume(true);
   };
-  return html7`
+  return html8`
     <div
       class="custom-headers-list-item"
       ?editable=${item4.editable && !editing}
       ?deletable=${item4.editable && !editing}>
-      ${item4.editable ? html7`
+      ${item4.editable ? html8`
         <devtools-prompt
           class="custom-header-name"
           render-as-block
-          title=${ifDefined2(item4.header || void 0)}
-          aria-label=${ifDefined2(editing ? i18nString8(UIStrings9.headerName) : void 0)}
+          title=${ifDefined3(item4.header || void 0)}
+          aria-label=${ifDefined3(editing ? i18nString8(UIStrings9.headerName) : void 0)}
           value=${item4.header}
           ?editing=${editing}
           .validator=${(value) => input.validateHeader(item4.header, value)}
@@ -8466,21 +8503,21 @@ function renderCustomHeaderItem(item4, input) {
           @cancel=${input.onCancelEdit}>
           ${item4.header}
         </devtools-prompt>
-      ` : html7`
+      ` : html8`
         <div class="custom-header-name" title=${item4.header}>${item4.header}</div>
       `}
     </div>
   `;
 }
 var DEFAULT_VIEW7 = (input, _output, target) => {
-  render8(html7`
+  render8(html8`
     <style>${networkManageCustomHeadersView_css_default}</style>
     <div class="header">${i18nString8(UIStrings9.manageHeaderColumns)}</div>
-    ${input.items.length === 0 ? html7`
+    ${input.items.length === 0 ? html8`
       <div class="custom-headers-list custom-headers-list-list-empty">
         ${i18nString8(UIStrings9.noCustomHeaders)}
       </div>
-    ` : html7`
+    ` : html8`
       <devtools-list
         class="custom-headers-list square-corners"
         ?disable-li-focus=${input.editingHeader !== null}
@@ -8505,7 +8542,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     `}
     <devtools-button
       class="add-button"
-      .variant=${Buttons5.Button.Variant.OUTLINED}
+      .variant=${Buttons4.Button.Variant.OUTLINED}
       .jslogContext=${"network.add-custom-header"}
       @click=${input.onAddClick}>
       ${i18nString8(UIStrings9.addCustomHeader)}
@@ -8655,7 +8692,7 @@ import * as RenderCoordinator2 from "../../ui/components/render_coordinator/rend
 import * as PerfUI3 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "../../ui/legacy/theme_support/theme_support.js";
-import { Directives as Directives7, html as html9, render as render10 } from "../../ui/lit/lit.js";
+import { Directives as Directives8, html as html10, render as render10 } from "../../ui/lit/lit.js";
 import * as Settings7 from "../../ui/settings/settings.js";
 
 // ../../front_end/panels/network/NetworkOverview.ts
@@ -9005,8 +9042,8 @@ import * as NetworkTimeCalculator2 from "../../models/network_time_calculator/ne
 import * as uiI18n3 from "../../ui/i18n/i18n.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html8, nothing as nothing5, render as render9 } from "../../ui/lit/lit.js";
-import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives7, html as html9, nothing as nothing6, render as render9 } from "../../ui/lit/lit.js";
+import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/networkTimingTable.css.js
 var networkTimingTable_css_default = `/*
@@ -9261,7 +9298,7 @@ tr.synthetic {
 /*# sourceURL=${import.meta.resolve("./networkTimingTable.css")} */`;
 
 // ../../front_end/panels/network/RequestTimingView.ts
-var { repeat: repeat3, classMap: classMap2, ifDefined: ifDefined3 } = Directives6;
+var { repeat: repeat3, classMap: classMap3, ifDefined: ifDefined4 } = Directives7;
 var UIStrings10 = {
   /**
    * @description Text used to label the time taken to receive an HTTP/2 Push message.
@@ -9550,23 +9587,23 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     const left = serverTiming.value === null ? -1 : scale * (input.endTime - input.startTime - serverTiming.value / 1e3);
     const lastRange = input.timeRanges.findLast((range) => range.name !== NetworkTimeCalculator2.RequestTimeRangeNames.TOTAL);
     const lastTimingRightEdge = lastRange ? scale * (input.endTime - lastRange.end) : 100;
-    const classes2 = classMap2({
+    const classes2 = classMap3({
       ["network-timing-footer"]: isTotal,
       ["server-timing-row"]: !isTotal,
       // Mark entries from a bespoke format
       ["synthetic"]: serverTiming.metric.startsWith("(c")
     });
-    return html8`
+    return html9`
       <tr class=${classes2}>
         <td title=${metricDesc} class=network-timing-metric>
           ${metricDesc}
         </td>
-        ${serverTiming.value === null ? nothing5 : html8`
+        ${serverTiming.value === null ? nothing6 : html9`
           <td class=server-timing-cell--value-bar>
             <div class=network-timing-row>
-              ${left < 0 ? nothing5 : html8`<span
+              ${left < 0 ? nothing6 : html9`<span
                     class="network-timing-bar server-timing"
-                    data-background=${ifDefined3(isTotal ? void 0 : colorGenerator.colorForID(serverTiming.metric))}
+                    data-background=${ifDefined4(isTotal ? void 0 : colorGenerator.colorForID(serverTiming.metric))}
                     data-left=${left}
                     data-right=${lastTimingRightEdge}>${"\u200B"}</span>`}
             </div>
@@ -9584,7 +9621,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     const matchedSourceTypeString = String(matchedSourceType) || i18nString9(UIStrings10.unknown);
     const actualSourceType = serviceWorkerRouterInfo.actualSourceType;
     const actualSourceTypeString = String(actualSourceType) || i18nString9(UIStrings10.unknown);
-    return html8`<devtools-tree>
+    return html9`<devtools-tree>
       <ul role=tree>
         <li role=treeitem>
           <div class=network-fetch-details-treeitem>
@@ -9613,16 +9650,16 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     const swResponseSource = input.request.serviceWorkerResponseSource();
     const responseCacheStorageName = input.request.getResponseCacheStorageCacheName();
     const retrievalTime = input.request.getResponseRetrievalTime();
-    return html8`<devtools-tree>
+    return html9`<devtools-tree>
       <ul role=tree>
-        ${origRequestTree ? html8`<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
+        ${origRequestTree ? html9`<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
             ${i18nString9(UIStrings10.originalRequest)}
             ${ObjectUI.ObjectPropertiesSection.renderObjectTree(origRequestTree)}
-          </li>` : nothing5}
-        ${responseTree ? html8`<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
+          </li>` : nothing6}
+        ${responseTree ? html9`<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
             ${i18nString9(UIStrings10.responseReceived)}
             ${ObjectUI.ObjectPropertiesSection.renderObjectTree(responseTree)}
-          </li>` : nothing5}
+          </li>` : nothing6}
         <li role=treeitem>
           <div class=network-fetch-details-treeitem>
             ${i18nString9(UIStrings10.sourceOfResponseS, { PH1: swResponseSource ? getLocalizedResponseSourceForCode(swResponseSource) : i18nString9(UIStrings10.unknown) })}
@@ -9633,11 +9670,11 @@ var DEFAULT_VIEW8 = (input, output, target) => {
             ${responseCacheStorageName ? i18nString9(UIStrings10.cacheStorageCacheNameS, { PH1: responseCacheStorageName }) : i18nString9(UIStrings10.cacheStorageCacheNameUnknown)}
           </div>
         </li>
-        ${retrievalTime ? html8`<li role=treeitem>
+        ${retrievalTime ? html9`<li role=treeitem>
             <div class=network-fetch-details-treeitem>
               ${i18nString9(UIStrings10.retrievalTimeS, { PH1: retrievalTime.toString() })}
             </div>
-          </li>` : nothing5}
+          </li>` : nothing6}
       </ul>
     </devtools-tree>`;
   };
@@ -9658,7 +9695,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
   const throttledRequestTitle = input.wasThrottled ? i18nString9(UIStrings10.wasThrottled, {
     PH1: typeof input.wasThrottled.conditions.title === "string" ? input.wasThrottled.conditions.title : input.wasThrottled.conditions.title()
   }) : void 0;
-  const classes = classMap2({
+  const classes = classMap3({
     ["network-timing-table"]: true,
     ["resource-timing-table"]: true
   });
@@ -9675,11 +9712,11 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       tail.ranges.push(range);
     }
   }
-  render9(html8`
+  render9(html9`
     <style>${networkTimingTable_css_default}</style>
     <table
       class=${classes}
-      jslog=${VisualLogging7.pane("timing").track({
+      jslog=${VisualLogging8.pane("timing").track({
     resize: true
   })}>
         <colgroup>
@@ -9710,7 +9747,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
             </td>
           </tr>
         </thead>
-        ${timeRangeGroups.map((group) => html8`
+        ${timeRangeGroups.map((group) => html9`
           <tr class=network-timing-table-header>
             <td role=heading aria-level=2>
               ${group.name}
@@ -9718,9 +9755,9 @@ var DEFAULT_VIEW8 = (input, output, target) => {
             <td></td>
             <td>${i18nString9(UIStrings10.durationC)}</td>
           </tr>
-          ${repeat3(group.ranges, (range) => html8`
+          ${repeat3(group.ranges, (range) => html9`
             <tr>
-              ${isClickable(range) ? html8`<td
+              ${isClickable(range) ? html9`<td
                   tabindex=0
                   role=button
                   aria-expanded=false
@@ -9728,7 +9765,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
                   @keydown=${onActivate}
                   class=network-fetch-timing-bar-clickable>
                     ${timeRangeTitle(range.name)}
-                </td>` : html8`<td>
+                </td>` : html9`<td>
                     ${timeRangeTitle(range.name)}
                 </td>`}
               <td>
@@ -9747,22 +9784,22 @@ var DEFAULT_VIEW8 = (input, output, target) => {
                 </div>
               </td>
             </tr>
-            ${range.name === "serviceworker-respondwith" && input.request.fetchedViaServiceWorker ? html8`
+            ${range.name === "serviceworker-respondwith" && input.request.fetchedViaServiceWorker ? html9`
               <tr class="network-fetch-timing-bar-details network-fetch-timing-bar-details-collapsed">
                 ${fetchDetailsTree()}
-              </tr>` : nothing5}
-            ${range.name === "serviceworker-routerevaluation" && routerDetails ? html8`
+              </tr>` : nothing6}
+            ${range.name === "serviceworker-routerevaluation" && routerDetails ? html9`
               <tr class="router-evaluation-timing-bar-details network-fetch-timing-bar-details-collapsed">
                 ${routerDetailsTree(routerDetails)}
-              </tr>` : nothing5}
+              </tr>` : nothing6}
           `)}
         `)}
-        ${requestUnfinished ? html8`
+        ${requestUnfinished ? html9`
           <tr>
             <td class=caution colspan=3>
               ${i18nString9(UIStrings10.cautionRequestIsNotFinishedYet)}
             </td>
-          </tr>` : nothing5}
+          </tr>` : nothing6}
        <tr class=network-timing-footer>
          <td colspan=1>
            <devtools-link
@@ -9772,8 +9809,8 @@ var DEFAULT_VIEW8 = (input, output, target) => {
                ${i18nString9(UIStrings10.explanation)}
            </devtools-link>
          <td></td>
-         <td class=${input.wasThrottled ? "throttled" : ""} title=${ifDefined3(throttledRequestTitle)}>
-           ${input.wasThrottled ? html8` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing5}
+         <td class=${input.wasThrottled ? "throttled" : ""} title=${ifDefined4(throttledRequestTitle)}>
+           ${input.wasThrottled ? html9` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing6}
            ${i18n19.TimeUtilities.secondsToString(input.totalDuration, true)}
          </td>
        </tr>
@@ -9789,12 +9826,12 @@ var DEFAULT_VIEW8 = (input, output, target) => {
        </tr>
        ${repeat3(serverTimings.filter((item4) => item4.metric.toLowerCase() !== "total"), addServerTiming)}
        ${repeat3(serverTimings.filter((item4) => item4.metric.toLowerCase() === "total"), addServerTiming)}
-       ${serverTimings.length === 0 ? html8`
+       ${serverTimings.length === 0 ? html9`
          <tr>
            <td colspan=3>
-${uiI18n3.getFormatLocalizedStringTemplate(str_10, UIStrings10.duringDevelopmentYouCanUseSToAdd, { PH1: html8`<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${"server-timing-api"}>${i18nString9(UIStrings10.theServerTimingApi)}</devtools-link>` })}
+${uiI18n3.getFormatLocalizedStringTemplate(str_10, UIStrings10.duringDevelopmentYouCanUseSToAdd, { PH1: html9`<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${"server-timing-api"}>${i18nString9(UIStrings10.theServerTimingApi)}</devtools-link>` })}
            </td>
-         </tr>` : nothing5}
+         </tr>` : nothing6}
       </table>`, target, { container: { classes: ["resource-timing-view"] } });
 };
 var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
@@ -9889,13 +9926,13 @@ var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
 };
 
 // ../../front_end/panels/network/NetworkWaterfallColumn.ts
-var { ref: ref3, styleMap } = Directives7;
+var { ref: ref3, styleMap } = Directives8;
 var BAR_SPACING = 1;
 var DEFAULT_VIEW9 = (input, output, target) => {
   const width = Math.max(0, input.width);
   const height = Math.max(0, input.height);
   const pixelRatio = Math.max(0, input.pixelRatio);
-  render10(html9`
+  render10(html10`
     <style>${networkWaterfallColumn_css_default}</style>
     <canvas
       tabindex="-1"
@@ -10477,8 +10514,8 @@ import * as Bindings2 from "../../models/bindings/bindings.js";
 import * as Logs4 from "../../models/logs/logs.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
-import { Directives as Directives8, html as html10, nothing as nothing6, render as render11 } from "../../ui/lit/lit.js";
-import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives9, html as html11, nothing as nothing7, render as render11 } from "../../ui/lit/lit.js";
+import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestInitiatorView.css.js
 var requestInitiatorView_css_default = `/*
@@ -10568,10 +10605,10 @@ function trimUrl(url) {
   return url.substring(0, halfMaxLength) + "\u2026" + url.substring(url.length - halfMaxLength);
 }
 var DEFAULT_VIEW10 = (input, _output, target) => {
-  const renderOptions = { container: { attributes: { jslog: `${VisualLogging8.pane("initiator").track({ resize: true })}` } } };
+  const renderOptions = { container: { attributes: { jslog: `${VisualLogging9.pane("initiator").track({ resize: true })}` } } };
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
-    render11(html10`
+    render11(html11`
       <style>${requestInitiatorView_css_default}</style>
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString10(UIStrings11.noInitiator)}
@@ -10581,9 +10618,9 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
   }
   const renderStackTraceSection = () => {
     if (!input.stackTrace) {
-      return html10`${nothing6}`;
+      return html11`${nothing7}`;
     }
-    return html10`
+    return html11`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true" open>
         ${i18nString10(UIStrings11.requestCallStack)}
         <ul role="group">
@@ -10593,35 +10630,35 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
       stackTrace: input.stackTrace
     })}
           </li>
-          ${input.isConsoleOriginated ? html10`
+          ${input.isConsoleOriginated ? html11`
             <li role="treeitem" class="console-origin-label">
               ${i18nString10(UIStrings11.console)}
             </li>
-          ` : nothing6}
+          ` : nothing7}
         </ul>
       </li>
     `;
   };
   const renderInitiatorNodes = (initiators, index, initiated, visited) => {
     if (index >= initiators.length) {
-      return html10`${nothing6}`;
+      return html11`${nothing7}`;
     }
     const request = initiators[index];
     const isCurrentRequest = index === initiators.length - 1;
     const hasFurtherInitiatedNodes = index + 1 < initiators.length;
-    const renderedChildren = isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing6;
+    const renderedChildren = isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing7;
     const url = request.url();
     const title = url.length < 2e3 ? url : void 0;
-    return html10`
+    return html11`
           <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
-            <span style=${isCurrentRequest ? "font-weight: bold" : ""} title=${Directives8.ifDefined(title)}>
+            <span style=${isCurrentRequest ? "font-weight: bold" : ""} title=${Directives9.ifDefined(title)}>
               ${trimUrl(url)}
             </span>
-            ${hasFurtherInitiatedNodes || renderedChildren !== nothing6 ? html10`
+            ${hasFurtherInitiatedNodes || renderedChildren !== nothing7 ? html11`
               <ul role="group">
                 ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
                 ${renderedChildren}
-              </ul>` : nothing6}
+              </ul>` : nothing7}
           </li>`;
   };
   const renderInitiatedNodes = (initiated, parentRequest, visited) => {
@@ -10632,23 +10669,23 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
       }
     }
     if (children.length === 0) {
-      return nothing6;
+      return nothing7;
     }
-    return html10`
+    return html11`
       ${children.map((child) => {
       const shouldRecurse = !visited.has(child);
       if (shouldRecurse) {
         visited.add(child);
       }
-      const renderedChildren = shouldRecurse ? renderInitiatedNodes(initiated, child, visited) : nothing6;
+      const renderedChildren = shouldRecurse ? renderInitiatedNodes(initiated, child, visited) : nothing7;
       const url = child.url();
       const title = url.length < 2e3 ? url : void 0;
-      return html10`
+      return html11`
         <li role="treeitem" aria-expanded="true" open>
-          <span title=${Directives8.ifDefined(title)}>
+          <span title=${Directives9.ifDefined(title)}>
             ${trimUrl(url)}
           </span>
-          ${renderedChildren !== nothing6 ? html10`<ul role="group">${renderedChildren}</ul>` : nothing6}
+          ${renderedChildren !== nothing7 ? html11`<ul role="group">${renderedChildren}</ul>` : nothing7}
         </li>
       `;
     })}
@@ -10659,32 +10696,32 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
     const visited = /* @__PURE__ */ new Set();
     visited.add(input.request);
     const hasInitiatorChain2 = initiators.length > 0;
-    return html10`
+    return html11`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true" open>
         ${i18nString10(UIStrings11.requestInitiatorChain)}
-        ${hasInitiatorChain2 ? html10`
+        ${hasInitiatorChain2 ? html11`
           <ul role="group">
-            ${input.isConsoleOriginated ? html10`
+            ${input.isConsoleOriginated ? html11`
               <li role="treeitem" aria-expanded="true" open>
                 <span>${i18nString10(UIStrings11.console)}</span>
                 <ul role="group">
                   ${renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
                 </ul>
               </li>` : renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
-          </ul>` : nothing6}
+          </ul>` : nothing7}
       </li>`;
   };
   const hasInitiatorChain = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.isConsoleOriginated;
-  render11(html10`
+  render11(html11`
     <style>${requestInitiatorView_css_default}</style>
-    <div class="request-initiator-view-tree" jslog=${VisualLogging8.tree("initiator-tree")}>
-      <devtools-tree .template=${html10`
+    <div class="request-initiator-view-tree" jslog=${VisualLogging9.tree("initiator-tree")}>
+      <devtools-tree .template=${html11`
         <style>${requestInitiatorViewTree_css_default}</style>
-        ${input.stackTrace || hasInitiatorChain ? html10`
+        ${input.stackTrace || hasInitiatorChain ? html11`
           <ul role="tree">
             ${renderStackTraceSection()}
-            ${hasInitiatorChain ? renderInitiatorChain(input.initiatorGraph) : nothing6}
-          </ul>` : nothing6}
+            ${hasInitiatorChain ? renderInitiatorChain(input.initiatorGraph) : nothing7}
+          </ul>` : nothing7}
       `}></devtools-tree>
     </div>
   `, target, renderOptions);
@@ -11123,7 +11160,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.waterfallHeaderElement = this.waterfallColumn.contentElement.createChild("div", "network-waterfall-header");
     this.waterfallHeaderElement.setAttribute(
       "jslog",
-      `${VisualLogging9.tableHeader("waterfall").track({ click: true, resize: true })}`
+      `${VisualLogging10.tableHeader("waterfall").track({ click: true, resize: true })}`
     );
     this.waterfallHeaderElement.addEventListener("click", waterfallHeaderClicked.bind(this));
     this.waterfallHeaderElement.addEventListener("contextmenu", (event) => {
@@ -12429,7 +12466,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
       }
     }
   }
-  render12(html11`
+  render12(html12`
     <style>${networkLogView_css_default}</style>
     <style>@scope to (devtools-widget > *) { ${dataGridAiButton_css_default} }</style>
     <devtools-split-view
@@ -12450,7 +12487,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
   })}>
       </div>
     </devtools-split-view>
-    ${input.showRecordingHint ? html11`
+    ${input.showRecordingHint ? html12`
       <devtools-widget
         class="network-status-pane"
         ${UI14.Widget.widget(UI14.EmptyWidget.EmptyWidget, {
@@ -12458,27 +12495,27 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
     text: description,
     link: "https://developer.chrome.com/docs/devtools/network/"
   })}>
-        ${input.onRecordingAction ? html11`
+        ${input.onRecordingAction ? html12`
           <devtools-button
-            .variant=${Buttons6.Button.Variant.TONAL}
+            .variant=${Buttons5.Button.Variant.TONAL}
             .jslogContext=${actionName}
             @click=${input.onRecordingAction}>
             ${buttonText}
           </devtools-button>
-        ` : nothing7}
+        ` : nothing8}
       </devtools-widget>
-    ` : nothing7}
+    ` : nothing8}
     <devtools-toolbar
       class="network-summary-bar"
       role="status"
       aria-hidden=${input.showRecordingHint}>
-      ${summaryItems.map((item4, index) => html11`
-        ${index > 0 ? html11`<div class="toolbar-divider toolbar-item"></div>` : nothing7}
+      ${summaryItems.map((item4, index) => html12`
+        ${index > 0 ? html12`<div class="toolbar-divider toolbar-item"></div>` : nothing8}
         <div
           class="toolbar-text toolbar-item"
           title=${item4.title}
           aria-label=${item4.title}
-          style=${Directives9.styleMap({ color: item4.color ? `var(${item4.color})` : void 0 })}>
+          style=${Directives10.styleMap({ color: item4.color ? `var(${item4.color})` : void 0 })}>
           ${item4.text}
         </div>
       `)}
@@ -13113,7 +13150,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
         }
         if (SDK11.NetworkManager.NetworkManager.canResendRequest(request, true)) {
           SDK11.NetworkManager.NetworkManager.replayRequest(request);
-          void VisualLogging10.logKeyDown(this.dataGrid.selectedNode.element(), event, "resend");
+          void VisualLogging11.logKeyDown(this.dataGrid.selectedNode.element(), event, "resend");
         }
       }
     });
@@ -14475,7 +14512,7 @@ var MORE_FILTERS_DEFAULT_VIEW = (input, _output, target) => {
     buttonElement.setAttribute("aria-expanded", "true");
     void contextMenu.show();
   };
-  render12(html11`
+  render12(html12`
     <button
       class="toolbar-button toolbar-item toolbar-has-dropdown dropdown-filterbar"
       title=${input.tooltip}
@@ -14498,7 +14535,7 @@ var MORE_FILTERS_DEFAULT_VIEW = (input, _output, target) => {
     container: {
       attributes: {
         "aria-label": "Show only/hide requests dropdown",
-        jslog: VisualLogging10.dropDown("more-filters").track({ click: true })
+        jslog: VisualLogging11.dropDown("more-filters").track({ click: true })
       }
     }
   });
@@ -15124,7 +15161,7 @@ var BackendLinking2 = class {
   }
 };
 function renderSettingsPane(input, output) {
-  return html12`
+  return html13`
     <div class="network-settings-pane" ?hidden=${!input.showSettingsPane}>
       <devtools-checkbox title=${i18nString14(UIStrings15.showMoreInformationInRequestRows)}
           ${bindToSetting(input.largeRowsSetting)}>${i18nString14(UIStrings15.useLargeRequestRows)}</devtools-checkbox>
@@ -15136,7 +15173,7 @@ function renderSettingsPane(input, output) {
           ${bindToSetting(input.recordFilmStripSetting)}>${i18nString14(UIStrings15.captureScreenshots)}</devtools-checkbox>
     </div>
     <input type="file" hidden tabindex="-1"
-        ${Directives10.ref((el) => {
+        ${Directives11.ref((el) => {
     output.openFileSelector = el instanceof HTMLInputElement ? () => el.click() : void 0;
   })}
         @click=${(event) => {
@@ -15207,7 +15244,7 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     this.panelToolbar = networkToolbarContainer.createChild("devtools-toolbar");
     this.panelToolbar.role = "presentation";
     this.panelToolbar.wrappable = true;
-    this.panelToolbar.setAttribute("jslog", `${VisualLogging11.toolbar("network-main")}`);
+    this.panelToolbar.setAttribute("jslog", `${VisualLogging12.toolbar("network-main")}`);
     this.rightToolbar = networkToolbarContainer.createChild("devtools-toolbar");
     this.rightToolbar.role = "presentation";
     this.filterBar = new UI15.FilterBar.FilterBar("network-panel", true);
@@ -15248,11 +15285,11 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
       }
       splitWidget.hideSidebar();
       event.consume();
-      void VisualLogging11.logKeyDown(event.currentTarget, event, "hide-sidebar");
+      void VisualLogging12.logKeyDown(event.currentTarget, event, "hide-sidebar");
     });
     const closeSidebar = new UI15.Toolbar.ToolbarButton(i18nString14(UIStrings15.close), "cross");
     closeSidebar.addEventListener(UI15.Toolbar.ToolbarButton.Events.CLICK, () => splitWidget.hideSidebar());
-    closeSidebar.element.setAttribute("jslog", `${VisualLogging11.close().track({ click: true })}`);
+    closeSidebar.element.setAttribute("jslog", `${VisualLogging12.close().track({ click: true })}`);
     tabbedPane.rightToolbar().appendToolbarItem(closeSidebar);
     splitWidget.setSidebarWidget(tabbedPane);
     splitWidget.setMainWidget(panel3);
@@ -15525,7 +15562,7 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     if (toggled && !this.filmStripRecorder) {
       this.filmStripView = new PerfUI5.FilmStripView.FilmStripView();
       this.filmStripView.element.classList.add("network-film-strip");
-      this.filmStripView.element.setAttribute("jslog", `${VisualLogging11.section("film-strip")}`);
+      this.filmStripView.element.setAttribute("jslog", `${VisualLogging12.section("film-strip")}`);
       this.filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.filmStripView);
       this.filmStripView.show(this.filmStripPlaceholderElement);
       this.filmStripView.addEventListener(PerfUI5.FilmStripView.Events.FRAME_SELECTED, this.onFilmFrameSelected, this);
@@ -15945,7 +15982,7 @@ __export(ShowMoreDetailsWidget_exports, {
   ShowMoreDetailsWidget: () => ShowMoreDetailsWidget
 });
 import * as i18n31 from "../../core/i18n/i18n.js";
-import * as Buttons7 from "../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "../../ui/components/buttons/buttons.js";
 import * as UI16 from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
 var UIStrings16 = {
@@ -15960,7 +15997,7 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/network/ShowMoreDetailsWidget.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var { render: render14, html: html13 } = Lit2;
+var { render: render14, html: html14 } = Lit2;
 var MAX_LENGTH = 3e3;
 var DEFAULT_VIEW12 = (input, output, target) => {
   const onContextMenuShowMore = (event) => {
@@ -15974,11 +16011,11 @@ var DEFAULT_VIEW12 = (input, output, target) => {
     void contextMenu.show();
   };
   render14(
-    html13`<span
+    html14`<span
             @contextmenu=${onContextMenuShowMore}
             >${input.showMore ? input.text : input.text.substr(0, MAX_LENGTH)}</span>
-          ${!input.showMore && input.text.length > MAX_LENGTH ? html13`<devtools-button
-            .variant=${Buttons7.Button.Variant.OUTLINED}
+          ${!input.showMore && input.text.length > MAX_LENGTH ? html14`<devtools-button
+            .variant=${Buttons6.Button.Variant.OUTLINED}
             .jslogContext=${"show-more"}
             @click=${input.onToggle}>
             ${i18nString15(UIStrings16.showMore)}
@@ -16027,7 +16064,7 @@ var ShowMoreDetailsWidget = class extends UI16.Widget.Widget {
 };
 
 // ../../front_end/panels/network/RequestHeadersView.ts
-var { render: render15, html: html14 } = Lit3;
+var { render: render15, html: html15 } = Lit3;
 var { widget: widget5 } = UI17.Widget;
 var UIStrings17 = {
   /**
@@ -16137,7 +16174,7 @@ function renderGeneralRows(input) {
     statusClasses.push("status-with-comment");
   }
   const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(" ");
-  return html14`<div jslog=${VisualLogging12.section("general")}>
+  return html15`<div jslog=${VisualLogging13.section("general")}>
     ${renderGeneralRow(input, i18nString16(UIStrings17.requestUrl), input.request.url(), "request-url")}
     ${input.request.statusCode ? renderGeneralRow(input, i18nString16(UIStrings17.requestMethod), input.request.requestMethod, "request-method") : Lit3.nothing}
     ${input.request.statusCode ? renderGeneralRow(input, i18nString16(UIStrings17.statusCode), statusText, "status-code", statusClasses) : Lit3.nothing}
@@ -16157,7 +16194,7 @@ function renderGeneralSection(input, forceOpen) {
 var DEFAULT_VIEW13 = (input, _output, target) => {
   const requestHeadersText = input.request.requestHeadersText();
   render15(
-    html14`
+    html15`
         <style>${RequestHeadersView_css_default}</style>
         ${renderGeneralSection(input, input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.GENERAL)}
         ${!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0 ? Lit3.nothing : renderCategory({
@@ -16169,9 +16206,9 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
       additionalContent: void 0,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.EARLY_HINTS,
       loggingContext: "early-hints-headers",
-      contents: html14`
+      contents: html15`
               ${input.cacheDisabled && hasEarlyHintsPreload(input.request.earlyHintsHeaders) ? renderEarlyHintsWarning() : Lit3.nothing}
-              ${input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html14`
+              ${input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html15`
             <devtools-early-hints-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
@@ -16185,14 +16222,14 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
       title: i18nString16(UIStrings17.responseHeaders),
       headerCount: input.request.sortedResponseHeaders.length,
       checked: input.request.responseHeadersText ? input.showResponseHeadersText : void 0,
-      additionalContent: html14`<div>${renderHeaderOverridesLink(input)}${renderBackendLinkButton(input)}</div>`,
+      additionalContent: html15`<div>${renderHeaderOverridesLink(input)}${renderBackendLinkButton(input)}</div>`,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.RESPONSE,
       loggingContext: "response-headers",
-      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html14`
+      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html15`
           <devtools-response-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
-      }} jslog=${VisualLogging12.section("response-headers")}></devtools-response-header-section>
+      }} jslog=${VisualLogging13.section("response-headers")}></devtools-response-header-section>
             `
     })}
         ${renderCategory({
@@ -16203,26 +16240,26 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
       checked: requestHeadersText ? input.showRequestHeadersText : void 0,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.REQUEST,
       loggingContext: "request-headers",
-      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html14`
+      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html15`
           <devtools-widget ${widget5(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
         request: input.request,
         toReveal: input.toReveal
-      })} jslog=${VisualLogging12.section("request-headers")}></devtools-widget>`
+      })} jslog=${VisualLogging13.section("request-headers")}></devtools-widget>`
     })}
       `,
     // clang-format on
     target,
-    { container: { attributes: { jslog: `${VisualLogging12.pane("headers").track({ resize: true })}` } } }
+    { container: { attributes: { jslog: `${VisualLogging13.pane("headers").track({ resize: true })}` } } }
   );
 };
 var GENERAL_HEADERS_ONLY_VIEW = (input, _output, target) => {
   render15(
-    html14`
+    html15`
         <style>${RequestHeadersView_css_default}</style>
         ${renderGeneralRows(input)}
       `,
     target,
-    { container: { attributes: { jslog: `${VisualLogging12.pane("headers").track({ resize: true })}` } } }
+    { container: { attributes: { jslog: `${VisualLogging13.pane("headers").track({ resize: true })}` } } }
   );
 };
 var RequestHeadersView = class _RequestHeadersView extends UI17.Widget.Widget {
@@ -16387,7 +16424,7 @@ function hasEarlyHintsPreload(headers) {
   });
 }
 function renderEarlyHintsWarning() {
-  return html14`
+  return html15`
     <div class="early-hints-warning">
       <devtools-icon class="medium" name="warning-filled"></devtools-icon>
       <div>${i18nString16(UIStrings17.earlyPreloadsIgnoredCacheDisabledWarning)}</div>
@@ -16398,12 +16435,12 @@ function renderBackendLinkButton({ backendLink }) {
   if (!backendLink) {
     return Lit3.nothing;
   }
-  return html14`
+  return html15`
     <devtools-button
       class="backend-link-button"
-      .variant=${Buttons8.Button.Variant.PRIMARY}
-      .size=${Buttons8.Button.Size.SMALL}
-      jslog=${VisualLogging12.action("open-backend-link").track({ click: true })}
+      .variant=${Buttons7.Button.Variant.PRIMARY}
+      .size=${Buttons7.Button.Size.SMALL}
+      jslog=${VisualLogging13.action("open-backend-link").track({ click: true })}
       title=${backendLink.url}
       @click=${(event) => {
     event.consume(true);
@@ -16426,10 +16463,10 @@ function renderHeaderOverridesLink(input) {
   const overridesSetting = Common14.Settings.Settings.instance().resolve(
     Persistence2.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor
   );
-  const fileIcon = html14`
+  const fileIcon = html15`
       <devtools-icon name="document" class=${"medium" + overridesSetting.get() ? "inline-icon dot purple" : "inline-icon"}>
       </devtools-icon>`;
-  return html14`
+  return html15`
       <devtools-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link hide-when-closed"
@@ -16449,12 +16486,12 @@ function renderHeaderOverridesLink(input) {
     `;
 }
 function renderRawHeaders(text) {
-  return html14`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
+  return html15`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
       ${widget5(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
 }
 function renderGeneralRow(input, name, value, id, classNames) {
   const isHighlighted = input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.GENERAL && name.toLowerCase() === input.toReveal?.header?.toLowerCase();
-  return html14`
+  return html15`
       <div class="row ${isHighlighted ? "header-highlight" : ""}">
         <div class="header-name">${name}</div>
         <div
@@ -16468,21 +16505,21 @@ function renderGeneralRow(input, name, value, id, classNames) {
 function renderCategory(data) {
   const expandedSetting = Common14.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
   const isOpen = (expandedSetting ? expandedSetting.get() : true) || data.forceOpen;
-  return html14`
+  return html15`
       <details ?open=${isOpen} @toggle=${onToggle} aria-label=${data.title}>
         <summary
           class="header"
           @keydown=${onSummaryKeyDown}
-          jslog=${VisualLogging12.sectionHeader().track({ click: true }).context(data.loggingContext)}
+          jslog=${VisualLogging13.sectionHeader().track({ click: true }).context(data.loggingContext)}
         >
           <div class="header-grid-container">
             <div>
-              ${data.title}${data.headerCount !== void 0 ? html14`<span class="header-count"> (${data.headerCount})</span>` : Lit3.nothing}
+              ${data.title}${data.headerCount !== void 0 ? html15`<span class="header-count"> (${data.headerCount})</span>` : Lit3.nothing}
             </div>
             <div class="hide-when-closed">
-              ${data.checked !== void 0 ? html14`
+              ${data.checked !== void 0 ? html15`
                 <devtools-checkbox .checked=${data.checked} @change=${data.onToggleRawHeaders}
-                         jslog=${VisualLogging12.toggle("raw-headers").track({ change: true })}>
+                         jslog=${VisualLogging13.toggle("raw-headers").track({ change: true })}>
                   ${i18nString16(UIStrings17.raw)}
               </devtools-checkbox>` : Lit3.nothing}
             </div>
@@ -16527,7 +16564,7 @@ import * as i18n35 from "../../core/i18n/i18n.js";
 import * as Platform10 from "../../core/platform/platform.js";
 import * as SDK14 from "../../core/sdk/sdk.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
-import * as Buttons9 from "../../ui/components/buttons/buttons.js";
+import * as Buttons8 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectPropertiesSection.css.js
@@ -16753,8 +16790,8 @@ var objectValue_css_default = `/*
 
 // ../../front_end/panels/network/RequestPayloadView.ts
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives11, html as html15, nothing as nothing10, render as render16 } from "../../ui/lit/lit.js";
-import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives12, html as html16, nothing as nothing11, render as render16 } from "../../ui/lit/lit.js";
+import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
 var requestPayloadTree_css_default = `/*
@@ -16908,7 +16945,7 @@ var requestPayloadView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestPayloadView.css")} */`;
 
 // ../../front_end/panels/network/RequestPayloadView.ts
-var { classMap: classMap3 } = Directives11;
+var { classMap: classMap4 } = Directives12;
 var { widget: widget6 } = UI18.Widget;
 var { ifExpanded } = UI18.TreeOutline;
 var UIStrings18 = {
@@ -16963,10 +17000,10 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("panels/network/RequestPayloadView.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW14 = (input, output, target) => {
-  const createViewSourceToggle = (viewSource, callback) => html15`<devtools-button
+  const createViewSourceToggle = (viewSource, callback) => html16`<devtools-button
       class="payload-toggle"
-      jslog=${VisualLogging13.action().track({ click: true }).context("source-parse")}
-      .variant=${Buttons9.Button.Variant.OUTLINED}
+      jslog=${VisualLogging14.action().track({ click: true }).context("source-parse")}
+      .variant=${Buttons8.Button.Variant.OUTLINED}
       @click=${(e) => {
     e.consume();
     callback(!viewSource);
@@ -16982,14 +17019,14 @@ var DEFAULT_VIEW14 = (input, output, target) => {
   };
   const createSourceText = (text) => {
     const copy = () => input.copyValue(text);
-    return html15`<li role=treeitem
+    return html16`<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString17(UIStrings18.copyPayload), () => text, "copy-payload")}>
         <devtools-widget class='payload-value source-code' ${widget6(ShowMoreDetailsWidget, { text, copy })}>
         </devtools-widget>
       </li>`;
   };
   const createParsedParams = (params, decodeParameters) => params.map((param) => {
-    return html15`
+    return html16`
         <li role=treeitem
             @contextmenu=${copyValueContextmenu(
       i18nString17(UIStrings18.copyValue),
@@ -16999,7 +17036,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       },
       "copy-value"
     )}>
-          ${param.name !== "" ? html15`
+          ${param.name !== "" ? html16`
             ${RequestPayloadView.formatParameter(param.name, "payload-name", decodeParameters)}
             ${RequestPayloadView.formatParameter(param.value, "payload-value source-code", decodeParameters)}
           ` : RequestPayloadView.formatParameter(
@@ -17017,14 +17054,14 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       input.onPayloadContextMenu(contextMenu);
       void contextMenu.show();
     };
-    return html15`
+    return html16`
       <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
           toggle-on-click
           ?open=${objectTree.expanded}
           @expand=${(e) => input.onPayloadToggle(e.detail.expanded, e.detail.recursively)}
           @contextmenu=${onPayloadContextMenu}>
         ${objectTree.object.description}
-        ${objectTree.object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing10}
+        ${objectTree.object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing11}
       </li>
     `;
   };
@@ -17053,8 +17090,8 @@ var DEFAULT_VIEW14 = (input, output, target) => {
     }
     void contextMenu.show();
   };
-  render16(html15`<style>${requestPayloadView_css_default}</style>
-   <devtools-tree dense show-selection-on-keyboard-focus class=request-payload-tree .template=${html15`
+  render16(html16`<style>${requestPayloadView_css_default}</style>
+   <devtools-tree dense show-selection-on-keyboard-focus class=request-payload-tree .template=${html16`
      <style>${objectValue_css_default}</style>
      <style>${objectPropertiesSection_css_default}</style>
      <style>${requestPayloadTree_css_default}</style>
@@ -17063,7 +17100,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
           role=treeitem
           toggle-on-click
           ?hidden=${!input.queryParameters}
-          jslog=${VisualLogging13.section().context("query-string")}
+          jslog=${VisualLogging14.section().context("query-string")}
           @contextmenu=${onContextMenu(
     input.viewQueryParamSource,
     input.setViewQueryParamSource,
@@ -17080,8 +17117,8 @@ var DEFAULT_VIEW14 = (input, output, target) => {
         <devtools-button
             class=payload-toggle
             ?hidden=${input.viewQueryParamSource}
-            jslog=${VisualLogging13.action().track({ click: true }).context("decode-encode")}
-            .variant=${Buttons9.Button.Variant.OUTLINED}
+            jslog=${VisualLogging14.action().track({ click: true }).context("decode-encode")}
+            .variant=${Buttons8.Button.Variant.OUTLINED}
             @click=${(e) => {
     e.consume();
     input.setDecodeQueryParameters(!input.decodeQueryParameters);
@@ -17096,7 +17133,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
           role=treeitem
           toggle-on-click
           ?hidden=${!input.formData || !input.formParameters}
-          jslog=${VisualLogging13.section().context("form-data")}
+          jslog=${VisualLogging14.section().context("form-data")}
           @contextmenu=${onContextMenu(
     input.viewFormParamSource,
     input.setViewFormParamSource,
@@ -17113,8 +17150,8 @@ var DEFAULT_VIEW14 = (input, output, target) => {
         <devtools-button
             class=payload-toggle
             ?hidden=${input.viewFormParamSource}
-            jslog=${VisualLogging13.action().track({ click: true }).context("decode-encode")}
-            .variant=${Buttons9.Button.Variant.OUTLINED}
+            jslog=${VisualLogging14.action().track({ click: true }).context("decode-encode")}
+            .variant=${Buttons8.Button.Variant.OUTLINED}
             @click=${(e) => {
     e.consume();
     input.setDecodeFormParameters(!input.decodeFormParameters);
@@ -17129,7 +17166,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
           role=treeitem
           toggle-on-click
           ?hidden=${!input.formData || Boolean(input.formParameters) || Boolean(input.binaryPayloadContentData)}
-          jslog=${VisualLogging13.section().context("request-payload")}
+          jslog=${VisualLogging14.section().context("request-payload")}
           @contextmenu=${onContextMenu(
     input.viewJSONPayloadSource,
     input.setViewJSONPayloadSource
@@ -17144,9 +17181,9 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       </li>
      </ul>
      `}></devtools-tree>
-   ${input.binaryPayloadContentData ? html15`
+   ${input.binaryPayloadContentData ? html16`
      <div class="raw-payload-section"
-          jslog=${VisualLogging13.section().context("binary-request-payload")}>
+          jslog=${VisualLogging14.section().context("binary-request-payload")}>
        ${widget6((element) => {
     const streamingContent = TextUtils5.StreamingContentData.StreamingContentData.from(
       input.binaryPayloadContentData
@@ -17158,12 +17195,12 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       element
     );
   })}
-     </div>` : nothing10}
+     </div>` : nothing11}
    `, target, {
     container: {
       classes: ["request-payload-view"],
       attributes: {
-        jslog: `${VisualLogging13.pane("payload").track({ resize: true })}`
+        jslog: `${VisualLogging14.pane("payload").track({ resize: true })}`
       }
     }
   });
@@ -17367,9 +17404,9 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
   }
   static formatParameter(value, className, decodeParameters) {
     const { value: decoded, errorDecoding } = _RequestPayloadView.decodeParameter(value, decodeParameters);
-    const classes = classMap3({ [className]: !!className, "empty-value": decoded === "" });
-    return html15`<div class=${classes}>
-      ${errorDecoding ? html15`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : decoded}
+    const classes = classMap4({ [className]: !!className, "empty-value": decoded === "" });
+    return html16`<div class=${classes}>
+      ${errorDecoding ? html16`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : decoded}
     </div>`;
   }
 };
@@ -17386,8 +17423,8 @@ import * as i18n39 from "../../core/i18n/i18n.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
-import { Directives as Directives13, html as html18, render as render19 } from "../../ui/lit/lit.js";
-import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives14, html as html19, render as render19 } from "../../ui/lit/lit.js";
+import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/network/RequestHTMLView.ts
 var RequestHTMLView_exports = {};
@@ -17396,7 +17433,7 @@ __export(RequestHTMLView_exports, {
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI19 from "../../ui/legacy/legacy.js";
-import { html as html16, nothing as nothing11, render as render17 } from "../../ui/lit/lit.js";
+import { html as html17, nothing as nothing12, render as render17 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/requestHTMLView.css.js
 var requestHTMLView_css_default = `/*
@@ -17420,14 +17457,14 @@ var requestHTMLView_css_default = `/*
 // ../../front_end/panels/network/RequestHTMLView.ts
 var DEFAULT_VIEW15 = (input, _output, target) => {
   render17(
-    html16`
+    html17`
     <style>${requestHTMLView_css_default}</style>
     <div class="html request-view widget vbox">
-      ${input.dataURL ? html16`
+      ${input.dataURL ? html17`
         <!-- @ts-ignore -->
         <iframe class="html-preview-frame" sandbox
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
-          tabindex="-1" role="presentation"></iframe>` : nothing11}
+          tabindex="-1" role="presentation"></iframe>` : nothing12}
     </div>`,
     target
   );
@@ -17483,7 +17520,7 @@ import * as Common16 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import { Directives as Directives12, html as html17, nothing as nothing12, render as render18 } from "../../ui/lit/lit.js";
+import { Directives as Directives13, html as html18, nothing as nothing13, render as render18 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/signedExchangeInfoTree.css.js
 var signedExchangeInfoTree_css_default = `/*
@@ -17609,7 +17646,7 @@ var signedExchangeInfoView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./signedExchangeInfoView.css")} */`;
 
 // ../../front_end/panels/network/SignedExchangeInfoView.ts
-var { classMap: classMap4 } = Directives12;
+var { classMap: classMap5 } = Directives13;
 var UIStrings19 = {
   /**
    * @description Text for errors
@@ -17700,66 +17737,66 @@ var str_19 = i18n37.i18n.registerUIStrings("panels/network/SignedExchangeInfoVie
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW16 = (input, _output, target) => {
   if (!input) {
-    render18(nothing12, target);
+    render18(nothing13, target);
     return;
   }
   const { formatHeader, formatHeaderForHexData } = SignedExchangeInfoView;
-  const renderLeaf = (content) => html17`<li role="treeitem" selectable="false">${content}</li>`;
-  const renderCategory2 = (title, children) => html17`
+  const renderLeaf = (content) => html18`<li role="treeitem" selectable="false">${content}</li>`;
+  const renderCategory2 = (title, children) => html18`
     <li role="treeitem" toggle-on-click open selectable="false">
       ${title}
       <ul role="group">${children}</ul>
     </li>`;
   render18(
-    html17`
+    html18`
         <style>${signedExchangeInfoView_css_default}</style>
-        <devtools-tree dense class="signed-exchange-info-tree" .template=${html17`
+        <devtools-tree dense class="signed-exchange-info-tree" .template=${html18`
           <style>${signedExchangeInfoTree_css_default}</style>
           <ul role="tree">
             ${input.errors.length ? renderCategory2(
       i18nString18(UIStrings19.errors),
-      input.errors.map((errorMessage) => renderLeaf(html17`
+      input.errors.map((errorMessage) => renderLeaf(html18`
                   <devtools-icon name="cross-circle-filled" class="prompt-icon small"></devtools-icon><div
                       class="error-log">${errorMessage}</div>`))
-    ) : nothing12}
+    ) : nothing13}
             ${renderCategory2(
-      html17`<div class="header-name">${i18nString18(UIStrings19.signedHttpExchange)}</div><devtools-link
+      html18`<div class="header-name">${i18nString18(UIStrings19.signedHttpExchange)}</div><devtools-link
                     href="https://github.com/WICG/webpackage"
                     class="header-toggle devtools-link"
                     jslogcontext="learn-more">${i18nString18(UIStrings19.learnmore)}</devtools-link>`,
-      input.header ? html17`
-                  ${renderLeaf(html17`${formatHeader(i18nString18(UIStrings19.requestUrl), input.header.requestUrl)}${input.header.hasRedirectDestination ? html17`<devtools-link
+      input.header ? html18`
+                  ${renderLeaf(html18`${formatHeader(i18nString18(UIStrings19.requestUrl), input.header.requestUrl)}${input.header.hasRedirectDestination ? html18`<devtools-link
                           class="header-toggle devtools-link"
                           jslogcontext="redirect-destination-request"
-                          @click=${input.onViewRequest}>${i18n37.i18n.lockedString("View request")}</devtools-link>` : nothing12}`)}
+                          @click=${input.onViewRequest}>${i18n37.i18n.lockedString("View request")}</devtools-link>` : nothing13}`)}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.responseCode), input.header.responseCode))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.headerIntegrityHash), input.header.headerIntegrity))}
                   <li role="treeitem" open selectable="false">
                     ${formatHeader(i18nString18(UIStrings19.responseHeaders), "")}
-                    ${input.header.responseHeaders.length ? html17`
+                    ${input.header.responseHeaders.length ? html18`
                       <ul role="group">
                         ${input.header.responseHeaders.map((header) => renderLeaf(formatHeader(header.name, header.value)))}
                       </ul>
-                    ` : nothing12}
+                    ` : nothing13}
                   </li>
-                ` : nothing12
+                ` : nothing13
     )}
             ${(input.header?.signatures ?? []).map((signature) => renderCategory2(
       i18nString18(UIStrings19.signature),
-      html17`
+      html18`
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.label), signature.label))}
                   ${renderLeaf(formatHeaderForHexData(i18nString18(UIStrings19.signature), signature.signature, signature.hasSignatureError))}
-                  ${signature.certUrl ? renderLeaf(html17`
-                    ${formatHeader(i18nString18(UIStrings19.certificateUrl), signature.certUrl, signature.hasCertUrlError)}${signature.certificates ? html17`<devtools-link
+                  ${signature.certUrl ? renderLeaf(html18`
+                    ${formatHeader(i18nString18(UIStrings19.certificateUrl), signature.certUrl, signature.hasCertUrlError)}${signature.certificates ? html18`<devtools-link
                           class="devtools-link header-toggle"
                           jslogcontext="view-certificate"
-                          @click=${() => input.onViewCertificate(signature.certificates ?? [])}>${i18nString18(UIStrings19.viewCertificate)}</devtools-link>` : nothing12}`) : nothing12}
+                          @click=${() => input.onViewCertificate(signature.certificates ?? [])}>${i18nString18(UIStrings19.viewCertificate)}</devtools-link>` : nothing13}`) : nothing13}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.integrity), signature.integrity, signature.hasIntegrityError))}
                   ${signature.certSha256 ? renderLeaf(formatHeaderForHexData(
         i18nString18(UIStrings19.certificateSha),
         signature.certSha256,
         signature.hasCertSha256Error
-      )) : nothing12}
+      )) : nothing13}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.validityUrl), signature.validityUrl, signature.hasValidityUrlError))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.date), signature.date, signature.hasTimestampsError))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.expires), signature.expires, signature.hasTimestampsError))}
@@ -17767,13 +17804,13 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
     ))}
             ${input.securityDetails ? renderCategory2(
       i18nString18(UIStrings19.certificate),
-      html17`
+      html18`
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.subject), input.securityDetails.subjectName))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.validFrom), input.securityDetails.validFrom))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.validUntil), input.securityDetails.validUntil))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.issuer), input.securityDetails.issuer))}
                 `
-    ) : nothing12}
+    ) : nothing13}
           </ul>
         `}></devtools-tree>
       `,
@@ -17875,20 +17912,20 @@ var SignedExchangeInfoView = class extends UI20.Widget.VBox {
     );
   }
   static formatHeader(name, value, highlighted) {
-    return html17`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
+    return html18`<div class=${classMap5({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
         class="header-separator"></span><div
-        class=${classMap4({ "header-value": true, "source-code": true, "error-field": Boolean(highlighted) })}>${value}</div>`;
+        class=${classMap5({ "header-value": true, "source-code": true, "error-field": Boolean(highlighted) })}>${value}</div>`;
   }
   static formatHeaderForHexData(name, value, highlighted) {
-    return html17`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
+    return html18`<div class=${classMap5({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
         class="header-separator"></span><div
-        class=${classMap4({ "header-value": true, "source-code": true, "hex-data": true, "error-field": Boolean(highlighted) })}>${value.replace(/(.{2})/g, "$1 ")}</div>`;
+        class=${classMap5({ "header-value": true, "source-code": true, "hex-data": true, "error-field": Boolean(highlighted) })}>${value.replace(/(.{2})/g, "$1 ")}</div>`;
   }
 };
 
 // ../../front_end/panels/network/RequestPreviewView.ts
 var { widget: widget7 } = UI21.Widget;
-var { repeat: repeat4 } = Directives13;
+var { repeat: repeat4 } = Directives14;
 var UIStrings20 = {
   /**
    * @description Text in Request Preview View of the Network panel
@@ -17909,41 +17946,41 @@ var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var DEFAULT_VIEW17 = (input, _output, target) => {
   let previewTemplate;
   if (input.hasSignedExchange) {
-    previewTemplate = html18`${widget7(SignedExchangeInfoView, { request: input.request })}`;
+    previewTemplate = html19`${widget7(SignedExchangeInfoView, { request: input.request })}`;
   } else if (input.error !== null) {
-    previewTemplate = html18`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html19`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.failedToLoadResponseData),
       text: input.error
     })}`;
   } else if (input.parsedJSON) {
-    previewTemplate = html18`${widget7(SourceFrame2.JSONView.SearchableJsonView, { parsedJSON: input.parsedJSON })}`;
+    previewTemplate = html19`${widget7(SourceFrame2.JSONView.SearchableJsonView, { parsedJSON: input.parsedJSON })}`;
   } else if (input.htmlDataURL) {
-    previewTemplate = html18`${widget7(RequestHTMLView, { dataURL: input.htmlDataURL })}`;
+    previewTemplate = html19`${widget7(RequestHTMLView, { dataURL: input.htmlDataURL })}`;
   } else if (input.resourceType === Common17.ResourceType.resourceTypes.Image) {
-    previewTemplate = html18`${widget7(
+    previewTemplate = html19`${widget7(
       (element) => new SourceFrame2.ImageView.ImageView(input.mimeType, input.request, element),
       { showToolbar: true }
     )}`;
   } else if (input.resourceType === Common17.ResourceType.resourceTypes.Font) {
-    previewTemplate = html18`${widget7(
+    previewTemplate = html19`${widget7(
       (element) => new SourceFrame2.FontView.FontView(input.mimeType, input.request, element),
       { showToolbar: true }
     )}`;
   } else if (!input.isTextContent) {
-    previewTemplate = html18`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html19`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.previewNotAvailable),
       text: ""
     })}`;
   } else if (!input.hasTextContent) {
-    previewTemplate = html18`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html19`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.nothingToPreview),
       text: ""
     })}`;
   } else if (input.parsedXML) {
     const parsedXML = input.parsedXML;
-    previewTemplate = html18`${widget7((element) => SourceFrame2.XMLView.XMLView.createSearchableView(parsedXML, element))}`;
+    previewTemplate = html19`${widget7((element) => SourceFrame2.XMLView.XMLView.createSearchableView(parsedXML, element))}`;
   } else {
-    previewTemplate = html18`${widget7(
+    previewTemplate = html19`${widget7(
       (element) => new SourceFrame2.ResourceSourceFrame.SearchableContainer(
         input.request,
         input.highlighterType,
@@ -17952,12 +17989,12 @@ var DEFAULT_VIEW17 = (input, _output, target) => {
     )}`;
   }
   render19(
-    html18`${repeat4([input.request], (request) => request, () => previewTemplate)}`,
+    html19`${repeat4([input.request], (request) => request, () => previewTemplate)}`,
     target,
     {
       container: {
         attributes: {
-          jslog: `${VisualLogging14.pane("preview").track({ resize: true })}`
+          jslog: `${VisualLogging15.pane("preview").track({ resize: true })}`
         }
       }
     }
@@ -18098,7 +18135,7 @@ import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
 import * as Lit4 from "../../ui/lit/lit.js";
-var { html: html19, render: render20 } = Lit4;
+var { html: html20, render: render20 } = Lit4;
 var UIStrings21 = {
   /**
    * @description Text in Request Response View of the Network panel if no preview can be shown
@@ -18119,19 +18156,19 @@ var { widgetRef, widget: widget8 } = UI22.Widget;
 var DEFAULT_VIEW18 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils7.StreamingContentData.isError(input.contentData)) {
-    widgetTemplate = html19`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
+    widgetTemplate = html20`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.failedToLoadResponseData),
       input.contentData.error,
       element
     ))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widgetTemplate = html19`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
+    widgetTemplate = html20`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.noPreview),
       i18nString20(UIStrings21.thisRequestHasNoResponseData),
       element
     ))}`;
   } else if (input.renderAsText) {
-    widgetTemplate = html19`<devtools-widget ${widget8((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
+    widgetTemplate = html20`<devtools-widget ${widget8((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
       input.request,
       input.mimeType,
       element
@@ -18140,7 +18177,7 @@ var DEFAULT_VIEW18 = (input, output, target) => {
       output.revealPosition = widget10.revealPosition.bind(widget10);
     })}></devtools-widget>`;
   } else {
-    widgetTemplate = html19`${widget8((element) => new BinaryResourceView(
+    widgetTemplate = html20`${widget8((element) => new BinaryResourceView(
       input.contentData,
       input.request.url(),
       input.request.resourceType(),
@@ -18230,7 +18267,7 @@ import * as SDK15 from "../../core/sdk/sdk.js";
 import * as TextUtils10 from "../../core/text_utils/text_utils.js";
 import * as DataGrid8 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as Lit6 from "../../ui/lit/lit.js";
-import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/network/ResourceChunkView.ts
 import * as Common19 from "../../core/common/common.js";
@@ -18238,12 +18275,12 @@ import * as Host11 from "../../core/host/host.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
 import * as TextUtils9 from "../../core/text_utils/text_utils.js";
-import * as Buttons10 from "../../ui/components/buttons/buttons.js";
+import * as Buttons9 from "../../ui/components/buttons/buttons.js";
 import * as DataGrid6 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
 import * as Lit5 from "../../ui/lit/lit.js";
-import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/resourceChunkView.css.js
 var resourceChunkView_css_default = `/*
@@ -18304,7 +18341,7 @@ var resourceChunkView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./resourceChunkView.css")} */`;
 
 // ../../front_end/panels/network/ResourceChunkView.ts
-var { html: html20, render: render21, Directives: { ifDefined: ifDefined4 } } = Lit5;
+var { html: html21, render: render21, Directives: { ifDefined: ifDefined5 } } = Lit5;
 var UIStrings22 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -18359,7 +18396,7 @@ var str_22 = i18n43.i18n.registerUIStrings("panels/network/ResourceChunkView.ts"
 var i18nString21 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var i18nLazyString3 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
 function defaultHeaderTemplate() {
-  return html20`
+  return html21`
     <tr>
       <th id="data" weight="88">${i18nString21(UIStrings22.data)}</th>
       <th id="length" align="right" weight="5">${i18nString21(UIStrings22.length)}</th>
@@ -18368,13 +18405,13 @@ function defaultHeaderTemplate() {
 }
 var DEFAULT_VIEW19 = (input, _output, target) => {
   render21(
-    html20`
+    html21`
       <style>${resourceChunkView_css_default}</style>
       <div class="resource-chunk-view vbox">
-        <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging15.toolbar()}>
+        <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging16.toolbar()}>
           <devtools-button
               .data=${{
-      variant: Buttons10.Button.Variant.TOOLBAR,
+      variant: Buttons9.Button.Variant.TOOLBAR,
       iconName: "clear",
       title: i18nString21(UIStrings22.clearAll),
       jslogContext: "network.clear-all"
@@ -18386,11 +18423,11 @@ var DEFAULT_VIEW19 = (input, _output, target) => {
               class="chrome-select"
               aria-label=${i18nString21(UIStrings22.filter)}
               @change=${input.onFilterTypeChange}>
-            ${FILTER_TYPES.map((item4) => html20`
+            ${FILTER_TYPES.map((item4) => html21`
               <option
                   value=${item4.name}
                   .selected=${input.selectedFilterType === item4.name}
-                  jslog=${VisualLogging15.item(item4.name).track({ click: true })}
+                  jslog=${VisualLogging16.item(item4.name).track({ click: true })}
                   aria-label=${item4.label()}>
                 ${item4.label()}
               </option>
@@ -18409,12 +18446,12 @@ var DEFAULT_VIEW19 = (input, _output, target) => {
             <devtools-data-grid autoscroll name=${input.dataGridDisplayName} striped autofocus
                 resize="last"
                 @deselect=${input.onDeselect}
-                .template=${html20`
+                .template=${html21`
                   <style>${resourceChunkView_css_default}</style>
                   <table>
                     ${input.headerTemplate}
-                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html20`
-                      <tr class=${ifDefined4(row.cssClass)}
+                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html21`
+                      <tr class=${ifDefined5(row.cssClass)}
                           ?selected=${row.selected}
                           data-index=${row.index}
                           @select=${input.onSelect}
@@ -18426,9 +18463,9 @@ var DEFAULT_VIEW19 = (input, _output, target) => {
                         ${input.columns.map((col) => {
       const value = col.id === "time" ? row.timeText : row.item.data[col.id] ?? "";
       const title = col.id === "time" ? row.timeTooltip : void 0;
-      return html20`
-                              <td class="resource-chunk-view-td" title=${ifDefined4(title)}
-                                  data-value=${ifDefined4(typeof value === "string" ? value : void 0)}>
+      return html21`
+                              <td class="resource-chunk-view-td" title=${ifDefined5(title)}
+                                  data-value=${ifDefined5(typeof value === "string" ? value : void 0)}>
                                 ${value}
                               </td>`;
     })}
@@ -18438,11 +18475,11 @@ var DEFAULT_VIEW19 = (input, _output, target) => {
                 `}>
             </devtools-data-grid>
           </div>
-          <div slot="sidebar" class="vbox flex-auto" jslog=${VisualLogging15.pane("preview").track({ resize: true })}>
-            ${input.sidebarWidget ? html20`
+          <div slot="sidebar" class="vbox flex-auto" jslog=${VisualLogging16.pane("preview").track({ resize: true })}>
+            ${input.sidebarWidget ? html21`
               <devtools-widget class="vbox flex-auto">
                 ${input.sidebarWidget.element}
-              </devtools-widget>` : html20`
+              </devtools-widget>` : html21`
               <devtools-widget
                   ${UI23.Widget.widget(UI23.EmptyWidget.EmptyWidget, {
       header: i18nString21(UIStrings22.noMessageSelected),
@@ -18680,7 +18717,7 @@ var clearChunkOffsets = /* @__PURE__ */ new WeakMap();
 
 // ../../front_end/panels/network/ResourceDirectSocketChunkView.ts
 var {
-  html: html21
+  html: html22
 } = Lit6;
 var UIStrings23 = {
   /**
@@ -18716,7 +18753,7 @@ var str_23 = i18n45.i18n.registerUIStrings("panels/network/ResourceDirectSocketC
 var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var i18nLazyString4 = i18n45.i18n.getLazilyComputedLocalizedString.bind(void 0, str_23);
 function udpBoundHeaderTemplate() {
-  return html21`
+  return html22`
     <tr>
       <th id="data" weight="63">${i18nLazyString4(UIStrings23.data)}</th>
           <th id="address" align="right" weight="15">${i18nLazyString4(UIStrings23.address)}</th>
@@ -18739,7 +18776,7 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
       "resource-direct-socket-chunk-split-view-state",
       i18nString22(UIStrings23.directSocketChunk),
       i18nString22(UIStrings23.filterUsingRegex),
-      { jslog: `${VisualLogging16.pane("direct-socket-messages").track({ resize: true })}` }
+      { jslog: `${VisualLogging17.pane("direct-socket-messages").track({ resize: true })}` }
     );
   }
   get request() {
@@ -18911,7 +18948,7 @@ import * as i18n47 from "../../core/i18n/i18n.js";
 import * as Platform13 from "../../core/platform/platform.js";
 import * as SDK16 from "../../core/sdk/sdk.js";
 import * as TextUtils11 from "../../core/text_utils/text_utils.js";
-import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings24 = {
   /**
    * @description Text in Resource Web Socket Frame View of the Network panel. Displays which Opcode
@@ -18978,7 +19015,7 @@ var ResourceWebSocketFrameView = class extends ResourceChunkView {
       "resource-web-socket-frame-split-view-state",
       i18nString23(UIStrings24.webSocketFrame),
       i18nString23(UIStrings24.filterUsingRegex),
-      { jslog: `${VisualLogging17.pane("web-socket-messages").track({ resize: true })}` }
+      { jslog: `${VisualLogging18.pane("web-socket-messages").track({ resize: true })}` }
     );
   }
   get request() {
@@ -19254,10 +19291,10 @@ var UIStrings25 = {
 var str_25 = i18n49.i18n.registerUIStrings("panels/network/NetworkItemView.ts", UIStrings25);
 var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var DEFAULT_VIEW20 = (input, output, target) => {
-  render22(html22`
+  render22(html23`
     <devtools-tabbed-pane
       class="network-item-view flex-auto vbox"
-      .headerJslog=${`${VisualLogging18.toolbar("request-details").track({
+      .headerJslog=${`${VisualLogging19.toolbar("request-details").track({
     keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
   })}`}
       @select=${(e) => {
@@ -19268,173 +19305,173 @@ var DEFAULT_VIEW20 = (input, output, target) => {
       <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left">
         <dt-close-button style="margin: 0 5px;" @click=${input.onClose}></dt-close-button>
       </devtools-toolbar>
-      ${input.isDirectSocket ? html22`
+      ${input.isDirectSocket ? html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.connectionInfo)}
           tab-tooltip=${i18nString24(UIStrings25.connectionInfo)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION ? widget9(NetworkComponents2.DirectSocketConnectionView.DirectSocketConnectionView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION ? widget9(NetworkComponents2.DirectSocketConnectionView.DirectSocketConnectionView, { request: input.request }) : nothing14}
         </div>
-      ` : html22`
+      ` : html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.headers)}
           tab-tooltip=${i18nString24(UIStrings25.headers)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT ? html22`
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT ? html23`
             <devtools-widget
               ${widget9(RequestHeadersView, { request: input.request })}
               ${widgetRef2(RequestHeadersView, (w) => {
     output.revealHeader = w.revealHeader.bind(w);
   })}>
             </devtools-widget>
-          ` : nothing13}
+          ` : nothing14}
         </div>
-        ${input.hasOverriddenHeaders ? html22`
+        ${input.hasOverriddenHeaders ? html23`
           <div slot=${`suffix-${NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT}`} class="status-dot"
                title=${i18nString24(UIStrings25.containsOverriddenHeaders)}></div>
-        ` : nothing13}
+        ` : nothing14}
       `}
-      ${input.hasPayload ? html22`
+      ${input.hasPayload ? html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.payload)}
           tab-tooltip=${i18nString24(UIStrings25.payload)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD ? widget9(RequestPayloadView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PAYLOAD ? widget9(RequestPayloadView, { request: input.request }) : nothing14}
         </div>
-      ` : nothing13}
-      ${input.isWebSocket ? html22`
+      ` : nothing14}
+      ${input.isWebSocket ? html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.messages)}
           tab-tooltip=${i18nString24(UIStrings25.websocketMessages)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES ? widget9(ResourceWebSocketFrameView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES ? widget9(ResourceWebSocketFrameView, { request: input.request }) : nothing14}
         </div>
-      ` : input.isDirectSocket ? html22`
+      ` : input.isDirectSocket ? html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.messages)}
           tab-tooltip=${i18nString24(UIStrings25.directsocketMessages)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS ? widget9(ResourceDirectSocketChunkView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS ? widget9(ResourceDirectSocketChunkView, { request: input.request }) : nothing14}
         </div>
-      ` : input.isEventStream ? html22`
+      ` : input.isEventStream ? html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.eventstream)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE ? widget9(EventSourceMessagesView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.EVENT_SOURCE ? widget9(EventSourceMessagesView, { request: input.request }) : nothing14}
         </div>
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.response)}
           tab-tooltip=${i18nString24(UIStrings25.rawResponseData)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE ? html22`
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE ? html23`
             <devtools-widget
               ${widget9(RequestResponseView, { request: input.request })}
               ${widgetRef2(RequestResponseView, (w) => {
     output.revealResponseBody = w.revealPosition.bind(w);
   })}>
             </devtools-widget>
-          ` : nothing13}
+          ` : nothing14}
         </div>
-      ` : html22`
+      ` : html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.preview)}
           tab-tooltip=${i18nString24(UIStrings25.responsePreview)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW ? widget9(RequestPreviewView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW ? widget9(RequestPreviewView, { request: input.request }) : nothing14}
         </div>
-        ${input.hasSignedExchangeErrors ? html22`
+        ${input.hasSignedExchangeErrors ? html23`
           <devtools-icon slot=${`icon-${NetworkForward6.UIRequestLocation.UIRequestTabs.PREVIEW}`} class="small" name="cross-circle-filled"
                          title=${i18nString24(UIStrings25.signedexchangeError)}></devtools-icon>
-        ` : nothing13}
+        ` : nothing14}
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.response)}
           tab-tooltip=${i18nString24(UIStrings25.rawResponseData)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE ? html22`
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE ? html23`
             <devtools-widget
               ${widget9(RequestResponseView, { request: input.request })}
               ${widgetRef2(RequestResponseView, (w) => {
     output.revealResponseBody = w.revealPosition.bind(w);
   })}>
             </devtools-widget>
-          ` : nothing13}
+          ` : nothing14}
         </div>
-        ${input.hasOverriddenContent ? html22`
+        ${input.hasOverriddenContent ? html23`
           <div slot=${`suffix-${NetworkForward6.UIRequestLocation.UIRequestTabs.RESPONSE}`} class="status-dot"
                title=${i18nString24(UIStrings25.responseIsOverridden)}></div>
-        ` : nothing13}
+        ` : nothing14}
       `}
       <div
         id=${NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR}
         class="vbox flex-auto"
         label=${i18nString24(UIStrings25.initiator)}
         tab-tooltip=${i18nString24(UIStrings25.requestInitiatorCallStack)}
-        ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR)}>
-        ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR ? widget9(RequestInitiatorView, { request: input.request }) : nothing13}
+        ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR)}>
+        ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.INITIATOR ? widget9(RequestInitiatorView, { request: input.request }) : nothing14}
       </div>
       <div
         id=${NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING}
         class="vbox flex-auto"
         label=${i18nString24(UIStrings25.timing)}
         tab-tooltip=${i18nString24(UIStrings25.requestAndResponseTimeline)}
-        ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING)}>
-        ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING ? widget9(RequestTimingView, { request: input.request, calculator: input.calculator }) : nothing13}
+        ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING)}>
+        ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TIMING ? widget9(RequestTimingView, { request: input.request, calculator: input.calculator }) : nothing14}
       </div>
-      ${input.hasTrustTokens ? html22`
+      ${input.hasTrustTokens ? html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.trustTokens)}
           tab-tooltip=${i18nString24(UIStrings25.trustTokenOperationDetails)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS ? widget9(NetworkComponents2.RequestTrustTokensView.RequestTrustTokensView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS ? widget9(NetworkComponents2.RequestTrustTokensView.RequestTrustTokensView, { request: input.request }) : nothing14}
         </div>
-        ${input.hasUnsuccessfulTrustToken ? html22`
+        ${input.hasUnsuccessfulTrustToken ? html23`
           <devtools-icon slot=${`icon-${NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS}`} class="small" name="cross-circle-filled"></devtools-icon>
-        ` : nothing13}
-      ` : nothing13}
-      ${input.hasCookies ? html22`
+        ` : nothing14}
+      ` : nothing14}
+      ${input.hasCookies ? html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.cookies)}
           tab-tooltip=${i18nString24(UIStrings25.requestAndResponseCookies)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES ? widget9(RequestCookiesView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES ? widget9(RequestCookiesView, { request: input.request }) : nothing14}
         </div>
-        ${input.hasThirdPartyCookiePhaseoutIssue ? html22`
+        ${input.hasThirdPartyCookiePhaseoutIssue ? html23`
           <devtools-icon slot=${`suffix-${NetworkForward6.UIRequestLocation.UIRequestTabs.COOKIES}`} class="small" name="warning-filled"
                          title=${i18nString24(UIStrings25.thirdPartyPhaseout)}></devtools-icon>
-        ` : nothing13}
-      ` : nothing13}
-      ${input.hasDeviceBoundSessions ? html22`
+        ` : nothing14}
+      ` : nothing14}
+      ${input.hasDeviceBoundSessions ? html23`
         <div
           id=${NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS}
           class="vbox flex-auto"
           label=${i18nString24(UIStrings25.deviceBoundSessions)}
           tab-tooltip=${i18nString24(UIStrings25.deviceBoundSessions)}
-          ?selected=${Directives15.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS)}>
-          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS ? widget9(RequestDeviceBoundSessionsView, { request: input.request }) : nothing13}
+          ?selected=${Directives16.live(input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS)}>
+          ${input.selectedTab === NetworkForward6.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS ? widget9(RequestDeviceBoundSessionsView, { request: input.request }) : nothing14}
         </div>
-      ` : nothing13}
+      ` : nothing14}
     </devtools-tabbed-pane>
   `, target);
   target.querySelector("devtools-tabbed-pane")?.tabs;

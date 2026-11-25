@@ -304,6 +304,9 @@ export declare namespace MultitargetNetworkManager {
     const enum Events {
         BLOCKED_PATTERNS_CHANGED = "BlockedPatternsChanged",
         CONDITIONS_CHANGED = "ConditionsChanged",
+        /** Fired when the custom user agent changes (set from the Network Conditions panel). */
+        CUSTOM_USER_AGENT_CHANGED = "CustomUserAgentChanged",
+        /** Fired when the user agent changes (set from device emulation). */
         USER_AGENT_CHANGED = "UserAgentChanged",
         INTERCEPTORS_CHANGED = "InterceptorsChanged",
         REQUEST_INTERCEPTED = "RequestIntercepted",
@@ -312,6 +315,7 @@ export declare namespace MultitargetNetworkManager {
     interface EventTypes {
         [Events.BLOCKED_PATTERNS_CHANGED]: void;
         [Events.CONDITIONS_CHANGED]: void;
+        [Events.CUSTOM_USER_AGENT_CHANGED]: void;
         [Events.USER_AGENT_CHANGED]: void;
         [Events.INTERCEPTORS_CHANGED]: void;
         [Events.REQUEST_INTERCEPTED]: string;

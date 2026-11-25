@@ -5,8 +5,8 @@ import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 const NO_CPU_THROTTLING_RATE = 1;
 /**
- * Owns access to `CPUThrottlingManager` for `StateManager`: lists CPU throttling state, resets it, and reports
- * changes.
+ * Owns access to `CPUThrottlingManager` for `StateManager`: lists CPU throttling state, reveals it, resets it, and
+ * reports changes.
  */
 export class CPUThrottlingStateProvider extends Common.ObjectWrapper.ObjectWrapper {
     #cpuThrottlingManager;
@@ -22,6 +22,11 @@ export class CPUThrottlingStateProvider extends Common.ObjectWrapper.ObjectWrapp
     }
     allStates() {
         return [this.#toState()];
+    }
+    async reveal(kind) {
+        if (kind === "cpu-throttling" /* StateKind.CPU_THROTTLING */) {
+            await Common.Revealer.reveal(this.#cpuThrottlingManager);
+        }
     }
     reset(kind) {
         if (kind === "cpu-throttling" /* StateKind.CPU_THROTTLING */ &&

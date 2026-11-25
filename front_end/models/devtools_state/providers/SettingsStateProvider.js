@@ -9,7 +9,8 @@ const TRACKED_SETTINGS = [
 ];
 const TRACKED_SETTINGS_BY_NAME = new Map(TRACKED_SETTINGS.map(entry => [entry.descriptor.name, entry]));
 /**
- * Owns access to `Common.Settings` for `StateManager`: lists tracked settings, resets them, and reports changes.
+ * Owns access to `Common.Settings` for `StateManager`: lists tracked settings, reveals them, resets them, and reports
+ * changes.
  */
 export class SettingsStateProvider extends Common.ObjectWrapper.ObjectWrapper {
     #settings;
@@ -29,6 +30,13 @@ export class SettingsStateProvider extends Common.ObjectWrapper.ObjectWrapper {
     }
     allStates() {
         return TRACKED_SETTINGS.map(entry => this.#toState(entry));
+    }
+    async reveal(kind) {
+        for (const entry of TRACKED_SETTINGS) {
+            if (entry.kind === kind) {
+                await Common.Revealer.reveal(this.#settings.resolve(entry.descriptor));
+            }
+        }
     }
     reset(kind) {
         for (const entry of TRACKED_SETTINGS) {

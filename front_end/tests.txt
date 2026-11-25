@@ -722,6 +722,7 @@ panels/timeline/Initiators.test.js
 panels/timeline/ModificationsManager.test.js
 panels/timeline/RecordingMetadata.test.js
 panels/timeline/SaveFileFormatter.test.js
+panels/timeline/TargetForEvent.test.js
 panels/timeline/ThirdPartyTreeView.test.js
 panels/timeline/TimelineCommentContext.test.js
 panels/timeline/TimelineCommentController.test.js

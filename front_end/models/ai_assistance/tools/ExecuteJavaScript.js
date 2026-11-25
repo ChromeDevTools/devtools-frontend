@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import { JavascriptExecutor, MAX_OBSERVATION_BYTE_LENGTH } from '../agents/ExecuteJavascript.js';
+import { MAX_SERIALIZED_ELEMENT_UIDS } from '../EvaluateAction.js';
 import { isOriginAllowedByLock, } from './Tool.js';
 const lockedString = i18n.i18n.lockedString;
 const MAX_LINES = 40;
@@ -115,7 +116,7 @@ export class ExecuteJavaScriptTool {
 
 # Instructions
 
-* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`, and serialized output must not exceed ${MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
+* To return data, define a top-level \`data\` variable and populate it with data you want to get. JSON-serializable objects and DOM \`Element\` objects (directly or inside objects/arrays) can be assigned to \`data\`. Serialized DOM \`Element\` objects are prefixed with \`(uid=<backendNodeId>)\` (for example \`(uid=15) <div id="card">...</div>\`, up to ${MAX_SERIALIZED_ELEMENT_UIDS} elements per call), whose numeric \`uid\` can be passed to tools accepting numeric element \`uid\`s. Serialized output must not exceed ${MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
 * $0 refers to the currently selected DOM node (or document body if none selected).
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.

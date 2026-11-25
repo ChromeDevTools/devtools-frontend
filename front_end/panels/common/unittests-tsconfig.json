@@ -81,6 +81,9 @@
       "path": "../../core/platform/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
@@ -109,6 +112,9 @@
     },
     {
       "path": "../../models/logs/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/persistence/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../models/workspace/bundle-tsconfig.ref.json"

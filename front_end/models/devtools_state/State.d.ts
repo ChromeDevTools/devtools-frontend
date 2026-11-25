@@ -21,11 +21,13 @@ export interface EventTypes {
 }
 /**
  * Connects DevTools state (such as `Common.Settings`) to `StateManager`, so callers
- * can read, listen to, and reset states without depending on that state.
+ * can read, listen to, reveal, and reset states without depending on that state.
  */
 export interface StateProvider extends Common.EventTarget.EventTarget<EventTypes> {
     /** Returns all states owned by this provider, including states with default values. */
     allStates(): State[];
+    /** Reveals where `kind` is configured. Does nothing if this provider does not own `kind`. */
+    reveal(kind: StateKind): Promise<void>;
     /** Resets `kind` back to its default value. Does nothing if this provider does not own `kind`. */
     reset(kind: StateKind): void;
     /** Removes event listeners added by this provider. */

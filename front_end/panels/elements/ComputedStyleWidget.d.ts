@@ -1,3 +1,4 @@
+import '../../ui/legacy/components/inline_editor/inline_editor.js';
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -5,7 +6,7 @@ import * as ComputedStyleModule from '../../models/computed_style/computed_style
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type Category } from './PropertyNameCategories.js';
-type ComputedStyleData = {
+export type ComputedStyleData = {
     tag: 'property';
     propertyName: string;
     propertyValue: string;
@@ -19,18 +20,18 @@ type ComputedStyleData = {
     tag: 'category';
     name: string;
 };
-interface ComputedStyleWidgetInput {
+export interface ComputedStyleWidgetInput {
     computedStylesTree: TreeOutline.TreeOutline.TreeOutline<ComputedStyleData>;
     hasMatches: boolean;
     showInheritedComputedStylePropertiesSetting: Common.Settings.Setting<boolean>;
     groupComputedStylesSetting: Common.Settings.Setting<boolean>;
-    onFilterChanged: (event: CustomEvent<string>) => void;
+    onFilterChanged: (newFilterText: string) => void;
     filterText: string;
     filterIsRegex: boolean;
-    onRegexToggled: (event: CustomEvent<boolean>) => void;
+    onRegexToggled: (regexToggled: boolean) => void;
     includeToolbar: boolean;
 }
-type View = (input: ComputedStyleWidgetInput, output: null, target: HTMLElement) => void;
+export type View = (input: ComputedStyleWidgetInput, output: null, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class ComputedStyleWidget extends UI.Widget.VBox {
     #private;
@@ -69,4 +70,3 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     private filterAlphabeticalList;
     private filterGroupLists;
 }
-export {};

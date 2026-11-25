@@ -459,6 +459,16 @@ export class SearchableView extends VBox {
         this.#placeholder = placeholder;
         this.performUpdate();
     }
+    get searchAriaLabel() {
+        return this.#searchAriaLabel;
+    }
+    set searchAriaLabel(ariaLabel) {
+        if (this.#searchAriaLabel === ariaLabel) {
+            return;
+        }
+        this.#searchAriaLabel = ariaLabel;
+        this.requestUpdate();
+    }
     setReplaceable(replaceable) {
         this.replaceable = replaceable;
     }

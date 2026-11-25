@@ -2793,11 +2793,35 @@ __export(TargetForEvent_exports, {
   targetForEvent: () => targetForEvent
 });
 import * as SDK2 from "../../core/sdk/sdk.js";
+var WORKER_TARGET_TYPES = /* @__PURE__ */ new Set([
+  SDK2.Target.Type.Worker,
+  SDK2.Target.Type.SHARED_WORKER,
+  SDK2.Target.Type.ServiceWorker,
+  SDK2.Target.Type.WORKLET,
+  SDK2.Target.Type.AUCTION_WORKLET,
+  SDK2.Target.Type.NODE_WORKER
+]);
+function isWorkerTargetOfInspectedPage(target, targetManager) {
+  if (!WORKER_TARGET_TYPES.has(target.type())) {
+    return false;
+  }
+  const primaryPage = targetManager.primaryPageTarget();
+  for (let t = target; t; t = t.parentTarget()) {
+    if (t === primaryPage || t === targetManager.rootTarget()) {
+      return true;
+    }
+  }
+  return false;
+}
 function targetForEvent(parsedTrace, event) {
   const targetManager = SDK2.TargetManager.TargetManager.instance();
   const workerId = parsedTrace.data.Workers.workerIdByThread.get(event.tid);
   if (workerId) {
-    return targetManager.targetById(workerId);
+    const target = targetManager.targetById(workerId);
+    if (target && isWorkerTargetOfInspectedPage(target, targetManager)) {
+      return target;
+    }
+    return null;
   }
   return targetManager.primaryPageTarget();
 }
@@ -3425,6 +3449,7 @@ var TimelinePanel_exports = {};
 __export(TimelinePanel_exports, {
   ActionDelegate: () => ActionDelegate,
   BottomUpProfileRevealer: () => BottomUpProfileRevealer,
+  CPUThrottlingRevealer: () => CPUThrottlingRevealer,
   CoreVitalsRevealer: () => CoreVitalsRevealer,
   DEFAULT_SETTINGS_PANE_VIEW: () => DEFAULT_SETTINGS_PANE_VIEW,
   EventRevealer: () => EventRevealer,
@@ -5940,16 +5965,16 @@ var SystemInfo;
     ImageType2["Unknown"] = "unknown";
   })(ImageType = SystemInfo2.ImageType || (SystemInfo2.ImageType = {}));
 })(SystemInfo || (SystemInfo = {}));
-var Target;
-((Target3) => {
+var Target2;
+((Target4) => {
   let WindowState;
   ((WindowState2) => {
     WindowState2["Normal"] = "normal";
     WindowState2["Minimized"] = "minimized";
     WindowState2["Maximized"] = "maximized";
     WindowState2["Fullscreen"] = "fullscreen";
-  })(WindowState = Target3.WindowState || (Target3.WindowState = {}));
-})(Target || (Target = {}));
+  })(WindowState = Target4.WindowState || (Target4.WindowState = {}));
+})(Target2 || (Target2 = {}));
 var Tracing;
 ((Tracing7) => {
   let TraceConfigRecordMode;
@@ -6315,6 +6340,7 @@ import { Directives as Directives3, html as html5, nothing as nothing4, render a
 import * as SettingUIRegistration2 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "../mobile_throttling/mobile_throttling.js";
+import * as PanelUtils from "../utils/utils.js";
 
 // ../../front_end/panels/timeline/ActiveFilters.ts
 var instance = null;
@@ -10267,7 +10293,13 @@ function renderSettingsPane(input, output) {
           jslog=${VisualLogging5.pane("timeline-settings-pane").track({ resize: true })}>
         <div>
           ${i18nString17(UIStrings17.cpu)}
-          <select ${widget2(MobileThrottling2.CPUThrottlingSelector.CPUThrottlingSelector)}></select>
+          <select ${widget2(MobileThrottling2.CPUThrottlingSelector.CPUThrottlingSelector)}
+              ${ref3((el) => {
+    output.focusAndHighlightCPUThrottling = el instanceof HTMLSelectElement ? () => {
+      el.focus();
+      PanelUtils.PanelUtils.highlightElement(el);
+    } : void 0;
+  })}></select>
         </div>
         <devtools-checkbox title=${i18nString17(UIStrings17.capturesSelectorStats)}
             .ariaLabel=${input.captureSelectorStatsTitle || i18nString17(UIStrings17.capturesSelectorStats)}
@@ -11421,6 +11453,15 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
         });
       }
     }
+  }
+  async revealCPUThrottling() {
+    if (this.#isNode || !this.canRecord()) {
+      return;
+    }
+    this.showSettingsPaneSetting.set(true);
+    this.updateSettingsPaneVisibility();
+    await this.updateComplete;
+    this.#settingsPaneOutput.focusAndHighlightCPUThrottling?.();
   }
   revealParsedTrace(revealable) {
     const index = this.model.indexForTrace(revealable.parsedTrace);
@@ -12731,6 +12772,12 @@ var ProfileFinishedRevealer = class _ProfileFinishedRevealer {
     _ProfileFinishedRevealer.#consoleProfilePromiseChain = taskPromise.catch(() => {
     });
     return await taskPromise;
+  }
+};
+var CPUThrottlingRevealer = class {
+  async reveal() {
+    await UI9.ViewManager.ViewManager.instance().showView("timeline");
+    await TimelinePanel.instance().revealCPUThrottling();
   }
 };
 var ActionDelegate = class {
@@ -20359,7 +20406,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
    * Defaults to undefined which indicates the user has not searched.
    */
   searchResults = void 0;
-  eventListeners;
   networkSplitWidget;
   mainDataProvider;
   mainFlameChart;
@@ -20449,7 +20495,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     this.registerRequiredCSS(timelineFlameChartView_css_default);
     this.element.classList.add("timeline-flamechart");
     this.delegate = delegate;
-    this.eventListeners = [];
     this.#parsedTrace = null;
     const flameChartsContainer = new UI18.Widget.VBox();
     flameChartsContainer.element.classList.add("flame-charts-container");
@@ -21291,7 +21336,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       return;
     }
     this.#selectedGroupName = null;
-    Common16.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
     this.#entityMapper = new Trace34.EntityMapper.EntityMapper(this.#parsedTrace);
     this.mainDataProvider.setModel(this.#parsedTrace, this.#entityMapper);

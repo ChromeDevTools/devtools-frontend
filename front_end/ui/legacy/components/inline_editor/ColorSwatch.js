@@ -42,7 +42,7 @@ export class ColorSwatch extends HTMLElement {
     shadow = this.attachShadow({ mode: 'open' });
     tooltip = i18nString(UIStrings.shiftclickToChangeColorFormat);
     #color = null;
-    readonly = false;
+    #readonly = false;
     constructor(tooltip) {
         super();
         if (tooltip) {
@@ -54,11 +54,18 @@ export class ColorSwatch extends HTMLElement {
     static isColorSwatch(element) {
         return element.localName === 'devtools-color-swatch';
     }
+    /** Whether clicking the swatch is ignored instead of opening the color editor. */
+    get readonly() {
+        return this.#readonly;
+    }
+    set readonly(readonly) {
+        this.setReadonly(readonly);
+    }
     setReadonly(readonly) {
-        if (this.readonly === readonly) {
+        if (this.#readonly === readonly) {
             return;
         }
-        this.readonly = readonly;
+        this.#readonly = readonly;
         if (this.#color) {
             this.renderColor(this.#color);
         }
@@ -84,7 +91,7 @@ export class ColorSwatch extends HTMLElement {
         this.#color = color;
         const colorSwatchClasses = Lit.Directives.classMap({
             'color-swatch': true,
-            readonly: this.readonly,
+            readonly: this.#readonly,
         });
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
@@ -104,7 +111,7 @@ export class ColorSwatch extends HTMLElement {
         // clang-format on
     }
     onActivate(e) {
-        if (this.readonly) {
+        if (this.#readonly) {
             return;
         }
         if ((e instanceof KeyboardEvent && e.key !== 'Enter' && e.key !== ' ') ||

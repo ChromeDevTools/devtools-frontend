@@ -15322,6 +15322,7 @@ __export(ComputedStyleWidget_exports, {
   ComputedStyleWidget: () => ComputedStyleWidget,
   DEFAULT_VIEW: () => DEFAULT_VIEW6
 });
+import "../../ui/legacy/components/inline_editor/inline_editor.js";
 import "../../ui/legacy/legacy.js";
 import * as Common7 from "../../core/common/common.js";
 import * as i18n20 from "../../core/i18n/i18n.js";
@@ -15329,7 +15330,6 @@ import * as Platform6 from "../../core/platform/platform.js";
 import * as SDK9 from "../../core/sdk/sdk.js";
 import * as ComputedStyleModule from "../../models/computed_style/computed_style.js";
 import * as TreeOutline7 from "../../ui/components/tree_outline/tree_outline.js";
-import * as InlineEditor4 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
 import { html as html12, nothing as nothing7, render as render9 } from "../../ui/lit/lit.js";
@@ -15652,20 +15652,18 @@ var createPropertyElement = (node, cache, propertyName, propertyValue, traceable
       }
     }
   })}
-        @oncontextmenu=${onContextMenu}>
+        @contextmenu=${onContextMenu}>
           ${name}
           ${value5}
       </devtools-widget>`;
 };
-var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, linkifier) => {
-  const trace = new ElementsComponents5.ComputedStyleTrace.ComputedStyleTrace();
+var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, linkifier, onContextMenu) => {
   const valueElement = Renderer.renderValueElement(
     property,
     matchProperty(property.name, property.value),
     [new ColorRenderer2(), new URLRenderer(null, node), new StringRenderer()]
   );
   valueElement.slot = "trace-value";
-  trace.appendChild(valueElement);
   const rule = property.ownerStyle.parentRule;
   let ruleOriginNode;
   if (rule) {
@@ -15679,13 +15677,16 @@ var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, l
   } else if (property.ownerStyle.type === SDK9.CSSStyleDeclaration.Type.Transition) {
     selector = "transitions style";
   }
-  trace.data = {
+  return html12`<devtools-computed-style-trace
+        .data=${{
     selector,
     active: !isPropertyOverloaded,
     onNavigateToSource: navigateToSource.bind(null, property),
     ruleOriginNode
-  };
-  return trace;
+  }}
+        @contextmenu=${onContextMenu}>
+          ${valueElement}
+      </devtools-computed-style-trace>`;
 };
 var ColorRenderer2 = class extends rendererBase(SDK9.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
@@ -15694,10 +15695,10 @@ var ColorRenderer2 = class extends rendererBase(SDK9.CSSPropertyParserMatchers.C
     if (!color) {
       return html12`${match.text}`;
     }
-    const swatch = new InlineEditor4.ColorSwatch.ColorSwatch();
-    swatch.setReadonly(true);
-    swatch.renderColor(color);
-    return html12`${swatch}<span>${match.text}</span>`;
+    return html12`<devtools-color-swatch
+      .color=${color}
+      .readonly=${true}
+    ></devtools-color-swatch><span>${match.text}</span>`;
   }
   matcher() {
     return new SDK9.CSSPropertyParserMatchers.ColorMatcher();
@@ -15719,8 +15720,8 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
             ?regex=${true}
             ?regex-toggled=${input.filterIsRegex}
             value=${input.filterText}
-            @change=${input.onFilterChanged}
-            @regextoggle=${input.onRegexToggled}
+            @change=${(event) => input.onFilterChanged(event.detail)}
+            @regextoggle=${(event) => input.onRegexToggled(event.detail)}
           ></devtools-toolbar-input>
           <devtools-checkbox
             title=${i18nString10(UIStrings10.showAll)}
@@ -15734,8 +15735,8 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       </div>
       ` : nothing7}
     ${input.computedStylesTree}
-    ${!input.hasMatches ? html12`<div class="gray-info-message">${i18nString10(UIStrings10.noMatchingProperty)}</div>` : ""}
-  `, target);
+    ${!input.hasMatches ? html12`<div class="gray-info-message">${i18nString10(UIStrings10.noMatchingProperty)}</div>` : nothing7}
+  `, target, { container: { classes: ["styles-sidebar-computed-style-widget"] } });
 };
 var ComputedStyleWidget = class extends UI13.Widget.VBox {
   /**
@@ -15785,7 +15786,6 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
   constructor(element, view = DEFAULT_VIEW6) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.contentElement.classList.add("styles-sidebar-computed-style-widget");
     this.showInheritedComputedStylePropertiesSetting = Common7.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
     this.groupComputedStylesSetting = Common7.Settings.Settings.instance().createSetting("group-computed-styles", false);
     this.filterRegex = null;
@@ -16031,12 +16031,14 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
       }
       if (data.tag === "traceElement") {
         const isPropertyOverloaded = matchedStyles.propertyState(data.property) === SDK9.CSSMatchedStyles.PropertyState.OVERLOADED;
-        const traceElement = createTraceElement(domNode, data.property, isPropertyOverloaded, matchedStyles, this.linkifier);
-        traceElement.addEventListener(
-          "contextmenu",
+        return createTraceElement(
+          domNode,
+          data.property,
+          isPropertyOverloaded,
+          matchedStyles,
+          this.linkifier,
           this.handleContextMenuEvent.bind(this, matchedStyles, data.property)
         );
-        return html12`${traceElement}`;
       }
       return html12`<span style="cursor: text; color: var(--sys-color-on-surface-subtle);">${data.name}</span>`;
     };
@@ -16096,18 +16098,18 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
     }
     return new RegExp(Platform6.StringUtilities.escapeForRegExp(text), "i");
   }
-  async onRegexToggled(event) {
-    this.#filterIsRegex = event.detail;
+  async onRegexToggled(regexToggled) {
+    this.#filterIsRegex = regexToggled;
     this.requestUpdate();
     await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
   }
-  async onFilterChanged(event) {
-    this.#filterText = event.detail;
-    await this.filterComputedStyles(this.#buildFilterRegex(event.detail));
-    if (event.detail && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
+  async onFilterChanged(newFilterText) {
+    this.#filterText = newFilterText;
+    await this.filterComputedStyles(this.#buildFilterRegex(newFilterText));
+    if (newFilterText && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
       UI13.ARIAUtils.LiveAnnouncer.alert(i18nString10(
         UIStrings10.filterUpdateAriaText,
-        { PH1: event.detail, PH2: this.#computedStylesTree.data.tree.length }
+        { PH1: newFilterText, PH2: this.#computedStylesTree.data.tree.length }
       ));
     }
   }
@@ -26795,7 +26797,7 @@ __export(StandaloneStylesContainer_exports, {
 });
 import * as Common19 from "../../core/common/common.js";
 import * as ComputedStyle4 from "../../models/computed_style/computed_style.js";
-import * as InlineEditor5 from "../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as InlineEditor4 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components7 from "../../ui/legacy/components/utils/utils.js";
 import * as UI27 from "../../ui/legacy/legacy.js";
 import { html as html24, render as render20 } from "../../ui/lit/lit.js";
@@ -26832,7 +26834,7 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   #webCustomData;
   userOperation = false;
   #sections = [];
-  #swatchPopoverHelper = new InlineEditor5.SwatchPopoverHelper.SwatchPopoverHelper();
+  #swatchPopoverHelper = new InlineEditor4.SwatchPopoverHelper.SwatchPopoverHelper();
   #computedStyleModelInternal = new ComputedStyle4.ComputedStyleModel.ComputedStyleModel();
   #view;
   #filter = null;

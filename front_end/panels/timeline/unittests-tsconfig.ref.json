@@ -22,6 +22,7 @@
     "../../../../../../front_end/panels/timeline/ModificationsManager.test.ts",
     "../../../../../../front_end/panels/timeline/RecordingMetadata.test.ts",
     "../../../../../../front_end/panels/timeline/SaveFileFormatter.test.ts",
+    "../../../../../../front_end/panels/timeline/TargetForEvent.test.ts",
     "../../../../../../front_end/panels/timeline/ThirdPartyTreeView.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineCommentContext.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineCommentController.test.ts",
@@ -139,6 +140,9 @@
     },
     {
       "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../utils/bundle-tsconfig.ref.json"
     },
     {
       "path": "components/bundle-tsconfig.ref.json"

@@ -4,6 +4,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Extensions from '../../models/extensions/extensions.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ExtensionSidebarPane } from './ExtensionPanel.js';
 declare global {
@@ -118,6 +119,12 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private extensionAllowedOnURL;
     private extensionAllowedOnScript;
     /**
+     * Local Overrides files live in `<overrides>/<host>/...`. Their PersistenceBinding to the network
+     * UISourceCode can be missing (not bound yet, already unbound, or a `.headers` file), so also check
+     * the host from the path. The scheme isn't stored in the path, so both http and https must be allowed.
+     */
+    private extensionAllowedOnOverrideFile;
+    /**
      * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
      * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
      * long as the corresponding target and the embedder name (if it is a URL) are permitted.
@@ -152,11 +159,12 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     onForwardKeyboardEventForTest(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record | undefined;
     private dispatchCallback;
     private initExtensions;
+    private isAttachedUISourceCode;
     private notifyResourceAdded;
     private notifyUISourceCodeContentCommitted;
     private notifyRequestFinished;
     private notifyElementsSelectionChanged;
-    sourceSelectionChanged(url: Platform.DevToolsPath.UrlString, range: TextUtils.TextRange.TextRange): void;
+    sourceSelectionChanged(uiSourceCode: Workspace.UISourceCode.UISourceCode, range: TextUtils.TextRange.TextRange, displayedUISourceCode?: Workspace.UISourceCode.UISourceCode): void;
     private setInspectedTabId;
     addExtensionFrame(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): void;
     addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean | undefined;

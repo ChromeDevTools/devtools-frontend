@@ -1,5 +1,10 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import { type GetErrorStackOutput } from './DOMHelpers.js';
+/**
+ * Caps concurrent `DOM.describeNode` CDP calls and retained element
+ * `RemoteObject` handles per evaluation.
+ */
+export declare const MAX_SERIALIZED_ELEMENT_UIDS = 50;
 export declare function formatError(message: string): string;
 export declare class SideEffectError extends Error {
 }

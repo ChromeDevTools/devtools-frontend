@@ -73,6 +73,50 @@ function ensureWidgetCreated() {
  * focus to. The value is a `SelectableKind`, or empty for a focusable element.
  */
 const SELECTABLE_ATTRIBUTE = 'data-console-selectable';
+function tokenizeMessageText(string) {
+    const { tokenizerRegexes, tokenizerTypes } = getOrCreateTokenizers();
+    if (string.length > getMaxTokenizableStringLength()) {
+        return [{ text: string, type: undefined }];
+    }
+    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(string, tokenizerRegexes);
+    return results.map(result => ({ text: result.value, type: tokenizerTypes[result.regexIndex] }));
+}
+function tokenizeAndLinkify(string, linkifier) {
+    const nodes = [];
+    const tokens = tokenizeMessageText(string);
+    let isBlob = false;
+    for (const token of tokens) {
+        if (!token.text) {
+            continue;
+        }
+        if (isBlob) {
+            token.text = `blob:${token.text}`;
+            isBlob = !isBlob;
+        }
+        if (token.text === '\'blob:' && token === tokens[0]) {
+            isBlob = true;
+            token.text = '\'';
+        }
+        switch (token.type) {
+            case 'url': {
+                const realURL = (token.text.startsWith('www.') ? 'http://' + token.text : token.text);
+                const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(realURL);
+                const sourceURL = Common.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(splitResult.url);
+                if (splitResult) {
+                    nodes.push(linkifier(token.text, sourceURL, splitResult.lineNumber, splitResult.columnNumber));
+                }
+                else {
+                    nodes.push(linkifier(token.text, Platform.DevToolsPath.EmptyUrlString));
+                }
+                break;
+            }
+            default:
+                nodes.push(token.text);
+                break;
+        }
+    }
+    return nodes;
+}
 var SelectableKind;
 (function (SelectableKind) {
     /** The element hosts a widget whose `linkElements` are selectable. */
@@ -1425,7 +1469,7 @@ export class ConsoleViewMessage {
                             wrapper.style.setProperty('contain', 'paint');
                             wrapper.style.setProperty('display', 'inline-block');
                             wrapper.style.setProperty('max-width', '100%');
-                            render(html `${this.linkifyStringAsFragment(lines[i])}`, wrapper);
+                            render(this.linkifyStringAsFragment(lines[i]), wrapper);
                             for (const [property, { value, priority }] of currentStyle) {
                                 wrapper.style.setProperty(property, value, priority);
                             }
@@ -2024,39 +2068,8 @@ export class ConsoleViewMessage {
             return propertyValue;
         }
         const container = document.createDocumentFragment();
-        const tokens = ConsoleViewMessage.tokenizeMessageText(string);
-        let isBlob = false;
-        for (const token of tokens) {
-            if (!token.text) {
-                continue;
-            }
-            if (isBlob) {
-                token.text = `blob:${token.text}`;
-                isBlob = !isBlob;
-            }
-            if (token.text === '\'blob:' && token === tokens[0]) {
-                isBlob = true;
-                token.text = '\'';
-            }
-            switch (token.type) {
-                case 'url': {
-                    const realURL = (token.text.startsWith('www.') ? 'http://' + token.text : token.text);
-                    const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(realURL);
-                    const sourceURL = Common.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(splitResult.url);
-                    let linkNode;
-                    if (splitResult) {
-                        linkNode = linkifier(token.text, sourceURL, splitResult.lineNumber, splitResult.columnNumber);
-                    }
-                    else {
-                        linkNode = linkifier(token.text, Platform.DevToolsPath.EmptyUrlString);
-                    }
-                    container.appendChild(linkNode);
-                    break;
-                }
-                default:
-                    container.appendChild(document.createTextNode(token.text));
-                    break;
-            }
+        for (const item of tokenizeAndLinkify(string, linkifier)) {
+            container.appendChild(typeof item === 'string' ? document.createTextNode(item) : item);
         }
         return container;
     }
@@ -2087,21 +2100,8 @@ export class ConsoleViewMessage {
             })}`;
         }
         const initiatorId = () => this.initiatorId();
-        return ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
-            const options = { text, lineNumber, columnNumber, initiatorId };
-            const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
-            linkElement.tabIndex = -1;
-            linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
-            return linkElement;
-        });
-    }
-    static tokenizeMessageText(string) {
-        const { tokenizerRegexes, tokenizerTypes } = getOrCreateTokenizers();
-        if (string.length > getMaxTokenizableStringLength()) {
-            return [{ text: string, type: undefined }];
-        }
-        const results = TextUtils.TextUtils.Utils.splitStringByRegexes(string, tokenizerRegexes);
-        return results.map(result => ({ text: result.value, type: tokenizerTypes[result.regexIndex] }));
+        const parts = tokenizeAndLinkify(string, (text, url, lineNumber, columnNumber) => Components.Linkifier.Linkifier.renderLinkifiedUrl(url, { text, lineNumber, columnNumber, initiatorId, onRef: link => link.setAttribute(SELECTABLE_ATTRIBUTE, '') }));
+        return html `${parts}`;
     }
     groupKey() {
         if (!this.groupKeyInternal) {
@@ -2110,7 +2110,7 @@ export class ConsoleViewMessage {
         return this.groupKeyInternal;
     }
     groupTitle() {
-        const tokens = ConsoleViewMessage.tokenizeMessageText(this.message.messageText);
+        const tokens = tokenizeMessageText(this.message.messageText);
         const result = tokens.reduce((acc, token) => {
             let text = token.text;
             if (token.type === 'url') {

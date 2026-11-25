@@ -2385,6 +2385,14 @@ function instantiateWidget(element, widgetConfig2) {
   return newWidget;
 }
 var trackerDetachingWidgets = /* @__PURE__ */ new WeakSet();
+function detachWidgetWithoutRemovingElementFromDOM(widget2) {
+  trackerDetachingWidgets.add(widget2);
+  try {
+    widget2.detach();
+  } finally {
+    trackerDetachingWidgets.delete(widget2);
+  }
+}
 function setUpLifecycleTracking(element) {
   let tracker;
   if (element instanceof WidgetElement) {
@@ -2400,12 +2408,7 @@ function setUpLifecycleTracking(element) {
     }
     const widget2 = Widget.get(element);
     if (widget2) {
-      trackerDetachingWidgets.add(widget2);
-      try {
-        widget2.detach();
-      } finally {
-        trackerDetachingWidgets.delete(widget2);
-      }
+      detachWidgetWithoutRemovingElementFromDOM(widget2);
     }
   };
   tracker.onConnect = () => {
@@ -2439,6 +2442,9 @@ var WidgetElement = class extends HTMLElement {
   }
   controlsChildWidget(_child) {
     return false;
+  }
+  resizerElement() {
+    return this;
   }
   connectedCallback() {
     if (this.#disconnectTimeout) {
@@ -2989,7 +2995,11 @@ var Widget = class _Widget {
   detachChildWidgets() {
     const children = this.#children.slice();
     for (let i = 0; i < children.length; ++i) {
-      children[i].detach();
+      if (widgetConfigs.has(children[i].element)) {
+        detachWidgetWithoutRemovingElementFromDOM(children[i]);
+      } else {
+        children[i].detach();
+      }
     }
   }
   elementsToRestoreScrollPositionsFor() {
@@ -4062,6 +4072,7 @@ var SplitWidget = class extends SplitWidgetBase {
   #showMode = "Both" /* BOTH */;
   #savedShowMode;
   #autoAdjustOrientation = false;
+  #noDefaultSplitter = false;
   #zoomManager = ZoomManager.instance();
   constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip, element) {
     super(element, { useShadowDom: true });
@@ -4329,7 +4340,7 @@ var SplitWidget = class extends SplitWidgetBase {
     this.#cancelAnimation();
     this.#mainElement.classList.remove("maximized", "hidden");
     this.#sidebarElement.classList.remove("maximized", "hidden");
-    this.#resizerElement.classList.remove("hidden");
+    this.#resizerElement.classList.toggle("hidden", this.#noDefaultSplitter);
     this.setResizable(true);
     this.suspendInvalidations();
     if (this.#sidebarWidget) {
@@ -4615,9 +4626,10 @@ var SplitWidget = class extends SplitWidgetBase {
     this.#resizeStartSizeDIP = 0;
   }
   hideDefaultResizer(noSplitter) {
-    this.#resizerElement.classList.toggle("hidden", Boolean(noSplitter));
+    this.#noDefaultSplitter = Boolean(noSplitter);
+    this.#resizerElement.classList.toggle("hidden", this.#showMode !== "Both" /* BOTH */ || this.#noDefaultSplitter);
     this.uninstallResizer(this.#resizerElement);
-    this.#sidebarElement.classList.toggle("no-default-splitter", Boolean(noSplitter));
+    this.#sidebarElement.classList.toggle("no-default-splitter", this.#noDefaultSplitter);
   }
   installResizer(resizerElement) {
     this.#resizerWidget.addElement(resizerElement);
@@ -4630,6 +4642,29 @@ var SplitWidget = class extends SplitWidgetBase {
       this.installResizer(resizer2);
     } else {
       this.uninstallResizer(resizer2);
+    }
+  }
+  setCustomResizers(elements, noSplitter = false) {
+    if (elements === null) {
+      for (const el of this.#resizerWidget.elements()) {
+        if (el !== this.#resizerElement) {
+          this.uninstallResizer(el);
+        }
+      }
+      this.#noDefaultSplitter = false;
+      this.#resizerElement.classList.toggle("hidden", this.#showMode !== "Both" /* BOTH */);
+      this.#sidebarElement.classList.remove("no-default-splitter");
+      this.installResizer(this.#resizerElement);
+      return;
+    }
+    this.hideDefaultResizer(noSplitter);
+    for (const el of this.#resizerWidget.elements()) {
+      if (!elements.includes(el)) {
+        this.uninstallResizer(el);
+      }
+    }
+    for (const el of elements) {
+      this.installResizer(el);
     }
   }
   #settingForOrientation() {
@@ -4747,10 +4782,13 @@ var SplitWidget = class extends SplitWidgetBase {
   }
 };
 var SplitWidgetElement = class extends WidgetElement {
-  static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "show"];
+  static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "show", "resizer", "no-splitter"];
+  #resizerObserver = new MutationObserver(() => this.#syncResizers());
+  #hasCustomResizers = false;
   constructor() {
     super();
     registerWidgetConfig(this, widgetConfig((element) => {
+      const splitElement = element;
       const vertical = element.getAttribute("direction") === "column";
       const autoAdjustOrientation = element.getAttribute("direction") === "auto";
       const secondIsSidebar = element.getAttribute("sidebar-position") === "second";
@@ -4768,7 +4806,7 @@ var SplitWidgetElement = class extends WidgetElement {
         defaultSidebarWidth,
         defaultSidebarHeight,
         element.hasAttribute("constraints-in-dip"),
-        element
+        splitElement
       );
       if (element.getAttribute("sidebar-initial-size") === "minimized") {
         widget2.setSidebarMinimized(true);
@@ -4782,13 +4820,74 @@ var SplitWidgetElement = class extends WidgetElement {
       } else if (show === "sidebar") {
         widget2.hideMain();
       }
+      splitElement.#syncResizers(widget2);
       widget2.addEventListener("ShowModeChanged" /* SHOW_MODE_CHANGED */, () => {
         element.dispatchEvent(new CustomEvent("change", { detail: widget2.showMode() }));
       });
       return widget2;
     }));
   }
+  connectedCallback() {
+    super.connectedCallback();
+    this.#updateResizerObserver();
+    this.#syncResizers();
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.#resizerObserver.disconnect();
+  }
+  #updateResizerObserver() {
+    this.#resizerObserver.disconnect();
+    if (this.isConnected && this.hasAttribute("resizer")) {
+      this.#resizerObserver.observe(this, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ["id"]
+      });
+    }
+  }
+  #syncResizers(widget2 = Widget.get(this)) {
+    if (!widget2) {
+      return;
+    }
+    const resizerAttr = this.getAttribute("resizer");
+    if (resizerAttr === null) {
+      if (this.#hasCustomResizers) {
+        this.#hasCustomResizers = false;
+        widget2.setCustomResizers(null);
+      }
+      return;
+    }
+    this.#hasCustomResizers = true;
+    const ids = resizerAttr.split(/\s+/).filter(Boolean);
+    const root = this.getRootNode();
+    const parentSplit = this.parentElement?.closest("devtools-split-view") ?? null;
+    const elements = [];
+    for (const id2 of ids) {
+      const selector = `#${CSS.escape(id2)}`;
+      let match = this.querySelector(selector);
+      if (match && match.closest("devtools-split-view") !== this) {
+        match = null;
+      }
+      if (!match && (root instanceof Document || root instanceof ShadowRoot || root instanceof Element)) {
+        const candidate = root.querySelector(selector);
+        if (candidate && candidate.closest("devtools-split-view") === parentSplit) {
+          match = candidate;
+        }
+      }
+      if (match) {
+        elements.push(match instanceof WidgetElement ? match.resizerElement() : match);
+      }
+    }
+    widget2.setCustomResizers(elements, this.hasAttribute("no-splitter"));
+  }
   attributeChangedCallback(name, _oldValue, newValue) {
+    if (name === "resizer" || name === "no-splitter") {
+      this.#updateResizerObserver();
+      this.#syncResizers();
+      return;
+    }
     const widget2 = Widget.get(this);
     if (!widget2) {
       return;
@@ -6948,6 +7047,10 @@ var TabbedPaneElement = class extends WidgetElement {
     } else if (name === "selected-tab") {
       this.selectedTab = newValue;
     }
+  }
+  resizerElement() {
+    const widget2 = Widget.getOrCreateWidget(this);
+    return widget2.headerElement();
   }
   connectedCallback() {
     super.connectedCallback();
@@ -22893,6 +22996,16 @@ var SearchableView = class extends VBox {
   set placeholder(placeholder) {
     this.#placeholder = placeholder;
     this.performUpdate();
+  }
+  get searchAriaLabel() {
+    return this.#searchAriaLabel;
+  }
+  set searchAriaLabel(ariaLabel) {
+    if (this.#searchAriaLabel === ariaLabel) {
+      return;
+    }
+    this.#searchAriaLabel = ariaLabel;
+    this.requestUpdate();
   }
   setReplaceable(replaceable) {
     this.replaceable = replaceable;

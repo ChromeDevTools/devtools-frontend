@@ -3709,6 +3709,7 @@ import * as AiUtils from "../ai-utils/ai-utils.js";
 var EvaluateAction_exports = {};
 __export(EvaluateAction_exports, {
   EvaluateAction: () => EvaluateAction,
+  MAX_SERIALIZED_ELEMENT_UIDS: () => MAX_SERIALIZED_ELEMENT_UIDS,
   SideEffectError: () => SideEffectError,
   formatError: () => formatError,
   stringifyRemoteObject: () => stringifyRemoteObject
@@ -3719,6 +3720,7 @@ import * as SDK2 from "../../core/sdk/sdk.js";
 var DOMHelpers_exports = {};
 __export(DOMHelpers_exports, {
   adoptStyleSheetInShadowRoot: () => adoptStyleSheetInShadowRoot,
+  collectElementsOnThePage: () => collectElementsOnThePage,
   dispatchAiAssistanceDoneEvent: () => dispatchAiAssistanceDoneEvent,
   getErrorStackOnThePage: () => getErrorStackOnThePage,
   removeInlineStyleProperties: () => removeInlineStyleProperties,
@@ -3729,8 +3731,34 @@ import * as Platform2 from "../../core/platform/platform.js";
 function getErrorStackOnThePage() {
   return { stack: "", message: this.message };
 }
-function stringifyObjectOnThePage() {
+function collectElementsOnThePage(maxElements) {
   const seenBefore = /* @__PURE__ */ new Map();
+  const elements = [];
+  JSON.stringify(this, function replacer(key, value) {
+    if (typeof value === "object" && value !== null) {
+      if (seenBefore.has(value)) {
+        return "(cycle)";
+      }
+      seenBefore.set(value, true);
+    }
+    if (value instanceof Element) {
+      if (elements.length < maxElements) {
+        elements.push(value);
+      }
+      return "";
+    }
+    if (this instanceof CSSStyleDeclaration) {
+      if (!isNaN(Number(key))) {
+        return void 0;
+      }
+    }
+    return value;
+  });
+  return elements;
+}
+function stringifyObjectOnThePage(resolvedUids) {
+  const seenBefore = /* @__PURE__ */ new Map();
+  let elementIndex = 0;
   return JSON.stringify(this, function replacer(key, value) {
     if (typeof value === "object" && value !== null) {
       if (seenBefore.has(value)) {
@@ -3738,10 +3766,14 @@ function stringifyObjectOnThePage() {
       }
       seenBefore.set(value, true);
     }
-    if (value instanceof HTMLElement) {
+    if (value instanceof Element) {
+      const uid = resolvedUids?.[elementIndex++];
+      const uidPrefix = uid ? `(uid=${uid}) ` : "";
       const idAttribute = value.id ? ` id="${value.id}"` : "";
-      const classAttribute = value.classList.value ? ` class="${value.classList.value}"` : "";
-      return `<${value.nodeName.toLowerCase()}${idAttribute}${classAttribute}>${value.hasChildNodes() ? "..." : ""}</${value.nodeName.toLowerCase()}>`;
+      const classAttr = value.getAttribute("class");
+      const classAttribute = classAttr ? ` class="${classAttr}"` : "";
+      const tag = value.nodeName.toLowerCase();
+      return `${uidPrefix}<${tag}${idAttribute}${classAttribute}>${value.hasChildNodes() ? "..." : ""}</${tag}>`;
     }
     if (this instanceof CSSStyleDeclaration) {
       if (!isNaN(Number(key))) {
@@ -3965,11 +3997,84 @@ var setupSetElementStyles = `function setupSetElementStyles(prefix) {
 var injectedFunctions = `(${setupSetElementStyles})('${AI_ASSISTANCE_CSS_CLASS_NAME}')`;
 
 // ../../front_end/models/ai_assistance/EvaluateAction.ts
+var MAX_SERIALIZED_ELEMENT_UIDS = 50;
 function formatError(message) {
   return `Error: ${message}`;
 }
 var SideEffectError = class extends Error {
 };
+async function resolveElementBackendNodeIds(elementsArray, domAgent) {
+  const { properties, internalProperties } = await elementsArray.getOwnProperties(false);
+  try {
+    const elementProperties = (properties ?? []).filter((property) => {
+      const index = Number(property.name);
+      return Number.isInteger(index) && index >= 0 && String(index) === property.name;
+    });
+    const resolvedEntries = await Promise.all(
+      elementProperties.map(async (property) => {
+        const index = Number(property.name);
+        const objectId = property.value?.objectId;
+        if (!objectId) {
+          return { index, backendNodeId: null };
+        }
+        const response = await domAgent.invoke_describeNode({ objectId, depth: 0 });
+        const backendNodeId = !response.getError() && response.node?.backendNodeId ? response.node.backendNodeId : null;
+        return { index, backendNodeId };
+      })
+    );
+    const maxIndex = resolvedEntries.reduce((max, entry) => Math.max(max, entry.index), -1);
+    const resolvedUids = Array.from({ length: maxIndex + 1 }, () => null);
+    for (const { index, backendNodeId } of resolvedEntries) {
+      resolvedUids[index] = backendNodeId;
+    }
+    return resolvedUids;
+  } finally {
+    for (const property of [...properties ?? [], ...internalProperties ?? []]) {
+      property.value?.release();
+      property.symbol?.release();
+      property.getter?.release();
+      property.setter?.release();
+    }
+  }
+}
+async function callPageFunction(object, fn, args) {
+  const res = await object.callFunction(fn, args, { throwOnSideEffect: true });
+  if (res.wasThrown) {
+    const description = res.object?.description ?? object;
+    res.object?.release();
+    throw new Error(`Could not stringify the object: ${description}`);
+  }
+  if (!res.object) {
+    throw new Error("Could not stringify the object" + object);
+  }
+  return res.object;
+}
+async function stringifyRemoteObjectOnThePage(object) {
+  const elementsArray = await callPageFunction(
+    object,
+    collectElementsOnThePage,
+    [{ value: MAX_SERIALIZED_ELEMENT_UIDS }]
+  );
+  let serialized;
+  try {
+    if (elementsArray.type !== Runtime.RemoteObjectType.Object || elementsArray.subtype !== Runtime.RemoteObjectSubtype.Array) {
+      throw new Error("Could not stringify the object" + object);
+    }
+    const resolvedUids = elementsArray.arrayLength() > 0 ? await resolveElementBackendNodeIds(elementsArray, object.runtimeModel().target().domAgent()) : void 0;
+    serialized = await callPageFunction(
+      object,
+      stringifyObjectOnThePage,
+      resolvedUids ? [{ value: resolvedUids }] : void 0
+    );
+    if (serialized.type !== Runtime.RemoteObjectType.String) {
+      throw new Error("Could not stringify the object" + object);
+    }
+    return serialized.value;
+  } finally {
+    elementsArray.release();
+    serialized?.release();
+  }
+}
 async function stringifyRemoteObject(object, functionDeclaration) {
   switch (object.type) {
     case Runtime.RemoteObjectType.String:
@@ -3986,19 +4091,13 @@ async function stringifyRemoteObject(object, functionDeclaration) {
       return `${object.description}`;
     case Runtime.RemoteObjectType.Object: {
       if (object.subtype === "error") {
-        const res2 = await object.callFunctionJSON(getErrorStackOnThePage, [], { throwOnSideEffect: true });
-        if (!res2) {
+        const res = await object.callFunctionJSON(getErrorStackOnThePage, [], { throwOnSideEffect: true });
+        if (!res) {
           throw new Error("Could not stringify the object" + object);
         }
-        return EvaluateAction.stringifyError(res2, functionDeclaration);
+        return EvaluateAction.stringifyError(res, functionDeclaration);
       }
-      const res = await object.callFunction(stringifyObjectOnThePage, void 0, {
-        throwOnSideEffect: true
-      });
-      if (!res.object || res.object.type !== Runtime.RemoteObjectType.String) {
-        throw new Error("Could not stringify the object" + object);
-      }
-      return res.object.value;
+      return await stringifyRemoteObjectOnThePage(object);
     }
     default:
       throw new Error("Unknown type to stringify " + object.type);
@@ -4680,7 +4779,7 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
 
 # Instructions
 
-* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`, and serialized output must not exceed ${MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
+* To return data, define a top-level \`data\` variable and populate it with data you want to get. JSON-serializable objects and DOM \`Element\` objects (directly or inside objects/arrays) can be assigned to \`data\`. Serialized DOM \`Element\` objects are prefixed with \`(uid=<backendNodeId>)\` (for example \`(uid=15) <div id="card">...</div>\`, up to ${MAX_SERIALIZED_ELEMENT_UIDS} elements per call), whose numeric \`uid\` can be passed to tools accepting numeric element \`uid\`s. Serialized output must not exceed ${MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
 * $0 refers to the currently selected DOM node (or document body if none selected).
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
@@ -15347,7 +15446,7 @@ var skill6 = {
     "getStyles",
     "setElementStyles"
   ],
-  "instructions": "# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element's `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: 'display', value: 'flex'}, {name: 'justify-content', value: 'center'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.\n   - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
+  "instructions": "# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element's `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: 'display', value: 'flex'}, {name: 'justify-content', value: 'center'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.\n   - When you need the numeric `uid` for an element not already listed in the active context, return the DOM `Element` itself in `data` (directly or inside an object/array) and read the numeric `uid` from its serialized `(uid=<id>)` prefix (for example `(uid=15) <div id=\"card\">...</div>`), then pass that numeric `uid` to `getStyles` or `setElementStyles`. Never guess numeric `uid`s.\n   - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
 };
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts

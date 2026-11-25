@@ -34,6 +34,7 @@ export interface SettingsPaneViewInput {
 }
 export interface SettingsPaneViewOutput {
     openFileSelector?: () => void;
+    focusAndHighlightCPUThrottling?: () => void;
 }
 export type SettingsPaneView = (input: SettingsPaneViewInput, output: SettingsPaneViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_SETTINGS_PANE_VIEW: SettingsPaneView;
@@ -148,6 +149,7 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
     }): Promise<void>;
     handleSaveToFileAction(): Promise<void>;
     showHistoryDropdown(): Promise<void>;
+    revealCPUThrottling(): Promise<void>;
     revealParsedTrace(revealable: ParsedTraceRevealable): void;
     navigateHistory(direction: number): boolean;
     selectFileToLoad(): void;
@@ -261,6 +263,9 @@ export declare class BottomUpProfileRevealer implements Common.Revealer.Revealer
 export declare class ProfileFinishedRevealer implements Common.Revealer.Revealer<SDK.CPUProfilerModel.ProfileFinishedData> {
     #private;
     reveal(data: SDK.CPUProfilerModel.ProfileFinishedData): Promise<void>;
+}
+export declare class CPUThrottlingRevealer implements Common.Revealer.Revealer<SDK.CPUThrottlingManager.CPUThrottlingManager> {
+    reveal(): Promise<void>;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(context: UI.Context.Context, actionId: string): boolean;

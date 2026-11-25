@@ -67,7 +67,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
      * Defaults to undefined which indicates the user has not searched.
      */
     searchResults = undefined;
-    eventListeners;
     networkSplitWidget;
     mainDataProvider;
     mainFlameChart;
@@ -157,7 +156,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.registerRequiredCSS(timelineFlameChartViewStyles);
         this.element.classList.add('timeline-flamechart');
         this.delegate = delegate;
-        this.eventListeners = [];
         this.#parsedTrace = null;
         const flameChartsContainer = new UI.Widget.VBox();
         flameChartsContainer.element.classList.add('flame-charts-container');
@@ -1021,7 +1019,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             return;
         }
         this.#selectedGroupName = null;
-        Common.EventTarget.removeEventListeners(this.eventListeners);
         this.#selectedEvents = null;
         this.#entityMapper = new Trace.EntityMapper.EntityMapper(this.#parsedTrace);
         // order is important: |reset| needs to be called after the trace

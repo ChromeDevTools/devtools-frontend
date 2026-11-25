@@ -12,6 +12,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -320,15 +321,21 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (!registration) {
             throw new Error('Received a message from an unregistered extension');
         }
-        const endpoint = new Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint(registration.allowFileAccess, extensionOrigin, pluginName, { language, symbol_types: symbol_types_array }, port, pluginManager);
+        const endpoint = new Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint(extensionOrigin, pluginName, { language, symbol_types: symbol_types_array }, port, pluginManager, {
+            allowFileAccess: registration.allowFileAccess,
+            canInspectScript: script => this.extensionEnabled(_shared_port) && this.extensionAllowedOnScript(script, registration),
+        });
         pluginManager.addPlugin(endpoint);
         return this.status.OK();
     }
-    async loadWasmValue(expectValue, convert, expression, stopId) {
+    async loadWasmValue(expectValue, convert, expression, stopId, port) {
         const { pluginManager } = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
         const callFrame = pluginManager.callFrameForStopId(stopId);
         if (!callFrame) {
             return this.status.E_BADARG('stopId', 'Unknown stop id');
+        }
+        if (!this.extensionAllowedOnScript(callFrame.script, port)) {
+            return this.status.E_FAILED('Permission denied');
         }
         const result = await callFrame.debuggerModel.agent.invoke_evaluateOnCallFrame({
             callFrameId: callFrame.id,
@@ -343,11 +350,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         return this.status.E_FAILED('Failed');
     }
-    async onGetWasmLinearMemory(message) {
+    async onGetWasmLinearMemory(message, port) {
         if (message.command !== "getWasmLinearMemory" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory */) {
             return this.status.E_BADARG('command', `expected ${"getWasmLinearMemory" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory */}`);
         }
-        return await this.loadWasmValue(false, result => result.value, `[].slice.call(new Uint8Array(memories[0].buffer, ${Number(message.offset)}, ${Number(message.length)}))`, message.stopId);
+        return await this.loadWasmValue(false, result => result.value, `[].slice.call(new Uint8Array(memories[0].buffer, ${Number(message.offset)}, ${Number(message.length)}))`, message.stopId, port);
     }
     convertWasmValue(valueClass, index) {
         return obj => {
@@ -373,28 +380,28 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             }
         };
     }
-    async onGetWasmGlobal(message) {
+    async onGetWasmGlobal(message, port) {
         if (message.command !== "getWasmGlobal" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal */) {
             return this.status.E_BADARG('command', `expected ${"getWasmGlobal" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal */}`);
         }
         const global = Number(message.global);
-        const result = await this.loadWasmValue(true, this.convertWasmValue('global', global), `globals[${global}]`, message.stopId);
+        const result = await this.loadWasmValue(true, this.convertWasmValue('global', global), `globals[${global}]`, message.stopId, port);
         return result ?? this.status.E_BADARG('global', `No global with index ${global}`);
     }
-    async onGetWasmLocal(message) {
+    async onGetWasmLocal(message, port) {
         if (message.command !== "getWasmLocal" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal */) {
             return this.status.E_BADARG('command', `expected ${"getWasmLocal" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal */}`);
         }
         const local = Number(message.local);
-        const result = await this.loadWasmValue(true, this.convertWasmValue('local', local), `locals[${local}]`, message.stopId);
+        const result = await this.loadWasmValue(true, this.convertWasmValue('local', local), `locals[${local}]`, message.stopId, port);
         return result ?? this.status.E_BADARG('local', `No local with index ${local}`);
     }
-    async onGetWasmOp(message) {
+    async onGetWasmOp(message, port) {
         if (message.command !== "getWasmOp" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmOp */) {
             return this.status.E_BADARG('command', `expected ${"getWasmOp" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetWasmOp */}`);
         }
         const op = Number(message.op);
-        const result = await this.loadWasmValue(true, this.convertWasmValue('operand', op), `stack[${op}]`, message.stopId);
+        const result = await this.loadWasmValue(true, this.convertWasmValue('operand', op), `stack[${op}]`, message.stopId, port);
         return result ?? this.status.E_BADARG('op', `No operand with index ${op}`);
     }
     registerRecorderExtensionEndpoint(message, _shared_port) {
@@ -870,29 +877,70 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         return Boolean(extension?.isAllowedOnTarget(url));
     }
     extensionAllowedOnScript(script, portOrExtension) {
+        if (!this.extensionAllowedOnTarget(script.target(), portOrExtension)) {
+            return false;
+        }
+        const isSyntheticWasmURL = (url) => script.isWasm() && Common.ParsedURL.schemeIs(url, 'wasm:');
         // TODO(542925220): embedderName is a terrible proxy, but currently V8 stores the original URL only in there.
         // We'll add a proper field in the future and will replace it then.
         const embedderName = script.embedderName();
-        if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
+        if (embedderName && URL.canParse(embedderName) && !isSyntheticWasmURL(embedderName) &&
+            !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
             return false;
         }
-        // Scripts with a sourceURL comment carry a page-chosen URL, and anonymous scripts (e.g. eval
-        // without sourceURL) carry none. An empty URL must not reach extensionAllowedOnURL, because
-        // isAllowedOnTarget() would silently fall back to the primary page's URL. For both cases we
-        // can only check the embedderName (above) and the target the script runs in.
-        if (script.hasSourceURL || !script.contentURL()) {
-            return this.extensionAllowedOnTarget(script.target(), portOrExtension);
+        // Scripts with a sourceURL comment carry a page-chosen URL, anonymous scripts (e.g. eval
+        // without sourceURL) carry none, and buffer-instantiated Wasm modules carry a synthetic
+        // wasm:// URL. An empty URL must not reach extensionAllowedOnURL, because isAllowedOnTarget()
+        // would silently fall back to the primary page's URL. For these cases we can only check the
+        // embedderName (above) and the target the script runs in.
+        const contentURL = script.contentURL();
+        if (script.hasSourceURL || !contentURL || isSyntheticWasmURL(contentURL)) {
+            return true;
         }
-        return this.extensionAllowedOnURL(script.contentURL(), portOrExtension) &&
-            this.extensionAllowedOnTarget(script.target(), portOrExtension);
+        return this.extensionAllowedOnURL(contentURL, portOrExtension);
+    }
+    /**
+     * Local Overrides files live in `<overrides>/<host>/...`. Their PersistenceBinding to the network
+     * UISourceCode can be missing (not bound yet, already unbound, or a `.headers` file), so also check
+     * the host from the path. The scheme isn't stored in the path, so both http and https must be allowed.
+     */
+    extensionAllowedOnOverrideFile(uiSourceCode, portOrExtension) {
+        if (!Root.DevToolsContext.globalInstance().has(Persistence.NetworkPersistenceManager.NetworkPersistenceManager)) {
+            return true;
+        }
+        const host = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().hostForOverrideFile(uiSourceCode);
+        // Overrides of file:// URLs are covered by the file:// check on the override file itself.
+        if (host === null || host === 'file:') {
+            return true;
+        }
+        // An override file whose host can't be determined can't be checked. Fail closed.
+        if (!host) {
+            return false;
+        }
+        return ['http', 'https'].every(scheme => this.extensionAllowedOnURL(`${scheme}://${host}/`, portOrExtension));
     }
     /**
      * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
      * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
      * long as the corresponding target and the embedder name (if it is a URL) are permitted.
      */
-    extensionAllowedOnContentProvider(contentProvider, portOrExtension) {
+    extensionAllowedOnContentProvider(contentProvider, portOrExtension, checkPersistence = true) {
         if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+            // Detached UISourceCodes (removed from their project, or replaced by another one with the same URL)
+            // are no longer tracked by the bindings below, so they can't be checked. Fail closed.
+            if (!this.isAttachedUISourceCode(contentProvider)) {
+                return false;
+            }
+            if (checkPersistence && Root.DevToolsContext.globalInstance().has(Persistence.Persistence.PersistenceImpl)) {
+                const binding = Persistence.Persistence.PersistenceImpl.instance().binding(contentProvider);
+                if (binding && binding.fileSystem === contentProvider && binding.network !== contentProvider &&
+                    !this.extensionAllowedOnContentProvider(binding.network, portOrExtension, false)) {
+                    return false;
+                }
+            }
+            if (!this.extensionAllowedOnOverrideFile(contentProvider, portOrExtension)) {
+                return false;
+            }
             const debuggerSourceMapURLs = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
             const cssSourceMapURLs = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
             const cssCompiledURLs = Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(contentProvider);
@@ -911,9 +959,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
                     return !uiSourceCodeTarget || this.extensionAllowedOnTarget(uiSourceCodeTarget, portOrExtension);
                 }
             }
-            else if (contentProvider.project().isServiceProject()) {
-                // Service projects (debugger:///VM scripts, source map stubs) use synthetic URLs that can't be
-                // checked against the host policy. Without a backing script to check instead, fail closed.
+            else if (contentProvider.project().isServiceProject() ||
+                (contentProvider.contentType() === Common.ResourceType.resourceTypes.Script &&
+                    Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(contentProvider))) {
+                // Service projects (debugger:///VM scripts, source map stubs) and //# sourceURL=-synthesized
+                // Script UISourceCodes use synthetic/page-chosen URLs that can't be checked against the host
+                // policy. Without a backing script to check instead, fail closed.
                 return false;
             }
         }
@@ -1334,6 +1385,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.inspectedURLChanged, this);
         SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener("UserAgentChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.USER_AGENT_CHANGED */, this.#onUserAgentChanged, this);
     }
+    isAttachedUISourceCode(uiSourceCode) {
+        return uiSourceCode.project().uiSourceCodeForURL(uiSourceCode.url()) === uiSourceCode;
+    }
     notifyResourceAdded(event) {
         const uiSourceCode = event.data;
         this.postNotification("resource-added" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded */, [this.makeResource(uiSourceCode)], extension => this.extensionAllowedOnContentProvider(uiSourceCode, extension));
@@ -1359,14 +1413,15 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     notifyElementsSelectionChanged() {
         this.postNotification("panel-objectSelected-" /* Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected */ + 'elements', []);
     }
-    sourceSelectionChanged(url, range) {
+    sourceSelectionChanged(uiSourceCode, range, displayedUISourceCode) {
         this.postNotification("panel-objectSelected-" /* Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected */ + 'sources', [{
                 startLine: range.startLine,
                 startColumn: range.startColumn,
                 endLine: range.endLine,
                 endColumn: range.endColumn,
-                url,
-            }], extension => extension.isAllowedOnTarget(url));
+                url: uiSourceCode.url(),
+            }], extension => this.extensionAllowedOnContentProvider(uiSourceCode, extension) &&
+            (!displayedUISourceCode || this.extensionAllowedOnContentProvider(displayedUISourceCode, extension)));
     }
     setInspectedTabId(event) {
         const oldId = this.inspectedTabId;

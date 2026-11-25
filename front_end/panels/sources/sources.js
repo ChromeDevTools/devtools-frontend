@@ -13039,6 +13039,9 @@ var UISourceCodeFrameBase = Common13.ObjectWrapper.eventMixin(
 var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   #uiSourceCode;
   #muteSourceCodeEvents = false;
+  // The UISourceCode whose content is currently in the text editor. Lags behind #uiSourceCode
+  // while setUISourceCode swaps in the new content.
+  #displayedUISourceCode;
   #persistenceBinding;
   #uiSourceCodeEventListeners = [];
   #messageAndDecorationListeners = [];
@@ -13053,6 +13056,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   constructor(uiSourceCode) {
     super(() => this.workingCopy());
     this.#uiSourceCode = uiSourceCode;
+    this.#displayedUISourceCode = uiSourceCode;
     this.#persistenceBinding = Persistence6.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     this.#boundOnBindingChanged = this.onBindingChanged.bind(this);
     Common13.Settings.Settings.instance().resolve(Persistence6.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).addChangeListener(this.onNetworkPersistenceChanged, this);
@@ -13121,6 +13125,9 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   uiSourceCode() {
     return this.#uiSourceCode;
   }
+  displayedUISourceCode() {
+    return this.#displayedUISourceCode;
+  }
   setUISourceCode(uiSourceCode) {
     const loaded = uiSourceCode.contentLoaded() ? Promise.resolve() : uiSourceCode.requestContentData();
     const startUISourceCode = this.#uiSourceCode;
@@ -13135,6 +13142,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       } else {
         this.reloadPlugins();
       }
+      this.#displayedUISourceCode = uiSourceCode;
       this.initializeUISourceCode();
     }, console.error);
   }
@@ -14414,7 +14422,15 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
       }
       this.previouslyViewedFilesSetting.set(this.#history.toObject());
       if (this.#currentFile) {
-        PanelCommon2.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(this.#currentFile.url(), range);
+        if (this.#currentView instanceof UISourceCodeFrame && this.#currentView.displayedUISourceCode() !== this.#currentFile) {
+          PanelCommon2.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(
+            this.#currentFile,
+            range,
+            this.#currentView.displayedUISourceCode()
+          );
+        } else {
+          PanelCommon2.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(this.#currentFile, range);
+        }
       }
     }
   }

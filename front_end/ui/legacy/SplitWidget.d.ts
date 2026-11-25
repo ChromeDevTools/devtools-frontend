@@ -43,6 +43,7 @@ export declare class SplitWidget extends SplitWidgetBase {
     installResizer(resizerElement: Element): void;
     uninstallResizer(resizerElement: Element): void;
     toggleResizer(resizer: Element, on: boolean): void;
+    setCustomResizers(elements: Element[] | null, noSplitter?: boolean): void;
     onZoomChanged(): void;
     createShowHideSidebarButton(showTitle: Common.UIString.LocalizedString, hideTitle: Common.UIString.LocalizedString, shownString: Common.UIString.LocalizedString, hiddenString: Common.UIString.LocalizedString, jslogContext?: string): ToolbarButton;
     /**
@@ -54,15 +55,26 @@ export type ShowAttribute = 'main' | 'sidebar' | 'both';
 /**
  * `<devtools-split-view>` hosts a `SplitWidget`.
  *
- * `direction`, `sidebar-position`, and `show` can change at any time.
- * `name`, `sidebar-initial-size`, `sidebar-initial-width`,
+ * `direction`, `sidebar-position`, `show`, `resizer`, and `no-splitter` can
+ * change at any time. `resizer` accepts space-separated element IDs of custom
+ * resizer handles (resolving `<devtools-tabbed-pane>` to its header element)
+ * and disables the built-in resizer; `no-splitter` also hides the default
+ * splitter border. `name`, `sidebar-initial-size`, `sidebar-initial-width`,
  * `sidebar-initial-height`, and `constraints-in-dip` are only read when
  * the widget is created.
  */
 export declare class SplitWidgetElement extends WidgetElement<SplitWidget> {
+    #private;
     static readonly observedAttributes: string[];
     constructor();
-    attributeChangedCallback(name: string, _oldValue: string, newValue: string): void;
+    connectedCallback(): void;
+    disconnectedCallback(): void;
+    attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        'devtools-split-view': SplitWidgetElement;
+    }
 }
 export declare const enum ShowMode {
     BOTH = "Both",

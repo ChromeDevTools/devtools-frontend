@@ -36,6 +36,7 @@ export declare class WidgetElement<WidgetT extends AnyWidget> extends HTMLElemen
     onConnect?: () => void;
     getWidget(): WidgetT | undefined;
     controlsChildWidget(_child: HTMLElement): boolean;
+    resizerElement(): Element;
     connectedCallback(): void;
     disconnectedCallback(): void;
     appendChild<T extends Node>(child: T): T;

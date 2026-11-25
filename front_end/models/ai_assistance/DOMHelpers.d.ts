@@ -3,7 +3,25 @@ export interface GetErrorStackOutput {
     stack?: string;
 }
 export declare function getErrorStackOnThePage(this: Error): GetErrorStackOutput;
-export declare function stringifyObjectOnThePage(this: unknown): string;
+/**
+ * Collects DOM `Element` handles from `this` inside the inspected page via
+ * `RemoteObject#callFunction` with `throwOnSideEffect: true`.
+ *
+ * Walks `this` in `JSON.stringify` order, deduplicating cycles via
+ * `seenBefore` and skipping numeric `CSSStyleDeclaration` keys, and returns up
+ * to `maxElements` `Element` instances typed as `unknown[]` so DOM types do not
+ * leak from `DOMHelpers.d.ts` into the DOM-free `ai_assistance` foundation
+ * module.
+ */
+export declare function collectElementsOnThePage(this: unknown, maxElements: number): unknown[];
+/**
+ * Serializes `this` to JSON inside the inspected page via
+ * `RemoteObject#callFunction` with `throwOnSideEffect: true`.
+ *
+ * When `resolvedUids` is provided, prepends `(uid=<id>) ` to each encountered
+ * `Element` in traversal order when the corresponding UID is non-null.
+ */
+export declare function stringifyObjectOnThePage(this: unknown, resolvedUids?: ReadonlyArray<number | null>): string;
 /**
  * Sanitizes a record of CSS property declarations against the browser's CSS
  * parser and rejects URL-referencing values.

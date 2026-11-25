@@ -1629,6 +1629,7 @@ import * as Bindings from "../../models/bindings/bindings.js";
 import * as Extensions2 from "../../models/extensions/extensions.js";
 import * as HAR from "../../models/har/har.js";
 import * as Logs from "../../models/logs/logs.js";
+import * as Persistence from "../../models/persistence/persistence.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as Components from "../../ui/legacy/components/utils/utils.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
@@ -1983,8 +1984,8 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   hasExtensions() {
     return Boolean(this.registeredExtensions.size);
   }
-  notifySearchAction(panelId, action4, searchString) {
-    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.PanelSearch + panelId, [action4, searchString]);
+  notifySearchAction(panelId, action5, searchString) {
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.PanelSearch + panelId, [action5, searchString]);
   }
   notifyViewShown(identifier, frameIndex) {
     this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.ViewShown + identifier, [frameIndex]);
@@ -2017,21 +2018,27 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       throw new Error("Received a message from an unregistered extension");
     }
     const endpoint = new Extensions2.LanguageExtensionEndpoint.LanguageExtensionEndpoint(
-      registration.allowFileAccess,
       extensionOrigin,
       pluginName,
       { language, symbol_types: symbol_types_array },
       port,
-      pluginManager
+      pluginManager,
+      {
+        allowFileAccess: registration.allowFileAccess,
+        canInspectScript: (script) => this.extensionEnabled(_shared_port) && this.extensionAllowedOnScript(script, registration)
+      }
     );
     pluginManager.addPlugin(endpoint);
     return this.status.OK();
   }
-  async loadWasmValue(expectValue, convert, expression, stopId) {
+  async loadWasmValue(expectValue, convert, expression, stopId, port) {
     const { pluginManager } = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const callFrame = pluginManager.callFrameForStopId(stopId);
     if (!callFrame) {
       return this.status.E_BADARG("stopId", "Unknown stop id");
+    }
+    if (!this.extensionAllowedOnScript(callFrame.script, port)) {
+      return this.status.E_FAILED("Permission denied");
     }
     const result = await callFrame.debuggerModel.agent.invoke_evaluateOnCallFrame({
       callFrameId: callFrame.id,
@@ -2046,7 +2053,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     }
     return this.status.E_FAILED("Failed");
   }
-  async onGetWasmLinearMemory(message) {
+  async onGetWasmLinearMemory(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory) {
       return this.status.E_BADARG(
         "command",
@@ -2057,7 +2064,8 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       false,
       (result) => result.value,
       `[].slice.call(new Uint8Array(memories[0].buffer, ${Number(message.offset)}, ${Number(message.length)}))`,
-      message.stopId
+      message.stopId,
+      port
     );
   }
   convertWasmValue(valueClass, index) {
@@ -2084,7 +2092,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       }
     };
   }
-  async onGetWasmGlobal(message) {
+  async onGetWasmGlobal(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal) {
       return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal}`);
     }
@@ -2093,11 +2101,12 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       true,
       this.convertWasmValue("global", global),
       `globals[${global}]`,
-      message.stopId
+      message.stopId,
+      port
     );
     return result ?? this.status.E_BADARG("global", `No global with index ${global}`);
   }
-  async onGetWasmLocal(message) {
+  async onGetWasmLocal(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal) {
       return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal}`);
     }
@@ -2106,11 +2115,12 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       true,
       this.convertWasmValue("local", local),
       `locals[${local}]`,
-      message.stopId
+      message.stopId,
+      port
     );
     return result ?? this.status.E_BADARG("local", `No local with index ${local}`);
   }
-  async onGetWasmOp(message) {
+  async onGetWasmOp(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmOp) {
       return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmOp}`);
     }
@@ -2119,7 +2129,8 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       true,
       this.convertWasmValue("operand", op),
       `stack[${op}]`,
-      message.stopId
+      message.stopId,
+      port
     );
     return result ?? this.status.E_BADARG("op", `No operand with index ${op}`);
   }
@@ -2635,22 +2646,60 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     return Boolean(extension?.isAllowedOnTarget(url));
   }
   extensionAllowedOnScript(script, portOrExtension) {
-    const embedderName = script.embedderName();
-    if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
+    if (!this.extensionAllowedOnTarget(script.target(), portOrExtension)) {
       return false;
     }
-    if (script.hasSourceURL || !script.contentURL()) {
-      return this.extensionAllowedOnTarget(script.target(), portOrExtension);
+    const isSyntheticWasmURL = (url) => script.isWasm() && Common4.ParsedURL.schemeIs(url, "wasm:");
+    const embedderName = script.embedderName();
+    if (embedderName && URL.canParse(embedderName) && !isSyntheticWasmURL(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
+      return false;
     }
-    return this.extensionAllowedOnURL(script.contentURL(), portOrExtension) && this.extensionAllowedOnTarget(script.target(), portOrExtension);
+    const contentURL = script.contentURL();
+    if (script.hasSourceURL || !contentURL || isSyntheticWasmURL(contentURL)) {
+      return true;
+    }
+    return this.extensionAllowedOnURL(contentURL, portOrExtension);
+  }
+  /**
+   * Local Overrides files live in `<overrides>/<host>/...`. Their PersistenceBinding to the network
+   * UISourceCode can be missing (not bound yet, already unbound, or a `.headers` file), so also check
+   * the host from the path. The scheme isn't stored in the path, so both http and https must be allowed.
+   */
+  extensionAllowedOnOverrideFile(uiSourceCode, portOrExtension) {
+    if (!Root.DevToolsContext.globalInstance().has(Persistence.NetworkPersistenceManager.NetworkPersistenceManager)) {
+      return true;
+    }
+    const host = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().hostForOverrideFile(uiSourceCode);
+    if (host === null || host === "file:") {
+      return true;
+    }
+    if (!host) {
+      return false;
+    }
+    return ["http", "https"].every((scheme) => this.extensionAllowedOnURL(
+      `${scheme}://${host}/`,
+      portOrExtension
+    ));
   }
   /**
    * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
    * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
    * long as the corresponding target and the embedder name (if it is a URL) are permitted.
    */
-  extensionAllowedOnContentProvider(contentProvider, portOrExtension) {
+  extensionAllowedOnContentProvider(contentProvider, portOrExtension, checkPersistence = true) {
     if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      if (!this.isAttachedUISourceCode(contentProvider)) {
+        return false;
+      }
+      if (checkPersistence && Root.DevToolsContext.globalInstance().has(Persistence.Persistence.PersistenceImpl)) {
+        const binding = Persistence.Persistence.PersistenceImpl.instance().binding(contentProvider);
+        if (binding && binding.fileSystem === contentProvider && binding.network !== contentProvider && !this.extensionAllowedOnContentProvider(binding.network, portOrExtension, false)) {
+          return false;
+        }
+      }
+      if (!this.extensionAllowedOnOverrideFile(contentProvider, portOrExtension)) {
+        return false;
+      }
       const debuggerSourceMapURLs = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapURLsForUISourceCode(
         contentProvider
       );
@@ -2669,7 +2718,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
           const uiSourceCodeTarget = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? void 0;
           return !uiSourceCodeTarget || this.extensionAllowedOnTarget(uiSourceCodeTarget, portOrExtension);
         }
-      } else if (contentProvider.project().isServiceProject()) {
+      } else if (contentProvider.project().isServiceProject() || contentProvider.contentType() === Common4.ResourceType.resourceTypes.Script && Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(contentProvider)) {
         return false;
       }
     }
@@ -3123,6 +3172,9 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       this
     );
   }
+  isAttachedUISourceCode(uiSourceCode) {
+    return uiSourceCode.project().uiSourceCodeForURL(uiSourceCode.url()) === uiSourceCode;
+  }
   notifyResourceAdded(event) {
     const uiSourceCode = event.data;
     this.postNotification(
@@ -3160,7 +3212,7 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   notifyElementsSelectionChanged() {
     this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + "elements", []);
   }
-  sourceSelectionChanged(url, range) {
+  sourceSelectionChanged(uiSourceCode, range, displayedUISourceCode) {
     this.postNotification(
       Extensions2.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + "sources",
       [{
@@ -3168,9 +3220,9 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
         startColumn: range.startColumn,
         endLine: range.endLine,
         endColumn: range.endColumn,
-        url
+        url: uiSourceCode.url()
       }],
-      (extension) => extension.isAllowedOnTarget(url)
+      (extension) => this.extensionAllowedOnContentProvider(uiSourceCode, extension) && (!displayedUISourceCode || this.extensionAllowedOnContentProvider(displayedUISourceCode, extension))
     );
   }
   setInspectedTabId(event) {
@@ -3599,7 +3651,7 @@ import "../../ui/kit/kit.js";
 import * as Common5 from "../../core/common/common.js";
 import * as i18n11 from "../../core/i18n/i18n.js";
 import * as Platform3 from "../../core/platform/platform.js";
-import * as Persistence from "../../models/persistence/persistence.js";
+import * as Persistence3 from "../../models/persistence/persistence.js";
 import * as Workspace3 from "../../models/workspace/workspace.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import { html as html7 } from "../../ui/lit/lit.js";
@@ -3619,12 +3671,12 @@ var str_4 = i18n11.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", U
 var i18nString4 = i18n11.i18n.getLocalizedString.bind(void 0, str_4);
 var PersistenceUtils = class _PersistenceUtils {
   static tooltipForUISourceCode(uiSourceCode) {
-    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
+    const binding = Persistence3.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (!binding) {
       return "";
     }
     if (uiSourceCode === binding.network) {
-      return Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.tooltipForUISourceCode(
+      return Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.tooltipForUISourceCode(
         binding.fileSystem
       );
     }
@@ -3637,12 +3689,12 @@ var PersistenceUtils = class _PersistenceUtils {
     return i18nString4(UIStrings4.linkedToS, { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) });
   }
   static iconForUISourceCode(uiSourceCode) {
-    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
+    const binding = Persistence3.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
       if (!Common5.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
         return null;
       }
-      const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
+      const dotClass = Persistence3.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
       return html7`<devtools-icon class="small dot ${dotClass}" name="document"
                                  title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
                   </devtools-icon>`;
@@ -3650,7 +3702,7 @@ var PersistenceUtils = class _PersistenceUtils {
     if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common5.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
       return null;
     }
-    if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
+    if (Persistence3.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
       uiSourceCode
     )) {
       return html7`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
@@ -3663,8 +3715,8 @@ var PersistenceUtils = class _PersistenceUtils {
 var LinkDecorator = class extends Common5.ObjectWrapper.ObjectWrapper {
   constructor(persistence) {
     super();
-    persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.#bindingChanged, this);
-    persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.#bindingChanged, this);
+    persistence.addEventListener(Persistence3.Persistence.Events.BindingCreated, this.#bindingChanged, this);
+    persistence.addEventListener(Persistence3.Persistence.Events.BindingRemoved, this.#bindingChanged, this);
   }
   #bindingChanged(event) {
     const binding = event.data;
@@ -5060,10 +5112,10 @@ var CommentsOverlayWidget = class extends UI9.Widget.Widget {
       this.#setActiveThreadId(null);
     }
     this.#updateDocumentListeners();
-    const action4 = UI9.ActionRegistry.ActionRegistry.instance().getAction(
+    const action5 = UI9.ActionRegistry.ActionRegistry.instance().getAction(
       "comments.toggle-comment-mode"
     );
-    action4?.setToggled(isModeActive);
+    action5?.setToggled(isModeActive);
     this.requestUpdate();
   }
   #syncActiveThreadFromManager() {
@@ -5423,14 +5475,14 @@ var ButtonProvider = class {
     this.#commentManager = commentManager ?? Root2.DevToolsContext.globalInstance().get(
       CommentManager.CommentManager.CommentManager
     );
-    const action4 = UI9.ActionRegistry.ActionRegistry.instance().getAction("comments.toggle-comment-mode");
-    action4.setEnabled(this.#commentManager.isAgentAttached());
-    this.#button = UI9.Toolbar.Toolbar.createActionButton(action4);
+    const action5 = UI9.ActionRegistry.ActionRegistry.instance().getAction("comments.toggle-comment-mode");
+    action5.setEnabled(this.#commentManager.isAgentAttached());
+    this.#button = UI9.Toolbar.Toolbar.createActionButton(action5);
     this.#button.setVisible(this.#commentManager.isAgentAttached());
     this.#commentManager.addEventListener(
       CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
       (event) => {
-        action4.setEnabled(event.data);
+        action5.setEnabled(event.data);
         this.#button.setVisible(event.data);
       }
     );
@@ -5619,7 +5671,29 @@ var stateChangesStatusBarPills_css_default = `/*
     flex: none;
     gap: var(--sys-size-2);
     padding-block: 0;
-    padding-inline-end: var(--sys-size-2);
+    padding-inline: 0 var(--sys-size-2);
+
+    &:has(> .pill-label:hover) {
+      background-color: var(--sys-color-state-hover-on-subtle);
+    }
+
+    &:has(> .pill-label:active) {
+      background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+    }
+
+    &:has(> .pill-label:focus-visible) {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: calc(-1 * var(--sys-size-2));
+    }
+  }
+
+  .pill-label {
+    all: unset;
+    align-self: stretch;
+    display: inline-flex;
+    align-items: center;
+    padding-inline-start: var(--sys-size-4);
+    cursor: pointer;
   }
 
   .more-pills,
@@ -5678,10 +5752,20 @@ var UIStrings9 = {
    */
   enableJavaScript: "Enable JavaScript",
   /**
+   * @description Label of a menu item in a submenu in the status bar at the bottom of DevTools.
+   * Clicking it opens the panel or setting where the changed setting is configured.
+   */
+  inspectMenuItem: "Inspect",
+  /**
+   * @description Label of a menu item in a submenu in the status bar at the bottom of DevTools.
+   * Clicking it resets the changed setting back to its default value.
+   */
+  resetMenuItem: "Reset",
+  /**
    * @description Tooltip and accessible name of the button in the status bar at the bottom of DevTools.
    * The button opens a menu with the changed settings pills that do not fit.
    */
-  morePills: "More changed settings",
+  morePills: "Show more",
   /**
    * @description Text and tooltip of a button in the status bar at the bottom of DevTools. The button
    * changes all settings that have a pill in the status bar back to their default values.
@@ -5692,24 +5776,32 @@ var str_9 = i18n21.i18n.registerUIStrings("panels/common/StateChangesStatusBarPi
 var i18nString9 = i18n21.i18n.getLocalizedString.bind(void 0, str_9);
 var { classMap: classMap4, ref: ref3, repeat: repeat4 } = Directives6;
 var cpuThrottlingRateFormatter = i18n21.NumberFormatter.defineFormatter({ maximumFractionDigits: 1 });
-function showOverflowMenu(event, overflowPills) {
-  const target = event.currentTarget;
-  const rect = target.getBoundingClientRect();
-  const menu = new UI11.ContextMenu.ContextMenu(event, { x: rect.left, y: rect.bottom });
+function openShowMoreMenu(event, overflowPills, onOpen, onClosed) {
+  const button = event.currentTarget;
+  const rect = button.getBoundingClientRect();
+  const menu = new UI11.ContextMenu.ContextMenu(event, {
+    x: rect.left,
+    y: rect.bottom,
+    onSoftMenuClosed: onClosed
+  });
   for (const pill of overflowPills) {
-    menu.defaultSection().appendItem(pill.resetTitle, pill.onReset, {
+    const subMenu = menu.defaultSection().appendSubMenuItem(pill.title, false, pill.id);
+    subMenu.defaultSection().appendItem(i18nString9(UIStrings9.inspectMenuItem), pill.onReveal, {
+      jslogContext: "inspect"
+    });
+    subMenu.defaultSection().appendItem(i18nString9(UIStrings9.resetMenuItem), pill.onReset, {
       jslogContext: "reset"
     });
   }
+  onOpen();
   void menu.show();
 }
 var DEFAULT_VIEW10 = (input, output, target) => {
   const overflowPills = input.pills.slice(input.visiblePillCount);
   const focusableElements = [];
   const handlePillReset = (pill, index) => {
-    const currElement = focusableElements[index];
     const nextElement = focusableElements[index + 1];
-    if (currElement?.hasFocus() && nextElement instanceof HTMLElement) {
+    if (target.hasFocus() && nextElement instanceof HTMLElement) {
       nextElement.focus();
     }
     pill.onReset();
@@ -5731,7 +5823,16 @@ var DEFAULT_VIEW10 = (input, output, target) => {
   })}
           class=${classMap4({ "devtools-pill": true, pill: true, collapsed: index >= input.visiblePillCount })}
           jslog=${VisualLogging5.item(pill.id)}>
-          ${pill.title}
+          <button
+            class="pill-label"
+            type="button"
+            jslog=${VisualLogging5.action("reveal").track({ click: true })}
+            ${ref3((element) => {
+    if (index < input.visiblePillCount) {
+      focusableElements[index] = element;
+    }
+  })}
+            @click=${pill.onReveal}>${pill.title}</button>
           <devtools-button
             .iconName=${"cross"}
             .variant=${Buttons5.Button.Variant.ICON}
@@ -5739,11 +5840,6 @@ var DEFAULT_VIEW10 = (input, output, target) => {
             .title=${pill.resetTitle}
             .accessibleLabel=${pill.resetTitle}
             .jslogContext=${"reset"}
-            ${ref3((element) => {
-    if (index < input.visiblePillCount) {
-      focusableElements[index] = element;
-    }
-  })}
             @click=${() => handlePillReset(pill, index)}></devtools-button>
         </span>`)}</div>
       <devtools-button
@@ -5759,8 +5855,9 @@ var DEFAULT_VIEW10 = (input, output, target) => {
         .size=${Buttons5.Button.Size.SMALL}
         .title=${i18nString9(UIStrings9.morePills)}
         .accessibleLabel=${i18nString9(UIStrings9.morePills)}
+        .accessibleExpanded=${input.showMoreMenuOpen}
         .jslogContext=${"more"}
-        @click=${(event) => showOverflowMenu(event, overflowPills)}></devtools-button>
+        @click=${(event) => openShowMoreMenu(event, overflowPills, input.onShowMoreMenuOpen, input.onShowMoreMenuClosed)}></devtools-button>
       <devtools-button
         ${ref3((element) => {
     output.resetAllButtonWidth = element instanceof HTMLElement ? () => element.offsetWidth : void 0;
@@ -5798,9 +5895,6 @@ function pillResetTitle(state) {
       Platform5.assertNever(state.kind, "Unknown state");
   }
 }
-function toPill(state, onReset) {
-  return { id: state.kind, title: pillTitle(state), resetTitle: pillResetTitle(state), onReset };
-}
 function countFittingPills(pillWidths, maxWidth, gap) {
   let usedWidth = 0;
   for (let i = 0; i < pillWidths.length; i++) {
@@ -5822,6 +5916,19 @@ var StateChangesStatusBarPills = class extends UI11.Widget.Widget {
     }
   });
   #visiblePillCount = Infinity;
+  #showMoreMenuOpen = false;
+  #onShowMoreMenuOpen = () => {
+    if (!this.#showMoreMenuOpen) {
+      this.#showMoreMenuOpen = true;
+      this.requestUpdate();
+    }
+  };
+  #onShowMoreMenuClosed = () => {
+    if (this.#showMoreMenuOpen) {
+      this.#showMoreMenuOpen = false;
+      this.requestUpdate();
+    }
+  };
   constructor(element, [stateManager], view = DEFAULT_VIEW10) {
     super(element);
     this.#view = view;
@@ -5839,7 +5946,13 @@ var StateChangesStatusBarPills = class extends UI11.Widget.Widget {
     super.willHide();
   }
   performUpdate() {
-    const pills = this.#stateManager.nonDefaultStates().map((state) => toPill(state, () => this.#stateManager.reset(state.kind)));
+    const pills = this.#stateManager.nonDefaultStates().map((state) => ({
+      id: state.kind,
+      title: pillTitle(state),
+      resetTitle: pillResetTitle(state),
+      onReveal: () => void this.#stateManager.reveal(state.kind),
+      onReset: () => this.#stateManager.reset(state.kind)
+    }));
     const onResetAll = () => {
       for (const pill of pills) {
         pill.onReset();
@@ -5847,7 +5960,18 @@ var StateChangesStatusBarPills = class extends UI11.Widget.Widget {
     };
     const renderView = () => {
       const visiblePillCount = Math.min(this.#visiblePillCount, pills.length);
-      this.#view({ pills, visiblePillCount, onResetAll }, this.#viewOutput, this.contentElement);
+      this.#view(
+        {
+          pills,
+          visiblePillCount,
+          showMoreMenuOpen: this.#showMoreMenuOpen,
+          onResetAll,
+          onShowMoreMenuOpen: this.#onShowMoreMenuOpen,
+          onShowMoreMenuClosed: this.#onShowMoreMenuClosed
+        },
+        this.#viewOutput,
+        this.contentElement
+      );
     };
     renderView();
     if (this.#updateVisiblePillCount()) {

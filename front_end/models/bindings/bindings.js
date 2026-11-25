@@ -5098,7 +5098,7 @@ var DebuggerLanguagePluginManager = class {
   async #rawModuleIdAndPluginForScript(script) {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
-    if (rawModuleHandle) {
+    if (rawModuleHandle?.scripts.includes(script)) {
       await rawModuleHandle.addRawModulePromise;
       if (rawModuleHandle === this.#rawModuleHandles.get(rawModuleId)) {
         return { rawModuleId, plugin: rawModuleHandle.plugin };
@@ -5394,7 +5394,7 @@ var DebuggerLanguagePluginManager = class {
   getSourcesForScript(script) {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
-    if (rawModuleHandle) {
+    if (rawModuleHandle?.scripts.includes(script)) {
       return rawModuleHandle.addRawModulePromise;
     }
     return Promise.resolve(void 0);

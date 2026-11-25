@@ -32,7 +32,29 @@ export default `/*
     flex: none;
     gap: var(--sys-size-2);
     padding-block: 0;
-    padding-inline-end: var(--sys-size-2);
+    padding-inline: 0 var(--sys-size-2);
+
+    &:has(> .pill-label:hover) {
+      background-color: var(--sys-color-state-hover-on-subtle);
+    }
+
+    &:has(> .pill-label:active) {
+      background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+    }
+
+    &:has(> .pill-label:focus-visible) {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: calc(-1 * var(--sys-size-2));
+    }
+  }
+
+  .pill-label {
+    all: unset;
+    align-self: stretch;
+    display: inline-flex;
+    align-items: center;
+    padding-inline-start: var(--sys-size-4);
+    cursor: pointer;
   }
 
   .more-pills,

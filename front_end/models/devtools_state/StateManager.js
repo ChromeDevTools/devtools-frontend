@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 /**
- * The single place to read, reset, and listen to changes of the DevTools state. It delegates to providers so
+ * The single place to read, reveal, reset, and listen to changes of the DevTools state. It delegates to providers so
  * callers do not depend on the parts of DevTools that own the underlying state.
  */
 export class StateManager extends Common.ObjectWrapper.ObjectWrapper {
@@ -22,6 +22,11 @@ export class StateManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     nonDefaultStates() {
         return this.allStates().filter(state => !state.isDefault);
+    }
+    async reveal(kind) {
+        for (const provider of this.#providers) {
+            await provider.reveal(kind);
+        }
     }
     reset(kind) {
         for (const provider of this.#providers) {

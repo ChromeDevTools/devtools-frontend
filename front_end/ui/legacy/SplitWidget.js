@@ -48,6 +48,7 @@ export class SplitWidget extends SplitWidgetBase {
     #showMode = "Both" /* ShowMode.BOTH */;
     #savedShowMode;
     #autoAdjustOrientation = false;
+    #noDefaultSplitter = false;
     #zoomManager = ZoomManager.instance();
     constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip, element) {
         super(element, { useShadowDom: true });
@@ -333,7 +334,7 @@ export class SplitWidget extends SplitWidgetBase {
         this.#cancelAnimation();
         this.#mainElement.classList.remove('maximized', 'hidden');
         this.#sidebarElement.classList.remove('maximized', 'hidden');
-        this.#resizerElement.classList.remove('hidden');
+        this.#resizerElement.classList.toggle('hidden', this.#noDefaultSplitter);
         this.setResizable(true);
         // Make sure main is the first in the children list.
         this.suspendInvalidations();
@@ -653,9 +654,10 @@ export class SplitWidget extends SplitWidgetBase {
         this.#resizeStartSizeDIP = 0;
     }
     hideDefaultResizer(noSplitter) {
-        this.#resizerElement.classList.toggle('hidden', Boolean(noSplitter));
+        this.#noDefaultSplitter = Boolean(noSplitter);
+        this.#resizerElement.classList.toggle('hidden', this.#showMode !== "Both" /* ShowMode.BOTH */ || this.#noDefaultSplitter);
         this.uninstallResizer(this.#resizerElement);
-        this.#sidebarElement.classList.toggle('no-default-splitter', Boolean(noSplitter));
+        this.#sidebarElement.classList.toggle('no-default-splitter', this.#noDefaultSplitter);
     }
     installResizer(resizerElement) {
         this.#resizerWidget.addElement(resizerElement);
@@ -669,6 +671,29 @@ export class SplitWidget extends SplitWidgetBase {
         }
         else {
             this.uninstallResizer(resizer);
+        }
+    }
+    setCustomResizers(elements, noSplitter = false) {
+        if (elements === null) {
+            for (const el of this.#resizerWidget.elements()) {
+                if (el !== this.#resizerElement) {
+                    this.uninstallResizer(el);
+                }
+            }
+            this.#noDefaultSplitter = false;
+            this.#resizerElement.classList.toggle('hidden', this.#showMode !== "Both" /* ShowMode.BOTH */);
+            this.#sidebarElement.classList.remove('no-default-splitter');
+            this.installResizer(this.#resizerElement);
+            return;
+        }
+        this.hideDefaultResizer(noSplitter);
+        for (const el of this.#resizerWidget.elements()) {
+            if (!elements.includes(el)) {
+                this.uninstallResizer(el);
+            }
+        }
+        for (const el of elements) {
+            this.installResizer(el);
         }
     }
     #settingForOrientation() {
@@ -791,16 +816,22 @@ export class SplitWidget extends SplitWidgetBase {
 /**
  * `<devtools-split-view>` hosts a `SplitWidget`.
  *
- * `direction`, `sidebar-position`, and `show` can change at any time.
- * `name`, `sidebar-initial-size`, `sidebar-initial-width`,
+ * `direction`, `sidebar-position`, `show`, `resizer`, and `no-splitter` can
+ * change at any time. `resizer` accepts space-separated element IDs of custom
+ * resizer handles (resolving `<devtools-tabbed-pane>` to its header element)
+ * and disables the built-in resizer; `no-splitter` also hides the default
+ * splitter border. `name`, `sidebar-initial-size`, `sidebar-initial-width`,
  * `sidebar-initial-height`, and `constraints-in-dip` are only read when
  * the widget is created.
  */
 export class SplitWidgetElement extends WidgetElement {
-    static observedAttributes = ['direction', 'sidebar-position', 'sidebar-initial-size', 'show'];
+    static observedAttributes = ['direction', 'sidebar-position', 'sidebar-initial-size', 'show', 'resizer', 'no-splitter'];
+    #resizerObserver = new MutationObserver(() => this.#syncResizers());
+    #hasCustomResizers = false;
     constructor() {
         super();
         registerWidgetConfig(this, widgetConfig(element => {
+            const splitElement = element;
             const vertical = element.getAttribute('direction') === 'column';
             const autoAdjustOrientation = element.getAttribute('direction') === 'auto';
             const secondIsSidebar = element.getAttribute('sidebar-position') === 'second';
@@ -811,7 +842,7 @@ export class SplitWidgetElement extends WidgetElement {
             const fallbackSize = !isNaN(sidebarSize) ? sidebarSize : 200;
             const defaultSidebarWidth = !isNaN(sidebarWidth) ? sidebarWidth : fallbackSize;
             const defaultSidebarHeight = !isNaN(sidebarHeight) ? sidebarHeight : fallbackSize;
-            const widget = new SplitWidget(vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, element.hasAttribute('constraints-in-dip'), element);
+            const widget = new SplitWidget(vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, element.hasAttribute('constraints-in-dip'), splitElement);
             if (element.getAttribute('sidebar-initial-size') === 'minimized') {
                 widget.setSidebarMinimized(true);
             }
@@ -825,13 +856,74 @@ export class SplitWidgetElement extends WidgetElement {
             else if (show === 'sidebar') {
                 widget.hideMain();
             }
+            splitElement.#syncResizers(widget);
             widget.addEventListener("ShowModeChanged" /* Events.SHOW_MODE_CHANGED */, () => {
                 element.dispatchEvent(new CustomEvent('change', { detail: widget.showMode() }));
             });
             return widget;
         }));
     }
+    connectedCallback() {
+        super.connectedCallback();
+        this.#updateResizerObserver();
+        this.#syncResizers();
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.#resizerObserver.disconnect();
+    }
+    #updateResizerObserver() {
+        this.#resizerObserver.disconnect();
+        if (this.isConnected && this.hasAttribute('resizer')) {
+            this.#resizerObserver.observe(this, {
+                subtree: true,
+                childList: true,
+                attributes: true,
+                attributeFilter: ['id'],
+            });
+        }
+    }
+    #syncResizers(widget = Widget.get(this)) {
+        if (!widget) {
+            return;
+        }
+        const resizerAttr = this.getAttribute('resizer');
+        if (resizerAttr === null) {
+            if (this.#hasCustomResizers) {
+                this.#hasCustomResizers = false;
+                widget.setCustomResizers(null);
+            }
+            return;
+        }
+        this.#hasCustomResizers = true;
+        const ids = resizerAttr.split(/\s+/).filter(Boolean);
+        const root = this.getRootNode();
+        const parentSplit = this.parentElement?.closest('devtools-split-view') ?? null;
+        const elements = [];
+        for (const id of ids) {
+            const selector = `#${CSS.escape(id)}`;
+            let match = this.querySelector(selector);
+            if (match && match.closest('devtools-split-view') !== this) {
+                match = null;
+            }
+            if (!match && (root instanceof Document || root instanceof ShadowRoot || root instanceof Element)) {
+                const candidate = root.querySelector(selector);
+                if (candidate && candidate.closest('devtools-split-view') === parentSplit) {
+                    match = candidate;
+                }
+            }
+            if (match) {
+                elements.push(match instanceof WidgetElement ? match.resizerElement() : match);
+            }
+        }
+        widget.setCustomResizers(elements, this.hasAttribute('no-splitter'));
+    }
     attributeChangedCallback(name, _oldValue, newValue) {
+        if (name === 'resizer' || name === 'no-splitter') {
+            this.#updateResizerObserver();
+            this.#syncResizers();
+            return;
+        }
         const widget = Widget.get(this);
         if (!widget) {
             return;

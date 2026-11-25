@@ -115,6 +115,7 @@ export class SettingCheckbox extends HTMLElement {
         const titleText = uiDescriptor?.title ?? '';
         const icon = this.icon();
         const title = learnMore?.tooltip?.() ?? '';
+        /* eslint-disable @devtools/no-raw-checkbox-input -- Reusable checkbox component in shadow DOM. */
         Lit.render(html `
       <style>${Input.checkboxStyles}</style>
       <style>${settingCheckboxStyles}</style>
@@ -132,6 +133,7 @@ export class SettingCheckbox extends HTMLElement {
         </label>
         ${icon}
       </p>`, this.#shadow, { host: this });
+        /* eslint-enable @devtools/no-raw-checkbox-input */
     }
     #checkboxChanged(e) {
         this.#setting?.set(e.target.checked);

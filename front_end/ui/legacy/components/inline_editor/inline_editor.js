@@ -1330,7 +1330,7 @@ var ColorSwatch = class extends HTMLElement {
   shadow = this.attachShadow({ mode: "open" });
   tooltip = i18nString2(UIStrings2.shiftclickToChangeColorFormat);
   #color = null;
-  readonly = false;
+  #readonly = false;
   constructor(tooltip) {
     super();
     if (tooltip) {
@@ -1342,11 +1342,18 @@ var ColorSwatch = class extends HTMLElement {
   static isColorSwatch(element) {
     return element.localName === "devtools-color-swatch";
   }
+  /** Whether clicking the swatch is ignored instead of opening the color editor. */
+  get readonly() {
+    return this.#readonly;
+  }
+  set readonly(readonly) {
+    this.setReadonly(readonly);
+  }
   setReadonly(readonly) {
-    if (this.readonly === readonly) {
+    if (this.#readonly === readonly) {
       return;
     }
-    this.readonly = readonly;
+    this.#readonly = readonly;
     if (this.#color) {
       this.renderColor(this.#color);
     }
@@ -1372,7 +1379,7 @@ var ColorSwatch = class extends HTMLElement {
     this.#color = color;
     const colorSwatchClasses = Lit2.Directives.classMap({
       "color-swatch": true,
-      readonly: this.readonly
+      readonly: this.#readonly
     });
     Lit2.render(
       html2`<style>${colorSwatch_css_default}</style><span
@@ -1389,7 +1396,7 @@ var ColorSwatch = class extends HTMLElement {
     );
   }
   onActivate(e) {
-    if (this.readonly) {
+    if (this.#readonly) {
       return;
     }
     if (e instanceof KeyboardEvent && e.key !== "Enter" && e.key !== " " || e instanceof MouseEvent && e.button > 1) {

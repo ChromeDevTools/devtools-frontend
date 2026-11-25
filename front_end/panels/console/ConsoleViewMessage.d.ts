@@ -203,7 +203,6 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
      */
     private initiatorId;
     private linkifyStringAsFragment;
-    private static tokenizeMessageText;
     groupKey(): string;
     groupTitle(): string;
 }

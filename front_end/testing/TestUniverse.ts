@@ -147,6 +147,7 @@ export class TestUniverse implements Foundation.Universe.Universe {
       DevToolsState.StateManager.StateManager,
       () => new DevToolsState.StateManager.StateManager([
         new DevToolsState.CPUThrottlingStateProvider.CPUThrottlingStateProvider(this.cpuThrottlingManager),
+        new DevToolsState.NetworkStateProvider.NetworkStateProvider(this.multitargetNetworkManager),
         new DevToolsState.SettingsStateProvider.SettingsStateProvider(this.settings),
       ]),
     ],

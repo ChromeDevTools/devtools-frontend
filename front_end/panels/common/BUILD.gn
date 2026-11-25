@@ -52,6 +52,7 @@ devtools_ui_module("common") {
     "../../models/bindings:bundle",
     "../../models/comment_manager:bundle",
     "../../models/devtools_state:bundle",
+    "../../models/emulation:bundle",
     "../../models/extensions:bundle",
     "../../models/har:bundle",
     "../../models/logs:bundle",

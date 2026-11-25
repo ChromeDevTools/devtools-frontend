@@ -1657,6 +1657,19 @@ describe('MultitargetNetworkManager', () => {
       sinon.assert.notCalled(listener);
     });
 
+    it('returns the active custom user agent independently of the emulated override', () => {
+      assert.strictEqual(universe.multitargetNetworkManager.customUserAgent(), '');
+
+      universe.multitargetNetworkManager.setUserAgentOverride('EmulatedAgent', null);
+      assert.strictEqual(universe.multitargetNetworkManager.customUserAgent(), '');
+
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('CustomAgent');
+      assert.strictEqual(universe.multitargetNetworkManager.customUserAgent(), 'CustomAgent');
+
+      universe.multitargetNetworkManager.setCustomUserAgentOverride('');
+      assert.strictEqual(universe.multitargetNetworkManager.customUserAgent(), '');
+    });
+
     it('clears the custom user agent override when disabled', () => {
       universe.multitargetNetworkManager.setCustomUserAgentOverride('CustomAgent');
       assert.isTrue(universe.multitargetNetworkManager.customUserAgentEnabled());

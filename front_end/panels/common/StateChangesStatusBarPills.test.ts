@@ -27,6 +27,7 @@ const {StateChangesStatusBarPills, DEFAULT_VIEW} = PanelCommon.StateChangesStatu
 
 describe('StateChangesStatusBarPills', () => {
   setupLocaleHooks();
+  setupRuntimeHooks();
 
   let universe: TestUniverse;
   let cacheDisabledSetting: Common.Settings.Setting<boolean>;
@@ -56,6 +57,8 @@ describe('StateChangesStatusBarPills', () => {
 
   it('shows a pill for each state change', async () => {
     universe.cpuThrottlingManager.setCPUThrottlingRate(4);
+    universe.multitargetNetworkManager.setCustomUserAgentOverride(
+        'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)');
     cacheDisabledSetting.set(true);
     universe.settings.resolve(SDK.SDKSettings.javaScriptDisabledSettingDescriptor).set(true);
 
@@ -63,9 +66,27 @@ describe('StateChangesStatusBarPills', () => {
 
     assert.deepEqual(view.input.pills.map(({id, title, resetTitle}) => ({id, title, resetTitle})), [
       {id: 'cpu-throttling', title: 'CPU (4×)', resetTitle: 'Stop CPU throttling'},
+      {id: 'user-agent', title: 'User agent (Googlebot)', resetTitle: 'Reset user agent'},
       {id: 'cache-disabled', title: 'Cache disabled', resetTitle: 'Enable cache'},
       {id: 'java-script-disabled', title: 'JavaScript disabled', resetTitle: 'Enable JavaScript'},
     ]);
+  });
+
+  it('shows the preset name when the user agent matches a preset', async () => {
+    universe.multitargetNetworkManager.setCustomUserAgentOverride(
+        'Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30');
+
+    const {view} = await createWidget();
+
+    assert.deepEqual(pillTitles(view.input), ['User agent (Android (4.0.2) Browser \u2014 Galaxy Nexus)']);
+  });
+
+  it('shows Custom when the user agent does not match a preset', async () => {
+    universe.multitargetNetworkManager.setCustomUserAgentOverride('MyCustomAgent/1.0');
+
+    const {view} = await createWidget();
+
+    assert.deepEqual(pillTitles(view.input), ['User agent (Custom)']);
   });
 
   it('shows one fraction digit of a fractional CPU throttling rate', async () => {
@@ -476,7 +497,6 @@ describe('StateChangesStatusBarPills', () => {
   });
 
   describe('in the status bar', () => {
-    setupRuntimeHooks();
     setupSettingsHooks();
 
     beforeEach(() => {

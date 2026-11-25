@@ -2373,6 +2373,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
+  customUserAgent(): string {
+    return this.#customUserAgent.agent;
+  }
+
   customUserAgentEnabled(): boolean {
     return this.#customUserAgent.enabled;
   }

@@ -330,4 +330,30 @@ describe('Universe', () => {
     universe.cpuThrottlingManager.setCPUThrottlingRate(4);
     sinon.assert.notCalled(listener);
   });
+
+  it('wires StateManager to user agent changes', () => {
+    const universe = new Foundation.Universe.Universe({
+      settingsCreationOptions: createSettingsCreationOptions(),
+      hostConfig: {} as Root.Runtime.HostConfig,
+      inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+      supportsEmulation: false,
+    });
+    const listener = sinon.spy();
+    universe.stateManager.addEventListener(DevToolsState.State.Events.STATE_CHANGED, listener);
+
+    universe.get(SDK.NetworkManager.MultitargetNetworkManager).setCustomUserAgentOverride('CustomAgent');
+
+    sinon.assert.calledOnce(listener);
+    assert.deepEqual(universe.stateManager.nonDefaultStates(), [
+      {kind: DevToolsState.State.StateKind.USER_AGENT, value: 'CustomAgent', isDefault: false},
+    ]);
+
+    universe.stateManager.reset(DevToolsState.State.StateKind.USER_AGENT);
+    assert.deepEqual(universe.stateManager.nonDefaultStates(), []);
+    universe.dispose();
+
+    listener.resetHistory();
+    universe.get(SDK.NetworkManager.MultitargetNetworkManager).setCustomUserAgentOverride('CustomAgent');
+    sinon.assert.notCalled(listener);
+  });
 });

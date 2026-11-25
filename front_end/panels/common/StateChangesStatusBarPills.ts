@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as DevToolsState from '../../models/devtools_state/devtools_state.js';
+import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
@@ -24,6 +25,23 @@ const UIStrings = {
    * the bottom of DevTools. Clicking the button turns off CPU throttling on the inspected page.
    */
   stopCpuThrottling: 'Stop CPU throttling',
+  /**
+   * @description Text of a pill in the status bar at the bottom of DevTools. The pill tells the user
+   * that the browser user agent string is overridden. The placeholder is the user agent preset name
+   * or "Custom".
+   * @example {Googlebot} PH1
+   */
+  userAgent: 'User agent ({PH1})',
+  /**
+   * @description Label shown inside the user agent pill in the status bar at the bottom of DevTools
+   * when the overridden user agent string does not match a built-in preset.
+   */
+  customUserAgent: 'Custom',
+  /**
+   * @description Tooltip and accessible name of the button in the user agent pill in the status bar
+   * at the bottom of DevTools. Clicking the button restores the default browser user agent.
+   */
+  resetUserAgent: 'Reset user agent',
   /**
    * @description Text of a pill in the status bar at the bottom of DevTools. The pill tells the user
    * that the browser cache is disabled while DevTools is open.
@@ -205,6 +223,10 @@ function pillTitle(state: DevToolsState.State.State): Platform.UIString.Localize
   switch (state.kind) {
     case DevToolsState.State.StateKind.CPU_THROTTLING:
       return i18nString(UIStrings.cpuThrottling, {PH1: cpuThrottlingRateFormatter.format(Number(state.value))});
+    case DevToolsState.State.StateKind.USER_AGENT: {
+      const preset = EmulationModel.UserAgentGroups.findUserAgentPreset(String(state.value));
+      return i18nString(UIStrings.userAgent, {PH1: preset?.title ?? i18nString(UIStrings.customUserAgent)});
+    }
     case DevToolsState.State.StateKind.CACHE_DISABLED:
       return i18nString(UIStrings.cacheDisabled);
     case DevToolsState.State.StateKind.JAVASCRIPT_DISABLED:
@@ -218,6 +240,8 @@ function pillResetTitle(state: DevToolsState.State.State): Platform.UIString.Loc
   switch (state.kind) {
     case DevToolsState.State.StateKind.CPU_THROTTLING:
       return i18nString(UIStrings.stopCpuThrottling);
+    case DevToolsState.State.StateKind.USER_AGENT:
+      return i18nString(UIStrings.resetUserAgent);
     case DevToolsState.State.StateKind.CACHE_DISABLED:
       return i18nString(UIStrings.enableCache);
     case DevToolsState.State.StateKind.JAVASCRIPT_DISABLED:

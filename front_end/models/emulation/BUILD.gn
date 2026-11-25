@@ -34,6 +34,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../*",
     "../../foundation/*",
+    "../../panels/common/*",
     "../../panels/emulation/*",
     "../../panels/lighthouse/*",
     "../../panels/network/*",

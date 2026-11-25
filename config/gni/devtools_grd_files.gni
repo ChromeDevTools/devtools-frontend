@@ -1221,6 +1221,7 @@ grd_files_unbundled_sources = [
   "front_end/models/devtools_state/State.js",
   "front_end/models/devtools_state/StateManager.js",
   "front_end/models/devtools_state/providers/CPUThrottlingStateProvider.js",
+  "front_end/models/devtools_state/providers/NetworkStateProvider.js",
   "front_end/models/devtools_state/providers/SettingsStateProvider.js",
   "front_end/models/elements/ChangeTrackingUtils.js",
   "front_end/models/elements/DOMChanges.js",

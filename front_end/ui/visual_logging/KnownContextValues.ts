@@ -3290,6 +3290,7 @@ export const knownContextValues: Set<string> = new Set([
   'pagedown',
   'pageup',
   'paint-order',
+  'paint-profiler',
   'painting',
   'palatino',
   'palette-panel',

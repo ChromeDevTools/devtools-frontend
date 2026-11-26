@@ -44,6 +44,7 @@ import {
 } from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
@@ -66,20 +67,37 @@ function getInnerTextAcrossShadowRoots(root: Node|null): string {
   return Array.from(root.childNodes).map(getInnerTextAcrossShadowRoots).join('');
 }
 
+const renderedDetailsContainers = new WeakMap<DocumentFragment, HTMLElement>();
+
+/**
+ * Renders the details into the DOM (only once per fragment), and waits for
+ * the child widgets, such as the stack traces, to render.
+ */
+async function renderDetailsIntoDOM(details: DocumentFragment): Promise<HTMLElement> {
+  let container = renderedDetailsContainers.get(details);
+  if (!container) {
+    container = document.createElement('div');
+    renderElementIntoDOM(container, {includeCommonStyles: true, allowMultipleChildren: true});
+    container.appendChild(details);
+    renderedDetailsContainers.set(details, container);
+  }
+  await UI.Widget.Widget.allUpdatesComplete;
+  return container;
+}
+
+/** Renders a template into a detached container. */
 function renderTemplate(template: LitTemplate): HTMLDivElement {
   const container = document.createElement('div');
   render(template, container);
   return container;
 }
 
-function getRowDataForDetailsElement(details: DocumentFragment) {
-  const container = document.createElement('div');
-  renderElementIntoDOM(container, {includeCommonStyles: true});
-  container.appendChild(details);
+async function getRowDataForDetailsElement(details: DocumentFragment) {
+  const container = await renderDetailsIntoDOM(details);
   return Array.from(container.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
     const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
     const valueEl = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value') ??
-        row.querySelector<HTMLElement>('div,span');
+        row.querySelector<HTMLElement>('div,span,devtools-widget');
     let value = valueEl?.innerText || '';
     if (!value && valueEl) {
       // Stack traces and renderEventJson have the contents within a shadowRoot.
@@ -89,9 +107,10 @@ function getRowDataForDetailsElement(details: DocumentFragment) {
   });
 }
 
-function getStackTraceForDetailsElement(details: DocumentFragment): string[]|null {
+async function getStackTraceForDetailsElement(details: DocumentFragment): Promise<string[]|null> {
+  const container = await renderDetailsIntoDOM(details);
   const stackTraceContainer =
-      details
+      container
           .querySelector<HTMLDivElement>(
               '.timeline-details-view-row.timeline-details-stack-values .stack-preview-container')
           ?.shadowRoot;
@@ -533,7 +552,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
         {
           title: 'Warning',
@@ -574,7 +593,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
         {title: 'Duration', value: '0.22\xA0ms (self 0.20\xA0ms)'},
         {title: 'eventKey', value: 'r-83'},
@@ -617,7 +636,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
         {title: 'Duration', value: '0.19\xA0ms'},
         {
@@ -680,7 +699,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
         {
           title: 'Timestamp',
@@ -704,7 +723,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
 
       const timestampRow = rowData.find(row => row.title === 'Timestamp');
       assert.exists(timestampRow);
@@ -727,7 +746,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
         {
           title: 'Timestamp',
@@ -756,7 +775,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
         {title: 'Duration', value: '0.98\xA0ms (self 34\xA0μs)'},
         {
@@ -902,7 +921,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details).slice(0, 4);
+      const rowData = (await getRowDataForDetailsElement(details)).slice(0, 4);
       assert.deepEqual(
           rowData,
           [
@@ -942,7 +961,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details).slice(0, 3);
+      const rowData = (await getRowDataForDetailsElement(details)).slice(0, 3);
       assert.deepEqual(
           rowData,
           [
@@ -968,7 +987,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details).slice(0, 2);
+      const rowData = (await getRowDataForDetailsElement(details)).slice(0, 2);
       assert.deepEqual(
           rowData,
           [
@@ -1001,7 +1020,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const stackTraceData = getStackTraceForDetailsElement(details);
+      const stackTraceData = await getStackTraceForDetailsElement(details);
       assert.exists(stackTraceData);
       assert.strictEqual(stackTraceData[0], '(anonymous) @ www.google.com:21:17');
     });
@@ -1020,12 +1039,12 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const stackTraceData = getStackTraceForDetailsElement(details);
+      const stackTraceData = await getStackTraceForDetailsElement(details);
       assert.deepEqual(
           stackTraceData,
           ['(anonymous) @ web.dev/js/app.js?v=1423cda3:1:183'],
       );
-      const rowData = getRowDataForDetailsElement(details)[0];
+      const rowData = (await getRowDataForDetailsElement(details))[0];
       assert.deepEqual(
           rowData,
           {
@@ -1049,7 +1068,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const stackTraceData = getStackTraceForDetailsElement(details);
+      const stackTraceData = await getStackTraceForDetailsElement(details);
       assert.deepEqual(
           stackTraceData,
           ['(anonymous) @ web.dev/js/app.js?v=1423cda3:1:183'],
@@ -1116,7 +1135,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const markerStackTraceData = getStackTraceForDetailsElement(markerDetails);
+      const markerStackTraceData = await getStackTraceForDetailsElement(markerDetails);
       assert.exists(markerStackTraceData);
       assert.deepEqual(
           markerStackTraceData,
@@ -1146,7 +1165,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
+      const trackEntryStackTraceData = await getStackTraceForDetailsElement(trackEntryDetails);
       assert.exists(trackEntryStackTraceData);
       assert.deepEqual(trackEntryStackTraceData, [
         `${function2.callFrame.functionName} @ (unknown)`,
@@ -1170,7 +1189,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const markerStackTraceData = getStackTraceForDetailsElement(markerDetails);
+      const markerStackTraceData = await getStackTraceForDetailsElement(markerDetails);
       assert.exists(markerStackTraceData);
       assert.deepEqual(
           markerStackTraceData,
@@ -1187,7 +1206,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
+      const trackEntryStackTraceData = await getStackTraceForDetailsElement(trackEntryDetails);
       assert.exists(trackEntryStackTraceData);
       assert.deepEqual(trackEntryStackTraceData, [
         `${function2.callFrame.functionName} @ (unknown)`,
@@ -1210,7 +1229,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
       assert.deepEqual(
           rowData,
           [
@@ -1237,7 +1256,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = await getRowDataForDetailsElement(details);
       assert.deepEqual(
           rowData.slice(0, 2),  // Don't care about the stack trace or initiator
           [
@@ -1268,7 +1287,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
              false,
              null,
          );
-         const rowData = getRowDataForDetailsElement(details);
+         const rowData = await getRowDataForDetailsElement(details);
          const expectedRowData = [
            {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
            // The 'First Invalidated' Stack trace
@@ -1299,7 +1318,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
              false,
              null,
          );
-         const rowData = getRowDataForDetailsElement(details);
+         const rowData = await getRowDataForDetailsElement(details);
          const expectedRowData = [
            {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
            // The initiator stack trace
@@ -1357,7 +1376,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(scheduleDetails);
+      const rowData = await getRowDataForDetailsElement(scheduleDetails);
       assert.deepEqual(rowData, [
         {title: 'Delay', value: '200\xA0ms'},
         {title: 'Priority', value: 'user-visible'},
@@ -1445,7 +1464,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(runDetails);
+      const rowData = await getRowDataForDetailsElement(runDetails);
       assert.deepEqual(rowData, [
         {title: 'Duration', value: '161.18\xA0ms (self 63\xA0μs)'},
         {title: 'Delay', value: '200\xA0ms'},
@@ -1474,6 +1493,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
       const container = document.createElement('div');
       renderElementIntoDOM(container);
       container.appendChild(details);
+      await UI.Widget.Widget.allUpdatesComplete;
       const stackTraceContainer = container.querySelector('.stack-preview-container');
       const stackTracesElements =
           stackTraceContainer?.shadowRoot?.querySelector('.stack-preview-container')?.querySelectorAll('tbody');
@@ -1515,7 +1535,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
         entityMapper,
     );
 
-    const rowData = getRowDataForDetailsElement(details).find(row => row.title?.startsWith('Origin'));
+    const rowData = (await getRowDataForDetailsElement(details)).find(row => row.title?.startsWith('Origin'));
     assert.deepEqual(rowData, {
       title: 'Origin',
       value: 'www.google-analytics.com (Google Analytics)',
@@ -2004,7 +2024,7 @@ describeWithEnvironment('TimelineUIUtils - mapping to authored function name whe
 
     const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
         parsedTrace, profileCall, new Components.Linkifier.Linkifier(), false, null);
-    const stackTraceData = getStackTraceForDetailsElement(details);
+    const stackTraceData = await getStackTraceForDetailsElement(details);
     assert.exists(stackTraceData);
     assert.strictEqual(stackTraceData[0], 'someFunction @ main.js:6:10');
   });
@@ -2060,7 +2080,7 @@ describeWithEnvironment('TimelineUIUtils - mapping to authored function name whe
         false,
         null,
     );
-    const detailsData = getRowDataForDetailsElement(details).find(row => row.title?.startsWith('Function'));
+    const detailsData = (await getRowDataForDetailsElement(details)).find(row => row.title?.startsWith('Function'));
     assert.exists(detailsData);
     assert.deepEqual(detailsData, {title: 'Function', value: 'someFunction @ main.js:6:10'});
   });
@@ -2094,7 +2114,7 @@ describeWithEnvironment('TimelineUIUtils - mapping to authored function name whe
 
     const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
         parsedTrace, profileCall, new Components.Linkifier.Linkifier(), false, null);
-    const stackTraceData = getStackTraceForDetailsElement(details);
+    const stackTraceData = await getStackTraceForDetailsElement(details);
     assert.exists(stackTraceData);
     assert.strictEqual(stackTraceData[0], 'minified @ gen.js:1:52');
   });
@@ -2115,7 +2135,7 @@ describeWithEnvironment('TimelineUIUtils - mapping to authored function name whe
         null,
     );
 
-    const rowData = getRowDataForDetailsElement(details);
+    const rowData = await getRowDataForDetailsElement(details);
     const durationRow = rowData.find(row => row.title === 'Duration');
     assert.exists(durationRow);
     assert.strictEqual(durationRow.value.replace(/\u00a0/g, ' '), '452.20 ms (self 27.18 ms)');
@@ -2129,7 +2149,7 @@ describeWithEnvironment('TimelineUIUtils - mapping to authored function name whe
 
     const helper = new Timeline.TimelineUIUtils.TimelineDetailsContentHelper(
         SDK.TargetManager.TargetManager.instance().primaryPageTarget(), new Components.Linkifier.Linkifier());
-    const stackTraceElement = await helper.createChildStackTraceElement({
+    const stackTrace = await helper.createChildStackTraceElement({
       callFrames: [{
         functionName: 'fn',
         scriptId: '1' as Protocol.Runtime.ScriptId,
@@ -2138,16 +2158,18 @@ describeWithEnvironment('TimelineUIUtils - mapping to authored function name whe
         columnNumber: 1,
       }],
     });
-    assert.exists(stackTraceElement);
+    assert.exists(stackTrace);
+    helper.appendSectionWithBodyIfExists('Stack', {body: stackTrace});
+    const details = helper.fragment;
     assert.strictEqual(activeListeners(), 0);
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    container.appendChild(stackTraceElement);
+    container.appendChild(details);
     assert.strictEqual(activeListeners(), 1);
 
     const removed = expectCall(removeChangeListener);
-    container.removeChild(stackTraceElement);
+    container.remove();
     await removed;
     assert.strictEqual(activeListeners(), 0);
   });

@@ -93,13 +93,18 @@ interface FlameChartDimmer {
 
 export interface ViewInput {
   detailsSplitWidget: UI.SplitWidget.SplitWidget;
+  inert: boolean;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  const container = {
+    classes: ['timeline-flamechart'],
+    attributes: {jslog: VisualLogging.section('timeline.flame-chart-view'), inert: input.inert},
+  };
   // clang-format off
   render(html`<style>${timelineFlameChartViewStyles}</style>
     <div ${UI.Widget.widget(UI.Widget.WrapperWidget, {widget: input.detailsSplitWidget})}></div>`,
-    target, {container: {attributes: {jslog: VisualLogging.section('timeline.flame-chart-view')}}});
+    target, {container});
   // clang-format on
 };
 
@@ -219,6 +224,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #networkPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #mainPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #listenersAttached = false;
+  #inert = false;
   readonly #view: View;
   readonly #boundOnMainDataChanged = (): void => {
     this.mainFlameChart.scheduleUpdate();
@@ -228,7 +234,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
               view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
-    this.element.classList.add('timeline-flamechart');
 
     this.#delegate = delegate;
     this.#parsedTrace = null;
@@ -332,15 +337,9 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     });
 
     this.#overlays.addEventListener(Overlays.Overlays.ConsentDialogVisibilityChange.eventName, e => {
-      const event = e as Overlays.Overlays.ConsentDialogVisibilityChange;
-      if (event.isVisible) {
-        // If the dialog is visible, we do not want anything in the performance
-        // panel capturing tab focus.
-        // https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert
-        this.element.setAttribute('inert', 'inert');
-      } else {
-        this.element.removeAttribute('inert');
-      }
+      // Prevent the performance panel from capturing tab focus while the consent dialog is visible.
+      this.#inert = (e as Overlays.Overlays.ConsentDialogVisibilityChange).isVisible;
+      this.requestUpdate();
     });
 
     this.#overlays.addEventListener(Overlays.Overlays.EntryLabelMouseClick.eventName, event => {
@@ -1531,7 +1530,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   override performUpdate(): void {
-    this.#view({detailsSplitWidget: this.#detailsSplitWidget}, undefined, this.contentElement);
+    this.#view({detailsSplitWidget: this.#detailsSplitWidget, inert: this.#inert}, undefined, this.contentElement);
     if (this.#needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }

@@ -593,6 +593,13 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(flameChartView);
     const input = await view.nextInput;
     assert.instanceOf(input.detailsSplitWidget, UI.SplitWidget.SplitWidget);
+    assert.isFalse(input.inert);
+
+    flameChartView.overlays().dispatchEvent(new Overlays.Overlays.ConsentDialogVisibilityChange(true));
+    assert.isTrue((await view.nextInput).inert);
+
+    flameChartView.overlays().dispatchEvent(new Overlays.Overlays.ConsentDialogVisibilityChange(false));
+    assert.isFalse((await view.nextInput).inert);
   });
 
   it('coalesces overlay updates when main and network flame charts redraw in the same turn', async () => {

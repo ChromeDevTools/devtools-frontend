@@ -1875,6 +1875,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       ['navigation-variant', 'hide-overflow', 'dense', 'show-selection-on-keyboard-focus', 'disclosure-class'];
   readonly #treeOutline = new TreeOutlineInShadow(undefined, this, true);
   readonly #syncedTreeClasses = new Set<string>();
+  readonly #treeNodesWithTitleChildMutations = new Set<Element>();
 
   constructor() {
     super();
@@ -1960,6 +1961,21 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
                          null;
   }
 
+  protected override onChange(mutationList: MutationRecord[]): void {
+    this.#treeNodesWithTitleChildMutations.clear();
+    for (const mutation of mutationList) {
+      if (mutation.type !== 'childList' || !(mutation.target instanceof HTMLLIElement) ||
+          mutation.target.role !== 'treeitem') {
+        continue;
+      }
+      const hasNonGroupChild = [...mutation.addedNodes, ...mutation.removedNodes].some(
+          node => !(node instanceof HTMLUListElement && node.role === 'group') && node.nodeType !== Node.COMMENT_NODE);
+      if (hasNonGroupChild) {
+        this.#treeNodesWithTitleChildMutations.add(mutation.target);
+      }
+    }
+  }
+
   protected override updateNode(node: Node, attributeName: string|null): void {
     if (node instanceof HTMLUListElement && node.role === 'tree') {
       if (attributeName === null || attributeName === 'class') {
@@ -1996,10 +2012,13 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       if (attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
         treeElement.revealAndSelect(!this.hasFocus());
       }
+      if (attributeName === 'toggle-on-click') {
+        treeElement.toggleOnClick = hasBooleanAttribute(treeNode, 'toggle-on-click');
+      }
+      if (attributeName === null && this.#treeNodesWithTitleChildMutations.has(treeNode)) {
+        treeElement.refreshSoon();
+      }
       return;
-    }
-    if (node === treeNode && attributeName === 'toggle-on-click') {
-      treeElement.toggleOnClick = hasBooleanAttribute(treeNode, 'toggle-on-click');
     }
     treeElement.refreshSoon();
   }

@@ -39,7 +39,8 @@ span.ax-value-undefined {
 }
 
 .tree-outline dt-icon-label,
-.tree-outline li > devtools-icon {
+.tree-outline li > devtools-icon,
+.tree-outline li > .tree-element-title > devtools-icon {
   position: relative;
   left: -11px;
 }
@@ -69,7 +70,9 @@ span.ax-value-undefined {
 
 .tree-outline dt-icon-label + .ax-name,
 .tree-outline li > devtools-icon + .ax-name,
-.tree-outline li > devtools-icon + .ax-readable-name {
+.tree-outline li > devtools-icon + .ax-readable-name,
+.tree-outline li > .tree-element-title > devtools-icon + .ax-name,
+.tree-outline li > .tree-element-title > devtools-icon + .ax-readable-name {
   margin-left: -11px;
 }
 

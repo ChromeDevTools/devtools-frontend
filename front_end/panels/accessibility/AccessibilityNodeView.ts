@@ -267,6 +267,17 @@ function renderSourceNameElement(source: Protocol.Accessibility.AXValueSource): 
   }
 }
 
+export interface AXPropertyItem {
+  name: string;
+  value: Protocol.Accessibility.AXValue;
+}
+
+export interface ExposedViewInput {
+  properties: AXPropertyItem[];
+  resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>;
+  onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void;
+}
+
 export interface IgnoredViewInput {
   roleName: string;
   ignoredReasons: Protocol.Accessibility.AXProperty[];
@@ -296,11 +307,51 @@ function renderRelatedNodeSourceTreeElement(
                     nothing}</li>`;
 }
 
-function renderRelatedNodeListValueElement(
+function renderIDRefValueElement(
     value: Protocol.Accessibility.AXValue,
     resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
     onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void,
     ): RenderedValue {
+  const relatedNodes = value.relatedNodes || [];
+  const expanded = relatedNodes.length <= 3;
+  if (value.value === null || value.value === undefined) {
+    return {inline: nothing, children: [], expanded};
+  }
+  if (value.value === '') {
+    const children = relatedNodes.map(
+        node => renderRelatedNodeSourceTreeElement({backendDOMNodeId: node.backendDOMNodeId, idref: node.idref || ''},
+                                                   node, resolvedNodes, onRevealNode));
+    return {inline: nothing, children, expanded};
+  }
+
+  const idrefs = String(value.value).trim().split(/\s+/);
+  const inlineParts: LitTemplate[] = [];
+  const children: LitTemplate[] = [];
+  for (const idref of idrefs) {
+    const matchingNode = relatedNodes.find(node => node.idref === idref);
+    if (matchingNode) {
+      children.push(renderRelatedNodeSourceTreeElement({backendDOMNodeId: matchingNode.backendDOMNodeId, idref},
+                                                       matchingNode, resolvedNodes, onRevealNode));
+    } else if (idrefs.length === 1) {
+      inlineParts.push(renderRelatedNode({idref}, resolvedNodes));
+    } else {
+      children.push(renderRelatedNodeSourceTreeElement({idref}, undefined, resolvedNodes, onRevealNode));
+    }
+  }
+  return {inline: inlineParts.length > 0 ? html`${inlineParts}` : nothing, children, expanded};
+}
+
+function renderRelatedNodeListValueElement(
+    value: Protocol.Accessibility.AXValue,
+    isValueSource: boolean,
+    resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
+    onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void,
+    ): RenderedValue {
+  if (isValueSource &&
+      (value.type === Protocol.Accessibility.AXValueType.IdrefList ||
+       value.type === Protocol.Accessibility.AXValueType.Idref)) {
+    return renderIDRefValueElement(value, resolvedNodes, onRevealNode);
+  }
   const relatedNodes = value.relatedNodes;
   const expanded = Boolean(relatedNodes && relatedNodes.length <= 3);
   if (relatedNodes?.length === 1 && !value.value) {
@@ -317,6 +368,89 @@ function renderRelatedNodeListValueElement(
   return {inline: nothing, children, expanded};
 }
 
+function renderValueElement(
+    value: Protocol.Accessibility.AXValue,
+    isValueSource: boolean,
+    resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
+    onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void,
+    ): RenderedValue {
+  if (value.type === Protocol.Accessibility.AXValueType.Idref ||
+      value.type === Protocol.Accessibility.AXValueType.Node ||
+      value.type === Protocol.Accessibility.AXValueType.IdrefList ||
+      value.type === Protocol.Accessibility.AXValueType.NodeList) {
+    return renderRelatedNodeListValueElement(value, isValueSource, resolvedNodes, onRevealNode);
+  }
+  const children =
+      (value.sources || []).map(source => renderValueSourceTreeElement(source, resolvedNodes, onRevealNode));
+  const expanded = Boolean(value.sources && value.sources.length > 0);
+  const inline = createSimpleValueElement(value.type, String(value.value));
+  return {inline, children, expanded};
+}
+
+function renderValueSourceTreeElement(
+    source: Protocol.Accessibility.AXValueSource,
+    resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
+    onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void,
+    ): LitTemplate {
+  let valueInline: LitTemplate = nothing;
+  let children: LitTemplate[] = [];
+  let expanded = false;
+
+  if (source.attributeValue) {
+    const res = renderValueElement(source.attributeValue, /* isValueSource= */ true, resolvedNodes, onRevealNode);
+    valueInline = html`${res.inline}${'\xA0'}`;
+    children = res.children;
+    expanded = res.expanded;
+  } else if (source.nativeSourceValue) {
+    const nativeRes =
+        renderValueElement(source.nativeSourceValue, /* isValueSource= */ true, resolvedNodes, onRevealNode);
+    if (source.value) {
+      const valRes = renderValueElement(source.value, /* isValueSource= */ true, resolvedNodes, onRevealNode);
+      valueInline = html`${nativeRes.inline}${'\xA0'}${valRes.inline}`;
+      children = [...nativeRes.children, ...valRes.children];
+      expanded = valRes.children.length > 0 ? valRes.expanded : nativeRes.expanded;
+    } else {
+      valueInline = html`${nativeRes.inline}${'\xA0'}`;
+      children = nativeRes.children;
+      expanded = nativeRes.expanded;
+    }
+  } else if (source.value) {
+    const res = renderValueElement(source.value, /* isValueSource= */ true, resolvedNodes, onRevealNode);
+    valueInline = res.inline;
+    children = res.children;
+    expanded = res.expanded;
+  } else {
+    valueInline =
+        createSimpleValueElement(Protocol.Accessibility.AXValueType.ValueUndefined, i18nString(UIStrings.notSpecified));
+  }
+
+  const hasNoValue = !source.attributeValue && !source.nativeSourceValue && !source.value;
+  const classes = {
+    'ax-value-source-invalid': Boolean(source.invalid),
+    'ax-value-source-unused': (!source.invalid && Boolean(source.superseded)) || hasNoValue,
+    'ax-value-source-superseded': Boolean(source.value && source.superseded),
+  };
+
+  return html`<li role="treeitem" class=${classMap(classes)} ?open=${expanded && children.length > 0}>${
+      source.invalid ? createExclamationMark(i18nString(UIStrings.invalidSource)) :
+                       nothing}${renderSourceNameElement(source)}<span class="separator">${':\xA0'}</span>${
+      valueInline}${children.length > 0 ? html`<ul role="group">${children}</ul>` : nothing}</li>`;
+}
+
+function renderPropertyTreeElement(
+    property: AXPropertyItem,
+    index: number,
+    resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
+    onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void,
+    ): LitTemplate {
+  const {inline, children, expanded} =
+      renderValueElement(property.value, /* isValueSource= */ false, resolvedNodes, onRevealNode);
+  return html`<li role="treeitem" class="property" ?toggle-on-click=${true} ?selected=${index === 0}
+      ?open=${expanded && children.length > 0}>${renderNameElement(property.name)}<span class="separator">${
+                                                                                 ':\xA0'}</span>${inline}${
+      children.length > 0 ? html`<ul role="group">${children}</ul>` : nothing}</li>`;
+}
+
 function renderIgnoredReasonTreeElement(
     property: Protocol.Accessibility.AXProperty,
     roleName: string,
@@ -326,7 +460,7 @@ function renderIgnoredReasonTreeElement(
   const reasonTemplate = createReasonElement(property.name, roleName);
   const value = property.value;
   const {inline, children, expanded} = value.type === Protocol.Accessibility.AXValueType.Idref ?
-      renderRelatedNodeListValueElement(value, resolvedNodes, onRevealNode) :
+      renderRelatedNodeListValueElement(value, /* isValueSource= */ false, resolvedNodes, onRevealNode) :
       {inline: nothing, children: [], expanded: false};
   return html`<li role="treeitem" ?toggle-on-click=${true} selectable="false"
       ?open=${expanded && children.length > 0}>${reasonTemplate}${inline}${
@@ -357,9 +491,28 @@ export function renderIgnoredView(input: IgnoredViewInput): LitTemplate {
   // clang-format on
 }
 
+export function renderExposedView(input: ExposedViewInput): LitTemplate {
+  // clang-format off
+  return html`
+    <devtools-tree
+      hide-overflow
+      .template=${html`
+        <style>${accessibilityNodeStyles}</style>
+        <style>${accessibilityPropertiesStyles}</style>
+        <style>${objectValueStyles}</style>
+        <ul role="tree">
+          ${repeat(
+              input.properties,
+              property => property.name,
+              (property, index) => renderPropertyTreeElement(
+                  property, index, input.resolvedNodes, input.onRevealNode))}
+        </ul>
+      `}></devtools-tree>`;
+  // clang-format on
+}
+
 export class AXNodeSubPane extends AccessibilitySubPane {
   private readonly noNodeInfo: UI.EmptyWidget.EmptyWidget;
-  private readonly treeOutline: UI.TreeOutline.TreeOutline;
   readonly #declarativeContainer = document.createElement('div');
   readonly #resolvedNodes = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
   constructor(element?: HTMLElement) {
@@ -375,11 +528,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this.noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
     this.#declarativeContainer.style.display = 'contents';
     this.contentElement.appendChild(this.#declarativeContainer);
-    this.treeOutline = this.createTreeOutline();
-
     this.element.classList.add('accessibility-computed');
-
-    this.treeOutline.setFocusable(true);
   }
 
   protected override setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
@@ -389,55 +538,12 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     super.setAXNode(axNode);
 
     this.#resolvedNodes.clear();
-    const treeOutline = this.treeOutline;
-    treeOutline.removeChildren();
-    this.requestUpdate();
-
-    if (!axNode) {
-      treeOutline.element.classList.add('hidden');
-      this.noNodeInfo.element.classList.remove('hidden');
-      this.element.classList.add('ax-ignored-node-pane');
-
-      return;
-    }
-
-    if (axNode.ignored()) {
-      this.noNodeInfo.element.classList.add('hidden');
-      treeOutline.element.classList.add('hidden');
-      this.element.classList.add('ax-ignored-node-pane');
+    if (axNode) {
       this.#resolveRelatedNodes(axNode);
-      return;
     }
-    this.element.classList.remove('ax-ignored-node-pane');
-    this.noNodeInfo.element.classList.add('hidden');
-
-    treeOutline.element.classList.remove('hidden');
-
-    function addProperty(property: SDK.AccessibilityModel.CoreOrProtocolAxProperty): void {
-      treeOutline.appendChild(
-          new AXNodePropertyTreePropertyElement(property, axNode as SDK.AccessibilityModel.AccessibilityNode));
-    }
-
-    for (const property of axNode.coreProperties()) {
-      addProperty(property);
-    }
-
-    const role = axNode.role();
-    if (role) {
-      const roleProperty: SDK.AccessibilityModel.CoreOrProtocolAxProperty = {
-        name: SDK.AccessibilityModel.CoreAxPropertyName.ROLE,
-        value: role,
-      };
-      addProperty(roleProperty);
-    }
-    for (const property of axNode.properties() as Protocol.Accessibility.AXProperty[]) {
-      addProperty(property);
-    }
-
-    const firstNode = treeOutline.firstChild();
-    if (firstNode) {
-      firstNode.select(/* omitFocus= */ true, /* selectedByUser= */ false);
-    }
+    this.element.classList.toggle('ax-ignored-node-pane', !axNode || axNode.ignored());
+    this.noNodeInfo.element.classList.toggle('hidden', Boolean(axNode));
+    this.requestUpdate();
   }
 
   protected override setNode(node: SDK.DOMModel.DOMNode|null): void {
@@ -509,15 +615,34 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
   override performUpdate(): void {
     const axNode = this.axNode;
-    if (!axNode?.ignored()) {
+    if (!axNode) {
       render(nothing, this.#declarativeContainer);
       return;
     }
-    const ignoredReasons = (axNode.ignoredReasons() as Protocol.Accessibility.AXProperty[] | null) ?? [];
+    if (axNode.ignored()) {
+      const ignoredReasons = (axNode.ignoredReasons() as Protocol.Accessibility.AXProperty[] | null) ?? [];
+      render(
+          renderIgnoredView({
+            roleName: String(axNode.role()?.value || ''),
+            ignoredReasons,
+            resolvedNodes: new Map(this.#resolvedNodes),
+            onRevealNode: this.#onRevealNode,
+          }),
+          this.#declarativeContainer,
+      );
+      return;
+    }
+    const properties: AXPropertyItem[] = [...axNode.coreProperties()];
+    const role = axNode.role();
+    if (role) {
+      properties.push({name: SDK.AccessibilityModel.CoreAxPropertyName.ROLE, value: role});
+    }
+    for (const property of (axNode.properties() as Protocol.Accessibility.AXProperty[] | null) ?? []) {
+      properties.push(property);
+    }
     render(
-        renderIgnoredView({
-          roleName: String(axNode.role()?.value || ''),
-          ignoredReasons,
+        renderExposedView({
+          properties,
           resolvedNodes: new Map(this.#resolvedNodes),
           onRevealNode: this.#onRevealNode,
         }),
@@ -626,34 +751,6 @@ export const StringProperties: Set<Protocol.Accessibility.AXValueType> = new Set
   Protocol.Accessibility.AXValueType.IdrefList,
   Protocol.Accessibility.AXValueType.Idref,
 ]);
-
-export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement {
-  private readonly property: SDK.AccessibilityModel.CoreOrProtocolAxProperty;
-  override toggleOnClick: boolean;
-  constructor(property: SDK.AccessibilityModel.CoreOrProtocolAxProperty,
-              axNode: SDK.AccessibilityModel.AccessibilityNode) {
-    super(axNode);
-
-    this.property = property;
-    this.toggleOnClick = true;
-
-    this.listItemElement.classList.add('property');
-  }
-
-  override onattach(): void {
-    this.update();
-  }
-
-  private update(): void {
-    this.listItemElement.removeChildren();
-
-    this.appendNameElement(this.property.name);
-
-    this.listItemElement.createChild('span', 'separator').textContent = ':\xA0';
-
-    this.appendValueElement(this.property.value);
-  }
-}
 
 export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
   private readonly source: Protocol.Accessibility.AXValueSource;

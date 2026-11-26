@@ -89,4 +89,140 @@ describe('AccessibilityNodeView view', () => {
     modalChildren[0].onenter();
     sinon.assert.calledOnceWithExactly(onRevealNode, BACKEND_NODE_ID);
   });
+
+  it('renders properties, value sources, and IDRefs in renderExposedView', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        Accessibility.AccessibilityNodeView.renderExposedView({
+          properties: [
+            {
+              name: 'name',
+              value: {
+                type: Protocol.Accessibility.AXValueType.ComputedString,
+                value: 'Line 1\nLine 2',
+                sources: [
+                  {
+                    type: Protocol.Accessibility.AXValueSourceType.Attribute,
+                    attribute: 'aria-labelledby',
+                    attributeValue: {
+                      type: Protocol.Accessibility.AXValueType.IdrefList,
+                      value: 'label-1 missing-id',
+                      relatedNodes: [{backendDOMNodeId: BACKEND_NODE_ID, idref: 'label-1', text: 'Line 1'}],
+                    },
+                  },
+                  {
+                    type: Protocol.Accessibility.AXValueSourceType.Attribute,
+                    attribute: 'aria-label',
+                    value: {type: Protocol.Accessibility.AXValueType.ComputedString, value: 'Ignored label'},
+                    superseded: true,
+                  },
+                  {type: Protocol.Accessibility.AXValueSourceType.Placeholder, attribute: 'placeholder', invalid: true},
+                ],
+              },
+            },
+            {name: 'role', value: {type: Protocol.Accessibility.AXValueType.Role, value: 'button'}},
+          ],
+          resolvedNodes: new Map(),
+          onRevealNode: sinon.stub(),
+        }),
+        container,
+    );
+
+    const tree = container.querySelector('devtools-tree');
+    assert.exists(tree);
+    tree.flushPendingUpdatesForTesting();
+    const [nameElement] = tree.getInternalTreeOutlineForTest().rootElement().children();
+    assert.isTrue(nameElement.selected);
+    assert.isTrue(nameElement.expanded);
+    assert.strictEqual(nameElement.listItemElement.textContent, 'Name:\xA0"Line 1\u21B5Line 2"');
+
+    const sourceChildren = nameElement.children();
+    assert.lengthOf(sourceChildren, 3);
+    assert.isTrue(sourceChildren[1].listItemElement.classList.contains('ax-value-source-superseded'));
+    assert.isTrue(sourceChildren[2].listItemElement.classList.contains('ax-value-source-invalid'));
+    assert.include(sourceChildren[2].listItemElement.textContent, 'Not specified');
+    const idrefChildren = sourceChildren[0].children();
+    assert.lengthOf(idrefChildren, 2);
+    assert.include(idrefChildren[0].listItemElement.textContent, '"Line 1"');
+    assert.exists(idrefChildren[1].listItemElement.querySelector('.invalid'));
+  });
+
+  it('updates an existing value source with warning icon, value, and invalid styling in renderExposedView', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+
+    render(
+        Accessibility.AccessibilityNodeView.renderExposedView({
+          properties: [
+            {
+              name: 'name',
+              value: {
+                type: Protocol.Accessibility.AXValueType.ComputedString,
+                value: '',
+                sources: [
+                  {
+                    type: Protocol.Accessibility.AXValueSourceType.RelatedElement,
+                    attribute: 'aria-labelledby',
+                  },
+                ],
+              },
+            },
+          ],
+          resolvedNodes: new Map(),
+          onRevealNode: sinon.stub(),
+        }),
+        container,
+    );
+
+    const tree = container.querySelector('devtools-tree');
+    assert.exists(tree);
+    tree.flushPendingUpdatesForTesting();
+    let [sourceElement] = tree.getInternalTreeOutlineForTest().rootElement().children()[0].children();
+    assert.notExists(sourceElement.listItemElement.querySelector('devtools-icon'));
+    assert.include(sourceElement.listItemElement.textContent, 'Not specified');
+
+    render(
+        Accessibility.AccessibilityNodeView.renderExposedView({
+          properties: [
+            {
+              name: 'name',
+              value: {
+                type: Protocol.Accessibility.AXValueType.ComputedString,
+                value: 'Click me',
+                sources: [
+                  {
+                    type: Protocol.Accessibility.AXValueSourceType.RelatedElement,
+                    attribute: 'aria-labelledby',
+                    attributeValue: {
+                      type: Protocol.Accessibility.AXValueType.String,
+                      value: 'does-not-exist',
+                    },
+                    invalid: true,
+                  },
+                ],
+              },
+            },
+          ],
+          resolvedNodes: new Map(),
+          onRevealNode: sinon.stub(),
+        }),
+        container,
+    );
+    tree.flushPendingUpdatesForTesting();
+
+    [sourceElement] = tree.getInternalTreeOutlineForTest().rootElement().children()[0].children();
+    assert.isTrue(sourceElement.listItemElement.classList.contains('ax-value-source-invalid'));
+    assert.isFalse(sourceElement.listItemElement.classList.contains('ax-value-source-unused'));
+    assert.strictEqual(sourceElement.listItemElement.textContent, 'aria-labelledby:\xA0"does-not-exist"\xA0');
+    const icon = sourceElement.listItemElement.querySelector('devtools-icon');
+    assert.exists(icon);
+    assert.strictEqual(icon.getAttribute('name'), 'warning-filled');
+    assert.strictEqual(getComputedStyle(icon).left, '-11px');
+    const nameSpan = sourceElement.listItemElement.querySelector('.ax-name');
+    assert.exists(nameSpan);
+    assert.strictEqual(getComputedStyle(nameSpan).marginLeft, '-11px');
+    assert.include(getComputedStyle(sourceElement.listItemElement).textDecorationLine, 'line-through');
+    assert.strictEqual(getComputedStyle(sourceElement.listItemElement).display, 'block');
+  });
 });

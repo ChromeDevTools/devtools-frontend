@@ -1129,6 +1129,73 @@ describe('TreeViewElement', () => {
     assert.isFalse(children[0].selected);
     assert.isNull(treeOutline.selectedTreeElement);
   });
+
+  it('refreshes a tree item when direct child elements are added or replaced', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+
+    const renderTree = (showIcon: boolean, showAlt: boolean) => {
+      render(html`<devtools-tree .template=${
+                 html`
+            <ul role="tree">
+              <li role="treeitem">${showIcon ? html`<span class="icon">!</span>` : Lit.nothing}${
+                     showAlt ? html`<span class="alt">after</span>` : html`<span class="initial">before</span>`}</li>
+            </ul>`}></devtools-tree>`,
+             container);
+    };
+
+    renderTree(false, false);
+    const component = container.querySelector('devtools-tree')!;
+    component.flushPendingUpdatesForTesting();
+    const [item] = component.getInternalTreeOutlineForTest().rootElement().children();
+    assert.notExists(item.listItemElement.querySelector('.icon'));
+    assert.strictEqual(item.listItemElement.textContent, 'before');
+
+    renderTree(true, true);
+    component.flushPendingUpdatesForTesting();
+    assert.exists(item.listItemElement.querySelector('.icon'));
+    assert.notExists(item.listItemElement.querySelector('.initial'));
+    assert.exists(item.listItemElement.querySelector('.alt'));
+    assert.strictEqual(item.listItemElement.textContent, '!after');
+
+    renderTree(false, false);
+    component.flushPendingUpdatesForTesting();
+    assert.notExists(item.listItemElement.querySelector('.icon'));
+    assert.strictEqual(item.listItemElement.textContent, 'before');
+  });
+
+  it('does not re-clone title elements when only a child group list is added or removed', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+
+    const renderTree = (hasGroup: boolean) => {
+      render(html`<devtools-tree .template=${
+                 html`
+            <ul role="tree">
+              <li role="treeitem"><span class="title-span">Title</span>${
+                     hasGroup ? html`<ul role="group"><li role="treeitem">Child</li></ul>` : Lit.nothing}</li>
+            </ul>`}></devtools-tree>`,
+             container);
+    };
+
+    renderTree(true);
+    const component = container.querySelector('devtools-tree')!;
+    component.flushPendingUpdatesForTesting();
+    const [item] = component.getInternalTreeOutlineForTest().rootElement().children();
+    const initialTitleSpan = item.listItemElement.querySelector('.title-span');
+    assert.exists(initialTitleSpan);
+    assert.isTrue(item.isExpandable());
+
+    renderTree(false);
+    component.flushPendingUpdatesForTesting();
+    assert.isFalse(item.isExpandable());
+    assert.strictEqual(item.listItemElement.querySelector('.title-span'), initialTitleSpan);
+
+    renderTree(true);
+    component.flushPendingUpdatesForTesting();
+    assert.isTrue(item.isExpandable());
+    assert.strictEqual(item.listItemElement.querySelector('.title-span'), initialTitleSpan);
+  });
 });
 
 type NodeSpec = {

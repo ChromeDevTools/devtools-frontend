@@ -213,6 +213,7 @@ devtools_ui_module("unittests") {
     "TimelinePaintProfilerView.test.ts",
     "TimelinePanel.test.ts",
     "TimelineSelection.test.ts",
+    "TimelineSelectorStatsView.test.ts",
     "TimelineTreeView.test.ts",
     "TimelineUIUtils.test.ts",
     "TraceSnapshotHarness.ts",

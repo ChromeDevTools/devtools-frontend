@@ -9,14 +9,20 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
   registerActions,
 } from '../../testing/EnvironmentHelpers.js';
-import {allThreadEntriesInTrace, setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
+import {
+  allThreadEntriesInTrace,
+  getMainThread,
+  setupIgnoreListManagerEnvironment,
+} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUi from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {render} from '../../ui/lit/lit.js';
 
 import * as Timeline from './timeline.js';
 
@@ -390,5 +396,93 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.disconnectImageCache();
     Timeline.Utils.ImageCache.emitter.dispatchEvent(new Event('screenshot-loaded'));
     sinon.assert.calledOnce(onDataChanged);
+  });
+
+  it('renders the popover for an interaction with warning and breakdown', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const parsedTrace = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    dataProvider.timelineData();
+
+    const longest = parsedTrace.data.UserInteractions.longestInteractionEvent;
+    assert.isOk(longest);
+    const index = dataProvider.indexForEvent(longest);
+    assert.isNotNull(index);
+    const template = dataProvider.preparePopoverElement(index);
+    assert.isNotNull(template);
+
+    const host = new UI.Widget.VBox();
+    const container = host.contentElement.createChild('div');
+    container.style.width = '320px';
+    container.style.padding = '4px 6px';
+    container.style.backgroundColor = 'var(--sys-color-cdt-base-container)';
+    container.style.border = '1px solid var(--sys-color-divider)';
+    renderElementIntoDOM(host, {includeCommonStyles: true});
+    render(template, container);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    await assertScreenshot('timeline/flamechart_popover_interaction.png');
+  });
+
+  it('renders the popover for an event with a URL', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    dataProvider.timelineData();
+
+    const template = dataProvider.preparePopoverElement(147);
+    assert.isNotNull(template);
+
+    const host = new UI.Widget.VBox();
+    const container = host.contentElement.createChild('div');
+    container.style.width = '360px';
+    container.style.padding = '4px 6px';
+    container.style.backgroundColor = 'var(--sys-color-cdt-base-container)';
+    container.style.border = '1px solid var(--sys-color-divider)';
+    renderElementIntoDOM(host, {includeCommonStyles: true});
+    render(template, container);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    await assertScreenshot('timeline/flamechart_popover_url.png');
+  });
+
+  it('renders the popover for a collapsed arrow with hidden descendants', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'two-functions-recursion.json.gz', {withModificationsManager: true});
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    dataProvider.timelineData();
+
+    const mainThread = getMainThread(parsedTrace.data.Renderer);
+    const firstFooCallEntry = mainThread.entries.find(entry => {
+      return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'foo' && entry.dur === 233;
+    });
+    assert.isOk(firstFooCallEntry);
+    Timeline.ModificationsManager.ModificationsManager.activeManager()?.getEntriesFilter().applyFilterAction({
+      type: PerfUi.FlameChart.FilterAction.COLLAPSE_REPEATING_DESCENDANTS,
+      entry: firstFooCallEntry,
+    });
+    const index = dataProvider.indexForEvent(firstFooCallEntry);
+    assert.isNotNull(index);
+    const template = dataProvider.preparePopoverForCollapsedArrow(index);
+    assert.isNotNull(template);
+
+    const host = new UI.Widget.VBox();
+    const container = host.contentElement.createChild('div');
+    container.style.width = '200px';
+    container.style.padding = '4px 6px';
+    container.style.backgroundColor = 'var(--sys-color-cdt-base-container)';
+    container.style.border = '1px solid var(--sys-color-divider)';
+    renderElementIntoDOM(host, {includeCommonStyles: true});
+    render(template, container);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    await assertScreenshot('timeline/flamechart_popover_collapsed_arrow.png');
   });
 });

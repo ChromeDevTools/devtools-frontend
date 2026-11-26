@@ -845,7 +845,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         ${warningElements}
         ${additionalContent.map(elem => {
           const widget = UI.Widget.Widget.get(elem);
-          return widget ? UI.Widget.widget(UI.Widget.WrapperWidget, {widget}) : elem;
+          return widget ? html`<div ${UI.Widget.widget(UI.Widget.WrapperWidget, {widget})}></div>` : elem;
         })}
       </div>`;
     // clang-format on

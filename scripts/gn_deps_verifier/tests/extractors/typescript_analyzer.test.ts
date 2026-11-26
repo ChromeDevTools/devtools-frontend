@@ -83,11 +83,14 @@ describe('typescript_analyzer', () => {
   });
 
   describe('resolveTargetSourceFiles', () => {
+    const fakeRootDir = path.resolve('/path/to/repo');
+    const fakeBuildFile = path.join(fakeRootDir, 'test/dir/BUILD.gn');
+
     it('resolves relative sources against buildFile directory and filters non-ts files', () => {
       const targetInfo: AstTargetInfo = {
         label: '//test/dir:target',
         templateName: 'devtools_module',
-        buildFile: '/path/to/repo/test/dir/BUILD.gn',
+        buildFile: fakeBuildFile,
         sources: ['file1.ts', 'file2.js', 'style.css', 'data.json'],
         deps: [],
         ts_deps: [],
@@ -96,11 +99,11 @@ describe('typescript_analyzer', () => {
 
       const resolved = TypeScriptAnalyzer.resolveTargetSourceFiles(
           targetInfo,
-          '/path/to/repo',
+          fakeRootDir,
       );
       assert.deepEqual(resolved, [
-        '/path/to/repo/test/dir/file1.ts',
-        '/path/to/repo/test/dir/file2.js',
+        path.join(fakeRootDir, 'test/dir/file1.ts'),
+        path.join(fakeRootDir, 'test/dir/file2.js'),
       ]);
     });
 
@@ -108,7 +111,7 @@ describe('typescript_analyzer', () => {
       const targetInfo: AstTargetInfo = {
         label: '//test/dir:target',
         templateName: 'devtools_module',
-        buildFile: '/path/to/repo/test/dir/BUILD.gn',
+        buildFile: fakeBuildFile,
         sources: ['//front_end/core/common.ts', 'local.ts'],
         deps: [],
         ts_deps: [],
@@ -117,11 +120,11 @@ describe('typescript_analyzer', () => {
 
       const resolved = TypeScriptAnalyzer.resolveTargetSourceFiles(
           targetInfo,
-          '/path/to/repo',
+          fakeRootDir,
       );
       assert.deepEqual(resolved, [
-        '/path/to/repo/front_end/core/common.ts',
-        '/path/to/repo/test/dir/local.ts',
+        path.join(fakeRootDir, 'front_end/core/common.ts'),
+        path.join(fakeRootDir, 'test/dir/local.ts'),
       ]);
     });
 
@@ -129,7 +132,7 @@ describe('typescript_analyzer', () => {
       const targetInfo: AstTargetInfo = {
         label: '//test/dir:target',
         templateName: 'devtools_module',
-        buildFile: '/path/to/repo/test/dir/BUILD.gn',
+        buildFile: fakeBuildFile,
         sources: ['file1.ts', 'file1.ts', './file1.ts'],
         deps: [],
         ts_deps: [],
@@ -138,16 +141,16 @@ describe('typescript_analyzer', () => {
 
       const resolved = TypeScriptAnalyzer.resolveTargetSourceFiles(
           targetInfo,
-          '/path/to/repo',
+          fakeRootDir,
       );
-      assert.deepEqual(resolved, ['/path/to/repo/test/dir/file1.ts']);
+      assert.deepEqual(resolved, [path.join(fakeRootDir, 'test/dir/file1.ts')]);
     });
 
     it('skips generated sources, which only exist after a build', () => {
       const targetInfo: AstTargetInfo = {
         label: '//test/dir:target',
         templateName: 'ts_library',
-        buildFile: '/path/to/repo/test/dir/BUILD.gn',
+        buildFile: fakeBuildFile,
         sources: ['$target_gen_dir/Generated.ts', 'file1.ts'],
         deps: [],
         ts_deps: [],
@@ -156,9 +159,9 @@ describe('typescript_analyzer', () => {
 
       const resolved = TypeScriptAnalyzer.resolveTargetSourceFiles(
           targetInfo,
-          '/path/to/repo',
+          fakeRootDir,
       );
-      assert.deepEqual(resolved, ['/path/to/repo/test/dir/file1.ts']);
+      assert.deepEqual(resolved, [path.join(fakeRootDir, 'test/dir/file1.ts')]);
     });
   });
 

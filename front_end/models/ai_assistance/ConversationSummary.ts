@@ -101,7 +101,6 @@ color: red;
 
 export interface ConversationSummaryOptions {
   aidaClient: Host.AidaClient.AidaClient;
-  serverSideLoggingEnabled?: boolean;
 }
 
 /**
@@ -114,14 +113,15 @@ export interface ConversationSummaryOptions {
  */
 export class ConversationSummary {
   readonly #aidaClient: Host.AidaClient.AidaClient;
-  readonly #serverSideLoggingEnabled: boolean;
 
   constructor(options: ConversationSummaryOptions) {
     this.#aidaClient = options.aidaClient;
-    this.#serverSideLoggingEnabled = options.serverSideLoggingEnabled ?? false;
   }
 
-  async summarizeConversation(conversation: string): Promise<string> {
+  async summarizeConversation(
+      conversation: string,
+      serverSideLoggingEnabled = false,
+      ): Promise<string> {
     const enhancedQuery = `Summarize the following conversation:\n\n${conversation}`;
 
     // TODO(b/491772868): tidy up userTier & feature flags in the backend.
@@ -137,7 +137,7 @@ export class ConversationSummary {
       temperature,
       modelId,
       userTier,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+      serverSideLoggingEnabled,
     });
 
     if (!resultText) {

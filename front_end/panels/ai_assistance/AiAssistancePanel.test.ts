@@ -24,6 +24,7 @@ import {
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
+  beforeEachWithTeardown,
   createTarget,
   deinitializeGlobalVars,
   describeWithEnvironment,
@@ -535,6 +536,141 @@ describeWithEnvironment('AI Assistance Panel', () => {
         },
         disable_user_content_logging: true,
       });
+    });
+  });
+
+  describe('server-side logging', () => {
+    beforeEachWithTeardown(
+        async () => {
+          AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance({forceNew: true});
+          await enableAllFeatureAndSetting();
+          updateHostConfig({
+            aidaAvailability: {
+              enabled: true,
+              disallowLogging: false,
+            },
+          });
+        },
+        () => {
+          AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.removeInstance();
+        },
+    );
+
+    it('disables logging for a cookie conversation without leaking into a new conversation', async () => {
+      const aidaClient = mockAidaClient([
+        [{explanation: 'Cookie answer.'}],
+        [{explanation: 'Cookie summary.'}],
+        [{explanation: 'Stale cookie summary.'}],
+        [{explanation: 'New chat summary.'}],
+      ]);
+      const origin = 'https://example.com';
+      const cookieItem = new AiAssistanceModel.StorageItem.CookieItem(origin, origin, 'session_id');
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, cookieItem);
+      const {panel, view} = await createAiAssistancePanel({aidaClient});
+      void panel.handleAction('ai-assistance.storage-floating-button');
+      let nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      nextInput.props.onTextSubmit('Inspect this cookie');
+      nextInput = await waitForLoadingToFinish(view);
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      await nextInput.props.generateConversationSummary(nextInput.props.conversationMarkdown);
+      const summaryRequest = aidaClient.doConversation.lastCall.firstArg;
+      assert.strictEqual(
+          summaryRequest.client_feature,
+          Host.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
+      );
+      assert.isTrue(summaryRequest.metadata?.disable_user_content_logging);
+
+      nextInput.props.onFeedbackSubmit(1, Host.AidaClient.Rating.POSITIVE);
+      assert.isTrue(aidaClient.registerClientEvent.lastCall.firstArg.disable_user_content_logging);
+
+      const cookieChatViewProps = nextInput.props;
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+      nextInput.props.onNewConversation();
+      nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      await cookieChatViewProps.generateConversationSummary('stale cookie chat');
+      assert.isTrue(aidaClient.doConversation.lastCall.firstArg.metadata?.disable_user_content_logging);
+
+      cookieChatViewProps.onFeedbackSubmit(2, Host.AidaClient.Rating.POSITIVE);
+      assert.isTrue(aidaClient.registerClientEvent.lastCall.firstArg.disable_user_content_logging);
+
+      await nextInput.props.generateConversationSummary('fresh chat');
+      assert.isFalse(aidaClient.doConversation.lastCall.firstArg.metadata?.disable_user_content_logging);
+
+      nextInput.props.onFeedbackSubmit(3, Host.AidaClient.Rating.POSITIVE);
+      assert.isFalse(aidaClient.registerClientEvent.lastCall.firstArg.disable_user_content_logging);
+    });
+
+    it('disables logging for summary and feedback when reopening a historic conversation', async () => {
+      await AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().upsertHistoryEntry({
+        id: 'historic-chat-1',
+        type: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
+        history: [
+          {
+            type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY,
+            query: 'Historic question',
+          },
+          {
+            type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+            text: 'Historic answer',
+            complete: true,
+          },
+        ],
+      });
+
+      const aidaClient = mockAidaClient([
+        [{explanation: 'Historic summary.'}],
+      ]);
+      const {view} = await createAiAssistancePanel({aidaClient});
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      const {contextMenu, id} = openHistoryContextMenu(view.input, 'Historic question');
+      assert.isDefined(id);
+      contextMenu.invokeHandler(id);
+      const historicView = await view.nextInput;
+      assert(historicView.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      await historicView.props.generateConversationSummary(historicView.props.conversationMarkdown);
+      assert.isTrue(aidaClient.doConversation.lastCall.firstArg.metadata?.disable_user_content_logging);
+
+      historicView.props.onFeedbackSubmit(4, Host.AidaClient.Rating.POSITIVE);
+      assert.isTrue(aidaClient.registerClientEvent.lastCall.firstArg.disable_user_content_logging);
+    });
+
+    it('picks up updated disallowLogging when starting a new conversation', async () => {
+      const aidaClient = mockAidaClient([
+        [{explanation: 'Initial summary.'}],
+        [{explanation: 'Later summary.'}],
+      ]);
+      const {view} = await createAiAssistancePanel({aidaClient});
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      await view.input.props.generateConversationSummary('before flip');
+      assert.isFalse(aidaClient.doConversation.lastCall.firstArg.metadata?.disable_user_content_logging);
+
+      view.input.props.onFeedbackSubmit(5, Host.AidaClient.Rating.POSITIVE);
+      assert.isFalse(aidaClient.registerClientEvent.lastCall.firstArg.disable_user_content_logging);
+
+      updateHostConfig({
+        aidaAvailability: {
+          enabled: true,
+          disallowLogging: true,
+        },
+      });
+
+      view.input.props.onNewConversation();
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      await nextInput.props.generateConversationSummary('after flip');
+      assert.isTrue(aidaClient.doConversation.lastCall.firstArg.metadata?.disable_user_content_logging);
+
+      nextInput.props.onFeedbackSubmit(6, Host.AidaClient.Rating.POSITIVE);
+      assert.isTrue(aidaClient.registerClientEvent.lastCall.firstArg.disable_user_content_logging);
     });
   });
 

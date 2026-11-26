@@ -592,7 +592,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #aidaClient: Host.AidaClient.AidaClient;
   #conversationSummary?: AiAssistanceModel.ConversationSummary.ConversationSummary;
   #viewOutput: PanelViewOutput = {};
-  #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
   #changeManager = new AiAssistanceModel.ChangeManager.ChangeManager();
   #alwaysAllowedTools =
@@ -687,6 +686,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         onContextAdd = this.#handleContextAdd.bind(this);
       }
 
+      // Capture the rendered conversation so summary and feedback callbacks
+      // keep reading its logging state if the user switches chats before re-render.
+      const conversation = this.#conversation;
       return {
         state: ViewState.CHAT_VIEW,
         props: {
@@ -721,15 +723,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
               this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
           markdownRenderer,
-          conversationMarkdown: this.#conversation.getConversationMarkdown(),
+          conversationMarkdown: conversation.getConversationMarkdown(),
           generateConversationSummary: async (markdown: string) => {
             if (!this.#conversationSummary) {
               this.#conversationSummary = new AiAssistanceModel.ConversationSummary.ConversationSummary({
                 aidaClient: this.#aidaClient,
-                serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
               });
             }
-            return await this.#conversationSummary.summarizeConversation(markdown);
+            return await this.#conversationSummary.summarizeConversation(markdown,
+                                                                         conversation.serverSideLoggingAllowed);
           },
           onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part,
                                multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
@@ -757,7 +759,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             submit();
           },
           onInspectElementClick: this.#handleSelectElementClick.bind(this),
-          onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
+          onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this, conversation),
           onCancelClick: this.#cancel.bind(this),
           onContextClick: this.#handleContextClick.bind(this),
           onNewConversation: this.#handleNewChatRequest.bind(this),
@@ -1407,10 +1409,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     return lockedString(UIStringsNotTranslate.inputDisclaimerEnterpriseNoLogging);
   }
 
-  #handleFeedbackSubmit(rpcId: Host.AidaClient.RpcGlobalId, rating: Host.AidaClient.Rating, feedback?: string): void {
+  #handleFeedbackSubmit(
+      conversation: AiAssistanceModel.AiConversation.AiConversation,
+      rpcId: Host.AidaClient.RpcGlobalId,
+      rating: Host.AidaClient.Rating,
+      feedback?: string,
+      ): void {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
-      disable_user_content_logging: !this.#serverSideLoggingEnabled,
+      disable_user_content_logging: !conversation.serverSideLoggingAllowed,
       do_conversation_client_event: {
         user_feedback: {
           sentiment: rating,
@@ -2261,8 +2268,4 @@ function isAiAssistanceMultimodalUploadInputEnabled(): boolean {
 
 function isAiAssistanceMultimodalInputEnabled(): boolean {
   return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
-}
-
-function isAiAssistanceServerSideLoggingEnabled(): boolean {
-  return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }

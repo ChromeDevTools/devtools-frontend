@@ -18,13 +18,6 @@ import {EVALS_DIR, getDefaultOtaAccount} from './helpers/eval-environment.js';
 import {EvalLogger} from './report/eval-logger.js';
 import {finalizeEvalTask, handleTaskFailure} from './report/eval-task-recorder.js';
 import {
-  evaluateTrajectory,
-  formatStoreResults,
-  type ItEval,
-  printResults,
-  ResultStore,
-} from './report/evaluators.js';
-import {
   PROJECT_ID,
   type RunOutcomeStatus,
   type TaskStatus,
@@ -58,7 +51,6 @@ export interface AiEvalConfig {
   type?: string;
   label: string;
   taskId: string;
-  evals?: ItEval[];
 }
 
 export interface ExecutePromptOptions {
@@ -70,7 +62,6 @@ export class EvalTaskHandle {
   readonly type: string;
   readonly taskId: string;
   readonly label: string;
-  readonly evals: ItEval[];
   readonly isConfigured: boolean;
   readonly trajectoryBuilder: TrajectoryBuilder;
   readonly #devToolsPage: DevToolsPage;
@@ -85,15 +76,10 @@ export class EvalTaskHandle {
     this.type = config.type ?? DEFAULT_EVAL_TYPE;
     this.taskId = config.taskId;
     this.label = config.label;
-    this.evals = [...(config.evals ?? [])];
     this.isConfigured = isConfigured;
     this.trajectoryBuilder = new TrajectoryBuilder({taskId: this.taskId});
     this.#devToolsPage = devToolsPage;
     this.#logger = logger;
-  }
-
-  itEval(config: ItEval): void {
-    this.evals.push(config);
   }
 
   /**
@@ -150,10 +136,9 @@ export interface AiEvalState extends E2EState {
 }
 
 interface TaskGradingResult {
-  customScore: number|null;
   gradingOutput?: string;
   gradingDurationSeconds: number;
-  /** Set when the task is graded by Grading V1 (expectations and weights). */
+  /** Set when the task has expectations and weights files to grade against. */
   grading?: ScoreResult;
 }
 
@@ -432,7 +417,7 @@ export class AiEvalStateProvider extends StateProvider {
 
   async #gradeTaskTrajectory(evalTask: EvalTaskHandle, trajectory: Trajectory): Promise<TaskGradingResult> {
     if (evalTask.hasFailed) {
-      return {customScore: null, gradingDurationSeconds: 0};
+      return {gradingDurationSeconds: 0};
     }
     let taskGrading: TaskGrading|null = null;
     let configError: string|undefined;
@@ -442,8 +427,7 @@ export class AiEvalStateProvider extends StateProvider {
       configError = formatError(error);
     }
     if (!taskGrading && !configError) {
-      // Tasks without Grading V1 files still use the legacy evaluators.
-      return await this.#gradeTaskTrajectoryLegacy(evalTask, trajectory);
+      return {gradingDurationSeconds: 0};
     }
 
     const gradingStart = performance.now();
@@ -456,29 +440,7 @@ export class AiEvalStateProvider extends StateProvider {
         `Graded: score=${grading.score ?? 'null'}, pass=${grading.pass ?? 'null'} (${gradingDurationSeconds}s)`;
     evalTask.log(summary);
     this.#logger.head(`[Task ${evalTask.taskId}] ${summary}\n${gradingOutput}`);
-    return {customScore: grading.score, gradingOutput, gradingDurationSeconds, grading};
-  }
-
-  async #gradeTaskTrajectoryLegacy(evalTask: EvalTaskHandle, trajectory: Trajectory): Promise<TaskGradingResult> {
-    if (evalTask.evals.length === 0) {
-      return {customScore: null, gradingDurationSeconds: 0};
-    }
-    const gradingStart = performance.now();
-    const store = new ResultStore(evalTask.type, evalTask.label);
-    const dateFolder = (this.#runStartTimestamp || new Date().toISOString()).slice(0, 10);
-    const customScore = await evaluateTrajectory(trajectory, evalTask.evals, store, dateFolder);
-    const gradingDurationSeconds = Number(((performance.now() - gradingStart) / 1000).toFixed(3));
-    let gradingOutput: string|undefined;
-    if (store.results.size > 0) {
-      if (TestConfig.verbose > 0) {
-        printResults(store);
-      }
-      gradingOutput = formatStoreResults(store);
-      evalTask.log(`Graded: score=${customScore ?? 'N/A'} (${gradingDurationSeconds}s)`);
-      this.#logger.append(
-          `[Task ${evalTask.taskId}] Graded: score=${customScore ?? 'N/A'} (${gradingDurationSeconds}s)`);
-    }
-    return {customScore, gradingOutput, gradingDurationSeconds};
+    return {gradingOutput, gradingDurationSeconds, grading};
   }
 
   async #finalizeConfiguredTask(evalTask: EvalTaskHandle): Promise<void> {
@@ -511,8 +473,7 @@ export class AiEvalStateProvider extends StateProvider {
       }
       this.#taskToolCallStats.set(evalTask.taskId, calculateTrajectoryToolCalls(trajectory));
       this.#taskTokens.set(evalTask.taskId, calculateTrajectoryTokens(trajectory));
-      const {customScore, gradingOutput, gradingDurationSeconds, grading} =
-          await this.#gradeTaskTrajectory(evalTask, trajectory);
+      const {gradingOutput, gradingDurationSeconds, grading} = await this.#gradeTaskTrajectory(evalTask, trajectory);
       finalizeEvalTask({
         runId: this.#runId,
         taskId: evalTask.taskId,
@@ -528,7 +489,6 @@ export class AiEvalStateProvider extends StateProvider {
         taskTokens: this.#taskTokens,
         hasError: evalTask.hasFailed,
         errorMessage: evalTask.failureError,
-        customScore,
         gradingOutput,
         gradingDurationSeconds,
         grading,

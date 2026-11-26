@@ -9,8 +9,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-blank-screen-render', function() {
   this.timeout(180_000);
@@ -38,14 +36,6 @@ describe('Sources AI Eval: sources-blank-screen-render', function() {
 
       await evalTask.executePrompt({
         prompts: ['why is this page blank?'],
-      });
-
-      evalTask.itEval({
-        test: 'is an accurate response to \'why is this page blank?\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-blank-screen-render')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

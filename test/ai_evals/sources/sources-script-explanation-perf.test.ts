@@ -9,8 +9,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-script-explanation-perf', function() {
   this.timeout(180_000);
@@ -38,14 +36,6 @@ describe('Sources AI Eval: sources-script-explanation-perf', function() {
 
       await evalTask.executePrompt({
         prompts: ['How does this page calculate the flight data? Is the code good?'],
-      });
-
-      evalTask.itEval({
-        test: 'is an accurate response to \'How does this page calculate the flight data? Is the code good?\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-script-explanation-perf')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

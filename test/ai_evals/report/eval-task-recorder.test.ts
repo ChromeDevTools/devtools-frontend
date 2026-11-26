@@ -10,7 +10,7 @@ import {CheckSource, formatCheckTable, scoreChecks} from './scorer.js';
 
 describe('eval-task-recorder', () => {
   describe('buildEvalResult', () => {
-    it('includes score, pass, summary, checks and null gradingError for Grading V1 tasks', () => {
+    it('includes score, pass, summary, checks and null gradingError for graded tasks', () => {
       const grading = scoreChecks([
         {
           id: 'names_image',
@@ -50,7 +50,7 @@ describe('eval-task-recorder', () => {
       );
     });
 
-    it('preserves critical failure capping, gradingError and the legacy fallback shape', () => {
+    it('preserves critical failure capping and gradingError', () => {
       const criticalFailed = scoreChecks([
         {id: 'names_image', source: CheckSource.JUDGE, verdict: true, weight: 10, reason: 'Matched.'},
         {id: 'blames_other', source: CheckSource.JUDGE, verdict: true, weight: -1, critical: true, reason: 'Wrong.'},
@@ -95,21 +95,6 @@ describe('eval-task-recorder', () => {
             checks: [],
             gradingError: 'Judge timeout',
             gradingOutput: 'Score: null',
-          },
-      );
-
-      assert.deepEqual(
-          buildEvalResult({
-            runId: 'run-1',
-            taskId: 'legacy-task',
-            target: 'sources',
-            gradingOutput: 'Legacy rubric: 0.8',
-          }),
-          {
-            runId: 'run-1',
-            taskId: 'legacy-task',
-            target: 'sources',
-            gradingOutput: 'Legacy rubric: 0.8',
           },
       );
     });

@@ -8,17 +8,14 @@ node_ts_library("report") {
   sources = [
     "eval-logger.ts",
     "eval-task-recorder.ts",
-    "evaluators.ts",
     "gcs-upload.ts",
     "gemini.ts",
     "grading-judge.ts",
     "grading-loader.ts",
-    "instructions.ts",
     "report-helpers.ts",
     "scorer.ts",
     "trajectory-builder.ts",
   ]
-  ts_deps = [ "../../conductor:core" ]
 }
 
 node_ts_library("unittests") {

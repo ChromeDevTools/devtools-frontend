@@ -9,8 +9,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-page-reload-loop', function() {
   this.timeout(180_000);
@@ -38,15 +36,6 @@ describe('Sources AI Eval: sources-page-reload-loop', function() {
 
       await evalTask.executePrompt({
         prompts: ['the page keeps reloading in a loop when I click the sync billing button, why?'],
-      });
-
-      evalTask.itEval({
-        test:
-            'is an accurate response to \'the page keeps reloading in a loop when I click the sync billing button, why?\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-page-reload-loop')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

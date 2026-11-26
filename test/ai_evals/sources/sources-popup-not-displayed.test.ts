@@ -9,8 +9,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-popup-not-displayed', function() {
   this.timeout(180_000);
@@ -38,15 +36,6 @@ describe('Sources AI Eval: sources-popup-not-displayed', function() {
 
       await evalTask.executePrompt({
         prompts: ['nothing happens when I click on share release notes, there should be a popup appear'],
-      });
-
-      evalTask.itEval({
-        test:
-            'is an accurate response to \'nothing happens when I click on share release notes, there should be a popup appear\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-popup-not-displayed')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

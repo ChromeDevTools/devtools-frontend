@@ -9,8 +9,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-canvas-signature-locator', function() {
   this.timeout(180_000);
@@ -38,14 +36,6 @@ describe('Sources AI Eval: sources-canvas-signature-locator', function() {
 
       await evalTask.executePrompt({
         prompts: ['How is the canvas with the user signature implemented?'],
-      });
-
-      evalTask.itEval({
-        test: 'is an accurate response to \'How is the canvas with the user signature implemented?\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-canvas-signature-locator')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

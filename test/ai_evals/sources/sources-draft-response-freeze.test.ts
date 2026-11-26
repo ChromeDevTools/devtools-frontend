@@ -10,8 +10,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-draft-response-freeze', function() {
   this.timeout(180_000);
@@ -46,15 +44,6 @@ describe('Sources AI Eval: sources-draft-response-freeze', function() {
 
       await evalTask.executePrompt({
         prompts: ['page freezes every time i click the draft response button, can you check what\'s hanging it?'],
-      });
-
-      evalTask.itEval({
-        test:
-            'is an accurate response to \'page freezes every time i click the draft response button, can you check what\'s hanging it?\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-draft-response-freeze')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

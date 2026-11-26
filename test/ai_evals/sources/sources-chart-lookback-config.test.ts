@@ -9,8 +9,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-chart-lookback-config', function() {
   this.timeout(180_000);
@@ -38,15 +36,6 @@ describe('Sources AI Eval: sources-chart-lookback-config', function() {
 
       await evalTask.executePrompt({
         prompts: ['How can I change the lookback horizon options and limits for the chart in the code?'],
-      });
-
-      evalTask.itEval({
-        test:
-            'is an accurate response to \'How can I change the lookback horizon options and limits for the chart in the code?\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-chart-lookback-config')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

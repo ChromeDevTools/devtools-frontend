@@ -9,8 +9,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-firebase-carrier-search', function() {
   this.timeout(180_000);
@@ -38,14 +36,6 @@ describe('Sources AI Eval: sources-firebase-carrier-search', function() {
 
       await evalTask.executePrompt({
         prompts: ['How is user data fetched and stored with Firebase on this page?'],
-      });
-
-      evalTask.itEval({
-        test: 'is an accurate response to \'How is user data fetched and stored with Firebase on this page?\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-firebase-carrier-search')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

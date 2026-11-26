@@ -9,8 +9,6 @@ import {
   stopEvalApp,
 } from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
-import {LLMComparison} from '../report/evaluators.js';
-import {loadInstructions} from '../report/instructions.js';
 
 describe('Sources AI Eval: sources-third-party-consent-locator', function() {
   this.timeout(180_000);
@@ -38,15 +36,6 @@ describe('Sources AI Eval: sources-third-party-consent-locator', function() {
 
       await evalTask.executePrompt({
         prompts: ['What third-party scripts are used on this page, including the cookie banner?'],
-      });
-
-      evalTask.itEval({
-        test:
-            'is an accurate response to \'What third-party scripts are used on this page, including the cookie banner?\'',
-        judge: example => LLMComparison.judge(
-            example,
-            `${loadInstructions('sources.eval')}\n\n${loadInstructions('sources-third-party-consent-locator')}`,
-            ),
       });
     } finally {
       await stopEvalApp(app);

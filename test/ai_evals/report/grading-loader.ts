@@ -214,7 +214,7 @@ export function getTaskGradingDir(evalsDir: string, taskId: string, evalFolder =
 /**
  * Loads and validates the general, domain, and test-level grading files of a task.
  * Returns null if the task has no test-level grading files (so unmigrated tasks
- * stay on legacy grading even when general or domain files exist).
+ * skip grading even when general or domain files exist).
  * Throws a `GradingConfigError` if any loaded grading files are incomplete or invalid.
  */
 export function loadTaskGrading(evalsDir: string, taskId: string, evalFolder = ''): TaskGrading|null {

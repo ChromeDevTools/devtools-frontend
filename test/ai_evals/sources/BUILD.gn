@@ -24,6 +24,5 @@ node_ts_library("sources") {
     "..:harness_library",
     "../../conductor:implementation",
     "../helpers",
-    "../report",
   ]
 }

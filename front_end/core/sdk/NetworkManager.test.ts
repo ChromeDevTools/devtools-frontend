@@ -1505,10 +1505,23 @@ describe('NetworkManager', () => {
       const connection = new MockCDPConnection();
       const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
       const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const frameId = 'main-frame' as Protocol.Page.FrameId;
+
+      // Provide a default execution context for the issuing frame.
+      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'top',
+        uniqueId: 'ctx-1',
+        auxData: {frameId, isDefault: true},
+      });
 
       networkManager.dispatcher.requestWillBeSent({
         requestId: 'fetch-req' as Protocol.Network.RequestId,
         loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        frameId,
         documentURL: 'https://example.test/',
         request: {
           url: 'https://example.test/data.json',
@@ -1533,24 +1546,17 @@ describe('NetworkManager', () => {
       const {request} = await requestStartedPromise;
 
       let evaluatedExpression: string|undefined;
+      let evaluatedUniqueContextId: string|undefined;
       connection.setSuccessHandler('Runtime.evaluate', params => {
         evaluatedExpression = params.expression;
+        evaluatedUniqueContextId = params.uniqueContextId;
         return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
-      });
-
-      // Provide a default execution context for the runtime model.
-      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
-      assert.exists(runtimeModel);
-      runtimeModel!.executionContextCreated({
-        id: 1 as Protocol.Runtime.ExecutionContextId,
-        origin: 'https://example.test',
-        name: 'top',
-        uniqueId: 'ctx-1',
       });
 
       await SDK.NetworkManager.NetworkManager.resendRequest(request);
 
       assert.isDefined(evaluatedExpression);
+      assert.strictEqual(evaluatedUniqueContextId, 'ctx-1');
       assert.include(evaluatedExpression!, 'fetch(');
       assert.include(evaluatedExpression!, 'https://example.test/data.json');
       assert.include(evaluatedExpression!, '"credentials":"include"');
@@ -1561,6 +1567,826 @@ describe('NetworkManager', () => {
       assert.notInclude(evaluatedExpression!, '"cookie"');
       // Allowed headers are included.
       assert.include(evaluatedExpression!, '"accept"');
+    });
+
+    it('refuses to resend when the frame navigated to a different origin with the same frameId', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const frameId = 'reused-frame-id' as Protocol.Page.FrameId;
+      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      runtimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://origin-a.test',
+        name: 'top',
+        uniqueId: 'ctx-origin-a',
+        auxData: {frameId, isDefault: true},
+      });
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'fetch-cross-origin' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'https://origin-a.test/',
+        request: {
+          url: 'https://origin-b.test/api/action',
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      // Simulate cross-site navigation: old context cleared, new origin context created with same frameId.
+      runtimeModel!.executionContextsCleared();
+      runtimeModel!.executionContextCreated({
+        id: 2 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://origin-b.test',
+        name: 'top',
+        uniqueId: 'ctx-origin-b',
+        auxData: {frameId, isDefault: true},
+      });
+
+      let evaluatedExpression: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedExpression = params.expression;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.isUndefined(evaluatedExpression);
+    });
+
+    it('refuses to resend when the issuing context was replaced even with the same frameId and URL origin',
+       async () => {
+         const universe = new TestUniverse();
+         const connection = new MockCDPConnection();
+         const target = universe.createTarget({connection});
+         const networkManager = new SDK.NetworkManager.NetworkManager(target);
+         const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+         const frameId = 'sandbox-frame' as Protocol.Page.FrameId;
+         const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+         const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+         assert.exists(runtimeModel);
+         assert.exists(resourceTreeModel);
+
+         sinon.stub(resourceTreeModel!, 'frameForId').withArgs(frameId).returns({
+           loaderId: 'loader-1',
+         } as SDK.ResourceTreeModel.ResourceTreeFrame);
+
+         // Issuing document was sandboxed (opaque origin), then replaced by an unsandboxed document.
+         runtimeModel!.executionContextCreated({
+           id: 1 as Protocol.Runtime.ExecutionContextId,
+           origin: 'null',
+           name: 'sandbox',
+           uniqueId: 'ctx-sandbox',
+           auxData: {frameId, isDefault: true},
+         });
+
+         networkManager.dispatcher.requestWillBeSent({
+           requestId: 'fetch-sandbox' as Protocol.Network.RequestId,
+           loaderId: 'loader-1' as Protocol.Network.LoaderId,
+           frameId,
+           documentURL: 'https://example.test/sandboxed.html',
+           request: {
+             url: 'https://example.test/api',
+             method: 'POST',
+             headers: {},
+             initialPriority: Protocol.Network.ResourcePriority.Medium,
+             referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+           },
+           timestamp: 1,
+           wallTime: 1,
+           initiator: {type: Protocol.Network.InitiatorType.Other},
+           type: Protocol.Network.ResourceType.Fetch,
+           redirectHasExtraInfo: false,
+         } as Protocol.Network.RequestWillBeSentEvent);
+
+         const {request} = await requestStartedPromise;
+
+         let evaluatedUniqueContextId: string|undefined;
+         connection.setSuccessHandler('Runtime.evaluate', params => {
+           evaluatedUniqueContextId = params.uniqueContextId;
+           return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+         });
+
+         // While the sandboxed context is still alive, resend evaluates in ctx-sandbox.
+         await SDK.NetworkManager.NetworkManager.resendRequest(request);
+         assert.strictEqual(evaluatedUniqueContextId, 'ctx-sandbox');
+
+         // Once replaced by an unsandboxed context on the same frameId, resend must be refused.
+         evaluatedUniqueContextId = undefined;
+         runtimeModel!.executionContextDestroyed(1 as Protocol.Runtime.ExecutionContextId);
+         runtimeModel!.executionContextCreated({
+           id: 2 as Protocol.Runtime.ExecutionContextId,
+           origin: 'https://example.test',
+           name: 'unsandboxed',
+           uniqueId: 'ctx-unsandboxed',
+           auxData: {frameId, isDefault: true},
+         });
+
+         await SDK.NetworkManager.NetworkManager.resendRequest(request);
+         assert.isUndefined(evaluatedUniqueContextId);
+       });
+
+    it('resends requests from about:blank iframes when loaderId matches the inherited context', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const target = universe.createTarget({connection});
+      const networkManager = new SDK.NetworkManager.NetworkManager(target);
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const frameId = 'about-blank-frame' as Protocol.Page.FrameId;
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(runtimeModel);
+      assert.exists(resourceTreeModel);
+
+      sinon.stub(resourceTreeModel!, 'frameForId').withArgs(frameId).returns({
+        loaderId: 'blank-loader',
+      } as SDK.ResourceTreeModel.ResourceTreeFrame);
+
+      runtimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'about-blank',
+        uniqueId: 'ctx-about-blank',
+        auxData: {frameId, isDefault: true},
+      });
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'fetch-about-blank' as Protocol.Network.RequestId,
+        loaderId: 'blank-loader' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'about:blank',
+        request: {
+          url: 'https://example.test/api',
+          method: 'GET',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      let evaluatedUniqueContextId: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedUniqueContextId = params.uniqueContextId;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.strictEqual(evaluatedUniqueContextId, 'ctx-about-blank');
+    });
+
+    it('refuses to resend when context was not yet captured and current frame origin differs', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const frameId = 'early-frame' as Protocol.Page.FrameId;
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'fetch-early' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'https://origin-a.test/',
+        request: {
+          url: 'https://origin-b.test/api',
+          method: 'POST',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel!.executionContextCreated({
+        id: 2 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://origin-b.test',
+        name: 'top',
+        uniqueId: 'ctx-origin-b',
+        auxData: {frameId, isDefault: true},
+      });
+
+      let evaluatedExpression: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedExpression = params.expression;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.isUndefined(evaluatedExpression);
+    });
+
+    it('does not fall back to the top-level execution context when the issuing frame context is gone', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      runtimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://origin-b.test',
+        name: 'top',
+        uniqueId: 'ctx-top',
+        auxData: {frameId: 'top-frame', isDefault: true},
+      });
+      runtimeModel!.executionContextCreated({
+        id: 2 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://origin-a.test',
+        name: 'subframe',
+        uniqueId: 'ctx-subframe',
+        auxData: {frameId: 'removed-subframe', isDefault: true},
+      });
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'fetch-detached-subframe' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        frameId: 'removed-subframe' as Protocol.Page.FrameId,
+        documentURL: 'https://origin-a.test/',
+        request: {
+          url: 'https://origin-b.test/api',
+          method: 'POST',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      // Destroy the previously captured subframe context, leaving only the top-level context.
+      runtimeModel!.executionContextDestroyed(2 as Protocol.Runtime.ExecutionContextId);
+
+      let evaluatedExpression: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedExpression = params.expression;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.isUndefined(evaluatedExpression);
+    });
+
+    it('resends fetch requests from worker targets using the worker execution context', async () => {
+      const universe = new TestUniverse();
+      void universe.multitargetNetworkManager;
+      const connection = new MockCDPConnection();
+      const workerTarget = universe.createTarget({connection, type: SDK.Target.Type.Worker});
+      const networkManager = workerTarget.model(SDK.NetworkManager.NetworkManager);
+      assert.exists(networkManager);
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+
+      const runtimeModel = workerTarget.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'worker',
+        uniqueId: 'ctx-worker',
+        auxData: {isDefault: true},
+      });
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'worker-fetch' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        documentURL: 'https://example.test/worker.js',
+        request: {
+          url: 'https://example.test/data.json',
+          method: 'GET',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      let evaluatedUniqueContextId: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedUniqueContextId = params.uniqueContextId;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.strictEqual(evaluatedUniqueContextId, 'ctx-worker');
+    });
+
+    it('refuses to resend when the execution context is destroyed while awaiting requestFormData', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const frameId = 'pending-body-frame' as Protocol.Page.FrameId;
+      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      runtimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'top',
+        uniqueId: 'ctx-1',
+        auxData: {frameId, isDefault: true},
+      });
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'fetch-pending-body' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'https://example.test/',
+        request: {
+          url: 'https://example.test/api',
+          method: 'POST',
+          headers: {},
+          hasPostData: true,
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      // Destroy and replace the execution context while requestFormData is in flight.
+      sinon.stub(request, 'requestFormData').callsFake(async () => {
+        runtimeModel!.executionContextDestroyed(1 as Protocol.Runtime.ExecutionContextId);
+        runtimeModel!.executionContextCreated({
+          id: 1 as Protocol.Runtime.ExecutionContextId,
+          origin: 'https://other.test',
+          name: 'top',
+          uniqueId: 'ctx-2',
+          auxData: {frameId, isDefault: true},
+        });
+        return '{"a":1}';
+      });
+
+      let evaluatedExpression: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedExpression = params.expression;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.isUndefined(evaluatedExpression);
+    });
+
+    it('propagates captured execution context across redirects', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+      const requestRedirectedPromise = networkManager.once(SDK.NetworkManager.Events.RequestRedirected);
+      const frameId = 'redirect-frame' as Protocol.Page.FrameId;
+      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      runtimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'top',
+        uniqueId: 'ctx-redirect',
+        auxData: {frameId, isDefault: true},
+      });
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'redirect-fetch' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'https://example.test/',
+        request: {
+          url: 'https://example.test/a',
+          method: 'GET',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'redirect-fetch' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'https://example.test/',
+        request: {
+          url: 'https://example.test/b',
+          method: 'GET',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 2,
+        wallTime: 2,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+        redirectResponse: {
+          url: 'https://example.test/a',
+          status: 302,
+          statusText: 'Found',
+          headers: {},
+          mimeType: 'application/json',
+          charset: '',
+          connectionReused: false,
+          connectionId: 0,
+          encodedDataLength: 0,
+          securityState: Protocol.Security.SecurityState.Secure,
+        },
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const redirectedRequest = await requestRedirectedPromise;
+
+      let evaluatedUniqueContextId: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedUniqueContextId = params.uniqueContextId;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(redirectedRequest);
+      assert.strictEqual(evaluatedUniqueContextId, 'ctx-redirect');
+
+      // After navigation replaces the context, resending the redirected request must be refused.
+      evaluatedUniqueContextId = undefined;
+      runtimeModel!.executionContextsCleared();
+      runtimeModel!.executionContextCreated({
+        id: 2 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://other.test',
+        name: 'top',
+        uniqueId: 'ctx-other',
+        auxData: {frameId, isDefault: true},
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(redirectedRequest);
+      assert.isUndefined(evaluatedUniqueContextId);
+    });
+
+    it('does not bind a late cross-origin requestWillBeSent to the new origin context on the same frameId',
+       async () => {
+         const universe = new TestUniverse();
+         const connection = new MockCDPConnection();
+         const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+         const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+         const frameId = 'raced-frame' as Protocol.Page.FrameId;
+         const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+         assert.exists(runtimeModel);
+
+         // RuntimeModel already holds the new origin's context before the old document's requestWillBeSent arrives.
+         runtimeModel!.executionContextCreated({
+           id: 2 as Protocol.Runtime.ExecutionContextId,
+           origin: 'https://origin-b.test',
+           name: 'top',
+           uniqueId: 'ctx-origin-b',
+           auxData: {frameId, isDefault: true},
+         });
+
+         networkManager.dispatcher.requestWillBeSent({
+           requestId: 'late-cross-origin' as Protocol.Network.RequestId,
+           loaderId: 'old-loader' as Protocol.Network.LoaderId,
+           frameId,
+           documentURL: 'https://origin-a.test/',
+           request: {
+             url: 'https://origin-b.test/api',
+             method: 'POST',
+             headers: {},
+             initialPriority: Protocol.Network.ResourcePriority.Medium,
+             referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+           },
+           timestamp: 1,
+           wallTime: 1,
+           initiator: {type: Protocol.Network.InitiatorType.Other},
+           type: Protocol.Network.ResourceType.Fetch,
+           redirectHasExtraInfo: false,
+         } as Protocol.Network.RequestWillBeSentEvent);
+
+         const {request} = await requestStartedPromise;
+
+         let evaluatedExpression: string|undefined;
+         connection.setSuccessHandler('Runtime.evaluate', params => {
+           evaluatedExpression = params.expression;
+           return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+         });
+
+         await SDK.NetworkManager.NetworkManager.resendRequest(request);
+         assert.isUndefined(evaluatedExpression);
+       });
+
+    it('refuses to resend an uncaptured frame request even when a same-URL-origin context later appears', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const frameId = 'uncaptured-sandbox-frame' as Protocol.Page.FrameId;
+
+      // Request arrives before any execution context is registered (e.g. sandboxed iframe with same URL origin).
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'uncaptured-sandbox-fetch' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'https://example.test/sandboxed.html',
+        request: {
+          url: 'https://example.test/api',
+          method: 'POST',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      // Later, an unsandboxed document with the same URL origin occupies the frameId.
+      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel!.executionContextCreated({
+        id: 2 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'unsandboxed',
+        uniqueId: 'ctx-unsandboxed',
+        auxData: {frameId, isDefault: true},
+      });
+
+      let evaluatedExpression: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedExpression = params.expression;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.isUndefined(evaluatedExpression);
+    });
+
+    it('does not bind an opaque documentURL request to a non-opaque execution context', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const networkManager = new SDK.NetworkManager.NetworkManager(universe.createTarget({connection}));
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const frameId = 'opaque-race-frame' as Protocol.Page.FrameId;
+      const runtimeModel = networkManager.target().model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      runtimeModel!.executionContextCreated({
+        id: 2 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://victim.test',
+        name: 'top',
+        uniqueId: 'ctx-victim',
+        auxData: {frameId, isDefault: true},
+      });
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'opaque-doc-req' as Protocol.Network.RequestId,
+        loaderId: 'old-loader' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'data:text/html,hi',
+        request: {
+          url: 'https://victim.test/api',
+          method: 'POST',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      let evaluatedExpression: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedExpression = params.expression;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.isUndefined(evaluatedExpression);
+    });
+
+    it('does not bind when ResourceTreeModel frame loaderId does not match request loaderId', async () => {
+      const universe = new TestUniverse();
+      const connection = new MockCDPConnection();
+      const target = universe.createTarget({connection});
+      const networkManager = new SDK.NetworkManager.NetworkManager(target);
+      const requestStartedPromise = networkManager.once(SDK.NetworkManager.Events.RequestStarted);
+      const frameId = 'loader-mismatch-frame' as Protocol.Page.FrameId;
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(runtimeModel);
+      assert.exists(resourceTreeModel);
+
+      sinon.stub(resourceTreeModel!, 'frameForId').withArgs(frameId).returns({
+        loaderId: 'new-loader',
+      } as SDK.ResourceTreeModel.ResourceTreeFrame);
+
+      runtimeModel!.executionContextCreated({
+        id: 2 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'top',
+        uniqueId: 'ctx-new-load',
+        auxData: {frameId, isDefault: true},
+      });
+
+      networkManager.dispatcher.requestWillBeSent({
+        requestId: 'stale-loader-req' as Protocol.Network.RequestId,
+        loaderId: 'old-loader' as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'https://example.test/',
+        request: {
+          url: 'https://example.test/api',
+          method: 'POST',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      let evaluatedExpression: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedExpression = params.expression;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.isUndefined(evaluatedExpression);
+    });
+
+    it('falls back to same-origin default context on worker targets when context was not yet captured', async () => {
+      const universe = new TestUniverse();
+      void universe.multitargetNetworkManager;
+      const connection = new MockCDPConnection();
+      const workerTarget = universe.createTarget({connection, type: SDK.Target.Type.Worker});
+      const networkManager = workerTarget.model(SDK.NetworkManager.NetworkManager);
+      assert.exists(networkManager);
+      const requestStartedPromise = networkManager!.once(SDK.NetworkManager.Events.RequestStarted);
+
+      // Request arrives before worker executionContextCreated.
+      networkManager!.dispatcher.requestWillBeSent({
+        requestId: 'worker-early-fetch' as Protocol.Network.RequestId,
+        loaderId: 'loader-1' as Protocol.Network.LoaderId,
+        documentURL: 'https://example.test/worker.js',
+        request: {
+          url: 'https://example.test/data.json',
+          method: 'GET',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Fetch,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+
+      const {request} = await requestStartedPromise;
+
+      const runtimeModel = workerTarget.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'worker',
+        uniqueId: 'ctx-worker-late',
+        auxData: {isDefault: true},
+      });
+
+      let evaluatedUniqueContextId: string|undefined;
+      connection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedUniqueContextId = params.uniqueContextId;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.strictEqual(evaluatedUniqueContextId, 'ctx-worker-late');
+    });
+
+    it('clears parent execution context when worker adopts main resource request', async () => {
+      const universe = new TestUniverse();
+      void universe.multitargetNetworkManager;
+      const pageConnection = new MockCDPConnection();
+      const pageTarget = universe.createTarget({connection: pageConnection});
+      const pageNetworkManager = pageTarget.model(SDK.NetworkManager.NetworkManager);
+      assert.exists(pageNetworkManager);
+
+      const frameId = 'parent-frame' as Protocol.Page.FrameId;
+      const pageRuntimeModel = pageTarget.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(pageRuntimeModel);
+      pageRuntimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'page',
+        uniqueId: 'ctx-page',
+        auxData: {frameId, isDefault: true},
+      });
+
+      const workerScriptId = 'worker-script-id' as Protocol.Network.RequestId;
+      const requestStartedPromise = pageNetworkManager!.once(SDK.NetworkManager.Events.RequestStarted);
+      pageNetworkManager!.dispatcher.requestWillBeSent({
+        requestId: workerScriptId,
+        loaderId: workerScriptId as unknown as Protocol.Network.LoaderId,
+        frameId,
+        documentURL: 'https://example.test/',
+        request: {
+          url: 'https://example.test/worker.js',
+          method: 'GET',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.High,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.Origin,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        type: Protocol.Network.ResourceType.Script,
+        redirectHasExtraInfo: false,
+      } as Protocol.Network.RequestWillBeSentEvent);
+      const {request} = await requestStartedPromise;
+
+      const workerConnection = new MockCDPConnection();
+      const workerTarget = universe.createTarget({connection: workerConnection, type: SDK.Target.Type.Worker});
+      const workerNetworkManager = workerTarget.model(SDK.NetworkManager.NetworkManager);
+      const workerRuntimeModel = workerTarget.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(workerNetworkManager);
+      assert.exists(workerRuntimeModel);
+
+      workerRuntimeModel!.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.test',
+        name: 'worker',
+        uniqueId: 'ctx-adopted-worker',
+        auxData: {isDefault: true},
+      });
+
+      // Trigger maybeAdoptMainResourceRequest on the worker's NetworkDispatcher.
+      workerNetworkManager!.dispatcher.loadingFinished({
+        requestId: workerScriptId,
+        timestamp: 2,
+        encodedDataLength: 10,
+      });
+
+      let evaluatedUniqueContextId: string|undefined;
+      workerConnection.setSuccessHandler('Runtime.evaluate', params => {
+        evaluatedUniqueContextId = params.uniqueContextId;
+        return {result: {type: Protocol.Runtime.RemoteObjectType.Object}};
+      });
+
+      await SDK.NetworkManager.NetworkManager.resendRequest(request);
+      assert.strictEqual(evaluatedUniqueContextId, 'ctx-adopted-worker');
     });
   });
 });

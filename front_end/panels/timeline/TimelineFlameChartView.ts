@@ -15,6 +15,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getAnnotationEntries, getAnnotationWindow} from './AnnotationHelpers.js';
@@ -89,6 +90,18 @@ interface FlameChartDimmer {
   /** When true, all undimmed entries are outlined. When a number array, only those indices are outlined (if not dimmed). */
   outline: boolean|{main: number[] | boolean, network: number[]|boolean};
 }
+
+export interface ViewInput {
+  detailsSplitWidget: UI.SplitWidget.SplitWidget;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  // clang-format off
+  render(html`<style>${timelineFlameChartViewStyles}</style>
+    <div ${UI.Widget.widget(UI.Widget.WrapperWidget, {widget: input.detailsSplitWidget})}></div>`,
+    target, {container: {attributes: {jslog: VisualLogging.section('timeline.flame-chart-view')}}});
+  // clang-format on
+};
 
 const TimelineFlameChartViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
@@ -206,13 +219,15 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #networkPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #mainPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #listenersAttached = false;
+  readonly #view: View;
   readonly #boundOnMainDataChanged = (): void => {
     this.mainFlameChart.scheduleUpdate();
   };
 
-  constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager) {
-    super({jslog: `${VisualLogging.section('timeline.flame-chart-view')}`});
-    this.registerRequiredCSS(timelineFlameChartViewStyles);
+  constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager,
+              view: View = DEFAULT_VIEW) {
+    super();
+    this.#view = view;
     this.element.classList.add('timeline-flamechart');
 
     this.#delegate = delegate;
@@ -401,7 +416,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#detailsSplitWidget.installResizer(this.detailsView.headerElement());
     this.#detailsSplitWidget.setMainWidget(this.#chartSplitWidget);
     this.#detailsSplitWidget.setSidebarWidget(this.detailsView);
-    this.#detailsSplitWidget.show(this.element);
 
     // Event listeners for annotations.
     this.#onMainAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
@@ -503,6 +517,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
         },
         commentManager,
     );
+    this.requestUpdate();
   }
 
   #attachListeners(): void {
@@ -1515,6 +1530,13 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#updateFlameCharts();
   }
 
+  override performUpdate(): void {
+    this.#view({detailsSplitWidget: this.#detailsSplitWidget}, undefined, this.contentElement);
+    if (this.#needsResizeToPreferredHeights) {
+      this.resizeToPreferredHeights();
+    }
+  }
+
   updateCountersGraphToggle(showMemoryGraph: boolean): void {
     if (showMemoryGraph) {
       this.#chartSplitWidget.showBoth();
@@ -1863,7 +1885,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   resizeToPreferredHeights(): void {
-    if (!this.isShowing()) {
+    if (!this.isShowing() || !this.#networkSplitWidget.isShowing()) {
       this.#needsResizeToPreferredHeights = true;
       return;
     }

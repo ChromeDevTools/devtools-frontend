@@ -28,6 +28,7 @@ import {
   setupIgnoreListManagerEnvironment,
 } from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -305,6 +306,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
+    await flameChartView.updateComplete;
     flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     assert.isFalse(flameChartView.hasHiddenTracks());
@@ -396,6 +398,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
+    await flameChartView.updateComplete;
     flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     const mainChart = flameChartView.getMainFlameChart();
@@ -580,6 +583,16 @@ describe('TimelineFlameChartView', function() {
     flameChartView.addTimestampMarkerOverlay(Trace.Types.Timing.Micro(100));
     assert.strictEqual(flameChartView.removeOverlaysOfType('TIMESTAMP_MARKER'), 1);
     assert.strictEqual(flameChartView.removeOverlaysOfType('TIMESTAMP_MARKER'), 0);
+  });
+
+  it('renders through the injected view function on show', async () => {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    const input = await view.nextInput;
+    assert.instanceOf(input.detailsSplitWidget, UI.SplitWidget.SplitWidget);
   });
 
   it('coalesces overlay updates when main and network flame charts redraw in the same turn', async () => {
@@ -768,6 +781,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
+    await flameChartView.updateComplete;
     flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     // Find the main track to later collapse entries of
@@ -914,6 +928,7 @@ describe('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         mockViewDelegate, new CommentManager.CommentManager.CommentManager());
     renderElementIntoDOM(flameChartView);
+    await flameChartView.updateComplete;
     flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
 
     const tooltips =

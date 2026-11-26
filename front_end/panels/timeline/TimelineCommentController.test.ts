@@ -58,6 +58,7 @@ async function setupFlameChartView(context: Mocha.Context): Promise<Setup> {
       new Timeline.TimelineFlameChartView.TimelineFlameChartView(new MockViewDelegate(), commentManager);
   activeFlameChartViews.push(flameChartView);
   renderWidgetInVbox(flameChartView, {width: 1500, height: 2000});
+  await flameChartView.updateComplete;
   flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
   // Matches the trace ID format that TimelineCommentController stores on anchors.
   const {min, max} = parsedTrace.data.Meta.traceBounds;

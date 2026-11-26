@@ -751,6 +751,146 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
     });
   });
 
+  describe('missing top-level data hint', () => {
+    const MISSING_TOP_LEVEL_DATA_HINT =
+        'No top-level `data` variable was assigned. Assign a top-level `data` variable directly (use top-level `await` instead of `.then()` or an IIFE; do not rely on inner `return` statements, bare expressions, or `data` declared inside a block).';
+
+    async function runSnippet(
+        code: string,
+        options?: {approved?: boolean},
+        observation = 'undefined',
+        ): Promise<string> {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const response = await tool.handler(
+          {
+            explanation: 'Inspect element',
+            title: 'Inspecting element',
+            code,
+          },
+          createContext(observation),
+          options,
+      );
+      assertIsResult(response);
+      if (typeof response.result !== 'string') {
+        assert.fail('Expected string result');
+      }
+      return response.result;
+    }
+
+    it('documents top-level await and top-level data constraints in the code parameter description', () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const {description} = tool.parameters.properties.code;
+      assert.include(description, 'define a top-level `data` variable');
+      assert.include(description, '**CRITICAL** Top-level `await` works directly');
+      assert.include(description, 'IIFE');
+      assert.include(description, 'inner `return` statements');
+      assert.include(description, 'bare expression');
+    });
+
+    it('appends the missing top-level data hint for an unapproved bare expression', async () => {
+      const result = await runSnippet('document.title');
+      assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+    });
+
+    it('appends the missing top-level data hint for an unapproved arrow parameter named data', async () => {
+      const result = await runSnippet('data => data.id');
+      assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+    });
+
+    it('does not append the missing top-level data hint when unapproved top-level data evaluates to undefined',
+       async () => {
+         const result = await runSnippet('const data = $0?.dataset.missing;');
+         assert.strictEqual(result, 'undefined');
+       });
+
+    it('does not append the missing top-level data hint for an unapproved multiline top-level data assignment',
+       async () => {
+         const result = await runSnippet('const data =\n  $0?.dataset.missing;');
+         assert.strictEqual(result, 'undefined');
+       });
+
+    it('does not append the missing top-level data hint for unapproved uniformly indented top-level data', async () => {
+      const result = await runSnippet('  const el = $0;\n  const data = el?.id;');
+      assert.strictEqual(result, 'undefined');
+    });
+
+    it('does not append the missing top-level data hint for unapproved hoisted top-level data assigned in a branch',
+       async () => {
+         const result = await runSnippet('let data;\nif ($0) {\n  data = $0.dataset.missing;\n}');
+         assert.strictEqual(result, 'undefined');
+       });
+
+    it('appends the missing top-level data hint when hoisted top-level data is shadowed inside a branch', async () => {
+      const result = await runSnippet('let data;\nif ($0) {\n  const data = $0.id;\n}');
+      assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+    });
+
+    it('appends the missing top-level data hint when hoisted top-level data is assigned inside then', async () => {
+      const result = await runSnippet('let data;\ndoWork().then(r => { data = r; });');
+      assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+    });
+
+    it('appends the missing top-level data hint when hoisted top-level data is never assigned and only a data property is written',
+       async () => {
+         const result = await runSnippet('let data;\ntextNode.data = \'x\';');
+         assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+       });
+
+    it('does not append the missing top-level data hint for an approved plain void mutation', async () => {
+      const result = await runSnippet('$0.style.color = \'red\';', {approved: true});
+      assert.strictEqual(result, 'undefined');
+    });
+
+    it('does not append the missing top-level data hint for an approved arrow callback with a bare return guard and regex groups',
+       async () => {
+         const result = await runSnippet(
+             'els.forEach(el => { if (!el) return; el.textContent = el.textContent.replace(/(foo)(bar)/, \'$1-$2\'); });',
+             {approved: true},
+         );
+         assert.strictEqual(result, 'undefined');
+       });
+
+    it('does not append the missing top-level data hint for an approved semicolon-less bare return across lines',
+       async () => {
+         const result = await runSnippet('if (!el)\n  return\nel.click();', {approved: true});
+         assert.strictEqual(result, 'undefined');
+       });
+
+    it('does not append the missing top-level data hint for an approved mutation containing return in a string literal',
+       async () => {
+         const result = await runSnippet('$0.textContent = \'click to return home\';', {approved: true});
+         assert.strictEqual(result, 'undefined');
+       });
+
+    it('appends the missing top-level data hint for an approved IIFE with an inner value return', async () => {
+      const result = await runSnippet('(function() { $0.click(); return $0.id; })()', {approved: true});
+      assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+    });
+
+    it('appends the missing top-level data hint for approved nested const data', async () => {
+      const result = await runSnippet('if ($0) {\n  const data = $0.id;\n}', {approved: true});
+      assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+    });
+
+    it('appends the missing top-level data hint for an approved un-awaited async IIFE assigning bare data', async () => {
+      const result = await runSnippet(
+          '(async () => {\n  $0.click();\n  await new Promise(r => setTimeout(r, 100));\n  data = {id: $0.id};\n})();',
+          {approved: true},
+      );
+      assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+    });
+
+    it('appends the missing top-level data hint for an approved un-awaited then chain', async () => {
+      const result = await runSnippet('doWork().then(r => { console.log(r); });', {approved: true});
+      assert.strictEqual(result, `undefined\n${MISSING_TOP_LEVEL_DATA_HINT}`);
+    });
+
+    it('does not append the missing top-level data hint when the observation is not undefined', async () => {
+      const result = await runSnippet('(function() { return document.title; })()', undefined, '\'ok\'');
+      assert.strictEqual(result, '\'ok\'');
+    });
+  });
+
   describe('origin locking', () => {
     function createContext(originLock: AiAssistance.Tool.OriginLockState) {
       const mockExecJs = sinon.stub().resolves('{"success": true}');

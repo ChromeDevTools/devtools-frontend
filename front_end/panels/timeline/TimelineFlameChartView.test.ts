@@ -602,6 +602,25 @@ describe('TimelineFlameChartView', function() {
     assert.isFalse((await view.nextInput).inert);
   });
 
+  it('cancels entry link annotation creation on Escape keydown', async function() {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    await view.nextInput;
+
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+    flameChartView.getMainDataProvider().timelineData();
+    flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 204);
+    assert.isNotNull(flameChartView.getLinkSelectionAnnotation());
+
+    assert.strictEqual(view.input.onKeyDown({key: 'Escape', altKey: false}), 'handled');
+    assert.isNull(flameChartView.getLinkSelectionAnnotation());
+  });
+
   it('cancels entry link annotation creation on secondary pointerdown', async function() {
     const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(

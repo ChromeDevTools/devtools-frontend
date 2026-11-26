@@ -94,6 +94,7 @@ interface FlameChartDimmer {
 export interface ViewInput {
   detailsSplitWidget: UI.SplitWidget.SplitWidget;
   inert: boolean;
+  onKeyDown: (keyInfo: {key: string, altKey: boolean}) => 'handled' | 'stop-propagation' | undefined;
   onSecondaryPointerDown: () => boolean;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -102,6 +103,16 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
     classes: ['timeline-flamechart'],
     attributes: {jslog: VisualLogging.section('timeline.flame-chart-view'), inert: input.inert},
     listeners: {
+      keydown: (event: Event) => {
+        const {key, altKey} = event as KeyboardEvent;
+        const result = input.onKeyDown({key, altKey});
+        if (result) {
+          event.stopPropagation();
+        }
+        if (result === 'handled') {
+          event.preventDefault();
+        }
+      },
       pointerdown: (event: Event) => {
         // buttons === 2 indicates a right click.
         if ((event as PointerEvent).buttons === 2 && input.onSecondaryPointerDown()) {
@@ -503,7 +514,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       void this.setSelectionAndReveal(selectionFromEvent(event.event));
     });
 
-    this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
     this.#selectedEvents = null;
 
@@ -1033,7 +1043,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
    * Handles key presses that could impact the creation of a time range overlay with the keyboard.
    * @returns `true` if the event should not be propagated + have its default behaviour stopped.
    */
-  #handleTimeRangeKeyboardCreation(event: KeyboardEvent): boolean {
+  #handleTimeRangeKeyboardCreation(event: {key: string, altKey: boolean}): boolean {
     const visibleWindow = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.timelineTraceWindow;
     if (!visibleWindow) {
       return false;
@@ -1128,7 +1138,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     }
   }
 
-  #keydownHandler(event: KeyboardEvent): void {
+  #onKeyDown = (event: {key: string, altKey: boolean}): 'handled'|'stop-propagation'|undefined => {
+    let result: 'handled'|'stop-propagation'|undefined;
     // `CREATION_NOT_STARTED` is only true in the state when both empty label and button to create connection are
     // created at the same time. If any key is typed in that state, it means that the label is in focus and the key
     // is typed into the label. This tells us that the user chose to create the
@@ -1138,7 +1149,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       this.#clearLinkSelectionAnnotation(true);
       // We have dealt with the keypress as the user is typing into the label, so do not let it propagate up.
       // This also ensures that if the user uses "Escape" they don't toggle the DevTools drawer.
-      event.stopPropagation();
+      result = 'stop-propagation';
     }
 
     /**
@@ -1147,17 +1158,15 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
      */
     if (event.key === 'Escape' && this.#linkSelectionAnnotation) {
       this.#clearLinkSelectionAnnotation(true);
-      event.stopPropagation();
-      event.preventDefault();
+      result = 'handled';
     }
 
     const eventHandledByKeyboardTimeRange = this.#handleTimeRangeKeyboardCreation(event);
     if (eventHandledByKeyboardTimeRange) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
+      return 'handled';
     }
-  }
+    return result;
+  };
 
   forceAnimationsForTest(): void {
     this.#checkReducedMotion = false;
@@ -1541,6 +1550,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#view({
       detailsSplitWidget: this.#detailsSplitWidget,
       inert: this.#inert,
+      onKeyDown: this.#onKeyDown,
       onSecondaryPointerDown: this.#onSecondaryPointerDown,
     },
                undefined, this.contentElement);

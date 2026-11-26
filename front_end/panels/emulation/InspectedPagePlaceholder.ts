@@ -1,25 +1,39 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.js';
 
+export type View = (input: undefined, output: undefined, target: HTMLElement|DocumentFragment) => void;
+
+export const DEFAULT_VIEW: View = (_input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${inspectedPagePlaceholderStyles}</style>
+    <slot></slot>`,
+    target);
+  // clang-format on
+};
+
 let inspectedPagePlaceholderInstance: InspectedPagePlaceholder;
 
-const InspectedPagePlaceholderBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+const InspectedPagePlaceholderBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget<ShadowRoot>> =
     Common.ObjectWrapper.eventMixin(
         UI.Widget.Widget,
     );
 
 export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
-  constructor() {
-    super({useShadowDom: true});
-    this.registerRequiredCSS(inspectedPagePlaceholderStyles);
-    this.restoreMinimumSize();
+  readonly #view: View;
+  #needsUpdate = true;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: 'pure'});
+    this.#view = view;
+    this.setMinimumSize(150, 150);
   }
 
   static instance(opts: {
@@ -33,12 +47,16 @@ export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
     return inspectedPagePlaceholderInstance;
   }
 
-  restoreMinimumSize(): void {
-    this.setMinimumSize(150, 150);
+  override wasShown(): void {
+    super.wasShown();
+    if (this.#needsUpdate) {
+      this.requestUpdate();
+    }
   }
 
-  clearMinimumSize(): void {
-    this.setMinimumSize(1, 1);
+  override performUpdate(): void {
+    this.#needsUpdate = false;
+    this.#view(undefined, undefined, this.contentElement);
   }
 
   #dipPageRect(): {

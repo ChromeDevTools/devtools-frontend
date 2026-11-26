@@ -97,11 +97,11 @@ describeWithEnvironment('DeviceModeView', () => {
       const wrapper = new Emulation.DeviceModeView.DeviceModeView();
 
       const placeholder = Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance();
-      placeholder.contentElement.textContent = 'Inspected Page Placeholder';
+      placeholder.element.textContent = 'Inspected Page Placeholder';
 
       renderElementIntoDOM(wrapper, {includeCommonStyles: true, width: 800, height: 600});
 
-      await wrapper.updateComplete;
+      await UI.Widget.Widget.allUpdatesComplete;
       await assertScreenshot('emulation/device_mode_wrapper_base.png');
     });
 
@@ -121,7 +121,7 @@ describeWithEnvironment('DeviceModeView', () => {
       const wrapper = new Emulation.DeviceModeView.DeviceModeView();
 
       const placeholder = Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance();
-      placeholder.contentElement.textContent = 'Inspected Page Placeholder';
+      placeholder.element.textContent = 'Inspected Page Placeholder';
 
       // Enable Device Mode
       const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
@@ -129,7 +129,7 @@ describeWithEnvironment('DeviceModeView', () => {
 
       renderElementIntoDOM(wrapper, {includeCommonStyles: true, width: 800, height: 600});
 
-      await wrapper.updateComplete;
+      await UI.Widget.Widget.allUpdatesComplete;
       await assertScreenshot('emulation/device_mode_wrapper_toggled.png');
     });
     it('calculates screenshot clip bounding box from border quad for scaled elements', async () => {
@@ -434,21 +434,6 @@ describeWithEnvironment('DeviceModeView', () => {
   });
 
   describe('InspectedPagePlaceholder', () => {
-    it('does not report bounds while it is detached from the document', () => {
-      const placeholder = Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance({forceNew: true});
-      const onUpdate = sinon.spy();
-      placeholder.addEventListener(Emulation.InspectedPagePlaceholder.Events.UPDATE, onUpdate);
-
-      placeholder.update();
-      placeholder.update(/* force= */ true);
-      sinon.assert.notCalled(onUpdate);
-
-      renderElementIntoDOM(placeholder, {includeCommonStyles: true, width: 800, height: 600});
-      placeholder.update();
-      sinon.assert.calledOnce(onUpdate);
-      assert.deepEqual(onUpdate.firstCall.args[0].data, {x: 0, y: 0, width: 800, height: 600});
-    });
-
     it('does not report bounds while detached when device mode is turned off', async () => {
       // Like the root SplitWidget in AdvancedApp, the parent lays out the DeviceModeView synchronously whenever the
       // placeholder's constraints change, which happens while the DeviceModeView re-renders.

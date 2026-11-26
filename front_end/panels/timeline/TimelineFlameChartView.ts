@@ -94,12 +94,21 @@ interface FlameChartDimmer {
 export interface ViewInput {
   detailsSplitWidget: UI.SplitWidget.SplitWidget;
   inert: boolean;
+  onSecondaryPointerDown: () => boolean;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
   const container = {
     classes: ['timeline-flamechart'],
     attributes: {jslog: VisualLogging.section('timeline.flame-chart-view'), inert: input.inert},
+    listeners: {
+      pointerdown: (event: Event) => {
+        // buttons === 2 indicates a right click.
+        if ((event as PointerEvent).buttons === 2 && input.onSecondaryPointerDown()) {
+          event.stopPropagation();
+        }
+      },
+    },
   };
   // clang-format off
   render(html`<style>${timelineFlameChartViewStyles}</style>
@@ -495,7 +504,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     });
 
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
-    this.element.addEventListener('pointerdown', this.#pointerDownHandler.bind(this));
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
     this.#selectedEvents = null;
 
@@ -976,17 +984,17 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     }
   }
 
-  #pointerDownHandler(event: PointerEvent): void {
+  #onSecondaryPointerDown = (): boolean => {
     /**
      * If the user is in the middle of creating an entry link annotation and
      * right clicks, let's take that as a sign to exit and cancel.
-     * (buttons === 2 indicates a right click)
      */
-    if (event.buttons === 2 && this.#linkSelectionAnnotation) {
-      this.#clearLinkSelectionAnnotation(true);
-      event.stopPropagation();
+    if (!this.#linkSelectionAnnotation) {
+      return false;
     }
-  }
+    this.#clearLinkSelectionAnnotation(true);
+    return true;
+  };
 
   #clearLinkSelectionAnnotation(deleteCurrentLink: boolean): void {
     if (this.#linkSelectionAnnotation === null) {
@@ -1530,7 +1538,12 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   override performUpdate(): void {
-    this.#view({detailsSplitWidget: this.#detailsSplitWidget, inert: this.#inert}, undefined, this.contentElement);
+    this.#view({
+      detailsSplitWidget: this.#detailsSplitWidget,
+      inert: this.#inert,
+      onSecondaryPointerDown: this.#onSecondaryPointerDown,
+    },
+               undefined, this.contentElement);
     if (this.#needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }

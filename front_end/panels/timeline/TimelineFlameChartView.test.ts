@@ -602,6 +602,26 @@ describe('TimelineFlameChartView', function() {
     assert.isFalse((await view.nextInput).inert);
   });
 
+  it('cancels entry link annotation creation on secondary pointerdown', async function() {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    await view.nextInput;
+
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+    flameChartView.getMainDataProvider().timelineData();
+    flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 204);
+    assert.isNotNull(flameChartView.getLinkSelectionAnnotation());
+
+    assert.isTrue(view.input.onSecondaryPointerDown());
+    assert.isNull(flameChartView.getLinkSelectionAnnotation());
+    assert.isFalse(view.input.onSecondaryPointerDown());
+  });
+
   it('coalesces overlay updates when main and network flame charts redraw in the same turn', async () => {
     const mockViewDelegate = new MockViewDelegate();
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(

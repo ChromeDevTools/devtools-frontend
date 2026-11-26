@@ -234,7 +234,7 @@ export class AiAgent2 extends AiAgent<unknown> {
     const domModel = isTargetAllowed ? target.model(SDK.DOMModel.DOMModel) : null;
     // Ensure the DOM document is requested and cached in DOMModel so that
     // subsequent synchronous lookups via domModel.existingDocument() (e.g.,
-    // in #getDocumentBodyNode()) resolve the document and body immediately.
+    // in #getDefaultExecutionContextNode()) resolve the document and body immediately.
     if (domModel) {
       if (!domModel.existingDocument()) {
         try {
@@ -243,11 +243,13 @@ export class AiAgent2 extends AiAgent<unknown> {
           debugLog('AiAgent2: Failed to request document', e);
         }
       }
-      if (!domModel.existingDocument()?.body) {
+      const document = domModel.existingDocument();
+      // Fetching documentElement's children populates document.body in DOMModel as a side effect.
+      if (document && !document.body && document.documentElement) {
         try {
-          await domModel.pushNodeByPathToFrontend('1,HTML,1,BODY');
+          await document.documentElement.getChildNodesPromise();
         } catch (e) {
-          debugLog('AiAgent2: Failed to push body node to frontend', e);
+          debugLog('AiAgent2: Failed to request documentElement child nodes', e);
         }
       }
     }
@@ -498,7 +500,7 @@ ${skillsManifest}`,
     if (this.context instanceof DOMNodeContext) {
       return this.context.getItem();
     }
-    return this.#getDocumentBodyNode();
+    return this.#getDefaultExecutionContextNode();
   }
 
   #createExtensionScope(changes: ChangeManager): {install(): Promise<void>, uninstall(): Promise<void>} {
@@ -552,12 +554,14 @@ ${skillsManifest}`,
 
   /**
    * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
-   * there is no user-selected DOM node. We fall back to the document body as the
-   * default execution context node so scripts have a valid `$0` target.
-   * Returns null if the conversation origin is not established or
-   * does not match the primary page document's security origin.
+   * there is no user-selected DOM node. Falls back to `document.body` and then
+   * `document.documentElement` so scripts have a valid Element `$0` target even
+   * on HTML documents without a `<body>` (such as framesets).
+   * Returns null if no document, body, or documentElement exists, or if the
+   * conversation origin is not established or does not match the primary page
+   * document's security origin.
    */
-  #getDocumentBodyNode(): SDK.DOMModel.DOMNode|null {
+  #getDefaultExecutionContextNode(): SDK.DOMModel.DOMNode|null {
     const target = this.#getTarget();
     const document = target?.model(SDK.DOMModel.DOMModel)?.existingDocument();
     if (!document) {
@@ -567,7 +571,7 @@ ${skillsManifest}`,
     if (!isOriginAllowedByLock(originLock, document.securityOrigin())) {
       return null;
     }
-    return document.body ?? null;
+    return document.body ?? document.documentElement ?? null;
   }
 
   /**

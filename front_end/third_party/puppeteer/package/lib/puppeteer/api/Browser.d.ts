@@ -13,6 +13,7 @@ import { type Logger } from '../common/Debug.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
+import { Mutex } from '../util/Mutex.js';
 import type { BrowserContext } from './BrowserContext.js';
 import type { Extension } from './Extension.js';
 import type { HTTPRequest } from './HTTPRequest.js';
@@ -471,12 +472,21 @@ export interface NetworkRestrictions {
      * A list of {@link https://urlpattern.spec.whatwg.org/ | URLPattern} strings to block.
      * Mutually exclusive with {@link NetworkRestrictions.allowlist}.
      * Passing `[]` or omitting this option means no restriction.
+     *
+     * @remarks
+     * The blocklist does not apply to WebTransport and WebRTC at this time.
+     * See {@link ConnectOptions.blocklist}.
      */
     blocklist?: string[];
     /**
      * A list of {@link https://urlpattern.spec.whatwg.org/ | URLPattern} strings to allow.
      * Mutually exclusive with {@link NetworkRestrictions.blocklist}.
      * Passing `[]` or omitting this option means no restriction.
+     *
+     * @remarks
+     * The allowlist does not apply to WebTransport and to TURN over TCP at
+     * this time. It blocks all WebRTC traffic over UDP.
+     * See {@link ConnectOptions.allowlist}.
      */
     allowlist?: string[];
 }
@@ -525,6 +535,14 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * @internal
      */
     constructor(logger: Logger);
+    /**
+     * @internal
+     */
+    _startScreenshot(): Promise<InstanceType<typeof Mutex.Guard>>;
+    /**
+     * @internal
+     */
+    _waitForScreenshotOperations(): Promise<InstanceType<typeof Mutex.Guard>> | undefined;
     /**
      * @internal
      */
@@ -625,6 +643,9 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * will remain attached and stay on the blocked page. This is a behavior difference
      * compared to launching the browser with network restrictions, where such targets
      * are detached immediately upon initial attach.
+     *
+     * The restrictions have the same WebTransport and WebRTC limitations as
+     * {@link ConnectOptions.blocklist} and {@link ConnectOptions.allowlist}.
      *
      * @experimental
      */

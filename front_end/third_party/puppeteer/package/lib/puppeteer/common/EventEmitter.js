@@ -21,6 +21,8 @@ import { DEBUG_PREFIXES } from './Debug.js';
 export class EventEmitter {
     #emitter;
     #handlers = new Map();
+    // Maps the handlers registered by `once` to the handlers passed to it.
+    #onceHandlers = new WeakMap();
     #logger;
     /**
      * If you pass an emitter, the returned emitter will wrap the passed emitter.
@@ -63,7 +65,12 @@ export class EventEmitter {
             this.#handlers.delete(type);
             return this;
         }
-        const index = handlers.lastIndexOf(handler);
+        let index = handlers.length - 1;
+        while (index > -1 &&
+            handlers[index] !== handler &&
+            this.#onceHandlers.get(handlers[index]) !== handler) {
+            index--;
+        }
         if (index > -1) {
             this.#emitter.off(type, ...handlers.splice(index, 1));
         }
@@ -91,7 +98,19 @@ export class EventEmitter {
             handler(...args);
             this.off(type, onceHandler);
         };
-        return this.on(type, onceHandler);
+        // Read the count from `#handlers` directly rather than `listenerCount()`,
+        // which a subclass can override, so both sides of the check below come
+        // from the same source.
+        const handlerCount = this.#handlers.get(type)?.length ?? 0;
+        this.on(type, onceHandler);
+        // Subclasses can register a wrapper of `onceHandler` in `on`, so map the
+        // handler that was registered last. Only do it if `on` added exactly one
+        // handler, otherwise `off(type, handler)` could remove an unrelated one.
+        const handlers = this.#handlers.get(type);
+        if (handlers && handlers.length === handlerCount + 1) {
+            this.#onceHandlers.set(handlers[handlers.length - 1], handler);
+        }
+        return this;
     }
     /**
      * Gets the number of listeners for a given event.

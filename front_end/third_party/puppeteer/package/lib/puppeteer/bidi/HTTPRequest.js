@@ -150,7 +150,7 @@ export class BidiHTTPRequest extends HTTPRequest {
             .continueRequest({
             url: overrides.url,
             method: overrides.method,
-            body: overrides.postData
+            body: overrides.postData !== undefined
                 ? {
                     type: 'base64',
                     value: stringToBase64(overrides.postData),
@@ -208,7 +208,7 @@ export class BidiHTTPRequest extends HTTPRequest {
             .provideResponse({
             statusCode: status,
             headers: headers.length > 0 ? headers : undefined,
-            reasonPhrase: STATUS_TEXTS[status],
+            reasonPhrase: STATUS_TEXTS[status] ?? 'Unknown',
             body: parsedBody?.base64
                 ? {
                     type: 'base64',

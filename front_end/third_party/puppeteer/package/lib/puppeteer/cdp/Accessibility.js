@@ -142,48 +142,50 @@ export class Accessibility {
             backendNodeId = node.backendNodeId;
         }
         const defaultRoot = AXNode.createTree(this.#realm, nodes);
-        const populateIframes = async (root) => {
-            if (root.payload.role?.value === 'Iframe') {
-                const env_1 = { stack: [], error: void 0, hasError: false };
+        const populateIframes = async (node) => {
+            if (node.payload.role?.value === 'Iframe') {
+                if (!node.payload.backendDOMNodeId) {
+                    return;
+                }
                 try {
-                    if (!root.payload.backendDOMNodeId) {
-                        return;
-                    }
-                    const handle = __addDisposableResource(env_1, (await this.#realm.adoptBackendNode(root.payload.backendDOMNodeId)), false);
-                    if (!handle || !('contentFrame' in handle)) {
-                        return;
-                    }
-                    const frame = await handle.contentFrame();
-                    if (!frame) {
-                        return;
-                    }
+                    const env_1 = { stack: [], error: void 0, hasError: false };
                     try {
-                        const iframeSnapshot = await frame.accessibility.snapshot(options);
-                        root.iframeSnapshot = iframeSnapshot ?? undefined;
+                        const handle = __addDisposableResource(env_1, (await this.#realm.adoptBackendNode(node.payload.backendDOMNodeId)), false);
+                        if (!handle || !('contentFrame' in handle)) {
+                            return;
+                        }
+                        const frame = await handle.contentFrame();
+                        if (!frame) {
+                            return;
+                        }
+                        // Scope `root` to the originating frame; child frames snapshot
+                        // their own full subtrees.
+                        const iframeSnapshot = await frame.accessibility.snapshot({
+                            interestingOnly,
+                            includeIframes,
+                        });
+                        node.iframeSnapshot = iframeSnapshot ?? undefined;
                     }
-                    catch (error) {
-                        // Frames can get detached at any time resulting in errors.
-                        this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                    catch (e_1) {
+                        env_1.error = e_1;
+                        env_1.hasError = true;
+                    }
+                    finally {
+                        __disposeResources(env_1);
                     }
                 }
-                catch (e_1) {
-                    env_1.error = e_1;
-                    env_1.hasError = true;
-                }
-                finally {
-                    __disposeResources(env_1);
+                catch (error) {
+                    // Frames can get detached at any time resulting in errors.
+                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 }
             }
-            await Promise.all(root.children.map(child => {
+            await Promise.all(node.children.map(child => {
                 return populateIframes(child);
             }));
         };
         let needle = defaultRoot;
         if (!defaultRoot) {
             return null;
-        }
-        if (includeIframes) {
-            await populateIframes(defaultRoot);
         }
         if (backendNodeId) {
             needle = defaultRoot.find(node => {
@@ -192,6 +194,9 @@ export class Accessibility {
         }
         if (!needle) {
             return null;
+        }
+        if (includeIframes) {
+            await populateIframes(needle);
         }
         if (!interestingOnly) {
             return this.serializeTree(needle)[0] ?? null;

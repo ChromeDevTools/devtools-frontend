@@ -20,9 +20,9 @@ export interface DeferredOptions {
  *
  * @internal
  */
-export declare class Deferred<T, V extends Error = Error> {
+export declare class Deferred<T, V = Error> {
     #private;
-    static create<R, X extends Error = Error>(opts?: DeferredOptions): Deferred<R, X>;
+    static create<R, X = Error>(opts?: DeferredOptions): Deferred<R, X>;
     static race<R>(awaitables: Array<Promise<R> | Deferred<R>>): Promise<R>;
     constructor(opts?: DeferredOptions);
     resolve(value: T): void;

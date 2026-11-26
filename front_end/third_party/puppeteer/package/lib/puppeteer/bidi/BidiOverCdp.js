@@ -4,8 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { BidiMapper } from 'chromium-bidi';
+import { CDPSessionEvent, } from '../api/CDPSession.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { BidiConnection } from './Connection.js';
+const scheduleMacrotask = typeof setImmediate === 'function'
+    ? setImmediate
+    : (callback) => {
+        setTimeout(callback, 0);
+    };
 /**
  * @internal
  */
@@ -17,14 +23,38 @@ export async function connectBidiOverCdp(cdp, logger) {
         : undefined;
     const transportBiDi = new NoOpTransport();
     const cdpConnectionAdapter = new CdpConnectionAdapter(cdp);
+    let bidiServer;
+    let closed = false;
+    let forceClosed = false;
+    let pendingResponses = 0;
+    let pendingDisconnectClose = false;
+    const onCdpDisconnected = () => {
+        closeResources();
+        if (pendingResponses > 0) {
+            pendingDisconnectClose = true;
+        }
+        else {
+            pptrTransport.onclose?.();
+        }
+    };
+    const closeResources = () => {
+        if (closed) {
+            return;
+        }
+        closed = true;
+        cdp.off(CDPSessionEvent.Disconnected, onCdpDisconnected);
+        bidiServer?.close();
+        cdpConnectionAdapter.close();
+    };
     const pptrTransport = {
         send(message) {
             // Forwards a BiDi command sent by Puppeteer to the input of the BidiServer.
             transportBiDi.emitMessage(JSON.parse(message));
         },
         close() {
-            bidiServer.close();
-            cdpConnectionAdapter.close();
+            forceClosed = true;
+            pendingDisconnectClose = false;
+            closeResources();
             cdp.dispose();
         },
         onmessage(_message) {
@@ -33,11 +63,45 @@ export async function connectBidiOverCdp(cdp, logger) {
     };
     transportBiDi.on('bidiResponse', (message) => {
         // Forwards a BiDi event sent by BidiServer to Puppeteer.
-        pptrTransport.onmessage(JSON.stringify(message));
+        // Dispatch in a macrotask (matching PipeTransport and ws
+        // allowSynchronousEvents: false) so microtasks from each BiDi message
+        // drain before the next message runs.
+        if (forceClosed) {
+            return;
+        }
+        const raw = JSON.stringify(message);
+        pendingResponses++;
+        scheduleMacrotask(() => {
+            pendingResponses--;
+            if (!forceClosed) {
+                pptrTransport.onmessage?.(raw);
+            }
+            if (pendingDisconnectClose && pendingResponses === 0) {
+                pendingDisconnectClose = false;
+                pptrTransport.onclose?.();
+            }
+        });
     });
     const pptrBiDiConnection = new BidiConnection(cdp.url(), pptrTransport, cdp._idGenerator, cdp.delay, cdp.timeout, logger);
-    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, cdpConnectionAdapter.browserClient(), 
-    /* selfTargetId= */ '', undefined, bidiServerLogger);
+    if (cdp._closed) {
+        onCdpDisconnected();
+        return pptrBiDiConnection;
+    }
+    cdp.on(CDPSessionEvent.Disconnected, onCdpDisconnected);
+    try {
+        bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, cdpConnectionAdapter.browserClient(), 
+        /* selfTargetId= */ '', undefined, bidiServerLogger);
+    }
+    catch (error) {
+        forceClosed = true;
+        pendingDisconnectClose = false;
+        closeResources();
+        pptrBiDiConnection.unbind();
+        throw error;
+    }
+    if (closed) {
+        bidiServer.close();
+    }
     return pptrBiDiConnection;
 }
 /**

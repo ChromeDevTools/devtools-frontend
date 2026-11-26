@@ -70,7 +70,6 @@ import {
 import type {Viewport} from '../common/Viewport.js';
 import {environment} from '../environment.js';
 import type {ScreenRecorder} from '../node/ScreenRecorder.js';
-import {guarded} from '../util/decorators.js';
 import {
   AsyncDisposableStack,
   asyncDisposeSymbol,
@@ -779,7 +778,7 @@ export interface ReloadOptions extends WaitForOptions {
   /**
    * If set to true, the browser caches are ignored for the page reload.
    *
-   * @defaultValue true
+   * @defaultValue false
    * @public
    */
   ignoreCache?: boolean;
@@ -1009,13 +1008,30 @@ export abstract class Page extends EventEmitter<PageEvents> {
       eventData: K extends '*' ? PageEvents[keyof PageEvents] : never,
     ) => void,
   ): this {
-    if (type === PageEvent.Request) {
-      handler =
-        (this.#requestHandlers.get(
-          handler as (
-            event: EventsWithWildcard<PageEvents>[PageEvent.Request],
-          ) => void,
-        ) as (event: EventsWithWildcard<PageEvents>[K]) => void) || handler;
+    // For `request` listeners, a handler that was passed to `on()` is matched
+    // through its `#requestHandlers` wrapper first. So after
+    // `on('request', h)`, `once('request', h)` and `off('request', h)`, the
+    // `on()` registration is removed first, even though it was added earlier.
+    // This differs from `EventEmitter.off()`, which removes the most recently
+    // added registration.
+    if (type === PageEvent.Request && handler !== undefined) {
+      const requestHandler = handler as (
+        event: EventsWithWildcard<PageEvents>[PageEvent.Request],
+      ) => void;
+      const wrapper = this.#requestHandlers.get(requestHandler);
+      if (wrapper !== undefined) {
+        const listenerCount = this.listenerCount(type);
+        super.off(
+          type,
+          wrapper as (event: EventsWithWildcard<PageEvents>[K]) => void,
+        );
+        if (this.listenerCount(type) < listenerCount) {
+          return this;
+        }
+        // The wrapper is no longer registered, so drop the stale entry and
+        // fall back to `handler`, which matches listeners added with `once`.
+        this.#requestHandlers.delete(requestHandler);
+      }
     }
     return super.off(type, handler);
   }
@@ -2958,7 +2974,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * @remarks
    *
-   * While a screenshot is being taken in a {@link BrowserContext}, the
+   * While a screenshot is being taken in a {@link Browser}, the
    * following methods will automatically wait for the screenshot to
    * finish to prevent interference with the screenshot process:
    * {@link BrowserContext.newPage}, {@link Browser.newPage},
@@ -2972,9 +2988,6 @@ export abstract class Page extends EventEmitter<PageEvents> {
     options: Readonly<ScreenshotOptions> & {encoding: 'base64'},
   ): Promise<string>;
   async screenshot(options?: Readonly<ScreenshotOptions>): Promise<Uint8Array>;
-  @guarded(function () {
-    return this.browser();
-  })
   async screenshot(
     userOptions: Readonly<ScreenshotOptions> = {},
   ): Promise<Uint8Array | string> {

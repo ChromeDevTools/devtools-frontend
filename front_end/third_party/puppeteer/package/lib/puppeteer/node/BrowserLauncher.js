@@ -11,7 +11,7 @@ import { firstValueFrom, from, mergeMap, race, timer, } from '../../third_party/
 import { CdpBrowser } from '../cdp/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
-import { TimeoutError } from '../common/Errors.js';
+import { TimeoutError, UnsupportedOperation } from '../common/Errors.js';
 import { assertSupportedUrlRestrictions, DEFAULT_VIEWPORT, } from '../common/util.js';
 import { createIncrementalIdGenerator, } from '../util/incremental-id-generator.js';
 import { NodeWebSocketTransport as WebSocketTransport } from './NodeWebSocketTransport.js';
@@ -77,7 +77,7 @@ export class BrowserLauncher {
     }
     async launch(options = {}) {
         options.logger ??= this.#logger;
-        const { dumpio = false, enableExtensions = false, extensionsEnabledInIncognito = [], env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = createIncrementalIdGenerator(), blocklist, allowlist, } = options;
+        const { dumpio = false, enableExtensions = false, extensionsEnabledInIncognito = [], env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = createIncrementalIdGenerator(), blocklist, allowlist, devtools = false, headless = !devtools, } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
@@ -88,6 +88,9 @@ export class BrowserLauncher {
             blocklist,
             protocol,
         });
+        if (protocol === 'webDriverBiDi' && options.targetFilter) {
+            throw new UnsupportedOperation('targetFilter is not supported with the WebDriver BiDi protocol');
+        }
         if (this.#browser === 'firefox' && protocol === 'cdp') {
             throw new Error('Connecting to Firefox using CDP is no longer supported');
         }
@@ -134,6 +137,7 @@ export class BrowserLauncher {
                 dumpio,
                 env,
                 pipe: usePipe,
+                windowsHide: headless !== false,
                 onExit: onProcessExit,
                 signal: options.signal,
                 logger: options.logger,

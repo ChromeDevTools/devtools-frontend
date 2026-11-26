@@ -137,7 +137,7 @@ let BidiFrame = (() => {
                     }
                     return this.page().waitForNetworkIdle$({
                         idleTime: 500,
-                        timeout: options.timeout ?? this.timeoutSettings.timeout(),
+                        timeout: options.timeout ?? this.timeoutSettings.navigationTimeout(),
                         concurrency,
                     });
                 }, "#waitForNetworkIdle$") }, _private_waitForNetworkIdle$_decorators, { kind: "method", name: "#waitForNetworkIdle$", static: false, private: true, access: { has: obj => #waitForNetworkIdle$ in obj, get: obj => obj.#waitForNetworkIdle$ }, metadata: _metadata }, null, _instanceExtraInitializers);

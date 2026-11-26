@@ -6,6 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import { type Browser } from '../api/Browser.js';
 import { type BrowserContext } from '../api/BrowserContext.js';
+import type { CDPSession } from '../api/CDPSession.js';
 import { type Page } from '../api/Page.js';
 import { Target, TargetType } from '../api/Target.js';
 import { type Logger } from '../common/Debug.js';
@@ -54,6 +55,15 @@ export declare class CdpTarget extends Target {
     browser(): Browser;
     browserContext(): BrowserContext;
     opener(): Target | undefined;
+    close(): Promise<void>;
+    /**
+     * Returns the sessions that Puppeteer keeps attached to the target.
+     */
+    protected _attachedSessions(): Promise<CDPSession[]>;
+    /**
+     * Whether `close()` is closing the target.
+     */
+    protected _isClosing(): boolean;
     _targetInfoChanged(targetInfo: Protocol.Target.TargetInfo): void;
     _initialize(): void;
     _isTargetExposed(): boolean;
@@ -80,6 +90,7 @@ export declare class DevToolsTarget extends PageTarget {
 export declare class WorkerTarget extends CdpTarget {
     #private;
     worker(): Promise<CdpWebWorker | null>;
+    protected _attachedSessions(): Promise<CDPSession[]>;
 }
 /**
  * @internal

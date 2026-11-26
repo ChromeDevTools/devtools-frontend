@@ -23,7 +23,7 @@ export declare class WaitTask<T = unknown> {
     constructor(world: Realm, options: WaitTaskOptions, fn: ((...args: unknown[]) => Promise<T>) | string, ...args: unknown[]);
     get result(): Promise<HandleFor<T>>;
     rerun(): Promise<void>;
-    terminate(error?: Error): Promise<void>;
+    terminate(error?: unknown): Promise<void>;
     /**
      * Not all errors lead to termination. They usually imply we need to rerun the task.
      */

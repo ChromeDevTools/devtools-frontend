@@ -2417,6 +2417,7 @@ grd_files_unbundled_sources = [
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/GetQueryHandler.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/HandleIterator.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/LazyArg.js",
+  "front_end/third_party/puppeteer/package/lib/puppeteer/common/MouseStateTracker.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/NetworkManagerEvents.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/PDFOptions.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/PQueryHandler.js",

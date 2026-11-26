@@ -3025,6 +3025,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    */
   var _emitter = /*#__PURE__*/new WeakMap();
   var _handlers = /*#__PURE__*/new WeakMap();
+  var _onceHandlers = /*#__PURE__*/new WeakMap();
   var _logger = /*#__PURE__*/new WeakMap();
   class EventEmitter {
     /**
@@ -3035,6 +3036,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     constructor(emitter = mitt_default(new Map()), logger) {
       _classPrivateFieldInitSpec(this, _emitter, void 0);
       _classPrivateFieldInitSpec(this, _handlers, new Map());
+      // Maps the handlers registered by `once` to the handlers passed to it.
+      _classPrivateFieldInitSpec(this, _onceHandlers, new WeakMap());
       _classPrivateFieldInitSpec(this, _logger, void 0);
       _classPrivateFieldSet(_emitter, this, emitter);
       _classPrivateFieldSet(_logger, this, logger);
@@ -3070,7 +3073,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         _classPrivateFieldGet(_handlers, this).delete(type);
         return this;
       }
-      const index = handlers.lastIndexOf(handler);
+      let index = handlers.length - 1;
+      while (index > -1 && handlers[index] !== handler && _classPrivateFieldGet(_onceHandlers, this).get(handlers[index]) !== handler) {
+        index--;
+      }
       if (index > -1) {
         _classPrivateFieldGet(_emitter, this).off(type, ...handlers.splice(index, 1));
       }
@@ -3098,7 +3104,19 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         handler(...args);
         this.off(type, onceHandler);
       };
-      return this.on(type, onceHandler);
+      // Read the count from `#handlers` directly rather than `listenerCount()`,
+      // which a subclass can override, so both sides of the check below come
+      // from the same source.
+      const handlerCount = _classPrivateFieldGet(_handlers, this).get(type)?.length ?? 0;
+      this.on(type, onceHandler);
+      // Subclasses can register a wrapper of `onceHandler` in `on`, so map the
+      // handler that was registered last. Only do it if `on` added exactly one
+      // handler, otherwise `off(type, handler)` could remove an unrelated one.
+      const handlers = _classPrivateFieldGet(_handlers, this).get(type);
+      if (handlers && handlers.length === handlerCount + 1) {
+        _classPrivateFieldGet(_onceHandlers, this).set(handlers[handlers.length - 1], handler);
+      }
+      return this;
     }
     /**
      * Gets the number of listeners for a given event.
@@ -4164,7 +4182,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.18.1';
+  const packageVersion = '25.19.0';
   // x-release-please-end
 
   /**
@@ -4422,6 +4440,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     function serializeArgument(arg) {
       if (Object.is(arg, undefined)) {
         return 'undefined';
+      }
+      // `JSON.stringify` turns these into `null` or `0`, or throws for bigint.
+      // Write them as literals, as `Page.evaluate` passes them.
+      if (Object.is(arg, -0)) {
+        return '-0';
+      }
+      if (typeof arg === 'number' && !Number.isFinite(arg)) {
+        return String(arg);
+      }
+      if (typeof arg === 'bigint') {
+        return `${arg}n`;
       }
       return JSON.stringify(arg);
     }
@@ -4703,210 +4732,6 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   }
 
   /**
-   * @internal
-   */
-  const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([['accelerometer', 'sensors'], ['ambient-light-sensor', 'sensors'], ['background-sync', 'backgroundSync'], ['camera', 'videoCapture'], ['clipboard-read', 'clipboardReadWrite'], ['clipboard-sanitized-write', 'clipboardSanitizedWrite'], ['clipboard-write', 'clipboardReadWrite'], ['geolocation', 'geolocation'], ['gyroscope', 'sensors'], ['idle-detection', 'idleDetection'], ['keyboard-lock', 'keyboardLock'], ['magnetometer', 'sensors'], ['microphone', 'audioCapture'], ['midi', 'midi'], ['notifications', 'notifications'], ['payment-handler', 'paymentHandler'], ['persistent-storage', 'durableStorage'], ['pointer-lock', 'pointerLock'],
-  // chrome-specific permissions we have.
-  ['midi-sysex', 'midiSysex']]);
-  /**
-   * {@link Browser} represents a browser instance that is either:
-   *
-   * - connected to via {@link Puppeteer.connect} or
-   * - launched by {@link PuppeteerNode.launch}.
-   *
-   * {@link Browser} {@link EventEmitter.emit | emits} various events which are
-   * documented in the {@link BrowserEvent} enum.
-   *
-   * @example Using a {@link Browser} to create a {@link Page}:
-   *
-   * ```ts
-   * import puppeteer from 'puppeteer';
-   *
-   * const browser = await puppeteer.launch();
-   * const page = await browser.newPage();
-   * await page.goto('https://example.com');
-   * await browser.close();
-   * ```
-   *
-   * @example Disconnecting from and reconnecting to a {@link Browser}:
-   *
-   * ```ts
-   * import puppeteer from 'puppeteer';
-   *
-   * const browser = await puppeteer.launch();
-   * // Store the endpoint to be able to reconnect to the browser.
-   * const browserWSEndpoint = browser.wsEndpoint();
-   * // Disconnect puppeteer from the browser.
-   * await browser.disconnect();
-   *
-   * // Use the endpoint to reestablish a connection
-   * const browser2 = await puppeteer.connect({browserWSEndpoint});
-   * // Close the browser.
-   * await browser2.close();
-   * ```
-   *
-   * @public
-   */
-  var _logger2 = /*#__PURE__*/new WeakMap();
-  class Browser extends EventEmitter {
-    /**
-     * @internal
-     */
-    constructor(logger) {
-      super(undefined, logger);
-      _classPrivateFieldInitSpec(this, _logger2, void 0);
-      _classPrivateFieldSet(_logger2, this, logger);
-    }
-    /**
-     * @internal
-     */
-    get logger() {
-      return _classPrivateFieldGet(_logger2, this);
-    }
-    /**
-     * Sets the network conditions (blocklist or allowlist) and re-applies the
-     * conditions to all targets.
-     * To clear all network conditions, omit the argument or pass `null`.
-     *
-     * @param conditions - The network conditions to apply.
-     *
-     * @remarks
-     * Currently only supported for Chrome and the CDP protocol.
-     *
-     * Targets that are already on a blocked URL when `restrictNetwork` is called
-     * will remain attached and stay on the blocked page. This is a behavior difference
-     * compared to launching the browser with network restrictions, where such targets
-     * are detached immediately upon initial attach.
-     *
-     * @experimental
-     */
-    restrictNetwork(conditions) {
-      throw new UnsupportedOperation();
-    }
-    /**
-     * Waits until a {@link Target | target} matching the given `predicate`
-     * appears and returns it.
-     *
-     * This will look all open {@link BrowserContext | browser contexts}.
-     *
-     * @example Finding a target for a page opened via `window.open`:
-     *
-     * ```ts
-     * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browser.waitForTarget(
-     *   target => target.url() === 'https://www.example.com/',
-     * );
-     * ```
-     */
-    async waitForTarget(predicate, options = {}) {
-      const {
-        timeout: ms = 30000,
-        signal
-      } = options;
-      return await firstValueFrom(merge(fromEmitterEvent(this, "targetcreated" /* BrowserEvent.TargetCreated */), fromEmitterEvent(this, "targetchanged" /* BrowserEvent.TargetChanged */), from(this.targets())).pipe(filterAsync(predicate), raceWith(fromAbortSignal(signal), timeout(ms))));
-    }
-    /**
-     * Gets a list of all open {@link Page | pages} inside this {@link Browser}.
-     *
-     * If there are multiple {@link BrowserContext | browser contexts}, this
-     * returns all {@link Page | pages} in all
-     * {@link BrowserContext | browser contexts}.
-     *
-     * @param includeAll - experimental, setting to true includes all kinds of pages.
-     *
-     * @remarks Non-visible {@link Page | pages}, such as `"background_page"`,
-     * will not be listed here. You can find them using {@link Target.page}.
-     */
-    async pages(includeAll = false) {
-      const contextPages = await Promise.all(this.browserContexts().map(context => {
-        return context.pages(includeAll);
-      }));
-      // Flatten array.
-      return contextPages.reduce((acc, x) => {
-        return acc.concat(x);
-      }, []);
-    }
-    /**
-     * Returns all cookies in the default {@link BrowserContext}.
-     *
-     * @remarks
-     *
-     * Shortcut for
-     * {@link BrowserContext.cookies | browser.defaultBrowserContext().cookies()}.
-     */
-    async cookies() {
-      return await this.defaultBrowserContext().cookies();
-    }
-    /**
-     * Sets cookies in the default {@link BrowserContext}.
-     *
-     * @remarks
-     *
-     * Shortcut for
-     * {@link BrowserContext.setCookie | browser.defaultBrowserContext().setCookie()}.
-     */
-    async setCookie(...cookies) {
-      return await this.defaultBrowserContext().setCookie(...cookies);
-    }
-    /**
-     * Removes cookies from the default {@link BrowserContext}.
-     *
-     * @remarks
-     *
-     * Shortcut for
-     * {@link BrowserContext.deleteCookie | browser.defaultBrowserContext().deleteCookie()}.
-     */
-    async deleteCookie(...cookies) {
-      return await this.defaultBrowserContext().deleteCookie(...cookies);
-    }
-    /**
-     * Deletes cookies matching the provided filters from the default
-     * {@link BrowserContext}.
-     *
-     * @remarks
-     *
-     * Shortcut for
-     * {@link BrowserContext.deleteMatchingCookies |
-     * browser.defaultBrowserContext().deleteMatchingCookies()}.
-     */
-    async deleteMatchingCookies(...filters) {
-      return await this.defaultBrowserContext().deleteMatchingCookies(...filters);
-    }
-    /**
-     * Sets the permission for a specific origin in the default
-     * {@link BrowserContext}.
-     *
-     * @remarks
-     *
-     * Shortcut for
-     * {@link BrowserContext.setPermission |
-     * browser.defaultBrowserContext().setPermission()}.
-     *
-     * @param origin - The origin to set the permission for.
-     * @param permission - The permission descriptor.
-     * @param state - The state of the permission.
-     *
-     * @public
-     */
-    async setPermission(origin, ...permissions) {
-      return await this.defaultBrowserContext().setPermission(origin, ...permissions);
-    }
-    [disposeSymbol]() {
-      return void this[asyncDisposeSymbol]().catch(error => {
-        _classPrivateFieldGet(_logger2, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
-      });
-    }
-    async [asyncDisposeSymbol]() {
-      if (this.process()) {
-        await this.close();
-      } else {
-        await this.disconnect();
-      }
-      await super[asyncDisposeSymbol]();
-    }
-  }
-
-  /**
    * @license
    * Copyright 2024 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
@@ -5073,6 +4898,238 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   }
 
   /**
+   * @internal
+   */
+  _defineProperty(Mutex, "Guard", MutexGuard);
+  const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([['accelerometer', 'sensors'], ['ambient-light-sensor', 'sensors'], ['background-sync', 'backgroundSync'], ['camera', 'videoCapture'], ['clipboard-read', 'clipboardReadWrite'], ['clipboard-sanitized-write', 'clipboardSanitizedWrite'], ['clipboard-write', 'clipboardReadWrite'], ['geolocation', 'geolocation'], ['gyroscope', 'sensors'], ['idle-detection', 'idleDetection'], ['keyboard-lock', 'keyboardLock'], ['magnetometer', 'sensors'], ['microphone', 'audioCapture'], ['midi', 'midi'], ['notifications', 'notifications'], ['payment-handler', 'paymentHandler'], ['persistent-storage', 'durableStorage'], ['pointer-lock', 'pointerLock'],
+  // chrome-specific permissions we have.
+  ['midi-sysex', 'midiSysex']]);
+  /**
+   * {@link Browser} represents a browser instance that is either:
+   *
+   * - connected to via {@link Puppeteer.connect} or
+   * - launched by {@link PuppeteerNode.launch}.
+   *
+   * {@link Browser} {@link EventEmitter.emit | emits} various events which are
+   * documented in the {@link BrowserEvent} enum.
+   *
+   * @example Using a {@link Browser} to create a {@link Page}:
+   *
+   * ```ts
+   * import puppeteer from 'puppeteer';
+   *
+   * const browser = await puppeteer.launch();
+   * const page = await browser.newPage();
+   * await page.goto('https://example.com');
+   * await browser.close();
+   * ```
+   *
+   * @example Disconnecting from and reconnecting to a {@link Browser}:
+   *
+   * ```ts
+   * import puppeteer from 'puppeteer';
+   *
+   * const browser = await puppeteer.launch();
+   * // Store the endpoint to be able to reconnect to the browser.
+   * const browserWSEndpoint = browser.wsEndpoint();
+   * // Disconnect puppeteer from the browser.
+   * await browser.disconnect();
+   *
+   * // Use the endpoint to reestablish a connection
+   * const browser2 = await puppeteer.connect({browserWSEndpoint});
+   * // Close the browser.
+   * await browser2.close();
+   * ```
+   *
+   * @public
+   */
+  var _logger2 = /*#__PURE__*/new WeakMap();
+  var _pageScreenshotMutex = /*#__PURE__*/new WeakMap();
+  var _screenshotOperationsCount = /*#__PURE__*/new WeakMap();
+  class Browser extends EventEmitter {
+    /**
+     * @internal
+     */
+    constructor(logger) {
+      super(undefined, logger);
+      _classPrivateFieldInitSpec(this, _logger2, void 0);
+      _classPrivateFieldInitSpec(this, _pageScreenshotMutex, new Mutex());
+      _classPrivateFieldInitSpec(this, _screenshotOperationsCount, 0);
+      _classPrivateFieldSet(_logger2, this, logger);
+    }
+    /**
+     * @internal
+     */
+    _startScreenshot() {
+      var _this$screenshotOpera, _this$screenshotOpera2;
+      _classPrivateFieldSet(_screenshotOperationsCount, this, (_this$screenshotOpera = _classPrivateFieldGet(_screenshotOperationsCount, this), _this$screenshotOpera2 = _this$screenshotOpera++, _this$screenshotOpera)), _this$screenshotOpera2;
+      return _classPrivateFieldGet(_pageScreenshotMutex, this).acquire(() => {
+        var _this$screenshotOpera3, _this$screenshotOpera4;
+        _classPrivateFieldSet(_screenshotOperationsCount, this, (_this$screenshotOpera3 = _classPrivateFieldGet(_screenshotOperationsCount, this), _this$screenshotOpera4 = _this$screenshotOpera3--, _this$screenshotOpera3)), _this$screenshotOpera4;
+      });
+    }
+    /**
+     * @internal
+     */
+    _waitForScreenshotOperations() {
+      if (_classPrivateFieldGet(_screenshotOperationsCount, this) === 0) {
+        return undefined;
+      }
+      return _classPrivateFieldGet(_pageScreenshotMutex, this).acquire();
+    }
+    /**
+     * @internal
+     */
+    get logger() {
+      return _classPrivateFieldGet(_logger2, this);
+    }
+    /**
+     * Sets the network conditions (blocklist or allowlist) and re-applies the
+     * conditions to all targets.
+     * To clear all network conditions, omit the argument or pass `null`.
+     *
+     * @param conditions - The network conditions to apply.
+     *
+     * @remarks
+     * Currently only supported for Chrome and the CDP protocol.
+     *
+     * Targets that are already on a blocked URL when `restrictNetwork` is called
+     * will remain attached and stay on the blocked page. This is a behavior difference
+     * compared to launching the browser with network restrictions, where such targets
+     * are detached immediately upon initial attach.
+     *
+     * The restrictions have the same WebTransport and WebRTC limitations as
+     * {@link ConnectOptions.blocklist} and {@link ConnectOptions.allowlist}.
+     *
+     * @experimental
+     */
+    restrictNetwork(conditions) {
+      throw new UnsupportedOperation();
+    }
+    /**
+     * Waits until a {@link Target | target} matching the given `predicate`
+     * appears and returns it.
+     *
+     * This will look all open {@link BrowserContext | browser contexts}.
+     *
+     * @example Finding a target for a page opened via `window.open`:
+     *
+     * ```ts
+     * await page.evaluate(() => window.open('https://www.example.com/'));
+     * const newWindowTarget = await browser.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/',
+     * );
+     * ```
+     */
+    async waitForTarget(predicate, options = {}) {
+      const {
+        timeout: ms = 30000,
+        signal
+      } = options;
+      return await firstValueFrom(merge(fromEmitterEvent(this, "targetcreated" /* BrowserEvent.TargetCreated */), fromEmitterEvent(this, "targetchanged" /* BrowserEvent.TargetChanged */), from(this.targets())).pipe(filterAsync(predicate), raceWith(fromAbortSignal(signal), timeout(ms))));
+    }
+    /**
+     * Gets a list of all open {@link Page | pages} inside this {@link Browser}.
+     *
+     * If there are multiple {@link BrowserContext | browser contexts}, this
+     * returns all {@link Page | pages} in all
+     * {@link BrowserContext | browser contexts}.
+     *
+     * @param includeAll - experimental, setting to true includes all kinds of pages.
+     *
+     * @remarks Non-visible {@link Page | pages}, such as `"background_page"`,
+     * will not be listed here. You can find them using {@link Target.page}.
+     */
+    async pages(includeAll = false) {
+      const contextPages = await Promise.all(this.browserContexts().map(context => {
+        return context.pages(includeAll);
+      }));
+      // Flatten array.
+      return contextPages.reduce((acc, x) => {
+        return acc.concat(x);
+      }, []);
+    }
+    /**
+     * Returns all cookies in the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.cookies | browser.defaultBrowserContext().cookies()}.
+     */
+    async cookies() {
+      return await this.defaultBrowserContext().cookies();
+    }
+    /**
+     * Sets cookies in the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.setCookie | browser.defaultBrowserContext().setCookie()}.
+     */
+    async setCookie(...cookies) {
+      return await this.defaultBrowserContext().setCookie(...cookies);
+    }
+    /**
+     * Removes cookies from the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteCookie | browser.defaultBrowserContext().deleteCookie()}.
+     */
+    async deleteCookie(...cookies) {
+      return await this.defaultBrowserContext().deleteCookie(...cookies);
+    }
+    /**
+     * Deletes cookies matching the provided filters from the default
+     * {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteMatchingCookies |
+     * browser.defaultBrowserContext().deleteMatchingCookies()}.
+     */
+    async deleteMatchingCookies(...filters) {
+      return await this.defaultBrowserContext().deleteMatchingCookies(...filters);
+    }
+    /**
+     * Sets the permission for a specific origin in the default
+     * {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.setPermission |
+     * browser.defaultBrowserContext().setPermission()}.
+     *
+     * @param origin - The origin to set the permission for.
+     * @param permission - The permission descriptor.
+     * @param state - The state of the permission.
+     *
+     * @public
+     */
+    async setPermission(origin, ...permissions) {
+      return await this.defaultBrowserContext().setPermission(origin, ...permissions);
+    }
+    [disposeSymbol]() {
+      return void this[asyncDisposeSymbol]().catch(error => {
+        _classPrivateFieldGet(_logger2, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+      });
+    }
+    async [asyncDisposeSymbol]() {
+      if (this.process()) {
+        await this.close();
+      } else {
+        await this.disconnect();
+      }
+      await super[asyncDisposeSymbol]();
+    }
+  }
+
+  /**
    * @license
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
@@ -5115,10 +5172,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    *
    * @public
    */
-  _defineProperty(Mutex, "Guard", MutexGuard);
   var _logger3 = /*#__PURE__*/new WeakMap();
-  var _pageScreenshotMutex = /*#__PURE__*/new WeakMap();
-  var _screenshotOperationsCount = /*#__PURE__*/new WeakMap();
   class BrowserContext extends EventEmitter {
     /**
      * @internal
@@ -5126,11 +5180,6 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     constructor(logger) {
       super(undefined, logger);
       _classPrivateFieldInitSpec(this, _logger3, void 0);
-      /**
-       * If defined, indicates an ongoing screenshot operation.
-       */
-      _classPrivateFieldInitSpec(this, _pageScreenshotMutex, void 0);
-      _classPrivateFieldInitSpec(this, _screenshotOperationsCount, 0);
       _classPrivateFieldSet(_logger3, this, logger);
     }
     /**
@@ -5143,24 +5192,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      * @internal
      */
     startScreenshot() {
-      var _this$screenshotOpera, _this$screenshotOpera2;
-      const mutex = _classPrivateFieldGet(_pageScreenshotMutex, this) || new Mutex();
-      _classPrivateFieldSet(_pageScreenshotMutex, this, mutex);
-      _classPrivateFieldSet(_screenshotOperationsCount, this, (_this$screenshotOpera = _classPrivateFieldGet(_screenshotOperationsCount, this), _this$screenshotOpera2 = _this$screenshotOpera++, _this$screenshotOpera)), _this$screenshotOpera2;
-      return mutex.acquire(() => {
-        var _this$screenshotOpera3, _this$screenshotOpera4;
-        _classPrivateFieldSet(_screenshotOperationsCount, this, (_this$screenshotOpera3 = _classPrivateFieldGet(_screenshotOperationsCount, this), _this$screenshotOpera4 = _this$screenshotOpera3--, _this$screenshotOpera3)), _this$screenshotOpera4;
-        if (_classPrivateFieldGet(_screenshotOperationsCount, this) === 0) {
-          // Remove the mutex to indicate no ongoing screenshot operation.
-          _classPrivateFieldSet(_pageScreenshotMutex, this, undefined);
-        }
-      });
+      return this.browser()._startScreenshot();
     }
     /**
      * @internal
      */
     waitForScreenshotOperations() {
-      return _classPrivateFieldGet(_pageScreenshotMutex, this)?.acquire();
+      return this.browser()._waitForScreenshotOperations();
     }
     /**
      * Waits until a {@link Target | target} matching the given `predicate`
@@ -5617,7 +5655,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$e = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$f = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -5650,7 +5688,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$e = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$f = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -5697,7 +5735,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       hasError: false
     };
     try {
-      const array = __addDisposableResource$e(env_1, await iterator.evaluateHandle(async (iterator, size) => {
+      const array = __addDisposableResource$f(env_1, await iterator.evaluateHandle(async (iterator, size) => {
         const results = [];
         while (results.length < size) {
           const result = await iterator.next();
@@ -5710,7 +5748,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }, size), false);
       const properties = await array.getProperties();
       const handles = properties.values();
-      const stack = __addDisposableResource$e(env_1, new DisposableStack(), false);
+      const stack = __addDisposableResource$f(env_1, new DisposableStack(), false);
       stack.defer(() => {
         for (const handle_1 of handles) {
           const env_2 = {
@@ -5719,13 +5757,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             hasError: false
           };
           try {
-            const handle = __addDisposableResource$e(env_2, handle_1, false);
+            const handle = __addDisposableResource$f(env_2, handle_1, false);
             handle[disposeSymbol]();
           } catch (e_2) {
             env_2.error = e_2;
             env_2.hasError = true;
           } finally {
-            __disposeResources$e(env_2);
+            __disposeResources$f(env_2);
           }
         }
       });
@@ -5735,7 +5773,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       env_1.error = e_1;
       env_1.hasError = true;
     } finally {
-      __disposeResources$e(env_1);
+      __disposeResources$f(env_1);
     }
   }
   /**
@@ -5758,7 +5796,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       hasError: false
     };
     try {
-      const generatorHandle = __addDisposableResource$e(env_3, await handle.evaluateHandle(iterable => {
+      const generatorHandle = __addDisposableResource$f(env_3, await handle.evaluateHandle(iterable => {
         return async function* () {
           yield* iterable;
         }();
@@ -5768,7 +5806,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       env_3.error = e_3;
       env_3.hasError = true;
     } finally {
-      __disposeResources$e(env_3);
+      __disposeResources$f(env_3);
     }
   }
 
@@ -5802,7 +5840,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     // have to make it public.
     return new _LazyArg(get);
   });
-  var __addDisposableResource$d = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$e = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -5835,7 +5873,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$d = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$e = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -5918,7 +5956,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         hasError: false
       };
       try {
-        const handle = __addDisposableResource$d(env_1, await element.evaluateHandle(this._querySelectorAll, selector, LazyArg.create(context => {
+        const handle = __addDisposableResource$e(env_1, await element.evaluateHandle(this._querySelectorAll, selector, LazyArg.create(context => {
           return context.puppeteerUtil;
         })), false);
         yield* transposeIterableHandle(handle);
@@ -5926,7 +5964,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         env_1.error = e_1;
         env_1.hasError = true;
       } finally {
-        __disposeResources$d(env_1);
+        __disposeResources$e(env_1);
       }
     }
     /**
@@ -5941,7 +5979,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         hasError: false
       };
       try {
-        const result = __addDisposableResource$d(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
+        const result = __addDisposableResource$e(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
           return context.puppeteerUtil;
         })), false);
         if (!(_isElementHandle in result)) {
@@ -5952,7 +5990,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         env_2.error = e_2;
         env_2.hasError = true;
       } finally {
-        __disposeResources$d(env_2);
+        __disposeResources$e(env_2);
       }
     }
     /**
@@ -5970,7 +6008,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       };
       try {
         let frame;
-        const element = __addDisposableResource$d(env_3, await (async () => {
+        const element = __addDisposableResource$e(env_3, await (async () => {
           if (!(_isElementHandle in elementOrFrame)) {
             frame = elementOrFrame;
             return;
@@ -5993,7 +6031,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           };
           try {
             signal?.throwIfAborted();
-            const handle = __addDisposableResource$d(env_4, await frame.isolatedRealm().waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
+            const handle = __addDisposableResource$e(env_4, await frame.isolatedRealm().waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
               const querySelector = PuppeteerUtil.createFunction(query);
               const node = await querySelector(root ?? document, selector, PuppeteerUtil);
               return PuppeteerUtil.checkVisibility(node, visible);
@@ -6016,13 +6054,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             env_4.error = e_3;
             env_4.hasError = true;
           } finally {
-            __disposeResources$d(env_4);
+            __disposeResources$e(env_4);
           }
         } catch (error) {
-          if (!isErrorLike(error)) {
+          if (signal?.aborted && Object.is(error, signal.reason)) {
             throw error;
           }
-          if (error.name === 'AbortError') {
+          if (!isErrorLike(error)) {
             throw error;
           }
           const waitForSelectorError = new (error instanceof TimeoutError ? TimeoutError : Error)(`Waiting for selector \`${selector}\` failed`);
@@ -6033,7 +6071,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         env_3.error = e_4;
         env_3.hasError = true;
       } finally {
-        __disposeResources$d(env_3);
+        __disposeResources$e(env_3);
       }
     }
   }
@@ -6727,7 +6765,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$c = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$d = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -6760,7 +6798,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$c = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$d = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -6890,13 +6928,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             mutex = new Mutex();
             mutexes.set(key, mutex);
           }
-          const _ = __addDisposableResource$c(env_1, await mutex.acquire(), true);
+          const _ = __addDisposableResource$d(env_1, await mutex.acquire(), true);
           return await target.call(this, ...args);
         } catch (e_1) {
           env_1.error = e_1;
           env_1.hasError = true;
         } finally {
-          const result_1 = __disposeResources$c(env_1);
+          const result_1 = __disposeResources$d(env_1);
           if (result_1) await result_1;
         }
       };
@@ -6951,7 +6989,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$b = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$c = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -6984,7 +7022,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$b = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$c = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -7117,7 +7155,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             hasError: false
           };
           try {
-            const handle = __addDisposableResource$b(env_1, results[key], false);
+            const handle = __addDisposableResource$c(env_1, results[key], false);
             if (handle) {
               map.set(value, handle.move());
             }
@@ -7125,7 +7163,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             env_1.error = e_1;
             env_1.hasError = true;
           } finally {
-            __disposeResources$b(env_1);
+            __disposeResources$c(env_1);
           }
         }
         return map;
@@ -7182,7 +7220,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     })();
     return _classThis;
   })();
-  var __addDisposableResource$a = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$b = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -7215,7 +7253,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$a = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$b = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -7516,13 +7554,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         hasError: false
       };
       try {
-        const handle = __addDisposableResource$a(env_1, await this.waitHandle(options), false);
+        const handle = __addDisposableResource$b(env_1, await this.waitHandle(options), false);
         return await handle.jsonValue();
       } catch (e_1) {
         env_1.error = e_1;
         env_1.hasError = true;
       } finally {
-        __disposeResources$a(env_1);
+        __disposeResources$b(env_1);
       }
     }
     /**
@@ -7821,7 +7859,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldSet(_func, this, func);
     }
     _clone() {
-      return new FunctionLocator(_classPrivateFieldGet(_pageOrFrame, this), _classPrivateFieldGet(_func, this));
+      return new FunctionLocator(_classPrivateFieldGet(_pageOrFrame, this), _classPrivateFieldGet(_func, this)).copyOptions(this);
     }
     _wait(options) {
       const signal = options?.signal;
@@ -8077,7 +8115,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$9 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$a = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -8110,7 +8148,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$9 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$a = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -8462,7 +8500,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         };
         try {
           pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-          const elementHandle = __addDisposableResource$9(env_1, await this.$(selector), false);
+          const elementHandle = __addDisposableResource$a(env_1, await this.$(selector), false);
           if (!elementHandle) {
             throw new Error(`Error: failed to find element matching selector "${selector}"`);
           }
@@ -8471,7 +8509,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_1.error = e_1;
           env_1.hasError = true;
         } finally {
-          __disposeResources$9(env_1);
+          __disposeResources$a(env_1);
         }
       }
       /**
@@ -8531,7 +8569,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         try {
           pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
           const results = await this.$$(selector);
-          const elements = __addDisposableResource$9(env_2, await this.evaluateHandle((_, ...elements) => {
+          const elements = __addDisposableResource$a(env_2, await this.evaluateHandle((_, ...elements) => {
             return elements;
           }, ...results), false);
           const [result] = await Promise.all([elements.evaluate(pageFunction, ...args), ...results.map(results => {
@@ -8542,7 +8580,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_2.error = e_2;
           env_2.hasError = true;
         } finally {
-          __disposeResources$9(env_2);
+          __disposeResources$a(env_2);
         }
       }
       /**
@@ -9198,7 +9236,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           await this.assertConnectedElement();
           // eslint-disable-next-line @puppeteer/use-using -- Returns `this`.
           const handle = await _assertClassBrand(_ElementHandle_brand, this, _asSVGElementHandle).call(this);
-          const target = __addDisposableResource$9(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
+          const target = __addDisposableResource$a(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
           return await (target ?? this).evaluate(async (element, threshold) => {
             const visibleRatio = await new Promise(resolve => {
               const observer = new IntersectionObserver(entries => {
@@ -9213,7 +9251,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_5.error = e_5;
           env_5.hasError = true;
         } finally {
-          __disposeResources$9(env_5);
+          __disposeResources$a(env_5);
         }
       }
       /**
@@ -9688,7 +9726,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$9(env_3, await frame.frameElement(), false);
+          const handle = __addDisposableResource$a(env_3, await frame.frameElement(), false);
           if (!handle) {
             throw new Error('Unsupported frame type');
           }
@@ -9717,7 +9755,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_3.error = e_3;
           env_3.hasError = true;
         } finally {
-          __disposeResources$9(env_3);
+          __disposeResources$a(env_3);
         }
       }
       const box = boxes.find(box => {
@@ -9761,7 +9799,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$9(env_4, await frame.frameElement(), false);
+          const handle = __addDisposableResource$a(env_4, await frame.frameElement(), false);
           if (!handle) {
             throw new Error('Unsupported frame type');
           }
@@ -9787,7 +9825,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_4.error = e_4;
           env_4.hasError = true;
         } finally {
-          __disposeResources$9(env_4);
+          __disposeResources$a(env_4);
         }
       }
       return point;
@@ -9962,7 +10000,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$9 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -9995,7 +10033,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$8 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$9 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -10194,7 +10232,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           if (!parentFrame) {
             return null;
           }
-          const list = __addDisposableResource$8(env_1, await parentFrame.isolatedRealm().evaluateHandle(() => {
+          const list = __addDisposableResource$9(env_1, await parentFrame.isolatedRealm().evaluateHandle(() => {
             return document.querySelectorAll('iframe,frame');
           }), false);
           for await (const iframe_1 of transposeIterableHandle(list)) {
@@ -10204,7 +10242,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
               hasError: false
             };
             try {
-              const iframe = __addDisposableResource$8(env_2, iframe_1, false);
+              const iframe = __addDisposableResource$9(env_2, iframe_1, false);
               const frame = await iframe.contentFrame();
               if (frame?._id === this._id) {
                 return await parentFrame.mainRealm().adoptHandle(iframe);
@@ -10213,7 +10251,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
               env_2.error = e_1;
               env_2.hasError = true;
             } finally {
-              __disposeResources$8(env_2);
+              __disposeResources$9(env_2);
             }
           }
           return null;
@@ -10221,7 +10259,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_1.error = e_2;
           env_1.hasError = true;
         } finally {
-          __disposeResources$8(env_1);
+          __disposeResources$9(env_1);
         }
       }
       /**
@@ -10663,7 +10701,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_3, await this.$(selector), false);
+          const handle = __addDisposableResource$9(env_3, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.click(options);
           await handle.dispose();
@@ -10671,7 +10709,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_3.error = e_3;
           env_3.hasError = true;
         } finally {
-          __disposeResources$8(env_3);
+          __disposeResources$9(env_3);
         }
       }
       /**
@@ -10687,14 +10725,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_4, await this.$(selector), false);
+          const handle = __addDisposableResource$9(env_4, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.focus();
         } catch (e_4) {
           env_4.error = e_4;
           env_4.hasError = true;
         } finally {
-          __disposeResources$8(env_4);
+          __disposeResources$9(env_4);
         }
       }
       /**
@@ -10711,14 +10749,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_5, await this.$(selector), false);
+          const handle = __addDisposableResource$9(env_5, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.hover();
         } catch (e_5) {
           env_5.error = e_5;
           env_5.hasError = true;
         } finally {
-          __disposeResources$8(env_5);
+          __disposeResources$9(env_5);
         }
       }
       /**
@@ -10746,14 +10784,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_6, await this.$(selector), false);
+          const handle = __addDisposableResource$9(env_6, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           return await handle.select(...values);
         } catch (e_6) {
           env_6.error = e_6;
           env_6.hasError = true;
         } finally {
-          __disposeResources$8(env_6);
+          __disposeResources$9(env_6);
         }
       }
       /**
@@ -10769,14 +10807,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_7, await this.$(selector), false);
+          const handle = __addDisposableResource$9(env_7, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.tap();
         } catch (e_7) {
           env_7.error = e_7;
           env_7.hasError = true;
         } finally {
-          __disposeResources$8(env_7);
+          __disposeResources$9(env_7);
         }
       }
       /**
@@ -10807,14 +10845,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_8, await this.$(selector), false);
+          const handle = __addDisposableResource$9(env_8, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.type(text, options);
         } catch (e_8) {
           env_8.error = e_8;
           env_8.hasError = true;
         } finally {
-          __disposeResources$8(env_8);
+          __disposeResources$9(env_8);
         }
       }
       /**
@@ -11200,7 +11238,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         requestOverrides: {},
         response: null,
-        abortReason: null
+        abortReason: null,
+        payloadPriorities: {}
       });
     }
     /**
@@ -11219,7 +11258,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return this.interception.response;
     }
     /**
-     * The most recent reason for aborting the request
+     * The reason for aborting the request that was given the highest priority
      */
     abortErrorReason() {
       return this.interception.abortReason;
@@ -11325,6 +11364,25 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       assert(!this.interception.handled, 'Request is already handled!');
     }
     /**
+     * In Cooperative Intercept Mode, an action takes its payload (the overrides
+     * of `continue()`, the response of `respond()` or the error reason of
+     * `abort()`) from the call with the highest priority, or from the latest of
+     * the calls that share that priority.
+     *
+     * @returns `false` if a call with a higher priority has already provided the
+     * payload of the action.
+     *
+     * @internal
+     */
+    claimInterceptionPayload(action, priority) {
+      const current = this.interception.payloadPriorities[action];
+      if (current !== undefined && priority < current) {
+        return false;
+      }
+      this.interception.payloadPriorities[action] = priority;
+      return true;
+    }
+    /**
      * Continues request with optional request overrides.
      *
      * @example
@@ -11370,7 +11428,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (priority === undefined) {
         return await this._continue(normalizedOverrides);
       }
-      this.interception.requestOverrides = normalizedOverrides;
+      if (this.claimInterceptionPayload('continue', priority)) {
+        this.interception.requestOverrides = normalizedOverrides;
+      }
       if (this.interception.resolutionState.priority === undefined || priority > this.interception.resolutionState.priority) {
         this.interception.resolutionState = {
           action: exports.InterceptResolutionAction.Continue,
@@ -11430,7 +11490,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (priority === undefined) {
         return await this._respond(normalizedResponse);
       }
-      this.interception.response = normalizedResponse;
+      if (this.claimInterceptionPayload('respond', priority)) {
+        this.interception.response = normalizedResponse;
+      }
       if (this.interception.resolutionState.priority === undefined || priority > this.interception.resolutionState.priority) {
         this.interception.resolutionState = {
           action: exports.InterceptResolutionAction.Respond,
@@ -11469,7 +11531,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (priority === undefined) {
         return await this._abort(errorReason);
       }
-      this.interception.abortReason = errorReason;
+      if (this.claimInterceptionPayload('abort', priority)) {
+        this.interception.abortReason = errorReason;
+      }
       if (this.interception.resolutionState.priority === undefined || priority >= this.interception.resolutionState.priority) {
         this.interception.resolutionState = {
           action: exports.InterceptResolutionAction.Abort,
@@ -11999,50 +12063,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __runInitializers$4 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i = 0; i < initializers.length; i++) {
-      value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-    }
-    return useValue ? value : void 0;
-  };
-  var __esDecorate$4 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-    function accept(f) {
-      if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
-      return f;
-    }
-    var kind = contextIn.kind,
-      key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-    var _,
-      done = false;
-    for (var i = decorators.length - 1; i >= 0; i--) {
-      var context = {};
-      for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-      for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-      context.addInitializer = function (f) {
-        if (done) throw new TypeError("Cannot add initializers after decoration has completed");
-        extraInitializers.push(accept(f || null));
-      };
-      var result = (0, decorators[i])(kind === "accessor" ? {
-        get: descriptor.get,
-        set: descriptor.set
-      } : descriptor[key], context);
-      if (kind === "accessor") {
-        if (result === void 0) continue;
-        if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-        if (_ = accept(result.get)) descriptor.get = _;
-        if (_ = accept(result.set)) descriptor.set = _;
-        if (_ = accept(result.init)) initializers.unshift(_);
-      } else if (_ = accept(result)) {
-        if (kind === "field") initializers.unshift(_);else descriptor[key] = _;
-      }
-    }
-    if (target) Object.defineProperty(target, contextIn.name, descriptor);
-    done = true;
-  };
-  var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -12075,7 +12096,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$7 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$8 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -12166,1427 +12187,1423 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    *
    * @public
    */
-  let Page = ((_ref2, _Page, _requestHandlers, _inflight$, _screencastSessionCount, _startScreencastPromise, _Page_brand) => {
-    let _classSuper = EventEmitter;
-    let _instanceExtraInitializers = [];
-    let _screenshot_decorators;
-    return _requestHandlers = /*#__PURE__*/new WeakMap(), _inflight$ = /*#__PURE__*/new WeakMap(), _screencastSessionCount = /*#__PURE__*/new WeakMap(), _startScreencastPromise = /*#__PURE__*/new WeakMap(), _Page_brand = /*#__PURE__*/new WeakSet(), _ref2 = (_screenshot_decorators = [guarded(function () {
-      return this.browser();
-    })], disposeSymbol), _Page = class Page extends _classSuper {
+  var _requestHandlers = /*#__PURE__*/new WeakMap();
+  var _inflight$ = /*#__PURE__*/new WeakMap();
+  var _screencastSessionCount = /*#__PURE__*/new WeakMap();
+  var _startScreencastPromise = /*#__PURE__*/new WeakMap();
+  var _Page_brand = /*#__PURE__*/new WeakSet();
+  class Page extends EventEmitter {
+    /**
+     * @internal
+     */
+    constructor(logger) {
+      super(undefined, logger);
+      /**
+       * Gets the native, non-emulated dimensions of the viewport.
+       */
+      _classPrivateMethodInitSpec(this, _Page_brand);
       /**
        * @internal
        */
-      constructor(logger) {
-        super(undefined, logger);
-        /**
-         * Gets the native, non-emulated dimensions of the viewport.
-         */
-        _classPrivateMethodInitSpec(this, _Page_brand);
-        /**
-         * @internal
-         */
-        _defineProperty(this, "_isDragging", (__runInitializers$4(this, _instanceExtraInitializers), false));
-        /**
-         * @internal
-         */
-        _defineProperty(this, "_timeoutSettings", new TimeoutSettings());
-        /**
-         * Internal API to get an implementation-specific identifier
-         * for the tab. In Chrome, it is a tab target id. If unknown,
-         * returns an empty string.
-         *
-         * @internal
-         */
-        _defineProperty(this, "_tabId", '');
-        _classPrivateFieldInitSpec(this, _requestHandlers, new WeakMap());
-        _classPrivateFieldInitSpec(this, _inflight$, new ReplaySubject(1));
-        /**
-         * @internal
-         */
-        _defineProperty(this, "logger", void 0);
-        _classPrivateFieldInitSpec(this, _screencastSessionCount, 0);
-        _classPrivateFieldInitSpec(this, _startScreencastPromise, void 0);
-        this.logger = logger;
-        // Pending requests by id, so that each event is handled in O(1) instead of
-        // being checked against every request that is still in flight.
-        const pending = new Map();
-        let inflight = 0;
-        merge(fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(map(request => {
-          pending.set(request.id, (pending.get(request.id) ?? 0) + 1);
-          return ++inflight;
-        })), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
-          return response.request();
-        }))).pipe(filter(request => {
-          return pending.has(request.id);
-        }), map(request => {
-          inflight -= pending.get(request.id) ?? 0;
-          pending.delete(request.id);
-          return inflight;
-        }))).pipe(takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), startWith(0)).subscribe(_classPrivateFieldGet(_inflight$, this));
-      }
-      /**
-       * Listen to page events.
-       *
-       * @remarks
-       * This method exists to define event typings and handle proper wireup of
-       * cooperative request interception. Actual event listening and dispatching is
-       * delegated to {@link EventEmitter}.
-       *
-       * @internal
-       */
-      on(type, handler) {
-        if (type !== "request" /* PageEvent.Request */) {
-          return super.on(type, handler);
-        }
-        let wrapper = _classPrivateFieldGet(_requestHandlers, this).get(handler);
-        if (wrapper === undefined) {
-          wrapper = event => {
-            event.enqueueInterceptAction(() => {
-              return handler(event, undefined);
-            });
-          };
-          _classPrivateFieldGet(_requestHandlers, this).set(handler, wrapper);
-        }
-        return super.on(type, wrapper);
-      }
+      _defineProperty(this, "_isDragging", false);
       /**
        * @internal
        */
-      off(type, handler) {
-        if (type === "request" /* PageEvent.Request */) {
-          handler = _classPrivateFieldGet(_requestHandlers, this).get(handler) || handler;
-        }
-        return super.off(type, handler);
-      }
+      _defineProperty(this, "_timeoutSettings", new TimeoutSettings());
       /**
-       * {@inheritDoc Accessibility}
-       */
-      get accessibility() {
-        return this.mainFrame().accessibility;
-      }
-      locator(input) {
-        if (typeof input === 'string') {
-          return NodeLocator.create(this, input);
-        } else {
-          return FunctionLocator.create(this, input);
-        }
-      }
-      /**
-       * A shortcut for {@link Locator.race} that does not require static imports.
+       * Internal API to get an implementation-specific identifier
+       * for the tab. In Chrome, it is a tab target id. If unknown,
+       * returns an empty string.
        *
        * @internal
        */
-      locatorRace(locators) {
-        return Locator.race(locators);
-      }
-      /**
-       * Finds the first element that matches the selector. If no element matches
-       * the selector, the return value resolves to `null`.
-       *
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
-       *
-       * @remarks
-       *
-       * Shortcut for {@link Frame.$ | Page.mainFrame().$(selector) }.
-       */
-      async $(selector) {
-        return await this.mainFrame().$(selector);
-      }
-      /**
-       * Finds elements on the page that match the selector. If no elements
-       * match the selector, the return value resolves to `[]`.
-       *
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
-       *
-       * @remarks
-       *
-       * Shortcut for {@link Frame.$$ | Page.mainFrame().$$(selector) }.
-       */
-      async $$(selector, options) {
-        return await this.mainFrame().$$(selector, options);
-      }
-      /**
-       * @remarks
-       *
-       * The only difference between {@link Page.evaluate | page.evaluate} and
-       * `page.evaluateHandle` is that `evaluateHandle` will return the value
-       * wrapped in an in-page object.
-       *
-       * If the function passed to `page.evaluateHandle` returns a Promise, the
-       * function will wait for the promise to resolve and return its value.
-       *
-       * You can pass a string instead of a function (although functions are
-       * recommended as they are easier to debug and use with TypeScript):
-       *
-       * @example
-       *
-       * ```ts
-       * const aHandle = await page.evaluateHandle('document');
-       * ```
-       *
-       * @example
-       * {@link JSHandle} instances can be passed as arguments to the `pageFunction`:
-       *
-       * ```ts
-       * const aHandle = await page.evaluateHandle(() => document.body);
-       * const resultHandle = await page.evaluateHandle(
-       *   body => body.innerHTML,
-       *   aHandle,
-       * );
-       * console.log(await resultHandle.jsonValue());
-       * await resultHandle.dispose();
-       * ```
-       *
-       * Most of the time this function returns a {@link JSHandle},
-       * but if `pageFunction` returns a reference to an element,
-       * you instead get an {@link ElementHandle} back:
-       *
-       * @example
-       *
-       * ```ts
-       * const button = await page.evaluateHandle(() =>
-       *   document.querySelector('button'),
-       * );
-       * // can call `click` because `button` is an `ElementHandle`
-       * await button.click();
-       * ```
-       *
-       * The TypeScript definitions assume that `evaluateHandle` returns
-       * a `JSHandle`, but if you know it's going to return an
-       * `ElementHandle`, pass it as the generic argument:
-       *
-       * ```ts
-       * const button = await page.evaluateHandle<ElementHandle>(...);
-       * ```
-       *
-       * @param pageFunction - a function that is run within the page
-       * @param args - arguments to be passed to the pageFunction
-       */
-      async evaluateHandle(pageFunction, ...args) {
-        pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
-        return await this.mainFrame().evaluateHandle(pageFunction, ...args);
-      }
-      /**
-       * This method finds the first element within the page that matches the selector
-       * and passes the result as the first argument to the `pageFunction`.
-       *
-       * @remarks
-       *
-       * If no element is found matching `selector`, the method will throw an error.
-       *
-       * If `pageFunction` returns a promise `$eval` will wait for the promise to
-       * resolve and then return its value.
-       *
-       * @example
-       *
-       * ```ts
-       * const searchValue = await page.$eval('#search', el => el.value);
-       * const preloadHref = await page.$eval('link[rel=preload]', el => el.href);
-       * const html = await page.$eval('.main-container', el => el.outerHTML);
-       * ```
-       *
-       * If you are using TypeScript, you may have to provide an explicit type to the
-       * first argument of the `pageFunction`.
-       * By default it is typed as `Element`, but you may need to provide a more
-       * specific sub-type:
-       *
-       * @example
-       *
-       * ```ts
-       * // if you don't provide HTMLInputElement here, TS will error
-       * // as `value` is not on `Element`
-       * const searchValue = await page.$eval(
-       *   '#search',
-       *   (el: HTMLInputElement) => el.value,
-       * );
-       * ```
-       *
-       * The compiler should be able to infer the return type
-       * from the `pageFunction` you provide. If it is unable to, you can use the generic
-       * type to tell the compiler what return type you expect from `$eval`:
-       *
-       * @example
-       *
-       * ```ts
-       * // The compiler can infer the return type in this case, but if it can't
-       * // or if you want to be more explicit, provide it as the generic type.
-       * const searchValue = await page.$eval<string>(
-       *   '#search',
-       *   (el: HTMLInputElement) => el.value,
-       * );
-       * ```
-       *
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
-       * @param pageFunction - the function to be evaluated in the page context.
-       * Will be passed the result of the element matching the selector as its
-       * first argument.
-       * @param args - any additional arguments to pass through to `pageFunction`.
-       *
-       * @returns The result of calling `pageFunction`. If it returns an element it
-       * is wrapped in an {@link ElementHandle}, else the raw value itself is
-       * returned.
-       */
-      async $eval(selector, pageFunction, ...args) {
-        pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-        return await this.mainFrame().$eval(selector, pageFunction, ...args);
-      }
-      /**
-       * This method returns all elements matching the selector and passes the
-       * resulting array as the first argument to the `pageFunction`.
-       *
-       * @remarks
-       * If `pageFunction` returns a promise `$$eval` will wait for the promise to
-       * resolve and then return its value.
-       *
-       * @example
-       *
-       * ```ts
-       * // get the amount of divs on the page
-       * const divCount = await page.$$eval('div', divs => divs.length);
-       *
-       * // get the text content of all the `.options` elements:
-       * const options = await page.$$eval('div > span.options', options => {
-       *   return options.map(option => option.textContent);
-       * });
-       * ```
-       *
-       * If you are using TypeScript, you may have to provide an explicit type to the
-       * first argument of the `pageFunction`.
-       * By default it is typed as `Element[]`, but you may need to provide a more
-       * specific sub-type:
-       *
-       * @example
-       *
-       * ```ts
-       * await page.$$eval('input', elements => {
-       *   return elements.map(e => e.value);
-       * });
-       * ```
-       *
-       * The compiler should be able to infer the return type
-       * from the `pageFunction` you provide. If it is unable to, you can use the generic
-       * type to tell the compiler what return type you expect from `$$eval`:
-       *
-       * @example
-       *
-       * ```ts
-       * const allInputValues = await page.$$eval('input', elements =>
-       *   elements.map(e => e.textContent),
-       * );
-       * ```
-       *
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
-       * @param pageFunction - the function to be evaluated in the page context.
-       * Will be passed an array of matching elements as its first argument.
-       * @param args - any additional arguments to pass through to `pageFunction`.
-       *
-       * @returns The result of calling `pageFunction`. If it returns an element it
-       * is wrapped in an {@link ElementHandle}, else the raw value itself is
-       * returned.
-       */
-      async $$eval(selector, pageFunction, ...args) {
-        pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
-        return await this.mainFrame().$$eval(selector, pageFunction, ...args);
-      }
-      /**
-       * Adds a `<script>` tag into the page with the desired URL or content.
-       *
-       * @remarks
-       * Shortcut for
-       * {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options)}.
-       *
-       * @param options - Options for the script.
-       * @returns An {@link ElementHandle | element handle} to the injected
-       * `<script>` element.
-       */
-      async addScriptTag(options) {
-        return await this.mainFrame().addScriptTag(options);
-      }
-      async addStyleTag(options) {
-        return await this.mainFrame().addStyleTag(options);
-      }
-      /**
-       * The page's URL.
-       *
-       * @remarks
-       *
-       * Shortcut for {@link Frame.url | page.mainFrame().url()}.
-       */
-      url() {
-        return this.mainFrame().url();
-      }
-      /**
-       * The full HTML contents of the page, including the DOCTYPE.
-       */
-      async content() {
-        return await this.mainFrame().content();
-      }
-      /**
-       * Set the content of the page.
-       *
-       * @param html - HTML markup to assign to the page.
-       * @param options - Parameters that has some properties.
-       */
-      async setContent(html, options) {
-        await this.mainFrame().setContent(html, options);
-      }
-      /**
-       * {@inheritDoc Frame.goto}
-       */
-      async goto(url, options) {
-        return await this.mainFrame().goto(url, options);
-      }
-      /**
-       * Waits for the page to navigate to a new URL or to reload. It is useful when
-       * you run code that will indirectly cause the page to navigate.
-       *
-       * @example
-       *
-       * ```ts
-       * const [response] = await Promise.all([
-       *   page.waitForNavigation(), // The promise resolves after navigation has finished
-       *   page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
-       * ]);
-       * ```
-       *
-       * @remarks
-       *
-       * Usage of the
-       * {@link https://developer.mozilla.org/en-US/docs/Web/API/History_API | History API}
-       * to change the URL is considered a navigation.
-       *
-       * @param options - Navigation parameters which might have the following
-       * properties:
-       * @returns A `Promise` which resolves to the main resource response.
-       *
-       * - In case of multiple redirects, the navigation will resolve with the
-       *   response of the last redirect.
-       * - In case of navigation to a different anchor or navigation due to History
-       *   API usage, the navigation will resolve with `null`.
-       */
-      async waitForNavigation(options = {}) {
-        return await this.mainFrame().waitForNavigation(options);
-      }
-      /**
-       * @param urlOrPredicate - A URL or predicate to wait for
-       * @param options - Optional waiting parameters
-       * @returns Promise which resolves to the matched request
-       * @example
-       *
-       * ```ts
-       * const firstRequest = await page.waitForRequest(
-       *   'https://example.com/resource',
-       * );
-       * const finalRequest = await page.waitForRequest(
-       *   request => request.url() === 'https://example.com',
-       * );
-       * return finalRequest.response()?.ok();
-       * ```
-       *
-       * @remarks
-       * Optional Waiting Parameters have:
-       *
-       * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds, pass
-       *   `0` to disable the timeout. The default value can be changed by using the
-       *   {@link Page.setDefaultTimeout} method.
-       *
-       * - `signal`: A signal object that allows you to cancel a waitForRequest call.
-       */
-      waitForRequest(urlOrPredicate, options = {}) {
-        const {
-          timeout: ms = this._timeoutSettings.timeout(),
-          signal
-        } = options;
-        if (typeof urlOrPredicate === 'string') {
-          const url = urlOrPredicate;
-          urlOrPredicate = request => {
-            return request.url() === url;
-          };
-        }
-        const observable$ = fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
-          throw new TargetCloseError('Page closed!');
-        }))));
-        return firstValueFrom(observable$);
-      }
-      /**
-       * @param urlOrPredicate - A URL or predicate to wait for.
-       * @param options - Optional waiting parameters
-       * @returns Promise which resolves to the matched response.
-       * @example
-       *
-       * ```ts
-       * const firstResponse = await page.waitForResponse(
-       *   'https://example.com/resource',
-       * );
-       * const finalResponse = await page.waitForResponse(
-       *   response =>
-       *     response.url() === 'https://example.com' && response.status() === 200,
-       * );
-       * const finalResponse = await page.waitForResponse(async response => {
-       *   return (await response.text()).includes('<html>');
-       * });
-       * return finalResponse.ok();
-       * ```
-       *
-       * @remarks
-       * Optional Parameter have:
-       *
-       * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
-       *   pass `0` to disable the timeout. The default value can be changed by using
-       *   the {@link Page.setDefaultTimeout} method.
-       *
-       * - `signal`: A signal object that allows you to cancel a waitForResponse call.
-       */
-      waitForResponse(urlOrPredicate, options = {}) {
-        const {
-          timeout: ms = this._timeoutSettings.timeout(),
-          signal
-        } = options;
-        if (typeof urlOrPredicate === 'string') {
-          const url = urlOrPredicate;
-          urlOrPredicate = response => {
-            return response.url() === url;
-          };
-        }
-        const observable$ = fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
-          throw new TargetCloseError('Page closed!');
-        }))));
-        return firstValueFrom(observable$);
-      }
-      /**
-       * Waits for the network to be idle.
-       *
-       * @remarks The function will always wait at least the
-       * set {@link WaitForNetworkIdleOptions.idleTime | IdleTime}.
-       *
-       * @param options - Options to configure waiting behavior.
-       * @returns A promise which resolves once the network is idle.
-       */
-      waitForNetworkIdle(options = {}) {
-        return firstValueFrom(this.waitForNetworkIdle$(options));
-      }
+      _defineProperty(this, "_tabId", '');
+      _classPrivateFieldInitSpec(this, _requestHandlers, new WeakMap());
+      _classPrivateFieldInitSpec(this, _inflight$, new ReplaySubject(1));
       /**
        * @internal
        */
-      waitForNetworkIdle$(options = {}) {
-        const {
-          timeout: ms = this._timeoutSettings.timeout(),
-          idleTime = NETWORK_IDLE_TIME,
-          concurrency = 0,
-          signal
-        } = options;
-        return _classPrivateFieldGet(_inflight$, this).pipe(map(inflight => {
-          return inflight > concurrency;
-        }), distinctUntilChanged(), switchMap(isInflightOverConcurrency => {
-          if (isInflightOverConcurrency) {
-            return EMPTY;
-          }
-          return timer(idleTime);
-        }), map(() => {}), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
-          throw new TargetCloseError('Page closed!');
-        }))));
+      _defineProperty(this, "logger", void 0);
+      _classPrivateFieldInitSpec(this, _screencastSessionCount, 0);
+      _classPrivateFieldInitSpec(this, _startScreencastPromise, void 0);
+      this.logger = logger;
+      // Pending requests by id, so that each event is handled in O(1) instead of
+      // being checked against every request that is still in flight.
+      const pending = new Map();
+      let inflight = 0;
+      merge(fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(map(request => {
+        pending.set(request.id, (pending.get(request.id) ?? 0) + 1);
+        return ++inflight;
+      })), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
+        return response.request();
+      }))).pipe(filter(request => {
+        return pending.has(request.id);
+      }), map(request => {
+        inflight -= pending.get(request.id) ?? 0;
+        pending.delete(request.id);
+        return inflight;
+      }))).pipe(takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), startWith(0)).subscribe(_classPrivateFieldGet(_inflight$, this));
+    }
+    /**
+     * Listen to page events.
+     *
+     * @remarks
+     * This method exists to define event typings and handle proper wireup of
+     * cooperative request interception. Actual event listening and dispatching is
+     * delegated to {@link EventEmitter}.
+     *
+     * @internal
+     */
+    on(type, handler) {
+      if (type !== "request" /* PageEvent.Request */) {
+        return super.on(type, handler);
       }
-      /**
-       * Waits for a frame matching the given conditions to appear.
-       *
-       * @example
-       *
-       * ```ts
-       * const frame = await page.waitForFrame(async frame => {
-       *   const frameElement = await frame.frameElement();
-       *   if (!frameElement) {
-       *     return false;
-       *   }
-       *   const name = await frameElement.evaluate(el => el.getAttribute('name'));
-       *   return name === 'test';
-       * });
-       * ```
-       */
-      async waitForFrame(urlOrPredicate, options = {}) {
-        const {
-          timeout: ms = this.getDefaultTimeout(),
-          signal
-        } = options;
-        const predicate = isString(urlOrPredicate) ? frame => {
-          return urlOrPredicate === frame.url();
-        } : urlOrPredicate;
-        return await firstValueFrom(merge(fromEmitterEvent(this, "frameattached" /* PageEvent.FrameAttached */), fromEmitterEvent(this, "framenavigated" /* PageEvent.FrameNavigated */), from(this.frames())).pipe(filterAsync(predicate), first(), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
-          throw new TargetCloseError('Page closed.');
-        })))));
-      }
-      /**
-       * Emulates a given device's metrics and user agent.
-       *
-       * To aid emulation, Puppeteer provides a list of known devices that can be
-       * via {@link KnownDevices}.
-       *
-       * @remarks
-       * This method is a shortcut for calling two methods:
-       * {@link Page.(setUserAgent:2) } and {@link Page.setViewport}.
-       *
-       * This method will resize the page. A lot of websites don't expect phones to
-       * change size, so you should emulate before navigating to the page.
-       *
-       * @example
-       *
-       * ```ts
-       * import {KnownDevices} from 'puppeteer';
-       * const iPhone = KnownDevices['iPhone 17 Pro'];
-       *
-       * const browser = await puppeteer.launch();
-       * const page = await browser.newPage();
-       * await page.emulate(iPhone);
-       * await page.goto('https://www.google.com');
-       * // other actions...
-       * await browser.close();
-       * ```
-       */
-      async emulate(device) {
-        await Promise.all([this.setUserAgent({
-          userAgent: device.userAgent
-        }), this.setViewport(device.viewport)]);
-      }
-      /**
-       * Evaluates a function in the page's context and returns the result.
-       *
-       * If the function passed to `page.evaluate` returns a Promise, the
-       * function will wait for the promise to resolve and return its value.
-       *
-       * @example
-       *
-       * ```ts
-       * const result = await frame.evaluate(() => {
-       *   return Promise.resolve(8 * 7);
-       * });
-       * console.log(result); // prints "56"
-       * ```
-       *
-       * You can pass a string instead of a function (although functions are
-       * recommended as they are easier to debug and use with TypeScript):
-       *
-       * @example
-       *
-       * ```ts
-       * const aHandle = await page.evaluate('1 + 2');
-       * ```
-       *
-       * To get the best TypeScript experience, you should pass in as the
-       * generic the type of `pageFunction`:
-       *
-       * ```ts
-       * const aHandle = await page.evaluate(() => 2);
-       * ```
-       *
-       * @example
-       *
-       * {@link ElementHandle} instances (including {@link JSHandle}s) can be passed
-       * as arguments to the `pageFunction`:
-       *
-       * ```ts
-       * const bodyHandle = await page.$('body');
-       * const html = await page.evaluate(body => body.innerHTML, bodyHandle);
-       * await bodyHandle.dispose();
-       * ```
-       *
-       * @param pageFunction - a function that is run within the page
-       * @param args - arguments to be passed to the pageFunction
-       *
-       * @returns the return value of `pageFunction`.
-       */
-      async evaluate(pageFunction, ...args) {
-        pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
-        return await this.mainFrame().evaluate(pageFunction, ...args);
-      }
-      /**
-       * @internal
-       */
-      async _maybeWriteTypedArrayToFile(path, typedArray) {
-        if (!path) {
-          return;
-        }
-        await environment.value.writeFile(path, typedArray);
-      }
-      /**
-       * Captures a screencast of this {@link Page | page}. Works in Chrome 153+.
-       *
-       * @example
-       * Recording a {@link Page | page}:
-       *
-       * ```
-       * import puppeteer from 'puppeteer';
-       *
-       * // Launch a browser
-       * const browser = await puppeteer.launch();
-       *
-       * // Create a new page
-       * const page = await browser.newPage();
-       *
-       * // Go to your site.
-       * await page.goto("https://www.example.com");
-       *
-       * // Start recording.
-       * const recorder = await page.screencast({path: 'recording.webm'});
-       *
-       * // Do something.
-       *
-       * // Stop recording.
-       * await recorder.stop();
-       *
-       * browser.close();
-       * ```
-       *
-       * @param options - Configures screencast behavior.
-       *
-       * @deprecated Use {@link Page.record} instead.
-       *
-       * @remarks
-       *
-       * By default, all recordings will be {@link https://www.webmproject.org/ | WebM} format using
-       * the {@link https://www.webmproject.org/vp9/ | VP9} video codec, with a frame rate of 30 FPS.
-       *
-       * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
-       */
-      async screencast(options = {}) {
-        const ScreenRecorder = environment.value.ScreenRecorder;
-        const [width, height, devicePixelRatio] = await _assertClassBrand(_Page_brand, this, _getNativePixelDimensions).call(this);
-        let crop;
-        if (options.crop) {
-          const {
-            x,
-            y,
-            width: cropWidth,
-            height: cropHeight
-          } = roundRectangle(normalizeRectangle(options.crop));
-          if (x < 0 || y < 0) {
-            throw new Error(`\`crop.x\` and \`crop.y\` must be greater than or equal to 0.`);
-          }
-          if (cropWidth <= 0 || cropHeight <= 0) {
-            throw new Error(`\`crop.height\` and \`crop.width\` must be greater than or equal to 0.`);
-          }
-          const viewportWidth = width / devicePixelRatio;
-          const viewportHeight = height / devicePixelRatio;
-          if (x + cropWidth > viewportWidth) {
-            throw new Error(`\`crop.width\` cannot be larger than the viewport width (${viewportWidth}).`);
-          }
-          if (y + cropHeight > viewportHeight) {
-            throw new Error(`\`crop.height\` cannot be larger than the viewport height (${viewportHeight}).`);
-          }
-          crop = {
-            x: x * devicePixelRatio,
-            y: y * devicePixelRatio,
-            width: cropWidth * devicePixelRatio,
-            height: cropHeight * devicePixelRatio
-          };
-        }
-        if (options.speed !== undefined && options.speed <= 0) {
-          throw new Error(`\`speed\` must be greater than 0.`);
-        }
-        if (options.scale !== undefined && options.scale <= 0) {
-          throw new Error(`\`scale\` must be greater than 0.`);
-        }
-        if (options.path && environment.value.path) {
-          await environment.value.mkdir(environment.value.path.dirname(options.path), {
-            recursive: options.overwrite ?? true
+      let wrapper = _classPrivateFieldGet(_requestHandlers, this).get(handler);
+      if (wrapper === undefined) {
+        wrapper = event => {
+          event.enqueueInterceptAction(() => {
+            return handler(event, undefined);
           });
-        }
-        const stream = options.path ? environment.value.createWriteStream(options.path, {
-          encoding: 'binary',
-          overwrite: options.overwrite
-        }) : undefined;
-        const recorder = new ScreenRecorder(this, width, height, {
-          ...options,
-          crop
-        }, this.logger);
-        try {
-          await this._startScreencast();
-        } catch (error) {
-          void recorder.stop();
-          throw error;
-        }
-        if (stream) {
-          recorder.pipe(stream);
-        }
-        return recorder;
-      }
-      /**
-       * Records this {@link Page | page} using the Chrome DevTools Protocol
-       * {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreenRecording | Page.startScreenRecording}
-       * API.
-       *
-       * Outputs mp4 video stream.
-       *
-       * @example
-       * Recording a {@link Page | page}:
-       *
-       * ```ts
-       * import puppeteer from 'puppeteer';
-       *
-       * // Launch a browser
-       * const browser = await puppeteer.launch();
-       *
-       * // Create a new page
-       * const page = await browser.newPage();
-       *
-       * // Go to your site.
-       * await page.goto('https://www.example.com');
-       *
-       * // Start recording.
-       * const recorder = await page.record({path: 'recording.mp4'});
-       *
-       * // Do something.
-       *
-       * // Stop recording.
-       * await recorder.stop();
-       *
-       * await browser.close();
-       * ```
-       *
-       * @param options - Configures recording behavior.
-       *
-       * @experimental
-       */
-      async record(options = {}) {
-        if (options.maxWidth !== undefined && options.maxWidth <= 0) {
-          throw new Error('`maxWidth` must be greater than 0.');
-        }
-        if (options.maxHeight !== undefined && options.maxHeight <= 0) {
-          throw new Error('`maxHeight` must be greater than 0.');
-        }
-        if (options.frameRate !== undefined && options.frameRate <= 0) {
-          throw new Error('`frameRate` must be greater than 0.');
-        }
-        if (options.fps !== undefined && options.fps <= 0) {
-          throw new Error('`fps` must be greater than 0.');
-        }
-        if (options.path && environment.value.path) {
-          await environment.value.mkdir(environment.value.path.dirname(options.path), {
-            recursive: options.overwrite ?? true
-          });
-        }
-        const stream = options.path ? environment.value.createWriteStream(options.path, {
-          encoding: 'binary',
-          overwrite: options.overwrite
-        }) : undefined;
-        const recording = this.createScreenRecording(options);
-        try {
-          await recording._start();
-        } catch (error) {
-          // Clean up the recording. Ignore errors from stop() so the original
-          // error from _start() is the one that propagates.
-          await recording.stop().catch(() => {});
-          throw error;
-        }
-        if (stream) {
-          recording.pipe(stream);
-        }
-        return recording;
-      }
-      /**
-       * @internal
-       */
-      async _startScreencast() {
-        var _this$screencastSessi;
-        _classPrivateFieldSet(_screencastSessionCount, this, (_this$screencastSessi = _classPrivateFieldGet(_screencastSessionCount, this), ++_this$screencastSessi));
-        if (!_classPrivateFieldGet(_startScreencastPromise, this)) {
-          const client = this.mainFrame().client;
-          const firstFrame = new Promise(resolve => {
-            return client.once('Page.screencastFrame', () => {
-              return resolve();
-            });
-          });
-          _classPrivateFieldSet(_startScreencastPromise, this, client.send('Page.startScreencast', {
-            format: 'png'
-          }).then(() => {
-            return firstFrame;
-          }));
-        }
-        await _classPrivateFieldGet(_startScreencastPromise, this);
-      }
-      /**
-       * @internal
-       */
-      async _stopScreencast() {
-        var _this$screencastSessi2;
-        _classPrivateFieldSet(_screencastSessionCount, this, (_this$screencastSessi2 = _classPrivateFieldGet(_screencastSessionCount, this), --_this$screencastSessi2));
-        if (!_classPrivateFieldGet(_startScreencastPromise, this)) {
-          return;
-        }
-        _classPrivateFieldSet(_startScreencastPromise, this, undefined);
-        if (_classPrivateFieldGet(_screencastSessionCount, this) === 0) {
-          await this.mainFrame().client.send('Page.stopScreencast');
-        }
-      }
-      async screenshot(userOptions = {}) {
-        const env_2 = {
-          stack: [],
-          error: void 0,
-          hasError: false
         };
-        try {
-          const _guard = __addDisposableResource$7(env_2, await this.browserContext().startScreenshot(), false);
-          const options = {
-            ...userOptions,
-            clip: userOptions.clip ? {
-              ...userOptions.clip
-            } : undefined
-          };
-          if (options.type === undefined && options.path !== undefined) {
-            const filePath = options.path;
-            // Note we cannot use Node.js here due to browser compatibility.
-            const extension = filePath.slice(filePath.lastIndexOf('.') + 1).toLowerCase();
-            switch (extension) {
-              case 'png':
-                options.type = 'png';
-                break;
-              case 'jpeg':
-              case 'jpg':
-                options.type = 'jpeg';
-                break;
-              case 'webp':
-                options.type = 'webp';
-                break;
-            }
+        _classPrivateFieldGet(_requestHandlers, this).set(handler, wrapper);
+      }
+      return super.on(type, wrapper);
+    }
+    /**
+     * @internal
+     */
+    off(type, handler) {
+      // For `request` listeners, a handler that was passed to `on()` is matched
+      // through its `#requestHandlers` wrapper first. So after
+      // `on('request', h)`, `once('request', h)` and `off('request', h)`, the
+      // `on()` registration is removed first, even though it was added earlier.
+      // This differs from `EventEmitter.off()`, which removes the most recently
+      // added registration.
+      if (type === "request" /* PageEvent.Request */ && handler !== undefined) {
+        const requestHandler = handler;
+        const wrapper = _classPrivateFieldGet(_requestHandlers, this).get(requestHandler);
+        if (wrapper !== undefined) {
+          const listenerCount = this.listenerCount(type);
+          super.off(type, wrapper);
+          if (this.listenerCount(type) < listenerCount) {
+            return this;
           }
-          if (options.quality !== undefined) {
-            if (options.quality < 0 || options.quality > 100) {
-              throw new Error(`Expected 'quality' (${options.quality}) to be between 0 and 100, inclusive.`);
-            }
-            if (options.type === undefined || !['jpeg', 'webp'].includes(options.type)) {
-              throw new Error(`${options.type ?? 'png'} screenshots do not support 'quality'.`);
-            }
-          }
-          if (options.clip) {
-            if (options.clip.width <= 0) {
-              throw new Error("'width' in 'clip' must be positive.");
-            }
-            if (options.clip.height <= 0) {
-              throw new Error("'height' in 'clip' must be positive.");
-            }
-          }
-          setDefaultScreenshotOptions(options);
-          const stack = __addDisposableResource$7(env_2, new AsyncDisposableStack(), true);
-          if (options.clip) {
-            if (options.fullPage) {
-              throw new Error("'clip' and 'fullPage' are mutually exclusive");
-            }
-            options.clip = roundRectangle(normalizeRectangle(options.clip));
-          } else {
-            if (options.fullPage) {
-              // If `captureBeyondViewport` is `false`, then we set the viewport to
-              // capture the full page. Note this may be affected by on-page CSS and
-              // JavaScript.
-              if (!options.captureBeyondViewport) {
-                const scrollDimensions = await this.mainFrame().isolatedRealm().evaluate(() => {
-                  const element = document.documentElement;
-                  return {
-                    width: element.scrollWidth,
-                    height: element.scrollHeight
-                  };
-                });
-                const viewport = this.viewport();
-                await this.setViewport({
-                  ...viewport,
-                  ...scrollDimensions
-                });
-                stack.defer(async () => {
-                  await this.setViewport(viewport).catch(error => {
-                    this.logger?.(DEBUG_PREFIXES.error)?.(error);
-                  });
-                });
-              }
-            } else {
-              options.captureBeyondViewport = false;
-            }
-          }
-          const data = await this._screenshot(options);
-          if (options.encoding === 'base64') {
-            return data;
-          }
-          const typedArray = stringToTypedArray(data, true);
-          await this._maybeWriteTypedArrayToFile(options.path, typedArray);
-          return typedArray;
-        } catch (e_2) {
-          env_2.error = e_2;
-          env_2.hasError = true;
-        } finally {
-          const result_1 = __disposeResources$7(env_2);
-          if (result_1) await result_1;
+          // The wrapper is no longer registered, so drop the stale entry and
+          // fall back to `handler`, which matches listeners added with `once`.
+          _classPrivateFieldGet(_requestHandlers, this).delete(requestHandler);
         }
       }
-      /**
-       * The page's title
-       *
-       * @remarks
-       *
-       * Shortcut for {@link Frame.title | page.mainFrame().title()}.
-       */
-      async title() {
-        return await this.mainFrame().title();
+      return super.off(type, handler);
+    }
+    /**
+     * {@inheritDoc Accessibility}
+     */
+    get accessibility() {
+      return this.mainFrame().accessibility;
+    }
+    locator(input) {
+      if (typeof input === 'string') {
+        return NodeLocator.create(this, input);
+      } else {
+        return FunctionLocator.create(this, input);
       }
-      /**
-       * This method fetches an element with `selector`, scrolls it into view if
-       * needed, and then uses {@link Page.mouse} to click in the center of the
-       * element. If there's no element matching `selector`, the method throws an
-       * error.
-       *
-       * @remarks
-       *
-       * Bear in mind that if `click()` triggers a navigation event and
-       * there's a separate `page.waitForNavigation()` promise to be resolved, you
-       * may end up with a race condition that yields unexpected results. The
-       * correct pattern for click and wait for navigation is the following:
-       *
-       * ```ts
-       * const [response] = await Promise.all([
-       *   page.waitForNavigation(waitOptions),
-       *   page.click(selector, clickOptions),
-       * ]);
-       * ```
-       *
-       * Shortcut for {@link Frame.click | page.mainFrame().click(selector[, options]) }.
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are
-       * multiple elements satisfying the `selector`, the first will be clicked
-       * @param options - `Object`
-       * @returns Promise which resolves when the element matching `selector` is
-       * successfully clicked. The Promise will be rejected if there is no element
-       * matching `selector`.
-       */
-      click(selector, options) {
-        return this.mainFrame().click(selector, options);
+    }
+    /**
+     * A shortcut for {@link Locator.race} that does not require static imports.
+     *
+     * @internal
+     */
+    locatorRace(locators) {
+      return Locator.race(locators);
+    }
+    /**
+     * Finds the first element that matches the selector. If no element matches
+     * the selector, the return value resolves to `null`.
+     *
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Frame.$ | Page.mainFrame().$(selector) }.
+     */
+    async $(selector) {
+      return await this.mainFrame().$(selector);
+    }
+    /**
+     * Finds elements on the page that match the selector. If no elements
+     * match the selector, the return value resolves to `[]`.
+     *
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Frame.$$ | Page.mainFrame().$$(selector) }.
+     */
+    async $$(selector, options) {
+      return await this.mainFrame().$$(selector, options);
+    }
+    /**
+     * @remarks
+     *
+     * The only difference between {@link Page.evaluate | page.evaluate} and
+     * `page.evaluateHandle` is that `evaluateHandle` will return the value
+     * wrapped in an in-page object.
+     *
+     * If the function passed to `page.evaluateHandle` returns a Promise, the
+     * function will wait for the promise to resolve and return its value.
+     *
+     * You can pass a string instead of a function (although functions are
+     * recommended as they are easier to debug and use with TypeScript):
+     *
+     * @example
+     *
+     * ```ts
+     * const aHandle = await page.evaluateHandle('document');
+     * ```
+     *
+     * @example
+     * {@link JSHandle} instances can be passed as arguments to the `pageFunction`:
+     *
+     * ```ts
+     * const aHandle = await page.evaluateHandle(() => document.body);
+     * const resultHandle = await page.evaluateHandle(
+     *   body => body.innerHTML,
+     *   aHandle,
+     * );
+     * console.log(await resultHandle.jsonValue());
+     * await resultHandle.dispose();
+     * ```
+     *
+     * Most of the time this function returns a {@link JSHandle},
+     * but if `pageFunction` returns a reference to an element,
+     * you instead get an {@link ElementHandle} back:
+     *
+     * @example
+     *
+     * ```ts
+     * const button = await page.evaluateHandle(() =>
+     *   document.querySelector('button'),
+     * );
+     * // can call `click` because `button` is an `ElementHandle`
+     * await button.click();
+     * ```
+     *
+     * The TypeScript definitions assume that `evaluateHandle` returns
+     * a `JSHandle`, but if you know it's going to return an
+     * `ElementHandle`, pass it as the generic argument:
+     *
+     * ```ts
+     * const button = await page.evaluateHandle<ElementHandle>(...);
+     * ```
+     *
+     * @param pageFunction - a function that is run within the page
+     * @param args - arguments to be passed to the pageFunction
+     */
+    async evaluateHandle(pageFunction, ...args) {
+      pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
+      return await this.mainFrame().evaluateHandle(pageFunction, ...args);
+    }
+    /**
+     * This method finds the first element within the page that matches the selector
+     * and passes the result as the first argument to the `pageFunction`.
+     *
+     * @remarks
+     *
+     * If no element is found matching `selector`, the method will throw an error.
+     *
+     * If `pageFunction` returns a promise `$eval` will wait for the promise to
+     * resolve and then return its value.
+     *
+     * @example
+     *
+     * ```ts
+     * const searchValue = await page.$eval('#search', el => el.value);
+     * const preloadHref = await page.$eval('link[rel=preload]', el => el.href);
+     * const html = await page.$eval('.main-container', el => el.outerHTML);
+     * ```
+     *
+     * If you are using TypeScript, you may have to provide an explicit type to the
+     * first argument of the `pageFunction`.
+     * By default it is typed as `Element`, but you may need to provide a more
+     * specific sub-type:
+     *
+     * @example
+     *
+     * ```ts
+     * // if you don't provide HTMLInputElement here, TS will error
+     * // as `value` is not on `Element`
+     * const searchValue = await page.$eval(
+     *   '#search',
+     *   (el: HTMLInputElement) => el.value,
+     * );
+     * ```
+     *
+     * The compiler should be able to infer the return type
+     * from the `pageFunction` you provide. If it is unable to, you can use the generic
+     * type to tell the compiler what return type you expect from `$eval`:
+     *
+     * @example
+     *
+     * ```ts
+     * // The compiler can infer the return type in this case, but if it can't
+     * // or if you want to be more explicit, provide it as the generic type.
+     * const searchValue = await page.$eval<string>(
+     *   '#search',
+     *   (el: HTMLInputElement) => el.value,
+     * );
+     * ```
+     *
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     * @param pageFunction - the function to be evaluated in the page context.
+     * Will be passed the result of the element matching the selector as its
+     * first argument.
+     * @param args - any additional arguments to pass through to `pageFunction`.
+     *
+     * @returns The result of calling `pageFunction`. If it returns an element it
+     * is wrapped in an {@link ElementHandle}, else the raw value itself is
+     * returned.
+     */
+    async $eval(selector, pageFunction, ...args) {
+      pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
+      return await this.mainFrame().$eval(selector, pageFunction, ...args);
+    }
+    /**
+     * This method returns all elements matching the selector and passes the
+     * resulting array as the first argument to the `pageFunction`.
+     *
+     * @remarks
+     * If `pageFunction` returns a promise `$$eval` will wait for the promise to
+     * resolve and then return its value.
+     *
+     * @example
+     *
+     * ```ts
+     * // get the amount of divs on the page
+     * const divCount = await page.$$eval('div', divs => divs.length);
+     *
+     * // get the text content of all the `.options` elements:
+     * const options = await page.$$eval('div > span.options', options => {
+     *   return options.map(option => option.textContent);
+     * });
+     * ```
+     *
+     * If you are using TypeScript, you may have to provide an explicit type to the
+     * first argument of the `pageFunction`.
+     * By default it is typed as `Element[]`, but you may need to provide a more
+     * specific sub-type:
+     *
+     * @example
+     *
+     * ```ts
+     * await page.$$eval('input', elements => {
+     *   return elements.map(e => e.value);
+     * });
+     * ```
+     *
+     * The compiler should be able to infer the return type
+     * from the `pageFunction` you provide. If it is unable to, you can use the generic
+     * type to tell the compiler what return type you expect from `$$eval`:
+     *
+     * @example
+     *
+     * ```ts
+     * const allInputValues = await page.$$eval('input', elements =>
+     *   elements.map(e => e.textContent),
+     * );
+     * ```
+     *
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     * @param pageFunction - the function to be evaluated in the page context.
+     * Will be passed an array of matching elements as its first argument.
+     * @param args - any additional arguments to pass through to `pageFunction`.
+     *
+     * @returns The result of calling `pageFunction`. If it returns an element it
+     * is wrapped in an {@link ElementHandle}, else the raw value itself is
+     * returned.
+     */
+    async $$eval(selector, pageFunction, ...args) {
+      pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
+      return await this.mainFrame().$$eval(selector, pageFunction, ...args);
+    }
+    /**
+     * Adds a `<script>` tag into the page with the desired URL or content.
+     *
+     * @remarks
+     * Shortcut for
+     * {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options)}.
+     *
+     * @param options - Options for the script.
+     * @returns An {@link ElementHandle | element handle} to the injected
+     * `<script>` element.
+     */
+    async addScriptTag(options) {
+      return await this.mainFrame().addScriptTag(options);
+    }
+    async addStyleTag(options) {
+      return await this.mainFrame().addStyleTag(options);
+    }
+    /**
+     * The page's URL.
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Frame.url | page.mainFrame().url()}.
+     */
+    url() {
+      return this.mainFrame().url();
+    }
+    /**
+     * The full HTML contents of the page, including the DOCTYPE.
+     */
+    async content() {
+      return await this.mainFrame().content();
+    }
+    /**
+     * Set the content of the page.
+     *
+     * @param html - HTML markup to assign to the page.
+     * @param options - Parameters that has some properties.
+     */
+    async setContent(html, options) {
+      await this.mainFrame().setContent(html, options);
+    }
+    /**
+     * {@inheritDoc Frame.goto}
+     */
+    async goto(url, options) {
+      return await this.mainFrame().goto(url, options);
+    }
+    /**
+     * Waits for the page to navigate to a new URL or to reload. It is useful when
+     * you run code that will indirectly cause the page to navigate.
+     *
+     * @example
+     *
+     * ```ts
+     * const [response] = await Promise.all([
+     *   page.waitForNavigation(), // The promise resolves after navigation has finished
+     *   page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
+     * ]);
+     * ```
+     *
+     * @remarks
+     *
+     * Usage of the
+     * {@link https://developer.mozilla.org/en-US/docs/Web/API/History_API | History API}
+     * to change the URL is considered a navigation.
+     *
+     * @param options - Navigation parameters which might have the following
+     * properties:
+     * @returns A `Promise` which resolves to the main resource response.
+     *
+     * - In case of multiple redirects, the navigation will resolve with the
+     *   response of the last redirect.
+     * - In case of navigation to a different anchor or navigation due to History
+     *   API usage, the navigation will resolve with `null`.
+     */
+    async waitForNavigation(options = {}) {
+      return await this.mainFrame().waitForNavigation(options);
+    }
+    /**
+     * @param urlOrPredicate - A URL or predicate to wait for
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves to the matched request
+     * @example
+     *
+     * ```ts
+     * const firstRequest = await page.waitForRequest(
+     *   'https://example.com/resource',
+     * );
+     * const finalRequest = await page.waitForRequest(
+     *   request => request.url() === 'https://example.com',
+     * );
+     * return finalRequest.response()?.ok();
+     * ```
+     *
+     * @remarks
+     * Optional Waiting Parameters have:
+     *
+     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds, pass
+     *   `0` to disable the timeout. The default value can be changed by using the
+     *   {@link Page.setDefaultTimeout} method.
+     *
+     * - `signal`: A signal object that allows you to cancel a waitForRequest call.
+     */
+    waitForRequest(urlOrPredicate, options = {}) {
+      const {
+        timeout: ms = this._timeoutSettings.timeout(),
+        signal
+      } = options;
+      if (typeof urlOrPredicate === 'string') {
+        const url = urlOrPredicate;
+        urlOrPredicate = request => {
+          return request.url() === url;
+        };
       }
-      /**
-       * This method fetches an element with `selector` and focuses it. If
-       * there's no element matching `selector`, the method throws an error.
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
-       * If there are multiple elements satisfying the selector, the first
-       * will be focused.
-       * @returns Promise which resolves when the element matching selector
-       * is successfully focused. The promise will be rejected if there is
-       * no element matching selector.
-       *
-       * @remarks
-       *
-       * Shortcut for
-       * {@link Frame.focus | page.mainFrame().focus(selector)}.
-       */
-      focus(selector) {
-        return this.mainFrame().focus(selector);
+      const observable$ = fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+        throw new TargetCloseError('Page closed!');
+      }))));
+      return firstValueFrom(observable$);
+    }
+    /**
+     * @param urlOrPredicate - A URL or predicate to wait for.
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves to the matched response.
+     * @example
+     *
+     * ```ts
+     * const firstResponse = await page.waitForResponse(
+     *   'https://example.com/resource',
+     * );
+     * const finalResponse = await page.waitForResponse(
+     *   response =>
+     *     response.url() === 'https://example.com' && response.status() === 200,
+     * );
+     * const finalResponse = await page.waitForResponse(async response => {
+     *   return (await response.text()).includes('<html>');
+     * });
+     * return finalResponse.ok();
+     * ```
+     *
+     * @remarks
+     * Optional Parameter have:
+     *
+     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
+     *   pass `0` to disable the timeout. The default value can be changed by using
+     *   the {@link Page.setDefaultTimeout} method.
+     *
+     * - `signal`: A signal object that allows you to cancel a waitForResponse call.
+     */
+    waitForResponse(urlOrPredicate, options = {}) {
+      const {
+        timeout: ms = this._timeoutSettings.timeout(),
+        signal
+      } = options;
+      if (typeof urlOrPredicate === 'string') {
+        const url = urlOrPredicate;
+        urlOrPredicate = response => {
+          return response.url() === url;
+        };
       }
-      /**
-       * This method fetches an element with `selector`, scrolls it into view if
-       * needed, and then uses {@link Page.mouse}
-       * to hover over the center of the element.
-       * If there's no element matching `selector`, the method throws an error.
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are
-       * multiple elements satisfying the `selector`, the first will be hovered.
-       * @returns Promise which resolves when the element matching `selector` is
-       * successfully hovered. Promise gets rejected if there's no element matching
-       * `selector`.
-       *
-       * @remarks
-       *
-       * Shortcut for {@link Page.hover | page.mainFrame().hover(selector)}.
-       */
-      hover(selector) {
-        return this.mainFrame().hover(selector);
+      const observable$ = fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+        throw new TargetCloseError('Page closed!');
+      }))));
+      return firstValueFrom(observable$);
+    }
+    /**
+     * Waits for the network to be idle.
+     *
+     * @remarks The function will always wait at least the
+     * set {@link WaitForNetworkIdleOptions.idleTime | IdleTime}.
+     *
+     * @param options - Options to configure waiting behavior.
+     * @returns A promise which resolves once the network is idle.
+     */
+    waitForNetworkIdle(options = {}) {
+      return firstValueFrom(this.waitForNetworkIdle$(options));
+    }
+    /**
+     * @internal
+     */
+    waitForNetworkIdle$(options = {}) {
+      const {
+        timeout: ms = this._timeoutSettings.timeout(),
+        idleTime = NETWORK_IDLE_TIME,
+        concurrency = 0,
+        signal
+      } = options;
+      return _classPrivateFieldGet(_inflight$, this).pipe(map(inflight => {
+        return inflight > concurrency;
+      }), distinctUntilChanged(), switchMap(isInflightOverConcurrency => {
+        if (isInflightOverConcurrency) {
+          return EMPTY;
+        }
+        return timer(idleTime);
+      }), map(() => {}), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+        throw new TargetCloseError('Page closed!');
+      }))));
+    }
+    /**
+     * Waits for a frame matching the given conditions to appear.
+     *
+     * @example
+     *
+     * ```ts
+     * const frame = await page.waitForFrame(async frame => {
+     *   const frameElement = await frame.frameElement();
+     *   if (!frameElement) {
+     *     return false;
+     *   }
+     *   const name = await frameElement.evaluate(el => el.getAttribute('name'));
+     *   return name === 'test';
+     * });
+     * ```
+     */
+    async waitForFrame(urlOrPredicate, options = {}) {
+      const {
+        timeout: ms = this.getDefaultTimeout(),
+        signal
+      } = options;
+      const predicate = isString(urlOrPredicate) ? frame => {
+        return urlOrPredicate === frame.url();
+      } : urlOrPredicate;
+      return await firstValueFrom(merge(fromEmitterEvent(this, "frameattached" /* PageEvent.FrameAttached */), fromEmitterEvent(this, "framenavigated" /* PageEvent.FrameNavigated */), from(this.frames())).pipe(filterAsync(predicate), first(), raceWith(timeout(ms), fromAbortSignal(signal), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+        throw new TargetCloseError('Page closed.');
+      })))));
+    }
+    /**
+     * Emulates a given device's metrics and user agent.
+     *
+     * To aid emulation, Puppeteer provides a list of known devices that can be
+     * via {@link KnownDevices}.
+     *
+     * @remarks
+     * This method is a shortcut for calling two methods:
+     * {@link Page.(setUserAgent:2) } and {@link Page.setViewport}.
+     *
+     * This method will resize the page. A lot of websites don't expect phones to
+     * change size, so you should emulate before navigating to the page.
+     *
+     * @example
+     *
+     * ```ts
+     * import {KnownDevices} from 'puppeteer';
+     * const iPhone = KnownDevices['iPhone 17 Pro'];
+     *
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * await page.emulate(iPhone);
+     * await page.goto('https://www.google.com');
+     * // other actions...
+     * await browser.close();
+     * ```
+     */
+    async emulate(device) {
+      await Promise.all([this.setUserAgent({
+        userAgent: device.userAgent
+      }), this.setViewport(device.viewport)]);
+    }
+    /**
+     * Evaluates a function in the page's context and returns the result.
+     *
+     * If the function passed to `page.evaluate` returns a Promise, the
+     * function will wait for the promise to resolve and return its value.
+     *
+     * @example
+     *
+     * ```ts
+     * const result = await frame.evaluate(() => {
+     *   return Promise.resolve(8 * 7);
+     * });
+     * console.log(result); // prints "56"
+     * ```
+     *
+     * You can pass a string instead of a function (although functions are
+     * recommended as they are easier to debug and use with TypeScript):
+     *
+     * @example
+     *
+     * ```ts
+     * const aHandle = await page.evaluate('1 + 2');
+     * ```
+     *
+     * To get the best TypeScript experience, you should pass in as the
+     * generic the type of `pageFunction`:
+     *
+     * ```ts
+     * const aHandle = await page.evaluate(() => 2);
+     * ```
+     *
+     * @example
+     *
+     * {@link ElementHandle} instances (including {@link JSHandle}s) can be passed
+     * as arguments to the `pageFunction`:
+     *
+     * ```ts
+     * const bodyHandle = await page.$('body');
+     * const html = await page.evaluate(body => body.innerHTML, bodyHandle);
+     * await bodyHandle.dispose();
+     * ```
+     *
+     * @param pageFunction - a function that is run within the page
+     * @param args - arguments to be passed to the pageFunction
+     *
+     * @returns the return value of `pageFunction`.
+     */
+    async evaluate(pageFunction, ...args) {
+      pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
+      return await this.mainFrame().evaluate(pageFunction, ...args);
+    }
+    /**
+     * @internal
+     */
+    async _maybeWriteTypedArrayToFile(path, typedArray) {
+      if (!path) {
+        return;
       }
-      /**
-       * Triggers a `change` and `input` event once all the provided options have been
-       * selected. If there's no `<select>` element matching `selector`, the method
-       * throws an error.
-       *
-       * @example
-       *
-       * ```ts
-       * page.select('select#colors', 'blue'); // single selection
-       * page.select('select#colors', 'red', 'green', 'blue'); // multiple selections
-       * ```
-       *
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
-       * @param values - Values of options to select. If the `<select>` has the
-       * `multiple` attribute, all values are considered, otherwise only the first one
-       * is taken into account.
-       * @returns
-       *
-       * @remarks
-       *
-       * Shortcut for {@link Frame.select | page.mainFrame().select()}
-       */
-      select(selector, ...values) {
-        return this.mainFrame().select(selector, ...values);
+      await environment.value.writeFile(path, typedArray);
+    }
+    /**
+     * Captures a screencast of this {@link Page | page}. Works in Chrome 153+.
+     *
+     * @example
+     * Recording a {@link Page | page}:
+     *
+     * ```
+     * import puppeteer from 'puppeteer';
+     *
+     * // Launch a browser
+     * const browser = await puppeteer.launch();
+     *
+     * // Create a new page
+     * const page = await browser.newPage();
+     *
+     * // Go to your site.
+     * await page.goto("https://www.example.com");
+     *
+     * // Start recording.
+     * const recorder = await page.screencast({path: 'recording.webm'});
+     *
+     * // Do something.
+     *
+     * // Stop recording.
+     * await recorder.stop();
+     *
+     * browser.close();
+     * ```
+     *
+     * @param options - Configures screencast behavior.
+     *
+     * @deprecated Use {@link Page.record} instead.
+     *
+     * @remarks
+     *
+     * By default, all recordings will be {@link https://www.webmproject.org/ | WebM} format using
+     * the {@link https://www.webmproject.org/vp9/ | VP9} video codec, with a frame rate of 30 FPS.
+     *
+     * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
+     */
+    async screencast(options = {}) {
+      const ScreenRecorder = environment.value.ScreenRecorder;
+      const [width, height, devicePixelRatio] = await _assertClassBrand(_Page_brand, this, _getNativePixelDimensions).call(this);
+      let crop;
+      if (options.crop) {
+        const {
+          x,
+          y,
+          width: cropWidth,
+          height: cropHeight
+        } = roundRectangle(normalizeRectangle(options.crop));
+        if (x < 0 || y < 0) {
+          throw new Error(`\`crop.x\` and \`crop.y\` must be greater than or equal to 0.`);
+        }
+        if (cropWidth <= 0 || cropHeight <= 0) {
+          throw new Error(`\`crop.height\` and \`crop.width\` must be greater than or equal to 0.`);
+        }
+        const viewportWidth = width / devicePixelRatio;
+        const viewportHeight = height / devicePixelRatio;
+        if (x + cropWidth > viewportWidth) {
+          throw new Error(`\`crop.width\` cannot be larger than the viewport width (${viewportWidth}).`);
+        }
+        if (y + cropHeight > viewportHeight) {
+          throw new Error(`\`crop.height\` cannot be larger than the viewport height (${viewportHeight}).`);
+        }
+        crop = {
+          x: x * devicePixelRatio,
+          y: y * devicePixelRatio,
+          width: cropWidth * devicePixelRatio,
+          height: cropHeight * devicePixelRatio
+        };
       }
-      /**
-       * This method fetches an element with `selector`, scrolls it into view if
-       * needed, and then uses {@link Page.touchscreen}
-       * to tap in the center of the element.
-       * If there's no element matching `selector`, the method throws an error.
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are multiple elements satisfying the
-       * selector, the first will be tapped.
-       *
-       * @remarks
-       *
-       * Shortcut for {@link Frame.tap | page.mainFrame().tap(selector)}.
-       */
-      tap(selector) {
-        return this.mainFrame().tap(selector);
+      if (options.speed !== undefined && options.speed <= 0) {
+        throw new Error(`\`speed\` must be greater than 0.`);
       }
-      /**
-       * Sends a `keydown`, `keypress/input`, and `keyup` event for each character
-       * in the text.
-       *
-       * To press a special key, like `Control` or `ArrowDown`, use {@link Keyboard.press}.
-       * @example
-       *
-       * ```ts
-       * await page.type('#mytextarea', 'Hello');
-       * // Types instantly
-       * await page.type('#mytextarea', 'World', {delay: 100});
-       * // Types slower, like a user
-       * ```
-       *
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
-       * @param text - A text to type into a focused element.
-       * @param options - have property `delay` which is the Time to wait between
-       * key presses in milliseconds. Defaults to `0`.
-       * @returns
-       */
-      type(selector, text, options) {
-        return this.mainFrame().type(selector, text, options);
+      if (options.scale !== undefined && options.scale <= 0) {
+        throw new Error(`\`scale\` must be greater than 0.`);
       }
-      /**
-       * Wait for the `selector` to appear in page. If at the moment of calling the
-       * method the `selector` already exists, the method will return immediately. If
-       * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
-       * function will throw.
-       *
-       * @example
-       * This method works across navigations:
-       *
-       * ```ts
-       * import puppeteer from 'puppeteer';
-       *
-       * const browser = await puppeteer.launch();
-       * const page = await browser.newPage();
-       * let currentURL;
-       * page
-       *   .waitForSelector('img')
-       *   .then(() => console.log('First URL with image: ' + currentURL));
-       * for (currentURL of [
-       *   'https://example.com',
-       *   'https://google.com',
-       *   'https://bbc.com',
-       * ]) {
-       *   await page.goto(currentURL);
-       * }
-       * await browser.close();
-       * ```
-       *
-       * @param selector -
-       * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
-       * to query the page for.
-       * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
-       * can be passed as-is and a
-       * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows querying by
-       * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
-       * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
-       * and
-       * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
-       * Alternatively, you can specify the selector type using a
-       * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
-       * @param options - Optional waiting parameters
-       * @returns Promise which resolves when element specified by selector string
-       * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
-       * selector is not found in DOM.
-       *
-       * @remarks
-       * The optional Parameter in Arguments `options` are:
-       *
-       * - `visible`: A boolean wait for element to be present in DOM and to be
-       *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-       *   properties. Defaults to `false`.
-       *
-       * - `hidden`: Wait for element to not be found in the DOM or to be hidden,
-       *   i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
-       *   `false`.
-       *
-       * - `timeout`: maximum time to wait for in milliseconds. Defaults to `30000`
-       *   (30 seconds). Pass `0` to disable timeout. The default value can be changed
-       *   by using the {@link Page.setDefaultTimeout} method.
-       *
-       * - `signal`: A signal object that allows you to cancel a waitForSelector call.
-       */
-      async waitForSelector(selector, options = {}) {
-        return await this.mainFrame().waitForSelector(selector, options);
-      }
-      /**
-       * Waits for the provided function, `pageFunction`, to return a truthy value when
-       * evaluated in the page's context.
-       *
-       * @example
-       * {@link Page.waitForFunction} can be used to observe a viewport size change:
-       *
-       * ```ts
-       * import puppeteer from 'puppeteer';
-       *
-       * const browser = await puppeteer.launch();
-       * const page = await browser.newPage();
-       * const watchDog = page.waitForFunction('window.innerWidth < 100');
-       * await page.setViewport({width: 50, height: 50});
-       * await watchDog;
-       * await browser.close();
-       * ```
-       *
-       * @example
-       * Arguments can be passed from Node.js to `pageFunction`:
-       *
-       * ```ts
-       * const selector = '.foo';
-       * await page.waitForFunction(
-       *   selector => !!document.querySelector(selector),
-       *   {},
-       *   selector,
-       * );
-       * ```
-       *
-       * @example
-       * The provided `pageFunction` can be asynchronous:
-       *
-       * ```ts
-       * const username = 'github-username';
-       * await page.waitForFunction(
-       *   async username => {
-       *     const githubResponse = await fetch(
-       *       `https://api.github.com/users/${username}`,
-       *     );
-       *     const githubUser = await githubResponse.json();
-       *     // show the avatar
-       *     const img = document.createElement('img');
-       *     img.src = githubUser.avatar_url;
-       *     // wait 3 seconds
-       *     await new Promise((resolve, reject) => setTimeout(resolve, 3000));
-       *     img.remove();
-       *   },
-       *   {},
-       *   username,
-       * );
-       * ```
-       *
-       * @param pageFunction - Function to be evaluated in browser context until it returns a
-       * truthy value.
-       * @param options - Options for configuring waiting behavior.
-       */
-      waitForFunction(pageFunction, options, ...args) {
-        return this.mainFrame().waitForFunction(pageFunction, options, ...args);
-      }
-      [_ref2]() {
-        return void this[asyncDisposeSymbol]().catch(error => {
-          this.logger?.(DEBUG_PREFIXES.error)?.(error);
+      if (options.path && environment.value.path) {
+        await environment.value.mkdir(environment.value.path.dirname(options.path), {
+          recursive: options.overwrite ?? true
         });
       }
-      async [asyncDisposeSymbol]() {
-        await this.close();
-        await super[asyncDisposeSymbol]();
+      const stream = options.path ? environment.value.createWriteStream(options.path, {
+        encoding: 'binary',
+        overwrite: options.overwrite
+      }) : undefined;
+      const recorder = new ScreenRecorder(this, width, height, {
+        ...options,
+        crop
+      }, this.logger);
+      try {
+        await this._startScreencast();
+      } catch (error) {
+        void recorder.stop();
+        throw error;
       }
-    }, (() => {
-      const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-      __esDecorate$4(_Page, null, _screenshot_decorators, {
-        kind: "method",
-        name: "screenshot",
-        static: false,
-        private: false,
-        access: {
-          has: obj => "screenshot" in obj,
-          get: obj => obj.screenshot
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      if (_metadata) Object.defineProperty(_Page, Symbol.metadata, {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-        value: _metadata
-      });
-    })(), _Page;
-    async function _getNativePixelDimensions() {
-      const env_1 = {
+      if (stream) {
+        recorder.pipe(stream);
+      }
+      return recorder;
+    }
+    /**
+     * Records this {@link Page | page} using the Chrome DevTools Protocol
+     * {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreenRecording | Page.startScreenRecording}
+     * API.
+     *
+     * Outputs mp4 video stream.
+     *
+     * @example
+     * Recording a {@link Page | page}:
+     *
+     * ```ts
+     * import puppeteer from 'puppeteer';
+     *
+     * // Launch a browser
+     * const browser = await puppeteer.launch();
+     *
+     * // Create a new page
+     * const page = await browser.newPage();
+     *
+     * // Go to your site.
+     * await page.goto('https://www.example.com');
+     *
+     * // Start recording.
+     * const recorder = await page.record({path: 'recording.mp4'});
+     *
+     * // Do something.
+     *
+     * // Stop recording.
+     * await recorder.stop();
+     *
+     * await browser.close();
+     * ```
+     *
+     * @param options - Configures recording behavior.
+     *
+     * @experimental
+     */
+    async record(options = {}) {
+      if (options.maxWidth !== undefined && options.maxWidth <= 0) {
+        throw new Error('`maxWidth` must be greater than 0.');
+      }
+      if (options.maxHeight !== undefined && options.maxHeight <= 0) {
+        throw new Error('`maxHeight` must be greater than 0.');
+      }
+      if (options.frameRate !== undefined && options.frameRate <= 0) {
+        throw new Error('`frameRate` must be greater than 0.');
+      }
+      if (options.fps !== undefined && options.fps <= 0) {
+        throw new Error('`fps` must be greater than 0.');
+      }
+      if (options.path && environment.value.path) {
+        await environment.value.mkdir(environment.value.path.dirname(options.path), {
+          recursive: options.overwrite ?? true
+        });
+      }
+      const stream = options.path ? environment.value.createWriteStream(options.path, {
+        encoding: 'binary',
+        overwrite: options.overwrite
+      }) : undefined;
+      const recording = this.createScreenRecording(options);
+      try {
+        await recording._start();
+      } catch (error) {
+        // Clean up the recording. Ignore errors from stop() so the original
+        // error from _start() is the one that propagates.
+        await recording.stop().catch(() => {});
+        throw error;
+      }
+      if (stream) {
+        recording.pipe(stream);
+      }
+      return recording;
+    }
+    /**
+     * @internal
+     */
+    async _startScreencast() {
+      var _this$screencastSessi;
+      _classPrivateFieldSet(_screencastSessionCount, this, (_this$screencastSessi = _classPrivateFieldGet(_screencastSessionCount, this), ++_this$screencastSessi));
+      if (!_classPrivateFieldGet(_startScreencastPromise, this)) {
+        const client = this.mainFrame().client;
+        const firstFrame = new Promise(resolve => {
+          return client.once('Page.screencastFrame', () => {
+            return resolve();
+          });
+        });
+        _classPrivateFieldSet(_startScreencastPromise, this, client.send('Page.startScreencast', {
+          format: 'png'
+        }).then(() => {
+          return firstFrame;
+        }));
+      }
+      await _classPrivateFieldGet(_startScreencastPromise, this);
+    }
+    /**
+     * @internal
+     */
+    async _stopScreencast() {
+      var _this$screencastSessi2;
+      _classPrivateFieldSet(_screencastSessionCount, this, (_this$screencastSessi2 = _classPrivateFieldGet(_screencastSessionCount, this), --_this$screencastSessi2));
+      if (!_classPrivateFieldGet(_startScreencastPromise, this)) {
+        return;
+      }
+      _classPrivateFieldSet(_startScreencastPromise, this, undefined);
+      if (_classPrivateFieldGet(_screencastSessionCount, this) === 0) {
+        await this.mainFrame().client.send('Page.stopScreencast');
+      }
+    }
+    async screenshot(userOptions = {}) {
+      const env_2 = {
         stack: [],
         error: void 0,
         hasError: false
       };
       try {
-        const viewport = this.viewport();
-        const stack = __addDisposableResource$7(env_1, new DisposableStack(), false);
-        if (viewport && viewport.deviceScaleFactor !== 0) {
-          await this.setViewport({
-            ...viewport,
-            deviceScaleFactor: 0
-          });
-          stack.defer(() => {
-            void this.setViewport(viewport).catch(error => {
-              this.logger?.(DEBUG_PREFIXES.error)?.(error);
-            });
-          });
+        const _guard = __addDisposableResource$8(env_2, await this.browserContext().startScreenshot(), false);
+        const options = {
+          ...userOptions,
+          clip: userOptions.clip ? {
+            ...userOptions.clip
+          } : undefined
+        };
+        if (options.type === undefined && options.path !== undefined) {
+          const filePath = options.path;
+          // Note we cannot use Node.js here due to browser compatibility.
+          const extension = filePath.slice(filePath.lastIndexOf('.') + 1).toLowerCase();
+          switch (extension) {
+            case 'png':
+              options.type = 'png';
+              break;
+            case 'jpeg':
+            case 'jpg':
+              options.type = 'jpeg';
+              break;
+            case 'webp':
+              options.type = 'webp';
+              break;
+          }
         }
-        return await this.mainFrame().isolatedRealm().evaluate(() => {
-          // Frames are whole pixels, so round off any floating-point error
-          // (e.g. 800 * 1.15 = 919.99...) that would make ffmpeg's pad filter
-          // one pixel smaller than the frames.
-          return [Math.round(window.visualViewport.width * window.devicePixelRatio), Math.round(window.visualViewport.height * window.devicePixelRatio), window.devicePixelRatio];
-        });
-      } catch (e_1) {
-        env_1.error = e_1;
-        env_1.hasError = true;
+        if (options.quality !== undefined) {
+          if (options.quality < 0 || options.quality > 100) {
+            throw new Error(`Expected 'quality' (${options.quality}) to be between 0 and 100, inclusive.`);
+          }
+          if (options.type === undefined || !['jpeg', 'webp'].includes(options.type)) {
+            throw new Error(`${options.type ?? 'png'} screenshots do not support 'quality'.`);
+          }
+        }
+        if (options.clip) {
+          if (options.clip.width <= 0) {
+            throw new Error("'width' in 'clip' must be positive.");
+          }
+          if (options.clip.height <= 0) {
+            throw new Error("'height' in 'clip' must be positive.");
+          }
+        }
+        setDefaultScreenshotOptions(options);
+        const stack = __addDisposableResource$8(env_2, new AsyncDisposableStack(), true);
+        if (options.clip) {
+          if (options.fullPage) {
+            throw new Error("'clip' and 'fullPage' are mutually exclusive");
+          }
+          options.clip = roundRectangle(normalizeRectangle(options.clip));
+        } else {
+          if (options.fullPage) {
+            // If `captureBeyondViewport` is `false`, then we set the viewport to
+            // capture the full page. Note this may be affected by on-page CSS and
+            // JavaScript.
+            if (!options.captureBeyondViewport) {
+              const scrollDimensions = await this.mainFrame().isolatedRealm().evaluate(() => {
+                const element = document.documentElement;
+                return {
+                  width: element.scrollWidth,
+                  height: element.scrollHeight
+                };
+              });
+              const viewport = this.viewport();
+              await this.setViewport({
+                ...viewport,
+                ...scrollDimensions
+              });
+              stack.defer(async () => {
+                await this.setViewport(viewport).catch(error => {
+                  this.logger?.(DEBUG_PREFIXES.error)?.(error);
+                });
+              });
+            }
+          } else {
+            options.captureBeyondViewport = false;
+          }
+        }
+        const data = await this._screenshot(options);
+        if (options.encoding === 'base64') {
+          return data;
+        }
+        const typedArray = stringToTypedArray(data, true);
+        await this._maybeWriteTypedArrayToFile(options.path, typedArray);
+        return typedArray;
+      } catch (e_2) {
+        env_2.error = e_2;
+        env_2.hasError = true;
       } finally {
-        __disposeResources$7(env_1);
+        const result_1 = __disposeResources$8(env_2);
+        if (result_1) await result_1;
       }
     }
-  })();
+    /**
+     * The page's title
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Frame.title | page.mainFrame().title()}.
+     */
+    async title() {
+      return await this.mainFrame().title();
+    }
+    /**
+     * This method fetches an element with `selector`, scrolls it into view if
+     * needed, and then uses {@link Page.mouse} to click in the center of the
+     * element. If there's no element matching `selector`, the method throws an
+     * error.
+     *
+     * @remarks
+     *
+     * Bear in mind that if `click()` triggers a navigation event and
+     * there's a separate `page.waitForNavigation()` promise to be resolved, you
+     * may end up with a race condition that yields unexpected results. The
+     * correct pattern for click and wait for navigation is the following:
+     *
+     * ```ts
+     * const [response] = await Promise.all([
+     *   page.waitForNavigation(waitOptions),
+     *   page.click(selector, clickOptions),
+     * ]);
+     * ```
+     *
+     * Shortcut for {@link Frame.click | page.mainFrame().click(selector[, options]) }.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are
+     * multiple elements satisfying the `selector`, the first will be clicked
+     * @param options - `Object`
+     * @returns Promise which resolves when the element matching `selector` is
+     * successfully clicked. The Promise will be rejected if there is no element
+     * matching `selector`.
+     */
+    click(selector, options) {
+      return this.mainFrame().click(selector, options);
+    }
+    /**
+     * This method fetches an element with `selector` and focuses it. If
+     * there's no element matching `selector`, the method throws an error.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     * If there are multiple elements satisfying the selector, the first
+     * will be focused.
+     * @returns Promise which resolves when the element matching selector
+     * is successfully focused. The promise will be rejected if there is
+     * no element matching selector.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link Frame.focus | page.mainFrame().focus(selector)}.
+     */
+    focus(selector) {
+      return this.mainFrame().focus(selector);
+    }
+    /**
+     * This method fetches an element with `selector`, scrolls it into view if
+     * needed, and then uses {@link Page.mouse}
+     * to hover over the center of the element.
+     * If there's no element matching `selector`, the method throws an error.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are
+     * multiple elements satisfying the `selector`, the first will be hovered.
+     * @returns Promise which resolves when the element matching `selector` is
+     * successfully hovered. Promise gets rejected if there's no element matching
+     * `selector`.
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Page.hover | page.mainFrame().hover(selector)}.
+     */
+    hover(selector) {
+      return this.mainFrame().hover(selector);
+    }
+    /**
+     * Triggers a `change` and `input` event once all the provided options have been
+     * selected. If there's no `<select>` element matching `selector`, the method
+     * throws an error.
+     *
+     * @example
+     *
+     * ```ts
+     * page.select('select#colors', 'blue'); // single selection
+     * page.select('select#colors', 'red', 'green', 'blue'); // multiple selections
+     * ```
+     *
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     * @param values - Values of options to select. If the `<select>` has the
+     * `multiple` attribute, all values are considered, otherwise only the first one
+     * is taken into account.
+     * @returns
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Frame.select | page.mainFrame().select()}
+     */
+    select(selector, ...values) {
+      return this.mainFrame().select(selector, ...values);
+    }
+    /**
+     * This method fetches an element with `selector`, scrolls it into view if
+     * needed, and then uses {@link Page.touchscreen}
+     * to tap in the center of the element.
+     * If there's no element matching `selector`, the method throws an error.
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}. If there are multiple elements satisfying the
+     * selector, the first will be tapped.
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Frame.tap | page.mainFrame().tap(selector)}.
+     */
+    tap(selector) {
+      return this.mainFrame().tap(selector);
+    }
+    /**
+     * Sends a `keydown`, `keypress/input`, and `keyup` event for each character
+     * in the text.
+     *
+     * To press a special key, like `Control` or `ArrowDown`, use {@link Keyboard.press}.
+     * @example
+     *
+     * ```ts
+     * await page.type('#mytextarea', 'Hello');
+     * // Types instantly
+     * await page.type('#mytextarea', 'World', {delay: 100});
+     * // Types slower, like a user
+     * ```
+     *
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     * @param text - A text to type into a focused element.
+     * @param options - have property `delay` which is the Time to wait between
+     * key presses in milliseconds. Defaults to `0`.
+     * @returns
+     */
+    type(selector, text, options) {
+      return this.mainFrame().type(selector, text, options);
+    }
+    /**
+     * Wait for the `selector` to appear in page. If at the moment of calling the
+     * method the `selector` already exists, the method will return immediately. If
+     * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
+     * function will throw.
+     *
+     * @example
+     * This method works across navigations:
+     *
+     * ```ts
+     * import puppeteer from 'puppeteer';
+     *
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * let currentURL;
+     * page
+     *   .waitForSelector('img')
+     *   .then(() => console.log('First URL with image: ' + currentURL));
+     * for (currentURL of [
+     *   'https://example.com',
+     *   'https://google.com',
+     *   'https://bbc.com',
+     * ]) {
+     *   await page.goto(currentURL);
+     * }
+     * await browser.close();
+     * ```
+     *
+     * @param selector -
+     * {@link https://pptr.dev/guides/page-interactions#selectors | selector}
+     * to query the page for.
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
+     * can be passed as-is and a
+     * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
+     * allows querying by
+     * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
+     * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#xpath-selectors--p-xpath | xpath}
+     * and
+     * {@link https://pptr.dev/guides/page-interactions#querying-elements-in-shadow-dom | combining these queries across shadow roots}.
+     * Alternatively, you can specify the selector type using a
+     * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves when element specified by selector string
+     * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
+     * selector is not found in DOM.
+     *
+     * @remarks
+     * The optional Parameter in Arguments `options` are:
+     *
+     * - `visible`: A boolean wait for element to be present in DOM and to be
+     *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     *   properties. Defaults to `false`.
+     *
+     * - `hidden`: Wait for element to not be found in the DOM or to be hidden,
+     *   i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
+     *   `false`.
+     *
+     * - `timeout`: maximum time to wait for in milliseconds. Defaults to `30000`
+     *   (30 seconds). Pass `0` to disable timeout. The default value can be changed
+     *   by using the {@link Page.setDefaultTimeout} method.
+     *
+     * - `signal`: A signal object that allows you to cancel a waitForSelector call.
+     */
+    async waitForSelector(selector, options = {}) {
+      return await this.mainFrame().waitForSelector(selector, options);
+    }
+    /**
+     * Waits for the provided function, `pageFunction`, to return a truthy value when
+     * evaluated in the page's context.
+     *
+     * @example
+     * {@link Page.waitForFunction} can be used to observe a viewport size change:
+     *
+     * ```ts
+     * import puppeteer from 'puppeteer';
+     *
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * const watchDog = page.waitForFunction('window.innerWidth < 100');
+     * await page.setViewport({width: 50, height: 50});
+     * await watchDog;
+     * await browser.close();
+     * ```
+     *
+     * @example
+     * Arguments can be passed from Node.js to `pageFunction`:
+     *
+     * ```ts
+     * const selector = '.foo';
+     * await page.waitForFunction(
+     *   selector => !!document.querySelector(selector),
+     *   {},
+     *   selector,
+     * );
+     * ```
+     *
+     * @example
+     * The provided `pageFunction` can be asynchronous:
+     *
+     * ```ts
+     * const username = 'github-username';
+     * await page.waitForFunction(
+     *   async username => {
+     *     const githubResponse = await fetch(
+     *       `https://api.github.com/users/${username}`,
+     *     );
+     *     const githubUser = await githubResponse.json();
+     *     // show the avatar
+     *     const img = document.createElement('img');
+     *     img.src = githubUser.avatar_url;
+     *     // wait 3 seconds
+     *     await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+     *     img.remove();
+     *   },
+     *   {},
+     *   username,
+     * );
+     * ```
+     *
+     * @param pageFunction - Function to be evaluated in browser context until it returns a
+     * truthy value.
+     * @param options - Options for configuring waiting behavior.
+     */
+    waitForFunction(pageFunction, options, ...args) {
+      return this.mainFrame().waitForFunction(pageFunction, options, ...args);
+    }
+    [disposeSymbol]() {
+      return void this[asyncDisposeSymbol]().catch(error => {
+        this.logger?.(DEBUG_PREFIXES.error)?.(error);
+      });
+    }
+    async [asyncDisposeSymbol]() {
+      await this.close();
+      await super[asyncDisposeSymbol]();
+    }
+  }
   /**
    * @internal
    */
+  async function _getNativePixelDimensions() {
+    const env_1 = {
+      stack: [],
+      error: void 0,
+      hasError: false
+    };
+    try {
+      const viewport = this.viewport();
+      const stack = __addDisposableResource$8(env_1, new DisposableStack(), false);
+      if (viewport && viewport.deviceScaleFactor !== 0) {
+        await this.setViewport({
+          ...viewport,
+          deviceScaleFactor: 0
+        });
+        stack.defer(() => {
+          void this.setViewport(viewport).catch(error => {
+            this.logger?.(DEBUG_PREFIXES.error)?.(error);
+          });
+        });
+      }
+      return await this.mainFrame().isolatedRealm().evaluate(() => {
+        // Frames are whole pixels, so round off any floating-point error
+        // (e.g. 800 * 1.15 = 919.99...) that would make ffmpeg's pad filter
+        // one pixel smaller than the frames.
+        return [Math.round(window.visualViewport.width * window.devicePixelRatio), Math.round(window.visualViewport.height * window.devicePixelRatio), window.devicePixelRatio];
+      });
+    } catch (e_1) {
+      env_1.error = e_1;
+      env_1.hasError = true;
+    } finally {
+      __disposeResources$8(env_1);
+    }
+  }
   const supportedMetrics = new Set(['Timestamp', 'Documents', 'Frames', 'JSEventListeners', 'Nodes', 'LayoutCount', 'RecalcStyleCount', 'LayoutDuration', 'RecalcStyleDuration', 'ScriptDuration', 'TaskDuration', 'JSHeapUsedSize', 'JSHeapTotalSize', 'DomContentLoaded', 'NavigationStart']);
   /** @see https://w3c.github.io/webdriver-bidi/#normalize-rect */
   function normalizeRectangle(clip) {
@@ -13774,7 +13791,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldGet(_world, this).taskManager.delete(this);
       _classPrivateFieldGet(_signal, this)?.removeEventListener('abort', _classPrivateFieldGet(_onAbortSignal, this));
       clearTimeout(_classPrivateFieldGet(_timeout, this));
-      if (error && !_classPrivateFieldGet(_result, this).finished()) {
+      if (error !== undefined && !_classPrivateFieldGet(_result, this).finished()) {
         _classPrivateFieldGet(_result, this).reject(error);
       }
       if (_classPrivateFieldGet(_poller, this)) {
@@ -14287,7 +14304,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2018 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$6 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -14320,7 +14337,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$6 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$7 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -14449,49 +14466,51 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         backendNodeId = node.backendNodeId;
       }
       const defaultRoot = AXNode.createTree(_classPrivateFieldGet(_realm, this), nodes);
-      const populateIframes = async root => {
-        if (root.payload.role?.value === 'Iframe') {
-          const env_1 = {
-            stack: [],
-            error: void 0,
-            hasError: false
-          };
+      const populateIframes = async node => {
+        if (node.payload.role?.value === 'Iframe') {
+          if (!node.payload.backendDOMNodeId) {
+            return;
+          }
           try {
-            if (!root.payload.backendDOMNodeId) {
-              return;
-            }
-            const handle = __addDisposableResource$6(env_1, await _classPrivateFieldGet(_realm, this).adoptBackendNode(root.payload.backendDOMNodeId), false);
-            if (!handle || !('contentFrame' in handle)) {
-              return;
-            }
-            const frame = await handle.contentFrame();
-            if (!frame) {
-              return;
-            }
+            const env_1 = {
+              stack: [],
+              error: void 0,
+              hasError: false
+            };
             try {
-              const iframeSnapshot = await frame.accessibility.snapshot(options);
-              root.iframeSnapshot = iframeSnapshot ?? undefined;
-            } catch (error) {
-              // Frames can get detached at any time resulting in errors.
-              _classPrivateFieldGet(_logger6, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+              const handle = __addDisposableResource$7(env_1, await _classPrivateFieldGet(_realm, this).adoptBackendNode(node.payload.backendDOMNodeId), false);
+              if (!handle || !('contentFrame' in handle)) {
+                return;
+              }
+              const frame = await handle.contentFrame();
+              if (!frame) {
+                return;
+              }
+              // Scope `root` to the originating frame; child frames snapshot
+              // their own full subtrees.
+              const iframeSnapshot = await frame.accessibility.snapshot({
+                interestingOnly,
+                includeIframes
+              });
+              node.iframeSnapshot = iframeSnapshot ?? undefined;
+            } catch (e_1) {
+              env_1.error = e_1;
+              env_1.hasError = true;
+            } finally {
+              __disposeResources$7(env_1);
             }
-          } catch (e_1) {
-            env_1.error = e_1;
-            env_1.hasError = true;
-          } finally {
-            __disposeResources$6(env_1);
+          } catch (error) {
+            // Frames can get detached at any time resulting in errors.
+            _classPrivateFieldGet(_logger6, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
           }
         }
-        await Promise.all(root.children.map(child => {
+        await Promise.all(node.children.map(child => {
           return populateIframes(child);
         }));
       };
       let needle = defaultRoot;
       if (!defaultRoot) {
         return null;
-      }
-      if (includeIframes) {
-        await populateIframes(defaultRoot);
       }
       if (backendNodeId) {
         needle = defaultRoot.find(node => {
@@ -14500,6 +14519,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       if (!needle) {
         return null;
+      }
+      if (includeIframes) {
+        await populateIframes(needle);
       }
       if (!interestingOnly) {
         return this.serializeTree(needle)[0] ?? null;
@@ -14762,7 +14784,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             if (_classPrivateFieldGet(_realm2, this).environment._loaderId !== _classPrivateFieldGet(_loaderId, this)) {
               return null;
             }
-            const handle = __addDisposableResource$6(env_2, await _classPrivateFieldGet(_realm2, this).adoptBackendNode(this.payload.backendDOMNodeId), false);
+            const handle = __addDisposableResource$7(env_2, await _classPrivateFieldGet(_realm2, this).adoptBackendNode(this.payload.backendDOMNodeId), false);
             // Since Text nodes are not elements, we want to
             // return a handle to the parent element for them.
             return await handle.evaluateHandle(node => {
@@ -14777,7 +14799,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             env_2.error = e_2;
             env_2.hasError = true;
           } finally {
-            __disposeResources$6(env_2);
+            __disposeResources$7(env_2);
           }
         },
         backendNodeId: this.payload.backendDOMNodeId,
@@ -15457,7 +15479,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         return method;
     }
   }
-  var __addDisposableResource$5 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$6 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -15490,7 +15512,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$5 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$6 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -15566,7 +15588,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         hasError: false
       };
       try {
-        const stack = __addDisposableResource$5(env_1, new DisposableStack(), false);
+        const stack = __addDisposableResource$6(env_1, new DisposableStack(), false);
         const cdpName = CDP_BINDING_PREFIX + _classPrivateFieldGet(_name4, this);
         try {
           if (!isTrivial) {
@@ -15577,7 +15599,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             };
             try {
               // Getting non-trivial arguments.
-              const handles = __addDisposableResource$5(env_2, await context.evaluateHandle((name, seq) => {
+              const handles = __addDisposableResource$6(env_2, await context.evaluateHandle((name, seq) => {
                 // @ts-expect-error Code is evaluated in a different context.
                 return globalThis[name].args.get(seq);
               }, cdpName, id), false);
@@ -15598,7 +15620,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
               env_2.error = e_1;
               env_2.hasError = true;
             } finally {
-              __disposeResources$5(env_2);
+              __disposeResources$6(env_2);
             }
           }
           const result = await _classPrivateFieldGet(_fn2, this).call(this, ...args);
@@ -15638,7 +15660,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         env_1.error = e_2;
         env_1.hasError = true;
       } finally {
-        __disposeResources$5(env_1);
+        __disposeResources$6(env_1);
       }
     }
   }
@@ -16089,7 +16111,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _timeout2, void 0);
       _classPrivateFieldInitSpec(this, _sessions, new Map());
       _classPrivateFieldInitSpec(this, _closed, false);
-      _classPrivateFieldInitSpec(this, _manuallyAttached, new Set());
+      /**
+       * Number of in-flight manual attaches per target. A target can have several
+       * at once (e.g. concurrent `page.createCDPSession()` calls), and it must stay
+       * marked until the last one resolves, or a later `Target.attachedToTarget`
+       * is mistaken for the target's auto-attached session.
+       */
+      _classPrivateFieldInitSpec(this, _manuallyAttached, new Map());
       _classPrivateFieldInitSpec(this, _rejectEmulateNetworkConditionsCalls, false);
       _classPrivateFieldInitSpec(this, _callbacks3, void 0);
       _classPrivateFieldInitSpec(this, _rawErrors2, false);
@@ -16275,16 +16303,30 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      * @internal
      */
     async _createSession(targetInfo, isAutoAttachEmulated = true) {
-      if (!isAutoAttachEmulated) {
-        _classPrivateFieldGet(_manuallyAttached, this).add(targetInfo.targetId);
-      }
       const {
-        sessionId
-      } = await this.send('Target.attachToTarget', {
-        targetId: targetInfo.targetId,
-        flatten: true
-      });
-      _classPrivateFieldGet(_manuallyAttached, this).delete(targetInfo.targetId);
+        targetId
+      } = targetInfo;
+      if (!isAutoAttachEmulated) {
+        _classPrivateFieldGet(_manuallyAttached, this).set(targetId, (_classPrivateFieldGet(_manuallyAttached, this).get(targetId) ?? 0) + 1);
+      }
+      let sessionId;
+      try {
+        ({
+          sessionId
+        } = await this.send('Target.attachToTarget', {
+          targetId,
+          flatten: true
+        }));
+      } finally {
+        if (!isAutoAttachEmulated) {
+          const pending = (_classPrivateFieldGet(_manuallyAttached, this).get(targetId) ?? 1) - 1;
+          if (pending > 0) {
+            _classPrivateFieldGet(_manuallyAttached, this).set(targetId, pending);
+          } else {
+            _classPrivateFieldGet(_manuallyAttached, this).delete(targetId);
+          }
+        }
+      }
       const session = _classPrivateFieldGet(_sessions, this).get(sessionId);
       if (!session) {
         throw new Error('CDPSession creation failed.');
@@ -16762,14 +16804,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldGet(_client4, this).off('Page.javascriptDialogClosed', _classPrivateFieldGet(_onDialogClosed, this));
     }
   }
-  var __runInitializers$3 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+  var __runInitializers$4 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
       value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     }
     return useValue ? value : void 0;
   };
-  var __esDecorate$3 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+  var __esDecorate$4 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
       if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
       return f;
@@ -16844,7 +16886,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  let EmulationManager = ((_EmulationManager, _client5, _emulatingMobile, _hasTouch, _states, _viewportState, _idleOverridesState, _timezoneState, _localeState, _visionDeficiencyState, _cpuThrottlingState, _mediaFeaturesState, _mediaTypeState, _geoLocationState, _defaultBackgroundColorState, _javascriptEnabledState, _focusState, _secondaryClients, _logger10, _EmulationManager_brand, _supportedMediaFeatures) => {
+  let EmulationManager = ((_EmulationManager, _client5, _emulatingMobile, _hasTouch, _states, _viewportState, _idleOverridesState, _timezoneState, _localeState, _visionDeficiencyState, _cpuThrottlingState, _mediaState, _geoLocationState, _defaultBackgroundColorState, _javascriptEnabledState, _focusState, _secondaryClients, _logger10, _EmulationManager_brand, _supportedMediaFeatures) => {
     let _instanceExtraInitializers = [];
     let _private_applyViewport_decorators;
     let _private_applyViewport_descriptor;
@@ -16858,10 +16900,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     let _private_emulateVisionDeficiency_descriptor;
     let _private_emulateCpuThrottling_decorators;
     let _private_emulateCpuThrottling_descriptor;
-    let _private_emulateMediaFeatures_decorators;
-    let _private_emulateMediaFeatures_descriptor;
-    let _private_emulateMediaType_decorators;
-    let _private_emulateMediaType_descriptor;
+    let _private_emulateMedia_decorators;
+    let _private_emulateMedia_descriptor;
     let _private_setGeolocation_decorators;
     let _private_setGeolocation_descriptor;
     let _private_setDefaultBackgroundColor_decorators;
@@ -16870,10 +16910,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     let _private_setJavaScriptEnabled_descriptor;
     let _private_emulateFocus_decorators;
     let _private_emulateFocus_descriptor;
-    return _client5 = /*#__PURE__*/new WeakMap(), _emulatingMobile = /*#__PURE__*/new WeakMap(), _hasTouch = /*#__PURE__*/new WeakMap(), _states = /*#__PURE__*/new WeakMap(), _viewportState = /*#__PURE__*/new WeakMap(), _idleOverridesState = /*#__PURE__*/new WeakMap(), _timezoneState = /*#__PURE__*/new WeakMap(), _localeState = /*#__PURE__*/new WeakMap(), _visionDeficiencyState = /*#__PURE__*/new WeakMap(), _cpuThrottlingState = /*#__PURE__*/new WeakMap(), _mediaFeaturesState = /*#__PURE__*/new WeakMap(), _mediaTypeState = /*#__PURE__*/new WeakMap(), _geoLocationState = /*#__PURE__*/new WeakMap(), _defaultBackgroundColorState = /*#__PURE__*/new WeakMap(), _javascriptEnabledState = /*#__PURE__*/new WeakMap(), _focusState = /*#__PURE__*/new WeakMap(), _secondaryClients = /*#__PURE__*/new WeakMap(), _logger10 = /*#__PURE__*/new WeakMap(), _EmulationManager_brand = /*#__PURE__*/new WeakSet(), _EmulationManager = class EmulationManager {
+    return _client5 = /*#__PURE__*/new WeakMap(), _emulatingMobile = /*#__PURE__*/new WeakMap(), _hasTouch = /*#__PURE__*/new WeakMap(), _states = /*#__PURE__*/new WeakMap(), _viewportState = /*#__PURE__*/new WeakMap(), _idleOverridesState = /*#__PURE__*/new WeakMap(), _timezoneState = /*#__PURE__*/new WeakMap(), _localeState = /*#__PURE__*/new WeakMap(), _visionDeficiencyState = /*#__PURE__*/new WeakMap(), _cpuThrottlingState = /*#__PURE__*/new WeakMap(), _mediaState = /*#__PURE__*/new WeakMap(), _geoLocationState = /*#__PURE__*/new WeakMap(), _defaultBackgroundColorState = /*#__PURE__*/new WeakMap(), _javascriptEnabledState = /*#__PURE__*/new WeakMap(), _focusState = /*#__PURE__*/new WeakMap(), _secondaryClients = /*#__PURE__*/new WeakMap(), _logger10 = /*#__PURE__*/new WeakMap(), _EmulationManager_brand = /*#__PURE__*/new WeakSet(), _EmulationManager = class EmulationManager {
       constructor(client, logger) {
         _classPrivateMethodInitSpec(this, _EmulationManager_brand);
-        _classPrivateFieldInitSpec(this, _client5, __runInitializers$3(this, _instanceExtraInitializers));
+        _classPrivateFieldInitSpec(this, _client5, __runInitializers$4(this, _instanceExtraInitializers));
         _classPrivateFieldInitSpec(this, _emulatingMobile, false);
         _classPrivateFieldInitSpec(this, _hasTouch, false);
         _classPrivateFieldInitSpec(this, _states, []);
@@ -16895,12 +16935,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         _classPrivateFieldInitSpec(this, _cpuThrottlingState, new EmulatedState({
           active: false
         }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_emulateCpuThrottling)));
-        _classPrivateFieldInitSpec(this, _mediaFeaturesState, new EmulatedState({
+        _classPrivateFieldInitSpec(this, _mediaState, new EmulatedState({
           active: false
-        }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_emulateMediaFeatures)));
-        _classPrivateFieldInitSpec(this, _mediaTypeState, new EmulatedState({
-          active: false
-        }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_emulateMediaType)));
+        }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_emulateMedia)));
         _classPrivateFieldInitSpec(this, _geoLocationState, new EmulatedState({
           active: false
         }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_setGeolocation)));
@@ -17004,14 +17041,16 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             assert(_assertClassBrand(_EmulationManager, EmulationManager, _supportedMediaFeatures)._.has(name), 'Unsupported media feature: ' + name);
           }
         }
-        await _classPrivateFieldGet(_mediaFeaturesState, this).setState({
+        await _classPrivateFieldGet(_mediaState, this).setState({
+          ..._classPrivateFieldGet(_mediaState, this).state,
           active: true,
           mediaFeatures: features
         });
       }
       async emulateMediaType(type) {
         assert(type === 'screen' || type === 'print' || (type ?? undefined) === undefined, 'Unsupported media type: ' + type);
-        await _classPrivateFieldGet(_mediaTypeState, this).setState({
+        await _classPrivateFieldGet(_mediaState, this).setState({
+          ..._classPrivateFieldGet(_mediaState, this).state,
           type,
           active: true
         });
@@ -17089,13 +17128,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _private_emulateLocale_decorators = [invokeAtMostOnceForArguments];
       _private_emulateVisionDeficiency_decorators = [invokeAtMostOnceForArguments];
       _private_emulateCpuThrottling_decorators = [invokeAtMostOnceForArguments];
-      _private_emulateMediaFeatures_decorators = [invokeAtMostOnceForArguments];
-      _private_emulateMediaType_decorators = [invokeAtMostOnceForArguments];
+      _private_emulateMedia_decorators = [invokeAtMostOnceForArguments];
       _private_setGeolocation_decorators = [invokeAtMostOnceForArguments];
       _private_setDefaultBackgroundColor_decorators = [invokeAtMostOnceForArguments];
       _private_setJavaScriptEnabled_decorators = [invokeAtMostOnceForArguments];
       _private_emulateFocus_decorators = [invokeAtMostOnceForArguments];
-      __esDecorate$3(_EmulationManager, _private_applyViewport_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_applyViewport_descriptor = {
         value: __setFunctionName(async function (client, viewportState) {
           if (!viewportState.viewport) {
             await Promise.all([client.send('Emulation.clearDeviceMetricsOverride'), client.send('Emulation.setTouchEmulationEnabled', {
@@ -17147,7 +17185,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_emulateIdleState_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_emulateIdleState_descriptor = {
         value: __setFunctionName(async function (client, idleStateState) {
           if (!idleStateState.active) {
             return;
@@ -17172,7 +17210,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_emulateTimezone_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_emulateTimezone_descriptor = {
         value: __setFunctionName(async function (client, timezoneState) {
           if (!timezoneState.active) {
             return;
@@ -17199,7 +17237,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_emulateLocale_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_emulateLocale_descriptor = {
         value: __setFunctionName(async function (client, localeState) {
           if (!localeState.active) {
             return;
@@ -17219,7 +17257,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_emulateVisionDeficiency_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_emulateVisionDeficiency_descriptor = {
         value: __setFunctionName(async function (client, visionDeficiency) {
           if (!visionDeficiency.active) {
             return;
@@ -17239,7 +17277,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_emulateCpuThrottling_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_emulateCpuThrottling_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -17259,47 +17297,30 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_emulateMediaFeatures_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_emulateMedia_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
           }
+          // `Emulation.setEmulatedMedia` resets the media type or the features
+          // when they are omitted, so always send both.
           await client.send('Emulation.setEmulatedMedia', {
+            media: state.type || '',
             features: state.mediaFeatures
           });
-        }, "#emulateMediaFeatures")
-      }, _private_emulateMediaFeatures_decorators, {
+        }, "#emulateMedia")
+      }, _private_emulateMedia_decorators, {
         kind: "method",
-        name: "#emulateMediaFeatures",
+        name: "#emulateMedia",
         static: false,
         private: true,
         access: {
           has: obj => _EmulationManager_brand.has(_checkInRHS(obj)),
-          get: obj => _classPrivateGetter(_EmulationManager_brand, obj, _get_emulateMediaFeatures)
+          get: obj => _classPrivateGetter(_EmulationManager_brand, obj, _get_emulateMedia)
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_emulateMediaType_descriptor = {
-        value: __setFunctionName(async function (client, state) {
-          if (!state.active) {
-            return;
-          }
-          await client.send('Emulation.setEmulatedMedia', {
-            media: state.type || ''
-          });
-        }, "#emulateMediaType")
-      }, _private_emulateMediaType_decorators, {
-        kind: "method",
-        name: "#emulateMediaType",
-        static: false,
-        private: true,
-        access: {
-          has: obj => _EmulationManager_brand.has(_checkInRHS(obj)),
-          get: obj => _classPrivateGetter(_EmulationManager_brand, obj, _get_emulateMediaType)
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_setGeolocation_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_setGeolocation_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -17325,7 +17346,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_setDefaultBackgroundColor_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_setDefaultBackgroundColor_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -17345,7 +17366,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_setJavaScriptEnabled_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_setJavaScriptEnabled_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -17365,7 +17386,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$3(_EmulationManager, _private_emulateFocus_descriptor = {
+      __esDecorate$4(_EmulationManager, _private_emulateFocus_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -17412,22 +17433,19 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     function _get_emulateCpuThrottling(_this8) {
       return _private_emulateCpuThrottling_descriptor.value;
     }
-    function _get_emulateMediaFeatures(_this9) {
-      return _private_emulateMediaFeatures_descriptor.value;
+    function _get_emulateMedia(_this9) {
+      return _private_emulateMedia_descriptor.value;
     }
-    function _get_emulateMediaType(_this0) {
-      return _private_emulateMediaType_descriptor.value;
-    }
-    function _get_setGeolocation(_this1) {
+    function _get_setGeolocation(_this0) {
       return _private_setGeolocation_descriptor.value;
     }
-    function _get_setDefaultBackgroundColor(_this10) {
+    function _get_setDefaultBackgroundColor(_this1) {
       return _private_setDefaultBackgroundColor_descriptor.value;
     }
-    function _get_setJavaScriptEnabled(_this11) {
+    function _get_setJavaScriptEnabled(_this10) {
       return _private_setJavaScriptEnabled_descriptor.value;
     }
-    function _get_emulateFocus(_this12) {
+    function _get_emulateFocus(_this11) {
       return _private_emulateFocus_descriptor.value;
     }
   })();
@@ -17462,89 +17480,156 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2019 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
+  var __runInitializers$3 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+      value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+  };
+  var __esDecorate$3 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) {
+      if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
+      return f;
+    }
+    var kind = contextIn.kind,
+      key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _,
+      done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+      var context = {};
+      for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+      for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+      context.addInitializer = function (f) {
+        if (done) throw new TypeError("Cannot add initializers after decoration has completed");
+        extraInitializers.push(accept(f || null));
+      };
+      var result = (0, decorators[i])(kind === "accessor" ? {
+        get: descriptor.get,
+        set: descriptor.set
+      } : descriptor[key], context);
+      if (kind === "accessor") {
+        if (result === void 0) continue;
+        if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+        if (_ = accept(result.get)) descriptor.get = _;
+        if (_ = accept(result.set)) descriptor.set = _;
+        if (_ = accept(result.init)) initializers.unshift(_);
+      } else if (_ = accept(result)) {
+        if (kind === "field") initializers.unshift(_);else descriptor[key] = _;
+      }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+  };
   /**
    * @internal
    */
-  var _disposed4 = /*#__PURE__*/new WeakMap();
-  var _remoteObject = /*#__PURE__*/new WeakMap();
-  var _world2 = /*#__PURE__*/new WeakMap();
-  var _logger11 = /*#__PURE__*/new WeakMap();
-  class CdpJSHandle extends JSHandle {
-    constructor(world, remoteObject, logger) {
-      super(logger);
-      _classPrivateFieldInitSpec(this, _disposed4, false);
-      _classPrivateFieldInitSpec(this, _remoteObject, void 0);
-      _classPrivateFieldInitSpec(this, _world2, void 0);
-      _classPrivateFieldInitSpec(this, _logger11, void 0);
-      _classPrivateFieldSet(_world2, this, world);
-      _classPrivateFieldSet(_remoteObject, this, remoteObject);
-      _classPrivateFieldSet(_logger11, this, logger);
-    }
-    get disposed() {
-      return _classPrivateFieldGet(_disposed4, this);
-    }
-    get realm() {
-      return _classPrivateFieldGet(_world2, this);
-    }
-    get client() {
-      return this.realm.environment.client;
-    }
-    async jsonValue() {
-      if (!_classPrivateFieldGet(_remoteObject, this).objectId) {
-        return valueFromPrimitiveRemoteObject(_classPrivateFieldGet(_remoteObject, this));
+  let CdpJSHandle = ((_CdpJSHandle, _disposed4, _remoteObject, _world2, _logger11) => {
+    let _classSuper = JSHandle;
+    let _instanceExtraInitializers = [];
+    let _getProperties_decorators;
+    return _disposed4 = /*#__PURE__*/new WeakMap(), _remoteObject = /*#__PURE__*/new WeakMap(), _world2 = /*#__PURE__*/new WeakMap(), _logger11 = /*#__PURE__*/new WeakMap(), _CdpJSHandle = class CdpJSHandle extends _classSuper {
+      constructor(world, remoteObject, logger) {
+        super(logger);
+        _classPrivateFieldInitSpec(this, _disposed4, (__runInitializers$3(this, _instanceExtraInitializers), false));
+        _classPrivateFieldInitSpec(this, _remoteObject, void 0);
+        _classPrivateFieldInitSpec(this, _world2, void 0);
+        _classPrivateFieldInitSpec(this, _logger11, void 0);
+        _classPrivateFieldSet(_world2, this, world);
+        _classPrivateFieldSet(_remoteObject, this, remoteObject);
+        _classPrivateFieldSet(_logger11, this, logger);
       }
-      const value = await this.evaluate(object => {
-        return object;
-      });
-      if (value === undefined) {
-        throw new Error('Could not serialize referenced object');
+      get disposed() {
+        return _classPrivateFieldGet(_disposed4, this);
       }
-      return value;
-    }
-    /**
-     * Either `null` or the handle itself if the handle is an
-     * instance of {@link ElementHandle}.
-     */
-    asElement() {
-      return null;
-    }
-    async dispose() {
-      if (_classPrivateFieldGet(_disposed4, this)) {
-        return;
+      get realm() {
+        return _classPrivateFieldGet(_world2, this);
       }
-      _classPrivateFieldSet(_disposed4, this, true);
-      await releaseObject(this.client, _classPrivateFieldGet(_remoteObject, this), _classPrivateFieldGet(_logger11, this));
-    }
-    toString() {
-      if (!_classPrivateFieldGet(_remoteObject, this).objectId) {
-        return 'JSHandle:' + valueFromPrimitiveRemoteObject(_classPrivateFieldGet(_remoteObject, this));
+      get client() {
+        return this.realm.environment.client;
       }
-      const type = _classPrivateFieldGet(_remoteObject, this).subtype || _classPrivateFieldGet(_remoteObject, this).type;
-      return 'JSHandle@' + type;
-    }
-    get id() {
-      return _classPrivateFieldGet(_remoteObject, this).objectId;
-    }
-    remoteObject() {
-      return _classPrivateFieldGet(_remoteObject, this);
-    }
-    async getProperties() {
-      // We use Runtime.getProperties rather than iterative version for
-      // improved performance as it allows getting everything at once.
-      const response = await this.client.send('Runtime.getProperties', {
-        objectId: _classPrivateFieldGet(_remoteObject, this).objectId,
-        ownProperties: true
-      });
-      const result = new Map();
-      for (const property of response.result) {
-        if (!property.enumerable || !property.value) {
-          continue;
+      async jsonValue() {
+        if (!_classPrivateFieldGet(_remoteObject, this).objectId) {
+          return valueFromPrimitiveRemoteObject(_classPrivateFieldGet(_remoteObject, this));
         }
-        result.set(property.name, _classPrivateFieldGet(_world2, this).createCdpHandle(property.value));
+        const value = await this.evaluate(object => {
+          return object;
+        });
+        if (value === undefined) {
+          throw new Error('Could not serialize referenced object');
+        }
+        return value;
       }
-      return result;
-    }
-  }
+      /**
+       * Either `null` or the handle itself if the handle is an
+       * instance of {@link ElementHandle}.
+       */
+      asElement() {
+        return null;
+      }
+      async dispose() {
+        if (_classPrivateFieldGet(_disposed4, this)) {
+          return;
+        }
+        _classPrivateFieldSet(_disposed4, this, true);
+        await releaseObject(this.client, _classPrivateFieldGet(_remoteObject, this), _classPrivateFieldGet(_logger11, this));
+      }
+      toString() {
+        if (!_classPrivateFieldGet(_remoteObject, this).objectId) {
+          return 'JSHandle:' + valueFromPrimitiveRemoteObject(_classPrivateFieldGet(_remoteObject, this));
+        }
+        const type = _classPrivateFieldGet(_remoteObject, this).subtype || _classPrivateFieldGet(_remoteObject, this).type;
+        return 'JSHandle@' + type;
+      }
+      get id() {
+        return _classPrivateFieldGet(_remoteObject, this).objectId;
+      }
+      remoteObject() {
+        return _classPrivateFieldGet(_remoteObject, this);
+      }
+      async getProperties() {
+        if (!_classPrivateFieldGet(_remoteObject, this).objectId) {
+          return await super.getProperties();
+        }
+        // We use Runtime.getProperties rather than iterative version for
+        // improved performance as it allows getting everything at once.
+        const response = await this.client.send('Runtime.getProperties', {
+          objectId: _classPrivateFieldGet(_remoteObject, this).objectId,
+          ownProperties: true
+        });
+        const result = new Map();
+        for (const property of response.result) {
+          if (!property.enumerable || !property.value) {
+            continue;
+          }
+          result.set(property.name, _classPrivateFieldGet(_world2, this).createCdpHandle(property.value));
+        }
+        return result;
+      }
+    }, (() => {
+      const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+      _getProperties_decorators = [throwIfDisposed()];
+      __esDecorate$3(_CdpJSHandle, null, _getProperties_decorators, {
+        kind: "method",
+        name: "getProperties",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "getProperties" in obj,
+          get: obj => obj.getProperties
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      if (_metadata) Object.defineProperty(_CdpJSHandle, Symbol.metadata, {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: _metadata
+      });
+    })(), _CdpJSHandle;
+  })();
   /**
    * @internal
    */
@@ -17821,8 +17906,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         value: _metadata
       });
     })(), _CdpElementHandle;
-    function _get_frameManager(_this13) {
-      return _this13.frame._frameManager;
+    function _get_frameManager(_this12) {
+      return _this12.frame._frameManager;
     }
   })();
 
@@ -17851,7 +17936,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$5 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -17884,7 +17969,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$4 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$5 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -17947,7 +18032,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const stack = __addDisposableResource$4(env_1, new DisposableStack(), false);
+          const stack = __addDisposableResource$5(env_1, new DisposableStack(), false);
           // The stack keeps these handles alive until the result array is created.
           const elements = await AsyncIterableUtil.collect(AsyncIterableUtil.map(ARIAQueryHandler.queryAll(element, selector), async result => {
             return stack.use(result);
@@ -17959,7 +18044,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_1.error = e_1;
           env_1.hasError = true;
         } finally {
-          __disposeResources$4(env_1);
+          __disposeResources$5(env_1);
         }
       }, '',
       // custom init
@@ -18141,7 +18226,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (_classPrivateFieldGet(_bindings, this).has(binding.name)) {
         return;
       }
-      const _ = __addDisposableResource$4(env_2, await _classPrivateFieldGet(_mutex2, this).acquire(), false);
+      const _ = __addDisposableResource$5(env_2, await _classPrivateFieldGet(_mutex2, this).acquire(), false);
       try {
         await _classPrivateFieldGet(_client6, this).send('Runtime.addBinding', _classPrivateFieldGet(_name5, this) ? {
           name: CDP_BINDING_PREFIX + binding.name,
@@ -18172,7 +18257,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       env_2.error = e_2;
       env_2.hasError = true;
     } finally {
-      __disposeResources$4(env_2);
+      __disposeResources$5(env_2);
     }
   }
   async function _onBindingCalled(event) {
@@ -18548,7 +18633,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         action: exports.InterceptResolutionAction.Continue,
         overrides
       });
-      const postDataBinaryBase64 = postData ? stringToBase64(postData) : undefined;
+      const postDataBinaryBase64 = postData !== undefined ? stringToBase64(postData) : undefined;
       if (this._interceptionId === undefined) {
         throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.continueRequest');
       }
@@ -18597,7 +18682,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       await _classPrivateFieldGet(_fetchClient, this).send('Fetch.fulfillRequest', {
         requestId: this._interceptionId,
         responseCode: status,
-        responsePhrase: STATUS_TEXTS[status],
+        // Chrome rejects status codes it has no reason phrase for unless one
+        // is provided.
+        responsePhrase: STATUS_TEXTS[status] ?? 'Unknown',
         responseHeaders: headersArray(responseHeaders),
         body: parsedBody?.base64
       }).catch(error => {
@@ -19911,7 +19998,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       request.client = client;
     }
   }
-  var __addDisposableResource$3 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -19944,7 +20031,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$3 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$4 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -19982,7 +20069,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _world4 = /*#__PURE__*/new WeakMap();
   var _client8 = /*#__PURE__*/new WeakMap();
   var _id5 = /*#__PURE__*/new WeakMap();
-  var _targetType2 = /*#__PURE__*/new WeakMap();
+  var _target2 = /*#__PURE__*/new WeakMap();
   var _logger16 = /*#__PURE__*/new WeakMap();
   var _hasOwnerExceptionListeners = /*#__PURE__*/new WeakMap();
   var _emitter2 = /*#__PURE__*/new WeakMap();
@@ -19992,10 +20079,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     get internalEmitter() {
       return _classPrivateFieldGet(_emitter2, this);
     }
-    constructor(_client9, _target2, exceptionThrown, _logger17, _networkManager, hasOwnerExceptionListeners = () => {
+    constructor(_client9, _target3, exceptionThrown, _logger17, _networkManager, hasOwnerExceptionListeners = () => {
       return false;
     }) {
-      super(_target2.url());
+      super(_target3.url());
       /**
        * Network manager for workers that are not owned by a page (service and
        * shared workers). It only tracks this worker's session.
@@ -20004,16 +20091,16 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _world4, void 0);
       _classPrivateFieldInitSpec(this, _client8, void 0);
       _classPrivateFieldInitSpec(this, _id5, void 0);
-      _classPrivateFieldInitSpec(this, _targetType2, void 0);
+      _classPrivateFieldInitSpec(this, _target2, void 0);
       _classPrivateFieldInitSpec(this, _logger16, void 0);
       _classPrivateFieldInitSpec(this, _hasOwnerExceptionListeners, void 0);
       _classPrivateFieldInitSpec(this, _emitter2, void 0);
       _classPrivateFieldInitSpec(this, _workerLoaded, new Deferred());
-      _classPrivateFieldSet(_id5, this, _target2._targetId);
+      _classPrivateFieldSet(_id5, this, _target3._targetId);
       _classPrivateFieldSet(_client8, this, _client9);
       _classPrivateFieldSet(_logger16, this, _logger17);
       _classPrivateFieldSet(_hasOwnerExceptionListeners, this, hasOwnerExceptionListeners);
-      _classPrivateFieldSet(_targetType2, this, _target2.type());
+      _classPrivateFieldSet(_target2, this, _target3);
       _classPrivateFieldSet(_world4, this, new IsolatedWorld(this, new TimeoutSettings(), MAIN_WORLD, _logger17));
       _classPrivateFieldSet(_emitter2, this, new EventEmitter(undefined, _logger17));
       _classPrivateFieldGet(_client8, this).once('Runtime.executionContextCreated', async event => {
@@ -20058,7 +20145,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         _classPrivateFieldGet(_workerLoaded, this).reject(new TargetCloseError('Worker was closed before its script finished loading'));
         _classPrivateFieldGet(_world4, this).dispose();
       });
-      const netManager = _networkManager ?? _assertClassBrand(_CdpWebWorker_brand, this, _createOwnNetworkManager).call(this, _target2, _logger17);
+      const netManager = _networkManager ?? _assertClassBrand(_CdpWebWorker_brand, this, _createOwnNetworkManager).call(this, _target3, _logger17);
       // This might fail if the target is closed before we receive all execution contexts.
       netManager.addClient(_classPrivateFieldGet(_client8, this)).catch(err => {
         return _classPrivateFieldGet(_logger16, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
@@ -20080,26 +20167,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return _classPrivateFieldGet(_client8, this);
     }
     async close() {
-      switch (_classPrivateFieldGet(_targetType2, this)) {
+      switch (_classPrivateFieldGet(_target2, this).type()) {
         case exports.TargetType.SERVICE_WORKER:
-          {
-            // For service workers we need to close the target and detach to allow
-            // the worker to stop.
-            await this.client.connection()?.send('Target.closeTarget', {
-              targetId: _classPrivateFieldGet(_id5, this)
-            });
-            await this.client.connection()?.send('Target.detachFromTarget', {
-              sessionId: this.client.id()
-            });
-            break;
-          }
         case exports.TargetType.SHARED_WORKER:
-          {
-            await this.client.connection()?.send('Target.closeTarget', {
-              targetId: _classPrivateFieldGet(_id5, this)
-            });
-            break;
-          }
+          await _classPrivateFieldGet(_target2, this).close();
+          break;
         default:
           // Dedicated workers do not support `Target.closeTarget`. Evaluate on
           // the realm directly so that closing does not wait for the worker
@@ -20200,7 +20272,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       // Disposed when this scope ends, i.e. right after dispatch. This is a no-op
       // if a listener called `move()` on the handle.
-      const handle = __addDisposableResource$3(env_1, details.exception?.objectId ? _classPrivateFieldGet(_world4, this).createCdpHandle(details.exception) : undefined, false);
+      const handle = __addDisposableResource$4(env_1, details.exception?.objectId ? _classPrivateFieldGet(_world4, this).createCdpHandle(details.exception) : undefined, false);
       const exception = createRemoteException(details, handle);
       // Emitted internally first so that the page can forward it before the
       // handle is disposed.
@@ -20210,7 +20282,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       env_1.error = e_1;
       env_1.hasError = true;
     } finally {
-      __disposeResources$3(env_1);
+      __disposeResources$4(env_1);
     }
   }
   var _context = /*#__PURE__*/new WeakMap();
@@ -20454,6 +20526,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       frameEmitter.on(exports.FrameEvent.FrameSwapped, _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).bind(this));
       frameEmitter.on(exports.FrameEvent.FrameSwappedByActivation, _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).bind(this));
       frameEmitter.on(exports.FrameEvent.FrameDetached, _assertClassBrand(_LifecycleWatcher_brand, this, _onFrameDetached).bind(this));
+      const pageEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame4.page()));
+      pageEmitter.once("error" /* PageEvent.Error */, error => {
+        _classPrivateFieldGet(_terminationDeferred, this).resolve(error);
+      });
       const networkManagerEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(networkManager));
       networkManagerEmitter.on(exports.NetworkManagerEvent.Request, _assertClassBrand(_LifecycleWatcher_brand, this, _onRequest2).bind(this));
       networkManagerEmitter.on(exports.NetworkManagerEvent.Response, _assertClassBrand(_LifecycleWatcher_brand, this, _onResponse).bind(this));
@@ -20631,7 +20707,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  let CdpFrame = ((_ref3, _CdpFrame, _url4, _detached2, _client0, _logger19, _CdpFrame_brand) => {
+  let CdpFrame = ((_ref2, _CdpFrame, _url4, _detached2, _client0, _logger19, _CdpFrame_brand) => {
     let _classSuper = Frame;
     let _instanceExtraInitializers = [];
     let _goto_decorators;
@@ -20641,7 +20717,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     let _addExposedFunctionBinding_decorators;
     let _removeExposedFunctionBinding_decorators;
     let _waitForDevicePrompt_decorators;
-    return _url4 = /*#__PURE__*/new WeakMap(), _detached2 = /*#__PURE__*/new WeakMap(), _client0 = /*#__PURE__*/new WeakMap(), _logger19 = /*#__PURE__*/new WeakMap(), _CdpFrame_brand = /*#__PURE__*/new WeakSet(), _ref3 = (_goto_decorators = [throwIfDetached], _waitForNavigation_decorators = [throwIfDetached], _setContent_decorators = [throwIfDetached], _addPreloadScript_decorators = [throwIfDetached], _addExposedFunctionBinding_decorators = [throwIfDetached], _removeExposedFunctionBinding_decorators = [throwIfDetached], _waitForDevicePrompt_decorators = [throwIfDetached], disposeSymbol), _CdpFrame = class CdpFrame extends _classSuper {
+    return _url4 = /*#__PURE__*/new WeakMap(), _detached2 = /*#__PURE__*/new WeakMap(), _client0 = /*#__PURE__*/new WeakMap(), _logger19 = /*#__PURE__*/new WeakMap(), _CdpFrame_brand = /*#__PURE__*/new WeakSet(), _ref2 = (_goto_decorators = [throwIfDetached], _waitForNavigation_decorators = [throwIfDetached], _setContent_decorators = [throwIfDetached], _addPreloadScript_decorators = [throwIfDetached], _addExposedFunctionBinding_decorators = [throwIfDetached], _removeExposedFunctionBinding_decorators = [throwIfDetached], _waitForDevicePrompt_decorators = [throwIfDetached], disposeSymbol), _CdpFrame = class CdpFrame extends _classSuper {
       constructor(frameManager, frameId, parentFrameId, client, logger) {
         super(logger);
         _classPrivateMethodInitSpec(this, _CdpFrame_brand);
@@ -20902,7 +20978,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       get detached() {
         return _classPrivateFieldGet(_detached2, this);
       }
-      [_ref3]() {
+      [_ref2]() {
         if (_classPrivateFieldGet(_detached2, this)) {
           return;
         }
@@ -21137,6 +21213,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _assertClassBrand(_CdpDeviceRequestPrompt_brand, this, _updateDevices).call(this, firstEvent);
     }
     async waitForDevice(filter, options = {}) {
+      options.signal?.throwIfAborted();
       for (const device of this.devices) {
         if (filter(device)) {
           return device;
@@ -21232,6 +21309,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     async waitForDevicePrompt(options = {}) {
       assert(_classPrivateFieldGet(_client10, this) !== null, 'Cannot wait for device prompt through detached session!');
+      options.signal?.throwIfAborted();
       const needsEnable = _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).size === 0;
       let enablePromise;
       if (needsEnable) {
@@ -21371,7 +21449,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$2 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$3 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -21404,7 +21482,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$2 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$3 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -21714,7 +21792,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
 
   /**
    * @license
-   * Copyright 2017 Google Inc.
+   * Copyright 2026 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
   /**
@@ -21746,7 +21824,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         _assertClassBrand(_FrameManager_brand, this, _removeFramesRecursively).call(this, child);
       }
       const swapped = Deferred.create();
-      const subscriptions = __addDisposableResource$2(env_1, new DisposableStack(), false);
+      const subscriptions = __addDisposableResource$3(env_1, new DisposableStack(), false);
       const frameEmitter = subscriptions.use(new EventEmitter(mainFrame));
       const pageEmitter = subscriptions.use(new EventEmitter(_classPrivateFieldGet(_page, this)));
       frameEmitter.once(exports.FrameEvent.FrameSwappedByActivation, () => {
@@ -21764,7 +21842,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       env_1.error = e_1;
       env_1.hasError = true;
     } finally {
-      __disposeResources$2(env_1);
+      __disposeResources$3(env_1);
     }
   }
   function _navigatedFrames(session) {
@@ -22079,6 +22157,81 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     // Needs to be last to ensure events
     // sent before handlers are cleared.
     frame[disposeSymbol]();
+  }
+  var _state2 = /*#__PURE__*/new WeakMap();
+  var _MouseStateTracker_brand = /*#__PURE__*/new WeakSet();
+  var _transactions = /*#__PURE__*/new WeakMap();
+  class MouseStateTracker {
+    constructor() {
+      _classPrivateMethodInitSpec(this, _MouseStateTracker_brand);
+      _classPrivateFieldInitSpec(this, _state2, {
+        position: {
+          x: 0,
+          y: 0
+        },
+        buttons: 0
+      });
+      // Transactions can run in parallel, so we store each of them in this array.
+      _classPrivateFieldInitSpec(this, _transactions, []);
+    }
+    get position() {
+      return _classPrivateGetter(_MouseStateTracker_brand, this, _get_state).position;
+    }
+    get buttons() {
+      return _classPrivateGetter(_MouseStateTracker_brand, this, _get_state).buttons;
+    }
+    /**
+     * This is a shortcut for a typical update, commit/rollback lifecycle based on
+     * the error of the action.
+     */
+    async withTransaction(action) {
+      const {
+        update,
+        commit,
+        rollback
+      } = _assertClassBrand(_MouseStateTracker_brand, this, _createTransaction).call(this);
+      try {
+        await action(update);
+        commit();
+      } catch (error) {
+        rollback();
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2017 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * @internal
+   */
+  function _get_state(_this13) {
+    return Object.assign({
+      ..._classPrivateFieldGet(_state2, _this13)
+    }, ..._classPrivateFieldGet(_transactions, _this13));
+  }
+  function _createTransaction() {
+    const transaction = {};
+    _classPrivateFieldGet(_transactions, this).push(transaction);
+    const popTransaction = () => {
+      _classPrivateFieldGet(_transactions, this).splice(_classPrivateFieldGet(_transactions, this).indexOf(transaction), 1);
+    };
+    return {
+      update: updates => {
+        Object.assign(transaction, updates);
+      },
+      commit: () => {
+        _classPrivateFieldSet(_state2, this, {
+          ..._classPrivateFieldGet(_state2, this),
+          ...transaction
+        });
+        popTransaction();
+      },
+      rollback: popTransaction
+    };
   }
   const _keyDefinitions = {
     '0': {
@@ -23516,7 +23669,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         key: description.key,
         windowsVirtualKeyCode: description.keyCode,
         code: description.code,
-        location: description.location
+        location: description.location,
+        isKeypad: description.location === 3
       });
     }
     async sendCharacter(char) {
@@ -23653,24 +23807,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    */
   var _client14 = /*#__PURE__*/new WeakMap();
   var _keyboard = /*#__PURE__*/new WeakMap();
-  var _state2 = /*#__PURE__*/new WeakMap();
-  var _CdpMouse_brand = /*#__PURE__*/new WeakSet();
-  var _transactions = /*#__PURE__*/new WeakMap();
+  var _state3 = /*#__PURE__*/new WeakMap();
   class CdpMouse extends Mouse {
     constructor(client, keyboard) {
       super();
-      _classPrivateMethodInitSpec(this, _CdpMouse_brand);
       _classPrivateFieldInitSpec(this, _client14, void 0);
       _classPrivateFieldInitSpec(this, _keyboard, void 0);
-      _classPrivateFieldInitSpec(this, _state2, {
-        position: {
-          x: 0,
-          y: 0
-        },
-        buttons: 0 /* MouseButtonFlag.None */
-      });
-      // Transactions can run in parallel, so we store each of them in this array.
-      _classPrivateFieldInitSpec(this, _transactions, []);
+      _classPrivateFieldInitSpec(this, _state3, new MouseStateTracker());
       _classPrivateFieldSet(_client14, this, client);
       _classPrivateFieldSet(_keyboard, this, keyboard);
     }
@@ -23680,13 +23823,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     async reset() {
       const actions = [];
       for (const [flag, button] of [[1 /* MouseButtonFlag.Left */, MouseButton.Left], [4 /* MouseButtonFlag.Middle */, MouseButton.Middle], [2 /* MouseButtonFlag.Right */, MouseButton.Right], [16 /* MouseButtonFlag.Forward */, MouseButton.Forward], [8 /* MouseButtonFlag.Back */, MouseButton.Back]]) {
-        if (_classPrivateGetter(_CdpMouse_brand, this, _get_state).buttons & flag) {
+        if (_classPrivateFieldGet(_state3, this).buttons & flag) {
           actions.push(this.up({
             button: button
           }));
         }
       }
-      if (_classPrivateGetter(_CdpMouse_brand, this, _get_state).position.x !== 0 || _classPrivateGetter(_CdpMouse_brand, this, _get_state).position.y !== 0) {
+      if (_classPrivateFieldGet(_state3, this).position.x !== 0 || _classPrivateFieldGet(_state3, this).position.y !== 0) {
         actions.push(this.move(0, 0));
       }
       await Promise.all(actions);
@@ -23695,13 +23838,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const {
         steps = 1
       } = options;
-      const from = _classPrivateGetter(_CdpMouse_brand, this, _get_state).position;
+      const from = _classPrivateFieldGet(_state3, this).position;
       const to = {
         x,
         y
       };
       for (let i = 1; i <= steps; i++) {
-        await _assertClassBrand(_CdpMouse_brand, this, _withTransaction).call(this, updateState => {
+        await _classPrivateFieldGet(_state3, this).withTransaction(updateState => {
           updateState({
             position: {
               x: from.x + (to.x - from.x) * (i / steps),
@@ -23711,7 +23854,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           const {
             buttons,
             position
-          } = _classPrivateGetter(_CdpMouse_brand, this, _get_state);
+          } = _classPrivateFieldGet(_state3, this);
           return _classPrivateFieldGet(_client14, this).send('Input.dispatchMouseEvent', {
             type: 'mouseMoved',
             modifiers: _classPrivateFieldGet(_keyboard, this)._modifiers,
@@ -23731,17 +23874,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (!flag) {
         throw new Error(`Unsupported mouse button: ${button}`);
       }
-      if (_classPrivateGetter(_CdpMouse_brand, this, _get_state).buttons & flag) {
+      if (_classPrivateFieldGet(_state3, this).buttons & flag) {
         throw new Error(`'${button}' is already pressed.`);
       }
-      await _assertClassBrand(_CdpMouse_brand, this, _withTransaction).call(this, updateState => {
+      await _classPrivateFieldGet(_state3, this).withTransaction(updateState => {
         updateState({
-          buttons: _classPrivateGetter(_CdpMouse_brand, this, _get_state).buttons | flag
+          buttons: _classPrivateFieldGet(_state3, this).buttons | flag
         });
         const {
           buttons,
           position
-        } = _classPrivateGetter(_CdpMouse_brand, this, _get_state);
+        } = _classPrivateFieldGet(_state3, this);
         return _classPrivateFieldGet(_client14, this).send('Input.dispatchMouseEvent', {
           type: 'mousePressed',
           modifiers: _classPrivateFieldGet(_keyboard, this)._modifiers,
@@ -23761,17 +23904,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (!flag) {
         throw new Error(`Unsupported mouse button: ${button}`);
       }
-      if (!(_classPrivateGetter(_CdpMouse_brand, this, _get_state).buttons & flag)) {
+      if (!(_classPrivateFieldGet(_state3, this).buttons & flag)) {
         throw new Error(`'${button}' is not pressed.`);
       }
-      await _assertClassBrand(_CdpMouse_brand, this, _withTransaction).call(this, updateState => {
+      await _classPrivateFieldGet(_state3, this).withTransaction(updateState => {
         updateState({
-          buttons: _classPrivateGetter(_CdpMouse_brand, this, _get_state).buttons & ~flag
+          buttons: _classPrivateFieldGet(_state3, this).buttons & ~flag
         });
         const {
           buttons,
           position
-        } = _classPrivateGetter(_CdpMouse_brand, this, _get_state);
+        } = _classPrivateFieldGet(_state3, this);
         return _classPrivateFieldGet(_client14, this).send('Input.dispatchMouseEvent', {
           type: 'mouseReleased',
           modifiers: _classPrivateFieldGet(_keyboard, this)._modifiers,
@@ -23825,7 +23968,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const {
         position,
         buttons
-      } = _classPrivateGetter(_CdpMouse_brand, this, _get_state);
+      } = _classPrivateFieldGet(_state3, this);
       await _classPrivateFieldGet(_client14, this).send('Input.dispatchMouseEvent', {
         type: 'mouseWheel',
         pointerType: 'mouse',
@@ -23893,49 +24036,6 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  function _get_state(_this14) {
-    return Object.assign({
-      ..._classPrivateFieldGet(_state2, _this14)
-    }, ..._classPrivateFieldGet(_transactions, _this14));
-  }
-  function _createTransaction() {
-    const transaction = {};
-    _classPrivateFieldGet(_transactions, this).push(transaction);
-    const popTransaction = () => {
-      _classPrivateFieldGet(_transactions, this).splice(_classPrivateFieldGet(_transactions, this).indexOf(transaction), 1);
-    };
-    return {
-      update: updates => {
-        Object.assign(transaction, updates);
-      },
-      commit: () => {
-        _classPrivateFieldSet(_state2, this, {
-          ..._classPrivateFieldGet(_state2, this),
-          ...transaction
-        });
-        popTransaction();
-      },
-      rollback: popTransaction
-    };
-  }
-  /**
-   * This is a shortcut for a typical update, commit/rollback lifecycle based on
-   * the error of the action.
-   */
-  async function _withTransaction(action) {
-    const {
-      update,
-      commit,
-      rollback
-    } = _assertClassBrand(_CdpMouse_brand, this, _createTransaction).call(this);
-    try {
-      await action(update);
-      commit();
-    } catch (error) {
-      rollback();
-      throw error;
-    }
-  }
   var _started = /*#__PURE__*/new WeakMap();
   var _touchScreen = /*#__PURE__*/new WeakMap();
   var _touchPoint = /*#__PURE__*/new WeakMap();
@@ -24178,7 +24278,71 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
     })(), _CdpScreenRecording;
   })();
-
+  var __addDisposableResource$2 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+      if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+      var dispose, inner;
+      if (async) {
+        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+        dispose = value[Symbol.asyncDispose];
+      }
+      if (dispose === void 0) {
+        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+        dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
+      }
+      if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
+      env.stack.push({
+        value: value,
+        dispose: dispose,
+        async: async
+      });
+    } else if (async) {
+      env.stack.push({
+        async: true
+      });
+    }
+    return value;
+  };
+  var __disposeResources$2 = undefined && undefined.__disposeResources || function (SuppressedError) {
+    return function (env) {
+      function fail(e) {
+        env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+        env.hasError = true;
+      }
+      var r,
+        s = 0;
+      function next() {
+        while (r = env.stack.pop()) {
+          try {
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
+          } catch (e) {
+            fail(e);
+          }
+        }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
+        if (env.hasError) throw env.error;
+      }
+      return next();
+    };
+  }(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+  });
   /**
    * The Tracing class exposes the tracing audit interface.
    * @remarks
@@ -24233,51 +24397,76 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         categories = defaultCategories,
         bufferSize
       } = options;
-      if (screenshots) {
-        categories.push('disabled-by-default-devtools.screenshot');
-      }
-      const excludedCategories = categories.filter(cat => {
+      const effectiveCategories = screenshots ? [...categories, 'disabled-by-default-devtools.screenshot'] : categories;
+      const excludedCategories = effectiveCategories.filter(cat => {
         return cat.startsWith('-');
       }).map(cat => {
         return cat.slice(1);
       });
-      const includedCategories = categories.filter(cat => {
+      const includedCategories = effectiveCategories.filter(cat => {
         return !cat.startsWith('-');
       });
       _classPrivateFieldSet(_path2, this, path);
       _classPrivateFieldSet(_recording, this, true);
-      await _classPrivateFieldGet(_client17, this).send('Tracing.start', {
-        transferMode: 'ReturnAsStream',
-        traceConfig: {
-          excludedCategories,
-          includedCategories,
-          traceBufferSizeInKb: bufferSize
-        }
-      });
+      try {
+        await _classPrivateFieldGet(_client17, this).send('Tracing.start', {
+          transferMode: 'ReturnAsStream',
+          traceConfig: {
+            excludedCategories,
+            includedCategories,
+            traceBufferSizeInKb: bufferSize
+          }
+        });
+      } catch (error) {
+        _classPrivateFieldSet(_recording, this, false);
+        _classPrivateFieldSet(_path2, this, undefined);
+        throw error;
+      }
     }
     /**
      * Stops a trace started with the `start` method.
      * @returns Promise which resolves to buffer with trace data.
      */
     async stop() {
-      const contentDeferred = Deferred.create();
-      _classPrivateFieldGet(_client17, this).once('Tracing.tracingComplete', async event => {
-        try {
-          assert(event.stream, 'Missing "stream"');
-          const readable = await getReadableFromProtocolStream(_classPrivateFieldGet(_client17, this), event.stream);
-          const typedArray = await getReadableAsTypedArray(readable, _classPrivateFieldGet(_path2, this), _classPrivateFieldGet(_logger21, this));
-          contentDeferred.resolve(typedArray ?? undefined);
-        } catch (error) {
-          if (isErrorLike(error)) {
-            contentDeferred.reject(error);
-          } else {
-            contentDeferred.reject(new Error(`Unknown error: ${error}`));
+      const env_1 = {
+        stack: [],
+        error: void 0,
+        hasError: false
+      };
+      try {
+        const contentDeferred = Deferred.create();
+        const client = _classPrivateFieldGet(_client17, this);
+        const stack = __addDisposableResource$2(env_1, new DisposableStack(), false);
+        const clientEmitter = stack.use(new EventEmitter(client));
+        clientEmitter.once('Tracing.tracingComplete', async event => {
+          try {
+            assert(event.stream, 'Missing "stream"');
+            const readable = await getReadableFromProtocolStream(client, event.stream);
+            const typedArray = await getReadableAsTypedArray(readable, _classPrivateFieldGet(_path2, this), _classPrivateFieldGet(_logger21, this));
+            contentDeferred.resolve(typedArray ?? undefined);
+          } catch (error) {
+            if (isErrorLike(error)) {
+              contentDeferred.reject(error);
+            } else {
+              contentDeferred.reject(new Error(`Unknown error: ${error}`));
+            }
           }
+        });
+        clientEmitter.once(exports.CDPSessionEvent.Disconnected, () => {
+          contentDeferred.reject(new TargetCloseError('Tracing failed: Target closed.'));
+        });
+        try {
+          await client.send('Tracing.end');
+        } finally {
+          _classPrivateFieldSet(_recording, this, false);
         }
-      });
-      await _classPrivateFieldGet(_client17, this).send('Tracing.end');
-      _classPrivateFieldSet(_recording, this, false);
-      return await contentDeferred.valueOrThrow();
+        return await contentDeferred.valueOrThrow();
+      } catch (e_1) {
+        env_1.error = e_1;
+        env_1.hasError = true;
+      } finally {
+        __disposeResources$2(env_1);
+      }
     }
   }
 
@@ -24734,7 +24923,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       return page;
     }
-    constructor(client, _target3, logger) {
+    constructor(client, _target4, logger) {
       super(logger);
       _classPrivateMethodInitSpec(this, _CdpPage_brand);
       _classPrivateFieldInitSpec(this, _closed2, false);
@@ -24807,8 +24996,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldSet(_tabTarget, this, _classPrivateFieldGet(_tabTargetClient, this).target());
       assert(_classPrivateFieldGet(_tabTarget, this), 'Tab target is not defined.');
       this._tabId = _classPrivateFieldGet(_tabTarget, this)._getTargetInfo().targetId;
-      _classPrivateFieldSet(_primaryTarget, this, _target3);
-      _classPrivateFieldSet(_targetManager, this, _target3._targetManager());
+      _classPrivateFieldSet(_primaryTarget, this, _target4);
+      _classPrivateFieldSet(_targetManager, this, _target4._targetManager());
       _classPrivateFieldSet(_keyboard4, this, new CdpKeyboard(client));
       _classPrivateFieldSet(_mouse, this, new CdpMouse(client, _classPrivateFieldGet(_keyboard4, this)));
       _classPrivateFieldSet(_touchscreen, this, new CdpTouchscreen(client, _classPrivateFieldGet(_keyboard4, this)));
@@ -24945,6 +25134,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return Boolean(targetId);
     }
     async waitForFileChooser(options = {}) {
+      options.signal?.throwIfAborted();
       const needsEnable = _classPrivateFieldGet(_fileChooserDeferreds, this).size === 0;
       const {
         timeout = this._timeoutSettings.timeout()
@@ -25275,6 +25465,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return await _classPrivateFieldGet(_emulationManager, this).emulateVisionDeficiency(type);
     }
     async setViewport(viewport) {
+      // Keep a copy: the caller's object can be changed or shared later, for
+      // example the default viewport or a `KnownDevices` entry.
+      viewport = viewport ? {
+        ...viewport
+      } : null;
       const needsReload = await _classPrivateFieldGet(_emulationManager, this).emulateViewport(viewport);
       _classPrivateFieldSet(_viewport, this, viewport);
       if (needsReload) {
@@ -25282,7 +25477,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
     }
     viewport() {
-      return _classPrivateFieldGet(_viewport, this);
+      return _classPrivateFieldGet(_viewport, this) ? {
+        ..._classPrivateFieldGet(_viewport, this)
+      } : null;
     }
     async evaluateOnNewDocument(pageFunction, ...args) {
       const source = evaluationString(pageFunction, ...args);
@@ -26131,14 +26328,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _sessionFactory = /*#__PURE__*/new WeakMap();
   var _logger25 = /*#__PURE__*/new WeakMap();
   var _childTargets = /*#__PURE__*/new WeakMap();
+  var _closePromise = /*#__PURE__*/new WeakMap();
+  var _CdpTarget_brand = /*#__PURE__*/new WeakSet();
   class CdpTarget extends Target {
     /**
      * To initialize the target for use, call initialize.
      *
      * @internal
      */
-    constructor(targetInfo, session, browserContext, targetManager, sessionFactory, logger) {
+    constructor(targetInfo, _session2, browserContext, targetManager, sessionFactory, logger) {
       super(logger);
+      _classPrivateMethodInitSpec(this, _CdpTarget_brand);
       _classPrivateFieldInitSpec(this, _browserContext, void 0);
       _classPrivateFieldInitSpec(this, _session, void 0);
       _classPrivateFieldInitSpec(this, _targetInfo, void 0);
@@ -26146,13 +26346,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _sessionFactory, void 0);
       _classPrivateFieldInitSpec(this, _logger25, void 0);
       _classPrivateFieldInitSpec(this, _childTargets, new Set());
+      _classPrivateFieldInitSpec(this, _closePromise, void 0);
       _defineProperty(this, "_initializedDeferred", Deferred.create());
       _defineProperty(this, "_isClosedDeferred", Deferred.create());
       _defineProperty(this, "_targetId", void 0);
       _defineProperty(this, "_asPagePromise", void 0);
       /** @internal */
       _defineProperty(this, "pagePromise", void 0);
-      _classPrivateFieldSet(_session, this, session);
+      _classPrivateFieldSet(_session, this, _session2);
       _classPrivateFieldSet(_targetManager2, this, targetManager);
       _classPrivateFieldSet(_targetInfo, this, targetInfo);
       _classPrivateFieldSet(_browserContext, this, browserContext);
@@ -26268,6 +26469,33 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         return target._targetId === openerId;
       });
     }
+    async close() {
+      // Chrome closes the whole page when it closes the target of a frame.
+      if (_classPrivateFieldGet(_targetInfo, this).type === 'iframe') {
+        throw new Error('The target of a frame does not support closing');
+      }
+      if (this._isClosedDeferred.resolved()) {
+        return;
+      }
+      // Concurrent calls share one close operation, because a second
+      // `Target.closeTarget` fails if the target is already gone.
+      _classPrivateFieldGet(_closePromise, this) ?? _classPrivateFieldSet(_closePromise, this, _assertClassBrand(_CdpTarget_brand, this, _close).call(this).finally(() => {
+        _classPrivateFieldSet(_closePromise, this, undefined);
+      }));
+      await _classPrivateFieldGet(_closePromise, this);
+    }
+    /**
+     * Returns the sessions that Puppeteer keeps attached to the target.
+     */
+    async _attachedSessions() {
+      return this._targetManager().getAttachedSessions(this._targetId);
+    }
+    /**
+     * Whether `close()` is closing the target.
+     */
+    _isClosing() {
+      return _classPrivateFieldGet(_closePromise, this) !== undefined;
+    }
     _targetInfoChanged(targetInfo) {
       _classPrivateFieldSet(_targetInfo, this, targetInfo);
       this._checkIfInitialized();
@@ -26287,6 +26515,38 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
+  async function _close() {
+    await this.browser()._closeTarget(this._targetId);
+    if (_classPrivateFieldGet(_targetInfo, this).type === 'service_worker') {
+      // Chrome reports a closed service worker as destroyed only after the
+      // sessions attached to it detach.
+      const sessions = await this._attachedSessions();
+      await Promise.all(sessions.map(session => {
+        return _assertClassBrand(_CdpTarget_brand, this, _detach).call(this, session);
+      }));
+    }
+    await this._isClosedDeferred.valueOrThrow();
+  }
+  async function _detach(session) {
+    if (session.detached) {
+      return;
+    }
+    // `session.detach()` sends the command on the connection, which fails for
+    // a session attached through a page. `parentSession()` returns the session
+    // itself if it was attached through the connection.
+    const parentSession = session.parentSession();
+    try {
+      await (parentSession === session ? session.connection() : parentSession)?.send('Target.detachFromTarget', {
+        sessionId: session.id()
+      });
+    } catch (error) {
+      // Chrome might have detached the session already, for example because
+      // its page closed.
+      if (!session.detached) {
+        throw error;
+      }
+    }
+  }
   var _defaultViewport = /*#__PURE__*/new WeakMap();
   class PageTarget extends CdpTarget {
     constructor(targetInfo, session, browserContext, targetManager, sessionFactory, defaultViewport, logger) {
@@ -26357,6 +26617,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     async worker() {
       if (!_classPrivateFieldGet(_workerPromise, this)) {
+        // `close()` detaches the sessions that are attached when Chrome closes
+        // the target, so a session attached later would keep a closed service
+        // worker alive.
+        if (this._isClosing()) {
+          throw new TargetCloseError('Target closed');
+        }
         const session = this._session();
         _classPrivateFieldSet(_workerPromise, this, (session ? Promise.resolve(session) : this._sessionFactory()(/* isAutoAttachEmulated=*/false)).then(client => {
           // Service and shared workers create their own NetworkManager.
@@ -26366,6 +26632,19 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         }));
       }
       return await _classPrivateFieldGet(_workerPromise, this);
+    }
+    async _attachedSessions() {
+      const sessions = new Set(await super._attachedSessions());
+      // Puppeteer detaches from service workers unless network rules are set,
+      // so `worker()` may attach a session of its own. A failed `worker()` call
+      // already rejected for its caller.
+      const worker = await _classPrivateFieldGet(_workerPromise, this)?.catch(() => {
+        return undefined;
+      });
+      if (worker) {
+        sessions.add(worker.client);
+      }
+      return [...sessions];
     }
   }
   /**
@@ -26398,7 +26677,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * SPDX-License-Identifier: Apache-2.0
    */
   function isPageTargetBecomingPrimary(target, newTargetInfo) {
-    return Boolean(target._subtype()) && !newTargetInfo.subtype;
+    return target.type() === exports.TargetType.PAGE && Boolean(target._subtype()) && !newTargetInfo.subtype;
   }
   /**
    * TargetManager encapsulates all interactions with CDP targets and is
@@ -26692,6 +26971,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         if (parentSession instanceof CdpCDPSession) {
           parentSession.target()._removeChildTarget(target);
         }
+        // A target can have several sessions, for example a service worker when
+        // network rules are set, so it might already be gone or replaced.
+        if (_classPrivateFieldGet(_attachedTargetsByTargetId, this).get(target._targetId) !== target) {
+          return;
+        }
         _classPrivateFieldGet(_attachedTargetsByTargetId, this).delete(target._targetId);
         this.emit("targetGone" /* TargetManagerEvent.TargetGone */, target);
       });
@@ -26832,6 +27116,21 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     getAvailableTargets() {
       return _classPrivateFieldGet(_attachedTargetsByTargetId, this);
+    }
+    /**
+     * Returns the sessions that the target manager keeps attached to the target
+     * with the given ID. A target that was reported gone and is attached again
+     * gets a new {@link CdpTarget}, so the sessions are matched by ID.
+     */
+    getAttachedSessions(targetId) {
+      const sessions = [];
+      for (const [sessionId, target] of _classPrivateFieldGet(_attachedTargetsBySessionId, this)) {
+        const session = _classPrivateFieldGet(_connection4, this)._session(sessionId);
+        if (target._targetId === targetId && session) {
+          sessions.push(session);
+        }
+      }
+      return sessions;
     }
     /**
      * Returns the attached iframe target that has the given frame as its root
@@ -27177,6 +27476,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         browserContextId: contextId
       });
       _classPrivateFieldGet(_contexts, this).delete(contextId);
+    }
+    async _closeTarget(targetId) {
+      const {
+        success
+      } = await _classPrivateFieldGet(_connection5, this).send('Target.closeTarget', {
+        targetId
+      });
+      // chrome-headless-shell does not throw for a target that it cannot close.
+      if (success === false) {
+        throw new Error('The target does not support closing');
+      }
     }
     wsEndpoint() {
       return _classPrivateFieldGet(_connection5, this).url();
@@ -29686,6 +29996,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    */
   async function _connectToBrowser(options) {
     assertSupportedUrlRestrictions(options);
+    if (options.protocol === 'webDriverBiDi' && options.targetFilter) {
+      throw new UnsupportedOperation('targetFilter is not supported with the WebDriver BiDi protocol');
+    }
     const {
       connectionTransport,
       endpointUrl
@@ -29947,9 +30260,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '157.0.8103.78',
-    'chrome-headless-shell': '157.0.8103.78',
-    firefox: 'stable_160.0'
+    chrome: '158.0.8127.88',
+    'chrome-headless-shell': '158.0.8127.88',
+    firefox: 'stable_161.0'
   });
 
   /**
@@ -30046,6 +30359,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   exports.MappedLocator = MappedLocator;
   exports.Mouse = Mouse;
   exports.MouseButton = MouseButton;
+  exports.MouseStateTracker = MouseStateTracker;
   exports.Mutex = Mutex;
   exports.NETWORK_IDLE_TIME = NETWORK_IDLE_TIME;
   exports.NetworkEventManager = NetworkEventManager;

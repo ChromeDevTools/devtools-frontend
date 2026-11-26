@@ -4,6 +4,7 @@ import { UnsupportedOperation } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { fromEmitterEvent, filterAsync, timeout, fromAbortSignal, } from '../common/util.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
+import { Mutex } from '../util/Mutex.js';
 /**
  * @internal
  */
@@ -70,12 +71,32 @@ export const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
  */
 export class Browser extends EventEmitter {
     #logger;
+    #pageScreenshotMutex = new Mutex();
+    #screenshotOperationsCount = 0;
     /**
      * @internal
      */
     constructor(logger) {
         super(undefined, logger);
         this.#logger = logger;
+    }
+    /**
+     * @internal
+     */
+    _startScreenshot() {
+        this.#screenshotOperationsCount++;
+        return this.#pageScreenshotMutex.acquire(() => {
+            this.#screenshotOperationsCount--;
+        });
+    }
+    /**
+     * @internal
+     */
+    _waitForScreenshotOperations() {
+        if (this.#screenshotOperationsCount === 0) {
+            return undefined;
+        }
+        return this.#pageScreenshotMutex.acquire();
     }
     /**
      * @internal
@@ -97,6 +118,9 @@ export class Browser extends EventEmitter {
      * will remain attached and stay on the blocked page. This is a behavior difference
      * compared to launching the browser with network restrictions, where such targets
      * are detached immediately upon initial attach.
+     *
+     * The restrictions have the same WebTransport and WebRTC limitations as
+     * {@link ConnectOptions.blocklist} and {@link ConnectOptions.allowlist}.
      *
      * @experimental
      */

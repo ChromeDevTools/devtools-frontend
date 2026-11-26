@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { CDPSession } from '../api/CDPSession.js';
+import { type CDPSession } from '../api/CDPSession.js';
 import type { Logger } from '../common/Debug.js';
 /**
  * @public

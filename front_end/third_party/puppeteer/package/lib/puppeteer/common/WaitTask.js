@@ -131,7 +131,7 @@ export class WaitTask {
         this.#world.taskManager.delete(this);
         this.#signal?.removeEventListener('abort', this.#onAbortSignal);
         clearTimeout(this.#timeout);
-        if (error && !this.#result.finished()) {
+        if (error !== undefined && !this.#result.finished()) {
             this.#result.reject(error);
         }
         if (this.#poller) {

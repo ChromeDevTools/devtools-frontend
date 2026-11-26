@@ -24,6 +24,7 @@ export class BidiDeviceRequestPromptManager {
         }
     }
     async waitForDevicePrompt(timeout, signal) {
+        signal?.throwIfAborted();
         const deferred = Deferred.create({
             message: `Waiting for \`DeviceRequestPrompt\` failed: ${timeout}ms exceeded`,
             timeout,

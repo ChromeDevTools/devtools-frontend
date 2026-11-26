@@ -454,6 +454,9 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
    * compared to launching the browser with network restrictions, where such targets
    * are detached immediately upon initial attach.
    *
+   * The restrictions have the same WebTransport and WebRTC limitations as
+   * {@link ConnectOptions.blocklist} and {@link ConnectOptions.allowlist}.
+   *
    * @experimental
    */
   restrictNetwork(conditions?: NetworkRestrictions | null): Promise<void>;
@@ -1652,6 +1655,7 @@ export declare interface ConnectOptions {
   slowMo?: number;
   /**
    * Callback to decide if Puppeteer should connect to a given target or not.
+   * Supported only with CDP.
    */
   targetFilter?: TargetFilterCallback;
   /**
@@ -1742,6 +1746,12 @@ export declare interface ConnectOptions {
    * attached to every service worker while this option is set. As a
    * consequence, the browser never idle-terminates service workers.
    *
+   * The blocklist does not apply to WebTransport and WebRTC at this time.
+   * The browser opens WebTransport connections to URLs that match a blocked
+   * pattern. The browser also connects WebRTC peers and sends requests to
+   * STUN and TURN servers (over UDP and TCP) on blocked hosts. Patterns such
+   * as `stun:*` and `turn:*` do not block these requests.
+   *
    * Cannot be used along with {@link ConnectOptions.allowlist}.
    *
    * @experimental
@@ -1785,6 +1795,15 @@ export declare interface ConnectOptions {
    * requests they forward on behalf of controlled pages), Puppeteer stays
    * attached to every service worker while this option is set. As a
    * consequence, the browser never idle-terminates service workers.
+   *
+   * The allowlist does not apply to WebTransport and to TURN over TCP at
+   * this time. The browser opens WebTransport connections to URLs that do
+   * not match a pattern in the allowlist. The browser also opens TCP
+   * connections to TURN servers that are not in the allowlist.
+   *
+   * The allowlist blocks all WebRTC traffic over UDP. WebRTC peers do not
+   * connect and the browser does not send UDP requests to STUN and TURN
+   * servers. A pattern in the allowlist cannot allow this traffic.
    *
    * Cannot be used along with {@link ConnectOptions.blocklist}.
    *
@@ -4290,7 +4309,7 @@ export declare abstract class HTTPRequest {
    */
   responseForRequest(): Partial<ResponseForRequest> | null;
   /**
-   * The most recent reason for aborting the request
+   * The reason for aborting the request that was given the highest priority
    */
   abortErrorReason(): Protocol.Network.ErrorReason | null;
   /**
@@ -6372,12 +6391,21 @@ export declare interface NetworkRestrictions {
    * A list of {@link https://urlpattern.spec.whatwg.org/ | URLPattern} strings to block.
    * Mutually exclusive with {@link NetworkRestrictions.allowlist}.
    * Passing `[]` or omitting this option means no restriction.
+   *
+   * @remarks
+   * The blocklist does not apply to WebTransport and WebRTC at this time.
+   * See {@link ConnectOptions.blocklist}.
    */
   blocklist?: string[];
   /**
    * A list of {@link https://urlpattern.spec.whatwg.org/ | URLPattern} strings to allow.
    * Mutually exclusive with {@link NetworkRestrictions.blocklist}.
    * Passing `[]` or omitting this option means no restriction.
+   *
+   * @remarks
+   * The allowlist does not apply to WebTransport and to TURN over TCP at
+   * this time. It blocks all WebRTC traffic over UDP.
+   * See {@link ConnectOptions.allowlist}.
    */
   allowlist?: string[];
 }
@@ -7938,7 +7966,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    *
    * @remarks
    *
-   * While a screenshot is being taken in a {@link BrowserContext}, the
+   * While a screenshot is being taken in a {@link Browser}, the
    * following methods will automatically wait for the screenshot to
    * finish to prevent interference with the screenshot process:
    * {@link BrowserContext.newPage}, {@link Browser.newPage},
@@ -9676,7 +9704,7 @@ export declare interface ReloadOptions extends WaitForOptions {
   /**
    * If set to true, the browser caches are ignored for the page reload.
    *
-   * @defaultValue true
+   * @defaultValue false
    * @public
    */
   ignoreCache?: boolean;
@@ -10362,6 +10390,26 @@ export declare abstract class Target {
    * Get the target that opened this target. Top-level targets return `null`.
    */
   abstract opener(): Target | undefined;
+  /**
+   * Closes the target.
+   *
+   * @remarks
+   *
+   * It does not create a {@link Page} for the target, so it also closes a
+   * page target whose page could not be created. It does not run
+   * `beforeunload` handlers.
+   *
+   * Throws if the target does not support closing, for example the browser
+   * target, the target of a frame or a dedicated worker.
+   *
+   * Chrome destroys a service worker only after all CDP sessions attached to
+   * it detach. While a different session, for example one from
+   * {@link Target.createCDPSession}, stays attached to a service worker,
+   * `close()` might not resolve.
+   *
+   * @experimental
+   */
+  abstract close(): Promise<void>;
 }
 
 /**

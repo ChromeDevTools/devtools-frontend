@@ -8,6 +8,7 @@ import { _connectToCdpBrowser } from '../cdp/BrowserConnector.js';
 import { environment, isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { isErrnoException, isErrorLike } from '../util/ErrorLike.js';
+import { UnsupportedOperation } from './Errors.js';
 import { assertSupportedUrlRestrictions } from './util.js';
 const getWebSocketTransportClass = async () => {
     return isNode
@@ -23,6 +24,9 @@ const getWebSocketTransportClass = async () => {
  */
 export async function _connectToBrowser(options) {
     assertSupportedUrlRestrictions(options);
+    if (options.protocol === 'webDriverBiDi' && options.targetFilter) {
+        throw new UnsupportedOperation('targetFilter is not supported with the WebDriver BiDi protocol');
+    }
     const { connectionTransport, endpointUrl } = await getConnectionTransport(options);
     if (options.protocol === 'webDriverBiDi') {
         const bidiBrowser = await _connectToBiDiBrowser(connectionTransport, endpointUrl, options, options.logger);

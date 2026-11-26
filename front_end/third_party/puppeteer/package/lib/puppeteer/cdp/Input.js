@@ -5,6 +5,7 @@
  */
 import { Keyboard, Mouse, MouseButton, Touchscreen, } from '../api/Input.js';
 import { TouchError } from '../common/Errors.js';
+import { MouseStateTracker } from '../common/MouseStateTracker.js';
 import { _keyDefinitions, } from '../common/USKeyboardLayout.js';
 import { assert } from '../util/assert.js';
 /**
@@ -114,6 +115,7 @@ export class CdpKeyboard extends Keyboard {
             windowsVirtualKeyCode: description.keyCode,
             code: description.code,
             location: description.location,
+            isKeypad: description.location === 3,
         });
     }
     async sendCharacter(char) {
@@ -199,47 +201,7 @@ export class CdpMouse extends Mouse {
     updateClient(client) {
         this.#client = client;
     }
-    #_state = {
-        position: { x: 0, y: 0 },
-        buttons: 0 /* MouseButtonFlag.None */,
-    };
-    get #state() {
-        return Object.assign({ ...this.#_state }, ...this.#transactions);
-    }
-    // Transactions can run in parallel, so we store each of them in this array.
-    #transactions = [];
-    #createTransaction() {
-        const transaction = {};
-        this.#transactions.push(transaction);
-        const popTransaction = () => {
-            this.#transactions.splice(this.#transactions.indexOf(transaction), 1);
-        };
-        return {
-            update: (updates) => {
-                Object.assign(transaction, updates);
-            },
-            commit: () => {
-                this.#_state = { ...this.#_state, ...transaction };
-                popTransaction();
-            },
-            rollback: popTransaction,
-        };
-    }
-    /**
-     * This is a shortcut for a typical update, commit/rollback lifecycle based on
-     * the error of the action.
-     */
-    async #withTransaction(action) {
-        const { update, commit, rollback } = this.#createTransaction();
-        try {
-            await action(update);
-            commit();
-        }
-        catch (error) {
-            rollback();
-            throw error;
-        }
-    }
+    #state = new MouseStateTracker();
     async reset() {
         const actions = [];
         for (const [flag, button] of [
@@ -263,7 +225,7 @@ export class CdpMouse extends Mouse {
         const from = this.#state.position;
         const to = { x, y };
         for (let i = 1; i <= steps; i++) {
-            await this.#withTransaction(updateState => {
+            await this.#state.withTransaction(updateState => {
                 updateState({
                     position: {
                         x: from.x + (to.x - from.x) * (i / steps),
@@ -290,7 +252,7 @@ export class CdpMouse extends Mouse {
         if (this.#state.buttons & flag) {
             throw new Error(`'${button}' is already pressed.`);
         }
-        await this.#withTransaction(updateState => {
+        await this.#state.withTransaction(updateState => {
             updateState({
                 buttons: this.#state.buttons | flag,
             });
@@ -314,7 +276,7 @@ export class CdpMouse extends Mouse {
         if (!(this.#state.buttons & flag)) {
             throw new Error(`'${button}' is not pressed.`);
         }
-        await this.#withTransaction(updateState => {
+        await this.#state.withTransaction(updateState => {
             updateState({
                 buttons: this.#state.buttons & ~flag,
             });

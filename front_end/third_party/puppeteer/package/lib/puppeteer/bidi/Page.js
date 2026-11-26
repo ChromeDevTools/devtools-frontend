@@ -402,6 +402,9 @@ let BidiPage = (() => {
             return await this.#cdpEmulationManager.emulateVisionDeficiency(type);
         }
         async setViewport(viewport) {
+            // Keep a copy: the caller's object can be changed or shared later, for
+            // example the default viewport or a `KnownDevices` entry.
+            viewport = viewport ? { ...viewport } : null;
             let needsReload = false;
             if (!this.browser().cdpSupported) {
                 const viewportSize = viewport?.width && viewport?.height
@@ -463,7 +466,7 @@ let BidiPage = (() => {
             }
         }
         viewport() {
-            return this.#viewport;
+            return this.#viewport ? { ...this.#viewport } : null;
         }
         async pdf(options = {}) {
             const { timeout: ms = this._timeoutSettings.timeout(), path = undefined } = options;
@@ -610,6 +613,7 @@ let BidiPage = (() => {
             return target;
         }
         async waitForFileChooser(options = {}) {
+            options.signal?.throwIfAborted();
             const { timeout = this._timeoutSettings.timeout() } = options;
             const deferred = Deferred.create({
                 message: `Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`,

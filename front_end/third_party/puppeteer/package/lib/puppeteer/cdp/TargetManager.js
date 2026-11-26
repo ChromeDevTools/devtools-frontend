@@ -5,6 +5,7 @@
  */
 import { URLPattern } from '../../third_party/urlpattern-polyfill/urlpattern-polyfill.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
+import { TargetType } from '../api/Target.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { assertSupportedUrlRestrictions } from '../common/util.js';
@@ -14,7 +15,9 @@ import { DisposableStack } from '../util/disposable.js';
 import { CdpCDPSession } from './CdpSession.js';
 import { InitializationStatus } from './Target.js';
 function isPageTargetBecomingPrimary(target, newTargetInfo) {
-    return Boolean(target._subtype()) && !newTargetInfo.subtype;
+    return (target.type() === TargetType.PAGE &&
+        Boolean(target._subtype()) &&
+        !newTargetInfo.subtype);
 }
 /**
  * TargetManager encapsulates all interactions with CDP targets and is
@@ -135,6 +138,21 @@ export class TargetManager extends EventEmitter {
     }
     getAvailableTargets() {
         return this.#attachedTargetsByTargetId;
+    }
+    /**
+     * Returns the sessions that the target manager keeps attached to the target
+     * with the given ID. A target that was reported gone and is attached again
+     * gets a new {@link CdpTarget}, so the sessions are matched by ID.
+     */
+    getAttachedSessions(targetId) {
+        const sessions = [];
+        for (const [sessionId, target] of this.#attachedTargetsBySessionId) {
+            const session = this.#connection._session(sessionId);
+            if (target._targetId === targetId && session) {
+                sessions.push(session);
+            }
+        }
+        return sessions;
     }
     /**
      * Returns the attached iframe target that has the given frame as its root
@@ -420,6 +438,11 @@ export class TargetManager extends EventEmitter {
         }
         if (parentSession instanceof CdpCDPSession) {
             parentSession.target()._removeChildTarget(target);
+        }
+        // A target can have several sessions, for example a service worker when
+        // network rules are set, so it might already be gone or replaced.
+        if (this.#attachedTargetsByTargetId.get(target._targetId) !== target) {
+            return;
         }
         this.#attachedTargetsByTargetId.delete(target._targetId);
         this.emit("targetGone" /* TargetManagerEvent.TargetGone */, target);

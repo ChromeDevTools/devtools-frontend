@@ -21,7 +21,13 @@ export class Connection extends EventEmitter {
     #timeout;
     #sessions = new Map();
     #closed = false;
-    #manuallyAttached = new Set();
+    /**
+     * Number of in-flight manual attaches per target. A target can have several
+     * at once (e.g. concurrent `page.createCDPSession()` calls), and it must stay
+     * marked until the last one resolves, or a later `Target.attachedToTarget`
+     * is mistaken for the target's auto-attached session.
+     */
+    #manuallyAttached = new Map();
     #rejectEmulateNetworkConditionsCalls = false;
     #callbacks;
     #rawErrors = false;
@@ -233,14 +239,28 @@ export class Connection extends EventEmitter {
      * @internal
      */
     async _createSession(targetInfo, isAutoAttachEmulated = true) {
+        const { targetId } = targetInfo;
         if (!isAutoAttachEmulated) {
-            this.#manuallyAttached.add(targetInfo.targetId);
+            this.#manuallyAttached.set(targetId, (this.#manuallyAttached.get(targetId) ?? 0) + 1);
         }
-        const { sessionId } = await this.send('Target.attachToTarget', {
-            targetId: targetInfo.targetId,
-            flatten: true,
-        });
-        this.#manuallyAttached.delete(targetInfo.targetId);
+        let sessionId;
+        try {
+            ({ sessionId } = await this.send('Target.attachToTarget', {
+                targetId,
+                flatten: true,
+            }));
+        }
+        finally {
+            if (!isAutoAttachEmulated) {
+                const pending = (this.#manuallyAttached.get(targetId) ?? 1) - 1;
+                if (pending > 0) {
+                    this.#manuallyAttached.set(targetId, pending);
+                }
+                else {
+                    this.#manuallyAttached.delete(targetId);
+                }
+            }
+        }
         const session = this.#sessions.get(sessionId);
         if (!session) {
             throw new Error('CDPSession creation failed.');

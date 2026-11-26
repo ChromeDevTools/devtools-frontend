@@ -24,6 +24,7 @@ export declare class BidiBrowserTarget extends Target {
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
     opener(): Target | undefined;
+    close(): Promise<void>;
 }
 /**
  * @internal
@@ -39,6 +40,7 @@ export declare class BidiPageTarget extends Target {
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
     opener(): Target | undefined;
+    close(): Promise<void>;
 }
 /**
  * @internal
@@ -54,6 +56,7 @@ export declare class BidiFrameTarget extends Target {
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
     opener(): Target | undefined;
+    close(): Promise<void>;
 }
 /**
  * @internal
@@ -69,5 +72,6 @@ export declare class BidiWorkerTarget extends Target {
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
     opener(): Target | undefined;
+    close(): Promise<void>;
 }
 //# sourceMappingURL=Target.d.ts.map

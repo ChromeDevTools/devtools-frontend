@@ -679,7 +679,7 @@ export interface ReloadOptions extends WaitForOptions {
     /**
      * If set to true, the browser caches are ignored for the page reload.
      *
-     * @defaultValue true
+     * @defaultValue false
      * @public
      */
     ignoreCache?: boolean;
@@ -2235,7 +2235,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @remarks
      *
-     * While a screenshot is being taken in a {@link BrowserContext}, the
+     * While a screenshot is being taken in a {@link Browser}, the
      * following methods will automatically wait for the screenshot to
      * finish to prevent interference with the screenshot process:
      * {@link BrowserContext.newPage}, {@link Browser.newPage},

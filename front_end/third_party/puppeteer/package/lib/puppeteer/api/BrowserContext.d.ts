@@ -8,7 +8,6 @@ import type { Cookie, CookieData, DeleteCookiesRequest } from '../common/Cookie.
 import { type Logger } from '../common/Debug.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
-import { Mutex } from '../util/Mutex.js';
 import type { Browser, CreatePageOptions, Permission, PermissionDescriptor, PermissionState, WaitForTargetOptions } from './Browser.js';
 import type { HTTPRequest } from './HTTPRequest.js';
 import type { HTTPResponse } from './HTTPResponse.js';
@@ -218,11 +217,11 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
     /**
      * @internal
      */
-    startScreenshot(): Promise<InstanceType<typeof Mutex.Guard>>;
+    startScreenshot(): Promise<Disposable>;
     /**
      * @internal
      */
-    waitForScreenshotOperations(): Promise<InstanceType<typeof Mutex.Guard>> | undefined;
+    waitForScreenshotOperations(): Promise<Disposable> | undefined;
     /**
      * Waits until a {@link Target | target} matching the given `predicate`
      * appears and returns it.

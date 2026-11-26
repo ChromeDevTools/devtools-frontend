@@ -88,12 +88,20 @@ let Session = (() => {
             this.connection = connection;
         }
         async #initialize() {
+            const connectionEmitter = this.#disposables.use(new EventEmitter(this.connection));
+            connectionEmitter.once('closed', () => {
+                this.dispose('Session already destroyed, probably because the connection broke.');
+            });
             // SAFETY: We use `any` to allow assignment of the readonly property.
             this.browser = await Browser.from(this);
             const browserEmitter = this.#disposables.use(this.browser);
             browserEmitter.once('closed', reason => {
                 this.dispose(reason);
             });
+            if (this.connection.closed) {
+                this.dispose('Session already destroyed, probably because the connection broke.');
+                return;
+            }
             // TODO: Currently, some implementations do not emit navigationStarted event
             // for fragment navigations (as per spec) and some do. This could emits a
             // synthetic navigationStarted to work around this inconsistency.

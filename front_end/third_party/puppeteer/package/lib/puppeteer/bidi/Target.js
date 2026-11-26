@@ -36,6 +36,9 @@ export class BidiBrowserTarget extends Target {
     opener() {
         throw new UnsupportedOperation();
     }
+    async close() {
+        throw new UnsupportedOperation();
+    }
 }
 /**
  * @internal
@@ -69,6 +72,9 @@ export class BidiPageTarget extends Target {
     }
     opener() {
         throw new UnsupportedOperation();
+    }
+    async close() {
+        await this.#page.close();
     }
 }
 /**
@@ -108,6 +114,9 @@ export class BidiFrameTarget extends Target {
     opener() {
         throw new UnsupportedOperation();
     }
+    async close() {
+        throw new UnsupportedOperation();
+    }
 }
 /**
  * @internal
@@ -140,6 +149,9 @@ export class BidiWorkerTarget extends Target {
         return this.#worker.frame.page().browserContext();
     }
     opener() {
+        throw new UnsupportedOperation();
+    }
+    async close() {
         throw new UnsupportedOperation();
     }
 }

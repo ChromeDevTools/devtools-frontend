@@ -126,6 +126,7 @@
     "package/lib/puppeteer/common/GetQueryHandler.js",
     "package/lib/puppeteer/common/HandleIterator.js",
     "package/lib/puppeteer/common/LazyArg.js",
+    "package/lib/puppeteer/common/MouseStateTracker.js",
     "package/lib/puppeteer/common/NetworkManagerEvents.js",
     "package/lib/puppeteer/common/PDFOptions.js",
     "package/lib/puppeteer/common/PQueryHandler.js",

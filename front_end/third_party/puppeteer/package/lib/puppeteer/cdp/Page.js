@@ -451,6 +451,7 @@ export class CdpPage extends Page {
         return Boolean(targetId);
     }
     async waitForFileChooser(options = {}) {
+        options.signal?.throwIfAborted();
         const needsEnable = this.#fileChooserDeferreds.size === 0;
         const { timeout = this._timeoutSettings.timeout() } = options;
         const deferred = Deferred.create({
@@ -980,6 +981,9 @@ export class CdpPage extends Page {
         return await this.#emulationManager.emulateVisionDeficiency(type);
     }
     async setViewport(viewport) {
+        // Keep a copy: the caller's object can be changed or shared later, for
+        // example the default viewport or a `KnownDevices` entry.
+        viewport = viewport ? { ...viewport } : null;
         const needsReload = await this.#emulationManager.emulateViewport(viewport);
         this.#viewport = viewport;
         if (needsReload) {
@@ -987,7 +991,7 @@ export class CdpPage extends Page {
         }
     }
     viewport() {
-        return this.#viewport;
+        return this.#viewport ? { ...this.#viewport } : null;
     }
     async evaluateOnNewDocument(pageFunction, ...args) {
         const source = evaluationString(pageFunction, ...args);

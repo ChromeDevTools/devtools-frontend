@@ -8,7 +8,6 @@ import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { fromAbortSignal, fromEmitterEvent, filterAsync, timeout, } from '../common/util.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
-import { Mutex } from '../util/Mutex.js';
 /**
  * {@link BrowserContext} represents individual user contexts within a
  * {@link Browser | browser}.
@@ -63,30 +62,16 @@ export class BrowserContext extends EventEmitter {
         return this.#logger;
     }
     /**
-     * If defined, indicates an ongoing screenshot operation.
-     */
-    #pageScreenshotMutex;
-    #screenshotOperationsCount = 0;
-    /**
      * @internal
      */
     startScreenshot() {
-        const mutex = this.#pageScreenshotMutex || new Mutex();
-        this.#pageScreenshotMutex = mutex;
-        this.#screenshotOperationsCount++;
-        return mutex.acquire(() => {
-            this.#screenshotOperationsCount--;
-            if (this.#screenshotOperationsCount === 0) {
-                // Remove the mutex to indicate no ongoing screenshot operation.
-                this.#pageScreenshotMutex = undefined;
-            }
-        });
+        return this.browser()._startScreenshot();
     }
     /**
      * @internal
      */
     waitForScreenshotOperations() {
-        return this.#pageScreenshotMutex?.acquire();
+        return this.browser()._waitForScreenshotOperations();
     }
     /**
      * Waits until a {@link Target | target} matching the given `predicate`

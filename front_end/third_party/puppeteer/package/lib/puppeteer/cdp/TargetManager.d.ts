@@ -37,6 +37,12 @@ export declare class TargetManager extends EventEmitter<TargetManagerEvents> imp
     dispose(): void;
     getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
     /**
+     * Returns the sessions that the target manager keeps attached to the target
+     * with the given ID. A target that was reported gone and is attached again
+     * gets a new {@link CdpTarget}, so the sessions are matched by ID.
+     */
+    getAttachedSessions(targetId: string): CdpCDPSession[];
+    /**
      * Returns the attached iframe target that has the given frame as its root
      * frame.
      */

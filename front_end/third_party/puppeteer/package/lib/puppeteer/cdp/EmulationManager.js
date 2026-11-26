@@ -84,10 +84,8 @@ let EmulationManager = (() => {
     let _private_emulateVisionDeficiency_descriptor;
     let _private_emulateCpuThrottling_decorators;
     let _private_emulateCpuThrottling_descriptor;
-    let _private_emulateMediaFeatures_decorators;
-    let _private_emulateMediaFeatures_descriptor;
-    let _private_emulateMediaType_decorators;
-    let _private_emulateMediaType_descriptor;
+    let _private_emulateMedia_decorators;
+    let _private_emulateMedia_descriptor;
     let _private_setGeolocation_decorators;
     let _private_setGeolocation_descriptor;
     let _private_setDefaultBackgroundColor_decorators;
@@ -105,8 +103,7 @@ let EmulationManager = (() => {
             _private_emulateLocale_decorators = [invokeAtMostOnceForArguments];
             _private_emulateVisionDeficiency_decorators = [invokeAtMostOnceForArguments];
             _private_emulateCpuThrottling_decorators = [invokeAtMostOnceForArguments];
-            _private_emulateMediaFeatures_decorators = [invokeAtMostOnceForArguments];
-            _private_emulateMediaType_decorators = [invokeAtMostOnceForArguments];
+            _private_emulateMedia_decorators = [invokeAtMostOnceForArguments];
             _private_setGeolocation_decorators = [invokeAtMostOnceForArguments];
             _private_setDefaultBackgroundColor_decorators = [invokeAtMostOnceForArguments];
             _private_setJavaScriptEnabled_decorators = [invokeAtMostOnceForArguments];
@@ -207,22 +204,17 @@ let EmulationManager = (() => {
                         rate: state.factor ?? 1,
                     });
                 }, "#emulateCpuThrottling") }, _private_emulateCpuThrottling_decorators, { kind: "method", name: "#emulateCpuThrottling", static: false, private: true, access: { has: obj => #emulateCpuThrottling in obj, get: obj => obj.#emulateCpuThrottling }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(this, _private_emulateMediaFeatures_descriptor = { value: __setFunctionName(async function (client, state) {
+            __esDecorate(this, _private_emulateMedia_descriptor = { value: __setFunctionName(async function (client, state) {
                     if (!state.active) {
                         return;
                     }
-                    await client.send('Emulation.setEmulatedMedia', {
-                        features: state.mediaFeatures,
-                    });
-                }, "#emulateMediaFeatures") }, _private_emulateMediaFeatures_decorators, { kind: "method", name: "#emulateMediaFeatures", static: false, private: true, access: { has: obj => #emulateMediaFeatures in obj, get: obj => obj.#emulateMediaFeatures }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(this, _private_emulateMediaType_descriptor = { value: __setFunctionName(async function (client, state) {
-                    if (!state.active) {
-                        return;
-                    }
+                    // `Emulation.setEmulatedMedia` resets the media type or the features
+                    // when they are omitted, so always send both.
                     await client.send('Emulation.setEmulatedMedia', {
                         media: state.type || '',
+                        features: state.mediaFeatures,
                     });
-                }, "#emulateMediaType") }, _private_emulateMediaType_decorators, { kind: "method", name: "#emulateMediaType", static: false, private: true, access: { has: obj => #emulateMediaType in obj, get: obj => obj.#emulateMediaType }, metadata: _metadata }, null, _instanceExtraInitializers);
+                }, "#emulateMedia") }, _private_emulateMedia_decorators, { kind: "method", name: "#emulateMedia", static: false, private: true, access: { has: obj => #emulateMedia in obj, get: obj => obj.#emulateMedia }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, _private_setGeolocation_descriptor = { value: __setFunctionName(async function (client, state) {
                     if (!state.active) {
                         return;
@@ -285,12 +277,9 @@ let EmulationManager = (() => {
         #cpuThrottlingState = new EmulatedState({
             active: false,
         }, this, this.#emulateCpuThrottling);
-        #mediaFeaturesState = new EmulatedState({
+        #mediaState = new EmulatedState({
             active: false,
-        }, this, this.#emulateMediaFeatures);
-        #mediaTypeState = new EmulatedState({
-            active: false,
-        }, this, this.#emulateMediaType);
+        }, this, this.#emulateMedia);
         #geoLocationState = new EmulatedState({
             active: false,
         }, this, this.#setGeolocation);
@@ -404,7 +393,7 @@ let EmulationManager = (() => {
                 factor: factor ?? undefined,
             });
         }
-        get #emulateMediaFeatures() { return _private_emulateMediaFeatures_descriptor.value; }
+        get #emulateMedia() { return _private_emulateMedia_descriptor.value; }
         static #supportedMediaFeatures = new Set([
             'prefers-color-scheme',
             'prefers-reduced-motion',
@@ -420,17 +409,18 @@ let EmulationManager = (() => {
                     assert(EmulationManager.#supportedMediaFeatures.has(name), 'Unsupported media feature: ' + name);
                 }
             }
-            await this.#mediaFeaturesState.setState({
+            await this.#mediaState.setState({
+                ...this.#mediaState.state,
                 active: true,
                 mediaFeatures: features,
             });
         }
-        get #emulateMediaType() { return _private_emulateMediaType_descriptor.value; }
         async emulateMediaType(type) {
             assert(type === 'screen' ||
                 type === 'print' ||
                 (type ?? undefined) === undefined, 'Unsupported media type: ' + type);
-            await this.#mediaTypeState.setState({
+            await this.#mediaState.setState({
+                ...this.#mediaState.state,
                 type,
                 active: true,
             });

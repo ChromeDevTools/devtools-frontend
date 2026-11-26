@@ -6,6 +6,7 @@
 import { Target, TargetType } from '../api/Target.js';
 import { WebWorkerEvent } from '../api/WebWorker.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
+import { TargetCloseError } from '../common/Errors.js';
 import { Deferred } from '../util/Deferred.js';
 import { CdpPage } from './Page.js';
 import { CdpWebWorker } from './WebWorker.js';
@@ -28,6 +29,7 @@ export class CdpTarget extends Target {
     #sessionFactory;
     #logger;
     #childTargets = new Set();
+    #closePromise;
     _initializedDeferred = Deferred.create();
     _isClosedDeferred = Deferred.create();
     _targetId;
@@ -159,6 +161,64 @@ export class CdpTarget extends Target {
             return target._targetId === openerId;
         });
     }
+    async close() {
+        // Chrome closes the whole page when it closes the target of a frame.
+        if (this.#targetInfo.type === 'iframe') {
+            throw new Error('The target of a frame does not support closing');
+        }
+        if (this._isClosedDeferred.resolved()) {
+            return;
+        }
+        // Concurrent calls share one close operation, because a second
+        // `Target.closeTarget` fails if the target is already gone.
+        this.#closePromise ??= this.#close().finally(() => {
+            this.#closePromise = undefined;
+        });
+        await this.#closePromise;
+    }
+    async #close() {
+        await this.browser()._closeTarget(this._targetId);
+        if (this.#targetInfo.type === 'service_worker') {
+            // Chrome reports a closed service worker as destroyed only after the
+            // sessions attached to it detach.
+            const sessions = await this._attachedSessions();
+            await Promise.all(sessions.map(session => {
+                return this.#detach(session);
+            }));
+        }
+        await this._isClosedDeferred.valueOrThrow();
+    }
+    async #detach(session) {
+        if (session.detached) {
+            return;
+        }
+        // `session.detach()` sends the command on the connection, which fails for
+        // a session attached through a page. `parentSession()` returns the session
+        // itself if it was attached through the connection.
+        const parentSession = session.parentSession();
+        try {
+            await (parentSession === session ? session.connection() : parentSession)?.send('Target.detachFromTarget', { sessionId: session.id() });
+        }
+        catch (error) {
+            // Chrome might have detached the session already, for example because
+            // its page closed.
+            if (!session.detached) {
+                throw error;
+            }
+        }
+    }
+    /**
+     * Returns the sessions that Puppeteer keeps attached to the target.
+     */
+    async _attachedSessions() {
+        return this._targetManager().getAttachedSessions(this._targetId);
+    }
+    /**
+     * Whether `close()` is closing the target.
+     */
+    _isClosing() {
+        return this.#closePromise !== undefined;
+    }
     _targetInfoChanged(targetInfo) {
         this.#targetInfo = targetInfo;
         this._checkIfInitialized();
@@ -243,6 +303,12 @@ export class WorkerTarget extends CdpTarget {
     #workerPromise;
     async worker() {
         if (!this.#workerPromise) {
+            // `close()` detaches the sessions that are attached when Chrome closes
+            // the target, so a session attached later would keep a closed service
+            // worker alive.
+            if (this._isClosing()) {
+                throw new TargetCloseError('Target closed');
+            }
             const session = this._session();
             this.#workerPromise = (session
                 ? Promise.resolve(session)
@@ -254,6 +320,19 @@ export class WorkerTarget extends CdpTarget {
             });
         }
         return await this.#workerPromise;
+    }
+    async _attachedSessions() {
+        const sessions = new Set(await super._attachedSessions());
+        // Puppeteer detaches from service workers unless network rules are set,
+        // so `worker()` may attach a session of its own. A failed `worker()` call
+        // already rejected for its caller.
+        const worker = await this.#workerPromise?.catch(() => {
+            return undefined;
+        });
+        if (worker) {
+            sessions.add(worker.client);
+        }
+        return [...sessions];
     }
     /**
      * Service and shared workers are not owned by a page, so their console

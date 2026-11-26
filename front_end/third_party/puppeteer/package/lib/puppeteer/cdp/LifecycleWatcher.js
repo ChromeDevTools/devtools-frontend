@@ -57,6 +57,10 @@ export class LifecycleWatcher {
         frameEmitter.on(FrameEvent.FrameSwapped, this.#frameSwapped.bind(this));
         frameEmitter.on(FrameEvent.FrameSwappedByActivation, this.#frameSwapped.bind(this));
         frameEmitter.on(FrameEvent.FrameDetached, this.#onFrameDetached.bind(this));
+        const pageEmitter = this.#subscriptions.use(new EventEmitter(frame.page()));
+        pageEmitter.once("error" /* PageEvent.Error */, error => {
+            this.#terminationDeferred.resolve(error);
+        });
         const networkManagerEmitter = this.#subscriptions.use(new EventEmitter(networkManager));
         networkManagerEmitter.on(NetworkManagerEvent.Request, this.#onRequest.bind(this));
         networkManagerEmitter.on(NetworkManagerEvent.Response, this.#onResponse.bind(this));

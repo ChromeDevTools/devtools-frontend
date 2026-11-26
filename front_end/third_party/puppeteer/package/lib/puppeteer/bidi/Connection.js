@@ -32,7 +32,7 @@ export class BidiConnection extends EventEmitter {
         this.#debugProtocolReceive = logger?.(DEBUG_PREFIXES.bidiReceive);
         this.#transport = transport;
         this.#transport.onmessage = this.onMessage.bind(this);
-        this.#transport.onclose = this.unbind.bind(this);
+        this.#transport.onclose = this.#onClose.bind(this);
     }
     get closed() {
         return this.#closed;
@@ -138,11 +138,18 @@ export class BidiConnection extends EventEmitter {
         this.#transport.onclose = () => { };
         this.#callbacks.clear();
     }
+    #onClose() {
+        if (this.#closed) {
+            return;
+        }
+        this.unbind();
+        this.emit('closed', undefined);
+    }
     /**
      * Unbinds the connection and closes the transport.
      */
     dispose() {
-        this.unbind();
+        this.#onClose();
         this.#transport.close();
     }
     getPendingProtocolErrors() {

@@ -265,6 +265,8 @@ SOURCES = [
   "package/lib/puppeteer/common/HandleIterator.js",
   "package/lib/puppeteer/common/LazyArg.d.ts",
   "package/lib/puppeteer/common/LazyArg.js",
+  "package/lib/puppeteer/common/MouseStateTracker.d.ts",
+  "package/lib/puppeteer/common/MouseStateTracker.js",
   "package/lib/puppeteer/common/NetworkManagerEvents.d.ts",
   "package/lib/puppeteer/common/NetworkManagerEvents.js",
   "package/lib/puppeteer/common/PDFOptions.d.ts",

@@ -654,7 +654,7 @@ export class FunctionLocator extends Locator {
         this.#func = func;
     }
     _clone() {
-        return new FunctionLocator(this.#pageOrFrame, this.#func);
+        return new FunctionLocator(this.#pageOrFrame, this.#func).copyOptions(this);
     }
     _wait(options) {
         const signal = options?.signal;

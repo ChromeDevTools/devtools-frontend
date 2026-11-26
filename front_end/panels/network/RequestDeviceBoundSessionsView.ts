@@ -76,7 +76,6 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
   const {deviceBoundSessionUsages} = input;
 
   render(html`
-      <style>${UI.inspectorCommonStyles}</style>
       <style>${requestDeviceBoundSessionsViewStyles}</style>
       <div class="request-device-bound-sessions-view">
         ${

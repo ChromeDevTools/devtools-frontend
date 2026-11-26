@@ -3,12 +3,14 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-.request-device-bound-sessions-view {
-  margin: var(--sys-size-9);
-  overflow-y: auto;
-  scroll-behavior: smooth;
-}
+@scope to (devtools-widget > *) {
+  .request-device-bound-sessions-view {
+    margin: var(--sys-size-9);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
 
-.device-bound-session-grid-wrapper devtools-data-grid {
-  display: block;
+  .device-bound-session-grid-wrapper devtools-data-grid {
+    display: block;
+  }
 }

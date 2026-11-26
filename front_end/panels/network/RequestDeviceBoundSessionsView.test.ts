@@ -25,7 +25,7 @@ describeWithEnvironment('RequestDeviceBoundSessionsView', () => {
 
   it('renders device bound sessions', async () => {
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     RequestDeviceBoundSessionsView.DEFAULT_VIEW({
       deviceBoundSessionUsages: [
         {

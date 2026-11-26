@@ -4,6 +4,16 @@
 
 import("../../scripts/build/typescript/typescript.gni")
 
+node_ts_library("resultsdb_collector") {
+  testonly = false
+  sources = [ "resultsdb-collector.ts" ]
+
+  ts_deps = [
+    "../../front_end/testing:test_id_generation",
+    "../conductor:core",
+  ]
+}
+
 node_ts_library("shared") {
   sources = [
     "helper.ts",
@@ -13,8 +23,8 @@ node_ts_library("shared") {
   ]
 
   ts_deps = [
+    ":resultsdb_collector",
     "../../front_end/testing:mocha_helpers",
-    "../../front_end/testing:test_id_generation",
     "../conductor:core",
   ]
 }

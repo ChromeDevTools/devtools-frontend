@@ -8,8 +8,9 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
@@ -52,6 +53,93 @@ describeWithEnvironment('ServiceWorkersView', () => {
     assert.exists(sectionTitle);
     assert.include(sectionTitle.textContent, SCOPE_URL);
     await assertScreenshot('application/service-workers-view-basic.png');
+  });
+
+  it('renders detailed service worker registration with versions, errors, and clients', async () => {
+    const originalToLocaleString = Date.prototype.toLocaleString;
+    sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
+      return originalToLocaleString.call(this, 'en-US', {timeZone: 'UTC'});
+    });
+    let dateNow = 1700000000000;
+    sinon.stub(Date, 'now').callsFake(() => {
+      dateNow += 1000;
+      return dateNow;
+    });
+
+    view = new Application.ServiceWorkersView.ServiceWorkersView();
+    renderElementIntoDOM(view, {includeCommonStyles: true, width: '600px', height: '400px'});
+
+    const serviceWorkersManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
+    assert.exists(serviceWorkersManager);
+    const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
+    assert.exists(securityOriginManager);
+
+    const ORIGIN = 'https://example.com';
+    const SCOPE_URL = 'https://example.com/sw-scope/';
+    sinon.stub(securityOriginManager, 'securityOrigins').returns([ORIGIN]);
+
+    sinon.stub(target.targetAgent(), 'invoke_getTargetInfo').resolves({
+      targetInfo: {
+        targetId: 'client-1' as Protocol.Target.TargetID,
+        type: 'page',
+        title: 'Example Page',
+        url: 'https://example.com/index.html',
+        attached: true,
+        canAccessOpener: false,
+      },
+      getError: () => undefined,
+    });
+
+    const registrationId = 'sw-detailed-1' as Protocol.ServiceWorker.RegistrationID;
+    const registration = new SDK.ServiceWorkerManager.ServiceWorkerRegistration({
+      registrationId,
+      scopeURL: SCOPE_URL,
+      isDeleted: false,
+    });
+    registration.errors = [
+      {
+        errorMessage: 'Failed to fetch',
+        registrationId,
+        versionId: '1',
+        sourceURL: 'https://example.com/sw.js',
+        lineNumber: 1,
+        columnNumber: 1,
+      },
+    ];
+    registration.updateVersion({
+      registrationId,
+      versionId: '1',
+      scriptURL: 'https://example.com/sw.js',
+      scriptResponseTime: 1700000000,
+      status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated,
+      runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running,
+      controlledClients: ['client-1' as Protocol.Target.TargetID],
+      routerRules: JSON.stringify([{condition: {urlPattern: '/api/*'}, source: ['network'], id: 1}]),
+    });
+    registration.updateVersion({
+      registrationId,
+      versionId: '2',
+      scriptURL: 'https://example.com/sw.js',
+      scriptResponseTime: 1700000100,
+      status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed,
+      runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped,
+    });
+    registration.updateVersion({
+      registrationId,
+      versionId: '3',
+      scriptURL: 'https://example.com/sw.js',
+      scriptResponseTime: 1700000200,
+      status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing,
+      runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running,
+    });
+
+    serviceWorkersManager.dispatchEventToListeners(SDK.ServiceWorkerManager.Events.REGISTRATION_UPDATED, registration);
+
+    await view.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
+
+    await assertScreenshot('application/service-workers-view-detailed.png');
   });
 
   describe('router info', () => {

@@ -11,6 +11,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
+  assertScreenshot,
+  doubleRaf,
   getCleanTextContentFromElements,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
@@ -326,5 +328,66 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     requestView.requestUpdate();
     await viewStub.nextInput;
     assert.strictEqual(viewStub.input.selectedTabId, 'headers');
+  });
+
+  async function renderPopulatedCacheViewForScreenshot():
+      Promise<Application.ServiceWorkerCacheViews.ServiceWorkerCacheView> {
+    const originalToLocaleString = Date.prototype.toLocaleString;
+    sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
+      return originalToLocaleString.call(this, 'en-US', {timeZone: 'UTC'});
+    });
+    const storageBucketsModel = target.model(SDK.StorageBucketsModel.StorageBucketsModel);
+    assert.isNotNull(storageBucketsModel);
+    sinon.stub(storageBucketsModel, 'getBucketByName').returns({
+      bucket: {storageKey: testStorageKey, name: 'test-bucket'},
+      id: 'id',
+      expiration: 42,
+      quota: 1024,
+      persistent: true,
+      durability: 'strict' as Protocol.Storage.StorageBucketsDurability,
+    });
+    cacheEntries = [
+      createTestEntry(),
+      createTestEntry({
+        requestURL: 'https://example.com/image.png',
+        responseType: 'opaqueResponse' as Protocol.CacheStorage.CachedResponseType,
+        responseHeaders: [{name: 'content-type', value: 'image/png'}],
+      }),
+    ];
+
+    const view = new Application.ServiceWorkerCacheViews.ServiceWorkerCacheView(cacheStorageModel, cache);
+    const updatedPromise = waitForUpdate(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true, width: '800px', height: '550px'});
+    await updatedPromise;
+    await UI.Widget.Widget.allUpdatesComplete;
+    return view;
+  }
+
+  it('renders cache entries and preview pane cleanly', async () => {
+    const view = await renderPopulatedCacheViewForScreenshot();
+
+    try {
+      await doubleRaf();
+
+      await assertScreenshot('application/service-worker-cache-view.png');
+    } finally {
+      view.detach();
+    }
+  });
+
+  it('renders selected cache entry preview cleanly', async () => {
+    const view = await renderPopulatedCacheViewForScreenshot();
+
+    try {
+      const row = view.element.querySelector<HTMLElement>('devtools-data-grid table tr:nth-of-type(2)');
+      assert.isNotNull(row);
+      row.dispatchEvent(new Event('select'));
+      await UI.Widget.Widget.allUpdatesComplete;
+      await doubleRaf();
+
+      await assertScreenshot('application/service-worker-cache-view-selected.png');
+    } finally {
+      view.detach();
+    }
   });
 });

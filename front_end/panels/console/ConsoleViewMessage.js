@@ -60,7 +60,7 @@ import { format, updateStyle } from './ConsoleFormat.js';
 import { ConsoleInsightTeaser } from './ConsoleInsightTeaser.js';
 import consoleViewStyles from './consoleView.css.js';
 import { SymbolizedErrorWidget } from './SymbolizedErrorWidget.js';
-const { ifDefined, until } = Directives;
+const { ifDefined, styleMap, until } = Directives;
 const { widget, widgetRef } = UI.Widget;
 /**
  * Used with `widgetRef` to create a widget as soon as its element is rendered,
@@ -141,14 +141,18 @@ function selectableRank(element) {
     return 2;
 }
 function collectSelectableElements(root, rank, result) {
-    for (const element of root.querySelectorAll('*')) {
-        const elementRank = rank ?? selectableRank(element);
+    for (const element of root.children) {
+        if (!(element instanceof HTMLElement)) {
+            continue;
+        }
         if (element.hasAttribute(SELECTABLE_ATTRIBUTE)) {
-            result.push({ element, rank: elementRank });
+            result.push({ element, rank: rank ?? selectableRank(element) });
+            continue;
         }
         if (element.shadowRoot) {
-            collectSelectableElements(element.shadowRoot, elementRank, result);
+            collectSelectableElements(element.shadowRoot, rank ?? selectableRank(element), result);
         }
+        collectSelectableElements(element, rank, result);
     }
 }
 function selectableChildrenOf(element) {
@@ -403,13 +407,9 @@ const hoverButtonObserver = new IntersectionObserver(results => {
         }
     }
 });
-function appendOrShow(parent, child) {
-    if (child instanceof UI.Widget.Widget) {
-        child.show(parent, null, /* suppressOprhanWidgetError=*/ true);
-    }
-    else {
-        parent.appendChild(child);
-    }
+function renderMessageText(formatted, extraClass = '', title) {
+    const classes = extraClass ? `${extraClass} console-message-text` : 'console-message-text';
+    return html `<span class=${classes} title=${ifDefined(title)}>${formatted}</span>`;
 }
 export const NODE_PARAM_VIEW = (input, _output, target) => {
     if (input.fallback) {
@@ -845,11 +845,12 @@ export class ConsoleViewMessage {
     }
     buildMessage() {
         let messageElement;
+        let formattedContent;
         let messageText = this.message.messageText;
         if (this.message.source === Common.Console.FrontendMessageSource.ConsoleAPI) {
             switch (this.message.type) {
                 case "trace" /* Protocol.Runtime.ConsoleAPICalledEventType.Trace */:
-                    messageElement = this.format(this.message.parameters || ['console.trace']);
+                    formattedContent = this.format(this.message.parameters || ['console.trace']);
                     break;
                 case "clear" /* Protocol.Runtime.ConsoleAPICalledEventType.Clear */:
                     messageElement = document.createElement('span');
@@ -867,12 +868,12 @@ export class ConsoleViewMessage {
                 case "dir" /* Protocol.Runtime.ConsoleAPICalledEventType.Dir */: {
                     const obj = this.message.parameters ? this.message.parameters[0] : undefined;
                     const args = ['%O', obj];
-                    messageElement = this.format(args);
+                    formattedContent = this.format(args);
                     break;
                 }
                 case "profile" /* Protocol.Runtime.ConsoleAPICalledEventType.Profile */:
                 case "profileEnd" /* Protocol.Runtime.ConsoleAPICalledEventType.ProfileEnd */:
-                    messageElement = this.format([messageText]);
+                    formattedContent = this.format([messageText]);
                     break;
                 default: {
                     if (this.message.type === "assert" /* Protocol.Runtime.ConsoleAPICalledEventType.Assert */) {
@@ -884,21 +885,23 @@ export class ConsoleViewMessage {
                             const value = parameter.value;
                             const runtimeModel = this.message.runtimeModel();
                             if (runtimeModel && Bindings.SymbolizedError.isErrorLike(value)) {
-                                const remoteObj = parameter instanceof SDK.RemoteObject.RemoteObject ?
-                                    parameter :
-                                    runtimeModel.createRemoteObject(parameter);
-                                messageElement = document.createElement('span');
-                                render(this.renderSymbolizedError(remoteObj), messageElement);
+                                const remoteObj = this.#parameterToRemoteObject(parameter);
+                                formattedContent = this.renderSymbolizedError(remoteObj);
                             }
                         }
                     }
-                    const args = this.message.parameters || [messageText];
-                    messageElement = messageElement || this.format(args);
+                    if (!formattedContent) {
+                        const args = this.message.parameters || [messageText];
+                        formattedContent = this.format(args);
+                    }
                 }
             }
         }
         else if (this.message.source === "network" /* Protocol.Log.LogEntrySource.Network */) {
-            messageElement = this.formatAsNetworkRequest() || this.format([messageText]);
+            messageElement = this.formatAsNetworkRequest() ?? undefined;
+            if (!messageElement) {
+                formattedContent = this.format([messageText]);
+            }
         }
         else {
             const messageInParameters = this.message.parameters && messageText === this.message.parameters[0];
@@ -912,20 +915,16 @@ export class ConsoleViewMessage {
             else if (this.message.source === "deprecation" /* Protocol.Log.LogEntrySource.Deprecation */) {
                 messageText = i18nString(UIStrings.deprecationS, { PH1: messageText });
             }
-            const args = this.message.parameters || [messageText];
+            const args = this.message.parameters ? [...this.message.parameters] : [messageText];
             if (messageInParameters) {
                 args[0] = messageText;
             }
-            messageElement = this.format(args);
+            formattedContent = this.format(args);
         }
-        messageElement.classList.add('console-message-text');
+        messageElement?.classList.add('console-message-text');
         const formattedMessage = document.createElement('span');
-        formattedMessage.classList.add('source-code');
         this.anchorElement = this.buildMessageAnchor();
-        if (this.anchorElement) {
-            formattedMessage.appendChild(this.anchorElement);
-        }
-        formattedMessage.appendChild(messageElement);
+        render(html `${this.anchorElement ?? nothing}${formattedContent ? renderMessageText(formattedContent) : (messageElement ?? nothing)}`, formattedMessage, { container: { classes: ['source-code'] } });
         return formattedMessage;
     }
     formatAsNetworkRequest() {
@@ -963,7 +962,12 @@ export class ConsoleViewMessage {
                 linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
                 return linkElement;
             });
-            appendOrShow(messageElement, fragment);
+            if (fragment instanceof UI.Widget.Widget) {
+                fragment.show(messageElement, null, /* suppressOrphanWidgetError=*/ true);
+            }
+            else {
+                messageElement.appendChild(fragment);
+            }
         }
         return messageElement;
     }
@@ -1140,16 +1144,12 @@ export class ConsoleViewMessage {
         return { stackTraceElement, contentElement, messageElement, clickableElement, toggleElement };
     }
     format(rawParameters) {
-        const formattedResult = document.createElement('span');
         const parts = [];
         if (this.messagePrefix) {
             parts.push(html `<span>${this.messagePrefix}</span>`);
         }
         if (!rawParameters.length) {
-            if (parts.length) {
-                render(html `${parts}`, formattedResult);
-            }
-            return formattedResult;
+            return html `${parts}`;
         }
         // Formatting code below assumes that parameters are all wrappers whereas frontend console
         // API allows passing arbitrary values as messages (strings, numbers, etc.). Wrap them here.
@@ -1160,7 +1160,9 @@ export class ConsoleViewMessage {
                 this.message.level === "error" /* Protocol.Log.LogEntryLevel.Error */);
         // Multiple parameters with the first being a format string. Save unused substitutions.
         if (shouldFormatMessage) {
-            parameters = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1), parts);
+            const substitution = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1));
+            parts.push(substitution.formatted);
+            parameters = substitution.args;
             if (parameters.length) {
                 parts.push(' ');
             }
@@ -1178,8 +1180,7 @@ export class ConsoleViewMessage {
                 parts.push(' ');
             }
         }
-        render(html `${parts}`, formattedResult);
-        return formattedResult;
+        return html `${parts}`;
     }
     formatParameter(output, forceObjectFormat, includePreview) {
         if (output.customPreview()) {
@@ -1442,8 +1443,9 @@ export class ConsoleViewMessage {
         }
         return this.renderPropertyPreview(type, subtype, resultObj.className, description);
     };
-    formatWithSubstitutionString(formatString, parameters, parts) {
+    formatWithSubstitutionString(formatString, parameters) {
         const currentStyle = new Map();
+        const parts = [];
         const { tokens, args } = format(formatString, parameters);
         for (const token of tokens) {
             switch (token.type) {
@@ -1461,19 +1463,19 @@ export class ConsoleViewMessage {
                     }
                     else {
                         const lines = token.value.split('\n');
+                        const style = {
+                            contain: 'paint',
+                            display: 'inline-block',
+                            'max-width': '100%',
+                        };
+                        for (const [property, { value, priority }] of currentStyle) {
+                            style[property] = priority ? `${value} !${priority}` : value;
+                        }
                         for (let i = 0; i < lines.length; i++) {
                             if (i > 0) {
-                                parts.push(document.createElement('br'));
+                                parts.push(html `<br>`);
                             }
-                            const wrapper = document.createElement('span');
-                            wrapper.style.setProperty('contain', 'paint');
-                            wrapper.style.setProperty('display', 'inline-block');
-                            wrapper.style.setProperty('max-width', '100%');
-                            render(this.linkifyStringAsFragment(lines[i]), wrapper);
-                            for (const [property, { value, priority }] of currentStyle) {
-                                wrapper.style.setProperty(property, value, priority);
-                            }
-                            parts.push(wrapper);
+                            parts.push(html `<span style=${styleMap(style)}>${this.linkifyStringAsFragment(lines[i])}</span>`);
                         }
                     }
                     break;
@@ -1484,7 +1486,7 @@ export class ConsoleViewMessage {
                     break;
             }
         }
-        return args;
+        return { formatted: html `${parts}`, args };
     }
     matchesFilterRegex(regexObject) {
         regexObject.lastIndex = 0;

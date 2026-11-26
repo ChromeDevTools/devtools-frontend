@@ -580,6 +580,7 @@ var Audits;
     InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
     InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
     InspectorIssueCode2["WebInstallIssue"] = "WebInstallIssue";
+    InspectorIssueCode2["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
   })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
   let GetEncodedResponseRequestEncoding;
   ((GetEncodedResponseRequestEncoding2) => {
@@ -2948,9 +2949,11 @@ var accessibilityTreeView_css_default = `/**
  * found in the LICENSE file.
  */
 
-.accessibility-tree-view-container {
-  height: 100%;
-  overflow: auto;
+@scope to (devtools-widget > *) {
+  .accessibility-tree-view-container {
+    height: 100%;
+    overflow: auto;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./accessibilityTreeView.css")} */`;
@@ -3408,18 +3411,20 @@ var layersWidget_css_default = `/**
  * found in the LICENSE file.
  */
 
-.layers-widget {
-  overflow: hidden;
-  padding-left: var(--sys-size-2);
-  background-color: var(--sys-color-cdt-base-container);
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  margin-top: 0;
-  padding-bottom: var(--sys-size-2);
-}
+@scope to (devtools-widget > *) {
+  .layers-widget {
+    overflow: hidden;
+    padding-left: var(--sys-size-2);
+    background-color: var(--sys-color-cdt-base-container);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    margin-top: 0;
+    padding-bottom: var(--sys-size-2);
+  }
 
-.layers-widget > .layers-widget-title {
-  font-weight: bold;
-  margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
+  .layers-widget > .layers-widget-title {
+    font-weight: bold;
+    margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./layersWidget.css")} */`;
@@ -5821,36 +5826,22 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
     this.#propertyData = propertyData;
   }
   render(match, context) {
-    const childTracingContexts = context.tracing?.evaluation(
-      match.space.length ? [match.color1, match.color2, match.space] : [match.color1, match.color2],
-      { match, context }
-    );
-    const color1RenderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
-    const color2RenderingContext = childTracingContexts?.at(1)?.renderingContext(context) ?? context;
-    const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
-    let firstColor = null;
-    let secondColor = null;
-    const firstOrigins = /* @__PURE__ */ new Set();
-    const secondOrigins = /* @__PURE__ */ new Set();
+    const childTracingContexts = context.tracing?.evaluation(match.space.length ? [...match.items, match.space] : match.items, { match, context });
+    const spaceRenderingContext = childTracingContexts?.at(match.items.length)?.renderingContext(context) ?? context;
+    const colors = match.items.map(() => "");
+    const origins = match.items.map(() => /* @__PURE__ */ new Set());
     let mixSwatch = null;
-    const color1 = Renderer.render(match.color1, color1RenderingContext, {
-      onColor: (color, origin) => {
-        firstOrigins.add(origin);
-        firstColor = color ? colorToText(color) : null;
-        if (firstColor) {
-          mixSwatch?.setFirstColor(firstColor);
+    const items = match.items.map(
+      (item2, i) => Renderer.render(item2, childTracingContexts?.at(i)?.renderingContext(context) ?? context, {
+        onColor: (color, origin) => {
+          origins[i].add(origin);
+          colors[i] = color ? colorToText(color) : "";
+          if (colors[i]) {
+            mixSwatch?.setColor(i, colors[i]);
+          }
         }
-      }
-    });
-    const color2 = Renderer.render(match.color2, color2RenderingContext, {
-      onColor: (color, origin) => {
-        secondOrigins.add(origin);
-        secondColor = color ? colorToText(color) : null;
-        if (secondColor) {
-          mixSwatch?.setSecondColor(secondColor);
-        }
-      }
-    });
+      })
+    );
     const contentChild = html7`<span>${this.#propertyData ? getTracingTooltip(
       "color-mix",
       match.node,
@@ -5862,14 +5853,13 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
       this.#propertyData.tooltipIdFactory,
       this.#propertyData.property,
       this.#propertyData.parentShorthand()?.property.name
-    ) : "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext)}, ` : ""}${color1}, ${color2})</span>`;
-    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || firstOrigins.size !== 1 || secondOrigins.size !== 1) {
+    ) : "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext)}, ` : ""}${items.map((item2, i) => html7`${i > 0 ? ", " : ""}${item2}`)})</span>`;
+    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || origins.some((itemOrigins) => itemOrigins.size !== 1)) {
       return contentChild;
     }
     const space = match.space.map((space2) => context.matchedResult.getComputedText(space2)).join(" ");
-    const color1Text = match.color1.map((color) => context.matchedResult.getComputedText(color)).join(" ");
-    const color2Text = match.color2.map((color) => context.matchedResult.getComputedText(color)).join(" ");
-    const colorMixText = `color-mix(${space ? `${space}, ` : ""}${color1Text}, ${color2Text})`;
+    const itemTexts = match.items.map((item2) => item2.map((node) => context.matchedResult.getComputedText(node)).join(" "));
+    const colorMixText = InlineEditor.ColorMixSwatch.serializeColorMix(space, itemTexts);
     const nodeId = this.#stylesContainer.node()?.id;
     if (nodeId !== void 0 && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
@@ -5899,16 +5889,15 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
         return evaluation;
       }
     }
-    if (!firstColor || !secondColor) {
+    if (colors.some((color) => !color)) {
       context.callbacks.onColor?.(null, match);
       return contentChild;
     }
     const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
     mixSwatch = swatch;
-    swatch.setFirstColor(firstColor);
-    swatch.setSecondColor(secondColor);
+    swatch.setColorMix(space, itemTexts);
+    colors.forEach((color, i) => swatch.setColor(i, color));
     swatch.tabIndex = -1;
-    swatch.setColorMixText(colorMixText);
     UI7.ARIAUtils.setLabel(swatch, colorMixText);
     const { onColor } = context.callbacks;
     if (onColor) {
@@ -15332,7 +15321,7 @@ import * as ComputedStyleModule from "../../models/computed_style/computed_style
 import * as TreeOutline7 from "../../ui/components/tree_outline/tree_outline.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
-import { html as html12, nothing as nothing7, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html12, nothing as nothing7, render as render9 } from "../../ui/lit/lit.js";
 import * as ElementsComponents5 from "./components/components.js";
 
 // gen/front_end/panels/elements/computedStyleWidget.css.js
@@ -15577,6 +15566,7 @@ var categorizePropertyName = (propertyName) => {
 };
 
 // ../../front_end/panels/elements/ComputedStyleWidget.ts
+var { classMap: classMap3, ref: ref6 } = Directives6;
 var { bindToSetting } = UI13.UIUtils;
 var { widget: widget5 } = UI13.Widget;
 var UIStrings10 = {
@@ -15708,7 +15698,7 @@ var navigateToSource = (cssProperty, event) => {
   void Common7.Revealer.reveal(cssProperty);
   event?.consume(true);
 };
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   render9(html12`
     <style>${computedStyleWidget_css_default}</style>
     ${input.includeToolbar ? html12`
@@ -15734,7 +15724,17 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         </devtools-toolbar>
       </div>
       ` : nothing7}
-    ${input.computedStylesTree}
+    <devtools-tree-outline
+      class=${classMap3({ "computed-narrow": input.isNarrow })}
+      .data=${input.treeData}
+      ${ref6((el) => {
+    if (el instanceof TreeOutline7.TreeOutline.TreeOutline) {
+      output.expandGroupLists = () => el.expandRecursively(0);
+    } else {
+      output.expandGroupLists = void 0;
+    }
+  })}
+    ></devtools-tree-outline>
     ${!input.hasMatches ? html12`<div class="gray-info-message">${i18nString10(UIStrings10.noMatchingProperty)}</div>` : nothing7}
   `, target, { container: { classes: ["styles-sidebar-computed-style-widget"] } });
 };
@@ -15750,9 +15750,9 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
   #nodeStyle = null;
   #matchedStyles = null;
   #propertyTraces = null;
-  showInheritedComputedStylePropertiesSetting;
-  groupComputedStylesSetting;
-  filterRegex = null;
+  #showInheritedComputedStylePropertiesSetting;
+  #groupComputedStylesSetting;
+  #filterRegex = null;
   linkifier;
   imagePreviewPopover;
   /**
@@ -15773,10 +15773,19 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
    * populated, because an HTML node cannot be in two locations at once.
    */
   #propertyElementsCache = /* @__PURE__ */ new Map();
-  #computedStylesTree = new TreeOutline7.TreeOutline.TreeOutline();
   #treeData;
+  #treeDataDirty = true;
+  #filterDirty = true;
+  #filteredTreeData = {
+    tree: [],
+    compact: true,
+    defaultRenderer: (node) => html12`${node.id}`
+  };
+  #hasMatches = true;
+  #isNarrow = false;
   #enableNarrowViewResizing = true;
   #view;
+  #viewOutput = {};
   /**
    * TODO(b/407751272): the state here is confusing (3 instance variables relating to filtering).
    */
@@ -15786,9 +15795,9 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
   constructor(element, view = DEFAULT_VIEW6) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.showInheritedComputedStylePropertiesSetting = Common7.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
-    this.groupComputedStylesSetting = Common7.Settings.Settings.instance().createSetting("group-computed-styles", false);
-    this.filterRegex = null;
+    this.#showInheritedComputedStylePropertiesSetting = Common7.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
+    this.#groupComputedStylesSetting = Common7.Settings.Settings.instance().createSetting("group-computed-styles", false);
+    this.#filterRegex = null;
     this.linkifier = new Components5.Linkifier.Linkifier(maxLinkLength);
     this.imagePreviewPopover = new ImagePreviewPopover(
       this.contentElement,
@@ -15804,27 +15813,38 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
         return liveFeatures ?? this.#storedNodeFeatures ?? void 0;
       }
     );
-    this.#updateView({ hasMatches: true });
+    this.requestUpdate();
+  }
+  #onSettingChanged() {
+    this.#treeDataDirty = true;
+    this.requestUpdate();
   }
   wasShown() {
     super.wasShown();
-    this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate, this);
-    this.groupComputedStylesSetting.addChangeListener(this.requestUpdate, this);
-    this.requestUpdate();
+    this.#showInheritedComputedStylePropertiesSetting.addChangeListener(this.#onSettingChanged, this);
+    this.#groupComputedStylesSetting.addChangeListener(this.#onSettingChanged, this);
+    this.#onSettingChanged();
   }
   willHide() {
     super.willHide();
-    this.showInheritedComputedStylePropertiesSetting.removeChangeListener(this.requestUpdate, this);
-    this.groupComputedStylesSetting.removeChangeListener(this.requestUpdate, this);
+    this.#showInheritedComputedStylePropertiesSetting.removeChangeListener(this.#onSettingChanged, this);
+    this.#groupComputedStylesSetting.removeChangeListener(this.#onSettingChanged, this);
   }
   onResize() {
     const isNarrow = this.#enableNarrowViewResizing && this.contentElement.offsetWidth < 260;
-    this.#computedStylesTree.classList.toggle("computed-narrow", isNarrow);
+    if (this.#isNarrow === isNarrow) {
+      return;
+    }
+    this.#isNarrow = isNarrow;
+    this.requestUpdate();
   }
   get enableNarrowViewResizing() {
     return this.#enableNarrowViewResizing;
   }
   set enableNarrowViewResizing(enable) {
+    if (this.#enableNarrowViewResizing === enable) {
+      return;
+    }
     this.#enableNarrowViewResizing = enable;
     this.onResize();
   }
@@ -15838,50 +15858,42 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
     return this.#filterIsRegex;
   }
   set filterText(newFilter) {
-    if (typeof newFilter === "string") {
-      this.#filterText = newFilter;
-      this.#filterIsRegex = false;
-    } else {
-      this.#filterText = newFilter.source;
-      this.#filterIsRegex = true;
+    const nextFilterText = typeof newFilter === "string" ? newFilter : newFilter.source;
+    const nextFilterIsRegex = typeof newFilter !== "string";
+    if (this.#filterText === nextFilterText && this.#filterIsRegex === nextFilterIsRegex) {
+      return;
     }
-    this.filterRegex = this.#buildFilterRegex(this.#filterText);
+    this.#filterText = nextFilterText;
+    this.#filterIsRegex = nextFilterIsRegex;
+    this.#filterRegex = this.#buildFilterRegex(this.#filterText);
+    this.#filterDirty = true;
     this.requestUpdate();
   }
   get allowUserControl() {
     return this.#allowUserControl;
   }
   set allowUserControl(inc) {
+    if (this.#allowUserControl === inc) {
+      return;
+    }
     this.#allowUserControl = inc;
+    this.#treeDataDirty = true;
     this.requestUpdate();
-  }
-  /**
-   * @param input.hasMatches Whether any properties matched the current filter (or if any properties exist at all).
-   */
-  #updateView({ hasMatches }) {
-    this.#view(
-      {
-        computedStylesTree: this.#computedStylesTree,
-        includeToolbar: this.#allowUserControl,
-        hasMatches,
-        showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
-        groupComputedStylesSetting: this.groupComputedStylesSetting,
-        onFilterChanged: this.onFilterChanged.bind(this),
-        filterText: this.#filterText,
-        filterIsRegex: this.#filterIsRegex,
-        onRegexToggled: this.onRegexToggled.bind(this)
-      },
-      null,
-      this.contentElement
-    );
   }
   get nodeStyle() {
     return this.#nodeStyle;
   }
   set nodeStyle(nodeStyle) {
+    if (this.#nodeStyle === nodeStyle) {
+      return;
+    }
     this.#nodeStyle = nodeStyle;
+    this.#treeDataDirty = true;
     if (nodeStyle) {
-      void this.#storeNodeFeatures(nodeStyle.node).then(() => this.requestUpdate());
+      void this.#storeNodeFeatures(nodeStyle.node).then(() => {
+        this.#treeDataDirty = true;
+        this.requestUpdate();
+      });
     } else {
       this.requestUpdate();
     }
@@ -15890,11 +15902,19 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
     return this.#matchedStyles;
   }
   set matchedStyles(matchedStyles) {
+    if (this.#matchedStyles === matchedStyles) {
+      return;
+    }
     this.#matchedStyles = matchedStyles;
+    this.#treeDataDirty = true;
     this.requestUpdate();
   }
   set propertyTraces(propertyTraces) {
+    if (this.#propertyTraces === propertyTraces) {
+      return;
+    }
     this.#propertyTraces = propertyTraces;
+    this.#treeDataDirty = true;
     this.requestUpdate();
   }
   async #storeNodeFeatures(node) {
@@ -15906,25 +15926,67 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
     }
   }
   #shouldGroupStyles() {
-    return this.#allowUserControl && this.groupComputedStylesSetting.get();
+    return this.#allowUserControl && this.#groupComputedStylesSetting.get();
   }
   #shouldShowAllStyles() {
-    return this.#allowUserControl && this.showInheritedComputedStylePropertiesSetting.get();
+    return this.#allowUserControl && this.#showInheritedComputedStylePropertiesSetting.get();
   }
   async performUpdate() {
     const nodeStyles = this.#nodeStyle;
     const matchedStyles = this.#matchedStyles;
+    let shouldExpandGroups = false;
     if (!nodeStyles || !matchedStyles) {
-      this.#updateView({ hasMatches: false });
-      return;
-    }
-    if (this.#shouldGroupStyles()) {
-      await this.rebuildGroupedList(nodeStyles, matchedStyles);
+      this.#treeData = void 0;
+      this.#filteredTreeData = {
+        tree: [],
+        compact: true,
+        defaultRenderer: (node) => html12`${node.id}`
+      };
+      this.#hasMatches = false;
+      this.#treeDataDirty = false;
+      this.#filterDirty = false;
     } else {
-      await this.rebuildAlphabeticalList(nodeStyles, matchedStyles);
+      const shouldGroup = this.#shouldGroupStyles();
+      if (this.#treeDataDirty || !this.#treeData) {
+        this.#treeDataDirty = false;
+        this.#filterDirty = true;
+        if (shouldGroup) {
+          this.#rebuildGroupedList(nodeStyles, matchedStyles);
+        } else {
+          this.#rebuildAlphabeticalList(nodeStyles, matchedStyles);
+        }
+      }
+      if (this.#filterDirty) {
+        this.#filterDirty = false;
+        if (shouldGroup) {
+          await this.#filterGroupLists();
+          shouldExpandGroups = true;
+        } else {
+          this.#filterAlphabeticalList();
+        }
+      }
+    }
+    this.#view(
+      {
+        treeData: this.#filteredTreeData,
+        isNarrow: this.#isNarrow,
+        includeToolbar: this.#allowUserControl,
+        hasMatches: this.#hasMatches,
+        showInheritedComputedStylePropertiesSetting: this.#showInheritedComputedStylePropertiesSetting,
+        groupComputedStylesSetting: this.#groupComputedStylesSetting,
+        onFilterChanged: this.#onFilterChanged.bind(this),
+        filterText: this.#filterText,
+        filterIsRegex: this.#filterIsRegex,
+        onRegexToggled: this.#onRegexToggled.bind(this)
+      },
+      this.#viewOutput,
+      this.contentElement
+    );
+    if (shouldExpandGroups) {
+      await this.#viewOutput.expandGroupLists?.();
     }
   }
-  async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
+  #rebuildAlphabeticalList(nodeStyle, matchedStyles) {
     this.imagePreviewPopover.hide();
     this.linkifier.reset();
     const node = nodeStyle.node;
@@ -15943,21 +16005,16 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
       compact: true,
       defaultRenderer
     };
-    this.filterAlphabeticalList();
   }
-  async rebuildGroupedList(nodeStyle, matchedStyles) {
+  #rebuildGroupedList(nodeStyle, matchedStyles) {
     this.imagePreviewPopover.hide();
     this.linkifier.reset();
-    if (!nodeStyle || !matchedStyles) {
-      this.#updateView({ hasMatches: false });
-      return;
-    }
     const node = nodeStyle.node;
     const propertyTraces = this.#propertyTraces || /* @__PURE__ */ new Map();
     const properties = ComputedStyleModule.ComputedStyleModel.filterComputedStyleProperties(
       nodeStyle.computedStyle,
       matchedStyles,
-      { showAll: this.showInheritedComputedStylePropertiesSetting.get(), sort: false }
+      { showAll: this.#showInheritedComputedStylePropertiesSetting.get(), sort: false }
     );
     const propertiesByCategory = /* @__PURE__ */ new Map();
     const tree3 = [];
@@ -15970,7 +16027,6 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
         propertiesByCategory.get(category)?.push(property);
       }
     }
-    this.#computedStylesTree.removeChildren();
     for (const category of DefaultCategoryOrder) {
       const categoryProperties = propertiesByCategory.get(category);
       if (categoryProperties && categoryProperties.length > 0) {
@@ -15990,7 +16046,6 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
       compact: true,
       defaultRenderer
     };
-    return await this.filterGroupLists();
   }
   buildTraceNode(property, category) {
     const rule = property.ownerStyle.parentRule;
@@ -16098,30 +16153,30 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
     }
     return new RegExp(Platform6.StringUtilities.escapeForRegExp(text), "i");
   }
-  async onRegexToggled(regexToggled) {
-    this.#filterIsRegex = regexToggled;
-    this.requestUpdate();
+  async #onRegexToggled(isRegex) {
+    if (this.#filterIsRegex === isRegex) {
+      return;
+    }
+    this.#filterIsRegex = isRegex;
     await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
   }
-  async onFilterChanged(newFilterText) {
-    this.#filterText = newFilterText;
-    await this.filterComputedStyles(this.#buildFilterRegex(newFilterText));
-    if (newFilterText && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
-      UI13.ARIAUtils.LiveAnnouncer.alert(i18nString10(
-        UIStrings10.filterUpdateAriaText,
-        { PH1: newFilterText, PH2: this.#computedStylesTree.data.tree.length }
-      ));
+  async #onFilterChanged(filterText) {
+    this.#filterText = filterText;
+    await this.filterComputedStyles(this.#buildFilterRegex(filterText));
+    if (filterText) {
+      UI13.ARIAUtils.LiveAnnouncer.alert(
+        i18nString10(UIStrings10.filterUpdateAriaText, { PH1: filterText, PH2: this.#filteredTreeData.tree.length })
+      );
     }
   }
   async filterComputedStyles(regex) {
-    this.filterRegex = regex;
-    if (this.groupComputedStylesSetting.get()) {
-      return await this.filterGroupLists();
-    }
-    return this.filterAlphabeticalList();
+    this.#filterRegex = regex;
+    this.#filterDirty = true;
+    this.requestUpdate();
+    await this.updateComplete;
   }
   nodeFilter(node) {
-    const regex = this.filterRegex;
+    const regex = this.#filterRegex;
     const data = node.treeNodeData;
     if (data.tag === "property") {
       const matched = !regex || regex.test(data.propertyName) || regex.test(data.propertyValue);
@@ -16129,19 +16184,19 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
     }
     return true;
   }
-  filterAlphabeticalList() {
+  #filterAlphabeticalList() {
     if (!this.#treeData) {
       return;
     }
     const tree3 = this.#treeData.tree.filter(this.nodeFilter.bind(this));
-    this.#computedStylesTree.data = {
+    this.#filteredTreeData = {
       tree: tree3,
       defaultRenderer: this.#treeData.defaultRenderer,
       compact: this.#treeData.compact
     };
-    this.#updateView({ hasMatches: Boolean(tree3.length) });
+    this.#hasMatches = Boolean(tree3.length);
   }
-  async filterGroupLists() {
+  async #filterGroupLists() {
     if (!this.#treeData) {
       return;
     }
@@ -16159,13 +16214,12 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
         );
       }
     }
-    this.#computedStylesTree.data = {
+    this.#filteredTreeData = {
       tree: tree3,
       defaultRenderer: this.#treeData.defaultRenderer,
       compact: this.#treeData.compact
     };
-    await this.#computedStylesTree.expandRecursively(0);
-    this.#updateView({ hasMatches: Boolean(tree3.length) });
+    this.#hasMatches = Boolean(tree3.length);
   }
 };
 var maxLinkLength = 30;
@@ -16205,9 +16259,9 @@ import * as CodeHighlighter from "../../ui/components/code_highlighter/code_high
 import * as UI14 from "../../ui/legacy/legacy.js";
 import * as Lit4 from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
-var { Directives: { ref: ref6 }, html: html13, render: render10 } = Lit4;
+var { Directives: { ref: ref7 }, html: html13, render: render10 } = Lit4;
 var DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW = (input, _output, target) => {
-  const highlightNode = ref6((el) => {
+  const highlightNode = ref7((el) => {
     if (el) {
       el.textContent = input.text;
       void CodeHighlighter.CodeHighlighter.highlightNode(el, "text/css");
@@ -17418,7 +17472,7 @@ function buildChangeSelector(tracker, node) {
   }
   return void 0;
 }
-var { html: html16, nothing: nothing8, render: render12, Directives: { classMap: classMap3, ifDefined: ifDefined3, ref: ref7, repeat: repeat2, styleMap: styleMap2, until: until2 } } = Lit5;
+var { html: html16, nothing: nothing8, render: render12, Directives: { classMap: classMap4, ifDefined: ifDefined3, ref: ref8, repeat: repeat2, styleMap: styleMap2, until: until2 } } = Lit5;
 var { animateOn } = UI16.UIUtils;
 var { widget: widget6 } = UI16.Widget;
 var { RegisteredAdorners } = ElementsComponents6.AdornerManager;
@@ -17668,7 +17722,7 @@ function emptyViewInput() {
 }
 function adornerRef() {
   let adorner3;
-  return ref7((el) => {
+  return ref8((el) => {
     if (adorner3) {
       ElementsPanel.instance().deregisterAdorner(adorner3);
     }
@@ -17751,7 +17805,7 @@ function renderTitle(node, input) {
         }
         const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
         const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-        const renderTextNode = ref7((el) => {
+        const renderTextNode = ref8((el) => {
           if (el) {
             el.textContent = textContent;
             Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
@@ -17770,7 +17824,7 @@ function renderTitle(node, input) {
     case Node.TEXT_NODE: {
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "script") {
         const text = node.nodeValue();
-        const highlightNode = ref7((el) => {
+        const highlightNode = ref8((el) => {
           if (el) {
             el.textContent = text.replace(/^[\n\r]+|\s+$/g, "");
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/javascript").then(onHighlightSearchResults);
@@ -17780,7 +17834,7 @@ function renderTitle(node, input) {
       }
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "style") {
         const text = node.nodeValue();
-        const highlightNode = ref7((el) => {
+        const highlightNode = ref8((el) => {
           if (el) {
             el.textContent = text.replace(/^[\n\r]+|\s+$/g, "");
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/css").then(onHighlightSearchResults);
@@ -17790,7 +17844,7 @@ function renderTitle(node, input) {
       }
       const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
       const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-      const renderTextNode = ref7((el) => {
+      const renderTextNode = ref8((el) => {
         if (el) {
           el.textContent = textContent;
           Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
@@ -17883,7 +17937,7 @@ function setValueWithEntities(element, value5) {
 function renderLinkifiedValue(value5, node) {
   const rewrittenHref = node ? node.resolveURL(value5) : null;
   if (rewrittenHref === null) {
-    return html16`<span ${ref7((el) => {
+    return html16`<span ${ref8((el) => {
       if (el) {
         setValueWithEntities(el, value5);
       }
@@ -17895,7 +17949,7 @@ function renderLinkifiedValue(value5, node) {
   }
   const isAnchor = node && node.nodeName().toLowerCase() === "a" && Common9.ParsedURL.hasWebSafeScheme(rewrittenHref);
   if (isAnchor) {
-    return html16`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref7((el) => {
+    return html16`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref8((el) => {
       if (el) {
         ImagePreviewPopover.setImageUrl(el, rewrittenHref);
       }
@@ -18005,7 +18059,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   } else if (linkifyValue && relationPromise) {
     valueContent = until2(relationPromise, value5);
   } else if (valueType === 0 /* UNKNOWN */ && !isRelation) {
-    valueContent = html16`<span ${ref7((el) => {
+    valueContent = html16`<span ${ref8((el) => {
       if (el) {
         setValueWithEntities(el, value5);
       }
@@ -18020,7 +18074,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
     "webkit-html-attribute-name": true,
     "violating-element": hasAttributeIssues
   };
-  return html16`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap3(attributeNameClasses)}
+  return html16`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap4(attributeNameClasses)}
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until2(relationPromise, name) : name}</span>${hasText ? html16`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(
     Boolean(updateRecord?.isAttributeModified(name) && hasText),
     DOM_UPDATE_ANIMATION_CLASS_NAME
@@ -18050,8 +18104,8 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
   const jslog = !isClosingTag ? VisualLogging10.value("tag-name").track({ change: true, dblclick: true }) : "";
   const ariaLabel = isClosingTag ? `</${tagName}>` : `<${tagName}${attributes.map((attr) => attr.value ? ` ${attr.name}="${attr.value}"` : ` ${attr.name}`).join("")}>`;
   return html16`<span
-      class=${classMap3(tagClasses)} aria-label=${ariaLabel}
-      >&lt;<span class=${classMap3(tagNameClasses)} jslog=${jslog || nothing8} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html16` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
+      class=${classMap4(tagClasses)} aria-label=${ariaLabel}
+      >&lt;<span class=${classMap4(tagNameClasses)} jslog=${jslog || nothing8} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html16` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 function renderAdorner(adorner3) {
   const interactive = Boolean(adorner3.onClick);
@@ -18139,12 +18193,12 @@ var DEFAULT_VIEW8 = (input, output, target) => {
   render12(html16`
     <div style=${styleMap2({ "--indent": `${input.indent}px` })}
          @dblclick=${input.onDblClick}
-         ${ref7((el) => {
+         ${ref8((el) => {
     output.contentElement = el;
   })}>
       ${input.node ? html16`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input)}</span>` : nothing8}
       ${input.renderSelection !== false ? html16`<div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing8}
-      <div class=${classMap3(gutterContainerClasses)}
+      <div class=${classMap4(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
         <devtools-icon name="dots-horizontal"></devtools-icon>
@@ -18276,7 +18330,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       @mousedown=${(event) => event.stopPropagation()}
       @click=${(event) => event.stopPropagation()}
       class="source-code elements-tree-editor" style="width: ${input.editorWidth ?? 0}px;">
-        <devtools-text-editor .state=${input.editorState} ${ref7((el) => {
+        <devtools-text-editor .state=${input.editorState} ${ref8((el) => {
     output.editorRef = el;
   })}></devtools-text-editor>
       </div>` : nothing8}
@@ -20657,7 +20711,7 @@ li.shadow-root + ol.children {
 /*# sourceURL=${import.meta.resolve("./domTreeWidget.css")} */`;
 
 // ../../front_end/panels/elements/DOMTreeWidget.ts
-var { html: html17, nothing: nothing9, render: render13, Directives: { classMap: classMap4, ifDefined: ifDefined4, repeat: repeat3, styleMap: styleMap3 } } = Lit6;
+var { html: html17, nothing: nothing9, render: render13, Directives: { classMap: classMap5, ifDefined: ifDefined4, repeat: repeat3, styleMap: styleMap3 } } = Lit6;
 var { clonedRef } = UI18.UIUtils;
 var scrollHighlightedRowIntoView = (element) => {
   element?.scrollIntoViewIfNeeded(
@@ -21105,7 +21159,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
     const isDragOver = input.dragOverNode?.node === node && !input.dragOverNode.isClosingTag;
     const isClosingTagDragOver = input.dragOverNode?.node === node && Boolean(input.dragOverNode.isClosingTag);
     const isDraggable = !input.disableEdits && input.isValidDragSource(node);
-    const classes = classMap4({
+    const classes = classMap5({
       selected: isSelected && !input.selectedClosingTag,
       hovered: isOpeningHovered,
       "in-clipboard": input.isNodeInClipboard(node),
@@ -21249,7 +21303,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
                     data-target-id=${ifDefined4(node.domModel().target().id())}
                     selectable=${input.selectEnabled ? "true" : "false"}
                     ?selected=${isSelected && input.selectedClosingTag}
-                    class=${classMap4({
+                    class=${classMap5({
       selected: isSelected && input.selectedClosingTag,
       hovered: isClosingHovered,
       "elements-drag-over": isClosingTagDragOver
@@ -21299,7 +21353,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
     `;
   };
   const isSingleNode = Boolean(input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input));
-  const disclosureClasses = classMap4({
+  const disclosureClasses = classMap5({
     "elements-disclosure": true,
     "single-node": isSingleNode,
     "elements-tree-truncated": Boolean(input.maxRowsShown)
@@ -23799,7 +23853,7 @@ import * as Common13 from "../../core/common/common.js";
 import * as Platform9 from "../../core/platform/platform.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html19, nothing as nothing10, render as render15 } from "../../ui/lit/lit.js";
+import { Directives as Directives7, html as html19, nothing as nothing10, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -23955,7 +24009,7 @@ visible. */
 /*# sourceURL=${import.meta.resolve("./metricsSidebarPane.css")} */`;
 
 // ../../front_end/panels/elements/MetricsSidebarPane.ts
-var { live } = Directives6;
+var { live } = Directives7;
 var DEFAULT_VIEW11 = (input, output, target) => {
   const { style, highlightedMode, node, contentWidth, contentHeight, onHighlightNode, onStartEditing } = input;
   function createBoxPartElement(style2, name, side, suffix) {
@@ -26409,7 +26463,7 @@ import * as i18n44 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
 import * as SDK22 from "../../core/sdk/sdk.js";
 import * as UI26 from "../../ui/legacy/legacy.js";
-import { Directives as Directives7, html as html23, render as render19 } from "../../ui/lit/lit.js";
+import { Directives as Directives8, html as html23, render as render19 } from "../../ui/lit/lit.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/classesPaneWidget.css.js
@@ -26479,7 +26533,7 @@ var UIStrings22 = {
 };
 var str_22 = i18n44.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings22);
 var i18nString21 = i18n44.i18n.getLocalizedString.bind(void 0, str_22);
-var { ref: ref8, repeat: repeat4 } = Directives7;
+var { ref: ref9, repeat: repeat4 } = Directives8;
 var DEFAULT_VIEW15 = (input, output, target) => {
   const onKeyDown = (event) => {
     if (event.key === Platform12.KeyboardUtilities.ENTER_KEY && !event.isComposing) {
@@ -26493,7 +26547,7 @@ var DEFAULT_VIEW15 = (input, output, target) => {
     <style>${classesPaneWidget_css_default}</style>
     <div class="styles-element-classes-pane">
       <div class="title-container" @keydown=${onKeyDown}>
-        <div class="new-class-input monospace" autofocus ${ref8((element) => {
+        <div class="new-class-input monospace" autofocus ${ref9((element) => {
     output.attachPrompt = element instanceof HTMLElement ? (prompt) => prompt.attach(element) : void 0;
   })}></div>
       </div>

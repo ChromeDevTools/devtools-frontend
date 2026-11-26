@@ -5,6 +5,7 @@
 export var StateKind;
 (function (StateKind) {
     StateKind["CPU_THROTTLING"] = "cpu-throttling";
+    StateKind["USER_AGENT"] = "user-agent";
     StateKind["CACHE_DISABLED"] = "cache-disabled";
     StateKind["JAVASCRIPT_DISABLED"] = "java-script-disabled";
 })(StateKind || (StateKind = {}));

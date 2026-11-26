@@ -9,26 +9,28 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.css-angle {
-  display: inline-block;
-  position: relative;
-  outline: none;
-
-  .preview {
+@scope to (devtools-widget > *) {
+  .css-angle {
     display: inline-block;
+    position: relative;
+    outline: none;
+
+    .preview {
+      display: inline-block;
+    }
   }
-}
 
-devtools-css-angle-swatch {
-  display: inline-block;
-  user-select: none;
-}
+  devtools-css-angle-swatch {
+    display: inline-block;
+    user-select: none;
+  }
 
-devtools-css-angle-editor {
-  --override-dial-color: var(--sys-color-neutral-outline);
+  devtools-css-angle-editor {
+    --override-dial-color: var(--sys-color-neutral-outline);
 
-  position: fixed;
-  z-index: 2;
+    position: fixed;
+    z-index: 2;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./cssAngle.css')} */`;

@@ -72,11 +72,13 @@ export class CountersGraph extends UI.Widget.VBox {
     #noEventsFoundMessage = document.createElement('div');
     #showNoEventsMessage = false;
     #defaultNumberFormatter;
-    constructor(delegate) {
-        super();
+    constructor(delegateOrElement) {
+        super(delegateOrElement instanceof HTMLElement ? delegateOrElement : undefined);
         this.#defaultNumberFormatter = new Intl.NumberFormat(i18n.DevToolsLocale.DevToolsLocale.instance().locale);
         this.element.id = 'memory-graphs-container';
-        this.delegate = delegate;
+        if (delegateOrElement && !(delegateOrElement instanceof HTMLElement)) {
+            this.delegate = delegateOrElement;
+        }
         this.calculator = new Calculator();
         // Create selectors
         this.header = new UI.Widget.HBox();
@@ -215,7 +217,7 @@ export class CountersGraph extends UI.Widget.VBox {
             }
         }
         if (bestTime !== undefined && this.#events) {
-            this.delegate.selectEntryAtTime(this.#events, bestTime);
+            this.delegate?.selectEntryAtTime(this.#events, bestTime);
         }
     }
     onMouseLeave(_event) {

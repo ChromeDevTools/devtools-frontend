@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import { ConversationContext } from '../agents/AiAgent.js';
 import { FileFormatter } from '../data_formatters/FileFormatter.js';
+import { ListSourcesTool } from '../tools/ListSources.js';
 export class FileContext extends ConversationContext {
     jslogContext = 'ai-context-file';
     #file;
@@ -24,8 +25,15 @@ export class FileContext extends ConversationContext {
     getTitle() {
         return this.#file.displayName();
     }
+    /**
+     * Registers the selected file and includes its `File ID` so the model can page
+     * truncated content with `getSourceContent` and match `listSources` rows without
+     * an extra `listSources` call.
+     */
     async getPromptDetails() {
-        return `# Selected file\n${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
+        const fileId = ListSourcesTool.registerSource(this.#file);
+        const header = fileId !== null ? `# Selected file\nFile ID: ${fileId}` : '# Selected file';
+        return `${header}\n${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
     }
     async getUserFacingDetails() {
         return [

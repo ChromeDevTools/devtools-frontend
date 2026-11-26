@@ -2354,6 +2354,10 @@ function registerWidgetConfig(element, config) {
     setUpLifecycleTracking(element);
   }
   widgetConfigs.set(element, config);
+  const widget2 = Widget.get(element);
+  if (element.isConnected && widget2 && !widget2.parentWidget()) {
+    connectWidget(element);
+  }
 }
 function instantiateWidget(element, widgetConfig2) {
   if (!widgetConfig2.widgetClass) {
@@ -2393,6 +2397,27 @@ function detachWidgetWithoutRemovingElementFromDOM(widget2) {
     trackerDetachingWidgets.delete(widget2);
   }
 }
+function connectWidget(element) {
+  let widget2 = Widget.get(element);
+  if (!widget2) {
+    const config = widgetConfigs.get(element);
+    if (!config) {
+      throw new Error("No widgetConfig defined");
+    }
+    widget2 = instantiateWidget(element, config);
+  }
+  const parent = element.parentNode instanceof DocumentFragment ? element.parentNode : element.parentElementOrShadowHost();
+  if (!parent) {
+    widget2.markAsRoot();
+  } else if (!(parent instanceof WidgetElement && parent.controlsChildWidget(element))) {
+    widget2.show(
+      parent,
+      void 0,
+      /* suppressOrphanWidgetError= */
+      true
+    );
+  }
+}
 function setUpLifecycleTracking(element) {
   let tracker;
   if (element instanceof WidgetElement) {
@@ -2412,25 +2437,7 @@ function setUpLifecycleTracking(element) {
     }
   };
   tracker.onConnect = () => {
-    let widget2 = Widget.get(element);
-    if (!widget2) {
-      const config = widgetConfigs.get(element);
-      if (!config) {
-        throw new Error("No widgetConfig defined");
-      }
-      widget2 = instantiateWidget(element, config);
-    }
-    const parent = element.parentNode instanceof DocumentFragment ? element.parentNode : element.parentElementOrShadowHost();
-    if (!parent) {
-      widget2.markAsRoot();
-    } else if (!(parent instanceof WidgetElement && parent.controlsChildWidget(element))) {
-      widget2.show(
-        parent,
-        void 0,
-        /* suppressOrphanWidgetError= */
-        true
-      );
-    }
+    connectWidget(element);
   };
 }
 var WidgetElement = class extends HTMLElement {
@@ -2764,7 +2771,7 @@ var Widget = class _Widget {
     if (!this.element.parentElement) {
       return false;
     }
-    if (this.#hideOnDetach) {
+    if (this.#hideOnDetach || trackerDetachingWidgets.has(this)) {
       return true;
     }
     for (const child of this.#children) {
@@ -2972,7 +2979,7 @@ var Widget = class _Widget {
       return;
     }
     cancelUpdate(this);
-    const removeFromDOM = Boolean(overrideHideOnDetach) || !trackerDetachingWidgets.has(this) && !this.shouldHideOnDetach();
+    const removeFromDOM = Boolean(overrideHideOnDetach) || !this.shouldHideOnDetach();
     if (this.#visible) {
       this.#hideWidget(removeFromDOM);
     } else if (removeFromDOM) {
@@ -4212,9 +4219,6 @@ var SplitWidget = class extends SplitWidgetBase {
   sidebarWidget() {
     return this.#sidebarWidget;
   }
-  sidebarElement() {
-    return this.#sidebarElement;
-  }
   childWasDetached(widget2) {
     if (this.#detaching) {
       return;
@@ -4783,7 +4787,13 @@ var SplitWidget = class extends SplitWidgetBase {
 };
 var SplitWidgetElement = class extends WidgetElement {
   static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "show", "resizer", "no-splitter"];
-  #resizerObserver = new MutationObserver(() => this.#syncResizers());
+  #resizerObserver = new MutationObserver((records) => {
+    if (this.#hasRelevantResizerMutation(records)) {
+      this.#syncResizers();
+    }
+  });
+  #observedResizerTarget = null;
+  #resolvedResizerElements = /* @__PURE__ */ new Set();
   #hasCustomResizers = false;
   constructor() {
     super();
@@ -4829,30 +4839,90 @@ var SplitWidgetElement = class extends WidgetElement {
   }
   connectedCallback() {
     super.connectedCallback();
-    this.#updateResizerObserver();
     this.#syncResizers();
   }
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.#resizerObserver.disconnect();
+    this.#disconnectResizerObserver();
+    this.#syncResizers();
   }
-  #updateResizerObserver() {
+  #disconnectResizerObserver() {
     this.#resizerObserver.disconnect();
-    if (this.isConnected && this.hasAttribute("resizer")) {
-      this.#resizerObserver.observe(this, {
-        subtree: true,
-        childList: true,
-        attributes: true,
-        attributeFilter: ["id"]
-      });
+    this.#observedResizerTarget = null;
+  }
+  #updateResizerObserver(needsExternalScope) {
+    if (!this.isConnected || !this.hasAttribute("resizer")) {
+      this.#disconnectResizerObserver();
+      return;
     }
+    const target = needsExternalScope ? this.parentElement?.closest("devtools-split-view") ?? this.getRootNode() : this;
+    if (this.#observedResizerTarget === target) {
+      return;
+    }
+    this.#resizerObserver.disconnect();
+    this.#observedResizerTarget = target;
+    this.#resizerObserver.observe(target, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeOldValue: true,
+      attributeFilter: ["id"]
+    });
+  }
+  #hasRelevantResizerMutation(records) {
+    const resizerAttr = this.getAttribute("resizer");
+    if (!resizerAttr) {
+      return false;
+    }
+    const ids = new Set(resizerAttr.split(/\s+/).filter(Boolean));
+    if (ids.size === 0) {
+      return false;
+    }
+    const selector = [...ids].map((id2) => `#${CSS.escape(id2)}`).join(",");
+    const nodeTouchesResizer = (node) => {
+      if (!(node instanceof Element)) {
+        return false;
+      }
+      if (node.id && ids.has(node.id) || this.#resolvedResizerElements.has(node)) {
+        return true;
+      }
+      for (const tracked of this.#resolvedResizerElements) {
+        if (node.contains(tracked)) {
+          return true;
+        }
+      }
+      return Boolean(node.querySelector(selector));
+    };
+    for (const record of records) {
+      if (record.type === "attributes") {
+        const target = record.target;
+        if (record.oldValue && ids.has(record.oldValue) || target instanceof Element && (target.id && ids.has(target.id) || this.#resolvedResizerElements.has(target))) {
+          return true;
+        }
+        continue;
+      }
+      for (const node of record.addedNodes) {
+        if (nodeTouchesResizer(node)) {
+          return true;
+        }
+      }
+      for (const node of record.removedNodes) {
+        if (nodeTouchesResizer(node)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
   #syncResizers(widget2 = Widget.get(this)) {
     if (!widget2) {
+      this.#updateResizerObserver(this.hasAttribute("resizer"));
       return;
     }
-    const resizerAttr = this.getAttribute("resizer");
+    const resizerAttr = this.isConnected ? this.getAttribute("resizer") : null;
     if (resizerAttr === null) {
+      this.#resolvedResizerElements.clear();
+      this.#disconnectResizerObserver();
       if (this.#hasCustomResizers) {
         this.#hasCustomResizers = false;
         widget2.setCustomResizers(null);
@@ -4863,28 +4933,35 @@ var SplitWidgetElement = class extends WidgetElement {
     const ids = resizerAttr.split(/\s+/).filter(Boolean);
     const root = this.getRootNode();
     const parentSplit = this.parentElement?.closest("devtools-split-view") ?? null;
+    const resolvedMatches = /* @__PURE__ */ new Set();
     const elements = [];
+    let needsExternalScope = false;
     for (const id2 of ids) {
       const selector = `#${CSS.escape(id2)}`;
       let match = this.querySelector(selector);
       if (match && match.closest("devtools-split-view") !== this) {
         match = null;
       }
-      if (!match && (root instanceof Document || root instanceof ShadowRoot || root instanceof Element)) {
-        const candidate = root.querySelector(selector);
-        if (candidate && candidate.closest("devtools-split-view") === parentSplit) {
-          match = candidate;
+      if (!match) {
+        needsExternalScope = true;
+        if (root instanceof Document || root instanceof ShadowRoot || root instanceof Element) {
+          const candidate = root.querySelector(selector);
+          if (candidate && candidate.closest("devtools-split-view") === parentSplit) {
+            match = candidate;
+          }
         }
       }
       if (match) {
+        resolvedMatches.add(match);
         elements.push(match instanceof WidgetElement ? match.resizerElement() : match);
       }
     }
+    this.#resolvedResizerElements = resolvedMatches;
+    this.#updateResizerObserver(needsExternalScope);
     widget2.setCustomResizers(elements, this.hasAttribute("no-splitter"));
   }
   attributeChangedCallback(name, _oldValue, newValue) {
     if (name === "resizer" || name === "no-splitter") {
-      this.#updateResizerObserver();
       this.#syncResizers();
       return;
     }
@@ -6922,7 +6999,9 @@ var TabbedPaneElement = class extends WidgetElement {
     const widget2 = this.getWidget();
     if (widget2 && tabId) {
       this.#updateTabs(widget2);
-      widget2.selectTab(tabId);
+      if (widget2.selectedTabId !== tabId) {
+        widget2.selectTab(tabId);
+      }
     }
   }
   controlsChildWidget(child) {
@@ -7132,6 +7211,7 @@ var TabbedPaneElement = class extends WidgetElement {
         }
       }
       this.#managedTabIds = newIds;
+      const selectedTabId = widget2.selectedTabId;
       const autoSelect = widget2.autoSelectFirstItemOnShow;
       if (tabs.some((tab) => tab.selected)) {
         widget2.setAutoSelectFirstItemOnShow(false);
@@ -7177,7 +7257,7 @@ var TabbedPaneElement = class extends WidgetElement {
         if (tab.enabled !== void 0) {
           widget2.setTabEnabled(tab.id, tab.enabled);
         }
-        if (tab.selected) {
+        if (tab.selected && tab.id !== selectedTabId && widget2.selectedTabId !== tab.id) {
           widget2.selectTab(tab.id);
         }
         ++index;

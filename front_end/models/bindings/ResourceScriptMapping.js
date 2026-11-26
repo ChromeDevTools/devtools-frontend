@@ -8,7 +8,6 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as Workspace from '../workspace/workspace.js';
 import { ContentProviderBasedProject } from './ContentProviderBasedProject.js';
-import { DebuggerWorkspaceBinding } from './DebuggerWorkspaceBinding.js';
 import { NetworkProject } from './NetworkProject.js';
 import { metadataForURL } from './ResourceUtils.js';
 /**
@@ -375,8 +374,7 @@ export class ResourceScriptFile {
         if (!this.script) {
             return;
         }
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        const { pluginManager } = DebuggerWorkspaceBinding.instance();
+        const { pluginManager } = this.#resourceScriptMapping.debuggerWorkspaceBinding;
         pluginManager.setDebugInfoURL(this.script, debugInfoURL);
     }
     hasSourceMapURL() {

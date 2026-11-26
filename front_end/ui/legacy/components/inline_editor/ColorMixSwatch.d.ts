@@ -6,16 +6,16 @@ export declare class ColorMixChangedEvent extends Event {
     };
     constructor(text: string);
 }
+export declare function serializeColorMix(space: string, items: string[]): string;
 export declare class ColorMixSwatch extends HTMLElement {
     #private;
     private readonly shadow;
-    private colorMixText;
-    private firstColorText;
-    private secondColorText;
+    private space;
+    private items;
+    private colors;
     mixedColor(): Common.Color.Color | null;
-    setFirstColor(text: string): void;
-    setSecondColor(text: string): void;
-    setColorMixText(text: string): void;
+    setColorMix(space: string, items: string[]): void;
+    setColor(index: number, text: string): void;
     getText(): string;
 }
 declare global {

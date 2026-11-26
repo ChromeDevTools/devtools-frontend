@@ -1,12 +1,4 @@
 import type * as Platform from '../platform/platform.js';
-import type { SettingStorageType } from './Settings.js';
-export declare function registerCategoryOrder(category?: SettingCategory, order?: number): void;
-export declare function removeCategoryOrder(category?: SettingCategory, order?: number): void;
-export declare function registerSettingExtension(registration: SettingRegistration): void;
-export declare function getRegisteredSettings(): SettingRegistration[];
-export declare function registerSettingsForTest(settings: SettingRegistration[], forceReset?: boolean): void;
-export declare function resetSettings(): void;
-export declare function maybeRemoveSettingExtension(settingName: string): boolean;
 export declare const enum SettingCategory {
     NONE = "",// `NONE` must be a falsy value. Legacy code uses if-checks for the category.
     ELEMENTS = "ELEMENTS",
@@ -51,57 +43,6 @@ export interface RegExpSettingItem {
      * enable ignore listing, the rule can be reenabled.
      */
     disabledForUrl?: Platform.DevToolsPath.UrlString;
-}
-export interface SettingRegistration {
-    /**
-     * The category with which the setting is displayed in the UI.
-     */
-    category?: SettingCategory;
-    /**
-     * Used to sort on screen the settings that belong to the same category.
-     */
-    order?: number;
-    /**
-     * The title with which the setting is shown on screen.
-     */
-    title?: () => Platform.UIString.LocalizedString;
-    /**
-     * The identifier of the setting.
-     */
-    settingName: string;
-    /**
-     * Determines how the possible values of the setting are expressed.
-     *
-     * - If the setting can only be enabled and disabled use BOOLEAN
-     * - If the setting has a list of possible values use ENUM
-     * - If each setting value is a set of objects use ARRAY
-     * - If the setting value is a regular expression use REGEX
-     */
-    settingType: SettingType;
-    /**
-     * The value set by default to the setting.
-     */
-    defaultValue: unknown;
-    /**
-     * Words used to find a setting in the Command Menu.
-     */
-    tags?: Array<() => Platform.UIString.LocalizedString>;
-    /**
-     * The possible values the setting can have, each with a description composed of a title and an optional text.
-     */
-    options?: SettingExtensionOption[];
-    /**
-     * Whether DevTools must be reloaded for a change in the setting to take effect.
-     */
-    reloadRequired?: boolean;
-    /**
-     * Determines if the setting value is stored in the global, local or session storage.
-     */
-    storageType?: SettingStorageType;
-    /**
-     * See {@link LearnMore} for more info.
-     */
-    learnMore?: LearnMore;
 }
 /**
  * Optional information to learn more about the setting.

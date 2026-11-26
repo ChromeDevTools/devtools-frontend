@@ -459,6 +459,7 @@ var Button = class _Button extends HTMLElement {
       this.accessibleLabel = data.accessibleLabel;
     }
     this.#props.accessibleExpanded = data.accessibleExpanded;
+    this.#props.accessibleDescription = data.accessibleDescription;
     this.#props.jslogContext = data.jslogContext;
     this.#props.longClickable = data.longClickable;
     this.#props.inverseColorTheme = data.inverseColorTheme;
@@ -507,6 +508,13 @@ var Button = class _Button extends HTMLElement {
   }
   get accessibleExpanded() {
     return this.#props.accessibleExpanded;
+  }
+  set accessibleDescription(description) {
+    this.#props.accessibleDescription = description;
+    this.#render();
+  }
+  get accessibleDescription() {
+    return this.#props.accessibleDescription;
   }
   set reducedFocusRing(reducedFocusRing) {
     this.#props.reducedFocusRing = reducedFocusRing;
@@ -674,6 +682,7 @@ var Button = class _Button extends HTMLElement {
                   aria-pressed=${ifDefined(this.#props.toggled)}
                   aria-expanded=${ifDefined(this.#props.accessibleExpanded)}
                   aria-label=${ifDefined(this.accessibleLabel || this.title || void 0)}
+                  aria-description=${ifDefined(this.#props.accessibleDescription)}
                   jslog=${ifDefined(jslog)}>
             ${hasIcon ? html`
               <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>

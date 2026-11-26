@@ -598,6 +598,7 @@ var Audits;
     InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
     InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
     InspectorIssueCode2["WebInstallIssue"] = "WebInstallIssue";
+    InspectorIssueCode2["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
   })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
   let GetEncodedResponseRequestEncoding;
   ((GetEncodedResponseRequestEncoding2) => {
@@ -9410,14 +9411,14 @@ function applyFilterText(filterText, rows) {
   if (trimmedFilter === "") {
     return rows;
   }
-  const FILTER_KEYS = ["url", "action", "status"];
-  const parser = new TextUtils.TextUtils.FilterParser([...FILTER_KEYS]);
+  const FILTER_KEYS2 = ["url", "action", "status"];
+  const parser = new TextUtils.TextUtils.FilterParser([...FILTER_KEYS2]);
   const query = parser.parse(filterText.toLowerCase());
   const lastTerm = query.at(-1);
   if (!lastTerm) {
     return rows;
   }
-  const isKeyWithNoValue = (lastTerm.key === void 0 || lastTerm.key === null) && FILTER_KEYS.some((key) => lastTerm.text === `${key}:`);
+  const isKeyWithNoValue = (lastTerm.key === void 0 || lastTerm.key === null) && FILTER_KEYS2.some((key) => lastTerm.text === `${key}:`);
   if (isKeyWithNoValue) {
     query.pop();
   }
@@ -10057,6 +10058,7 @@ import * as Common9 from "../../core/common/common.js";
 import * as i18n23 from "../../core/i18n/i18n.js";
 import * as Platform5 from "../../core/platform/platform.js";
 import * as SDK12 from "../../core/sdk/sdk.js";
+import * as TextUtils3 from "../../core/text_utils/text_utils.js";
 import * as Buttons6 from "../../ui/components/buttons/buttons.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
 import { Directives as Directives5, html as html9, render as render9 } from "../../ui/lit/lit.js";
@@ -10090,6 +10092,10 @@ var privateVerificationTokensView_css_default = `/*
   flex: none;
 }
 
+.pvt-toolbar devtools-toolbar-input {
+  flex-grow: 0.4;
+}
+
 .table-container {
   display: flex;
   flex-direction: column;
@@ -10106,6 +10112,18 @@ devtools-data-grid {
 
 // ../../front_end/panels/application/PrivateVerificationTokensView.ts
 var { repeat: repeat2 } = Directives5;
+var FILTER_KEYS = [
+  "issuer",
+  "is-issuer",
+  "is-redeemer",
+  "id",
+  "key-id",
+  "expiration",
+  "creation-time",
+  "version",
+  "token"
+];
+var filterParser = new TextUtils3.TextUtils.FilterParser(FILTER_KEYS);
 var UIStrings12 = {
   /**
    * @description Text for the issuer of an item.
@@ -10163,6 +10181,17 @@ function renderView(input) {
   return html9`
     <div class="pvt-view" jslog=${VisualLogging6.pane("private-verification-tokens")}>
       <devtools-toolbar class="pvt-toolbar" jslog=${VisualLogging6.toolbar()}>
+        <devtools-toolbar-input type="filter"
+                                list="filter-suggestions"
+                                @change=${(e) => input.onFilterChanged(e.detail)}>
+          <datalist id="filter-suggestions">
+            ${FILTER_KEYS.map((key) => html9`
+              <option value=${key + ":"}></option>
+              <option value=${"-" + key + ":"}></option>
+            `)}
+          </datalist>
+        </devtools-toolbar-input>
+        <div role="separator" class="toolbar-divider"></div>
         <devtools-button class="clear-all-button"
                          .disabled=${!hasTokens}
                          .iconName=${"clear"}
@@ -10182,6 +10211,7 @@ function renderView(input) {
       <div class="table-container">
         ${hasTokens ? html9`
           <devtools-data-grid striped inline deletable
+                              .filters=${input.filters}
                               @deselect=${input.onDeselect}>
             <table>
               <tr>
@@ -10231,6 +10261,7 @@ var PrivateVerificationTokensView = class extends UI12.Widget.VBox {
   #tokens = [];
   #fetchGeneration = 0;
   #selectedTokenId = null;
+  #filters = [];
   #view;
   constructor(element, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
@@ -10297,7 +10328,7 @@ var PrivateVerificationTokensView = class extends UI12.Widget.VBox {
   }
   /**
    * Fetches tokens from the backend and caches them, so that local view state
-   * changes (such as selection) re-render without additional CDP round-trips.
+   * changes (filtering, selection) re-render without additional CDP round-trips.
    * Responses from superseded fetches are discarded.
    */
   async #refreshTokens() {
@@ -10328,12 +10359,21 @@ var PrivateVerificationTokensView = class extends UI12.Widget.VBox {
     this.#view(
       {
         tokens: this.#tokens,
+        filters: this.#filters,
         selectedTokenId: this.#selectedTokenId,
+        onFilterChanged: (filterText) => {
+          this.#filters = filterParser.parse(filterText);
+          this.#selectedTokenId = null;
+          this.requestUpdate();
+        },
         onSelect: (tokenId) => {
           this.#selectedTokenId = tokenId;
           this.requestUpdate();
         },
         onDeselect: () => {
+          if (this.#selectedTokenId === null) {
+            return;
+          }
           this.#selectedTokenId = null;
           this.requestUpdate();
         },
@@ -10940,7 +10980,7 @@ import * as Common10 from "../../core/common/common.js";
 import * as i18n31 from "../../core/i18n/i18n.js";
 import * as Platform7 from "../../core/platform/platform.js";
 import * as SDK15 from "../../core/sdk/sdk.js";
-import * as TextUtils3 from "../../core/text_utils/text_utils.js";
+import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as Buttons8 from "../../ui/components/buttons/buttons.js";
 import * as Geometry from "../../ui/geometry/geometry.js";
 import * as UI16 from "../../ui/legacy/legacy.js";
@@ -11370,7 +11410,7 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
     if (!response) {
       return { error: "No cached response found" };
     }
-    return new TextUtils3.ContentData.ContentData(
+    return new TextUtils5.ContentData.ContentData(
       response.body,
       /* isBase64=*/
       true,
@@ -15007,7 +15047,7 @@ __export(DOMStorageItemsView_exports, {
 import * as Common14 from "../../core/common/common.js";
 import * as i18n49 from "../../core/i18n/i18n.js";
 import * as SDK21 from "../../core/sdk/sdk.js";
-import * as TextUtils4 from "../../core/text_utils/text_utils.js";
+import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as AiAssistanceModel2 from "../../models/ai_assistance/ai_assistance.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI24 from "../../ui/legacy/legacy.js";
@@ -15436,7 +15476,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   createPreview(key, value) {
     const protocol = this.domStorage.isLocalStorage ? "localstorage" : "sessionstorage";
     const url = `${protocol}://${key}`;
-    const provider = TextUtils4.StaticContentProvider.StaticContentProvider.fromString(
+    const provider = TextUtils6.StaticContentProvider.StaticContentProvider.fromString(
       url,
       Common14.ResourceType.resourceTypes.XHR,
       value
@@ -15587,7 +15627,7 @@ __export(ExtensionStorageItemsView_exports, {
 });
 import * as Common15 from "../../core/common/common.js";
 import * as i18n51 from "../../core/i18n/i18n.js";
-import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as JSON5 from "../../third_party/json5/json5.js";
 import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI25 from "../../ui/legacy/legacy.js";
@@ -15655,7 +15695,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   }
   createPreview(key, value) {
     const url = "extension-storage://" + this.#extensionStorage.extensionId + "/" + this.#extensionStorage.storageArea + "/preview/" + key;
-    const provider = TextUtils5.StaticContentProvider.StaticContentProvider.fromString(
+    const provider = TextUtils7.StaticContentProvider.StaticContentProvider.fromString(
       url,
       Common15.ResourceType.resourceTypes.XHR,
       value

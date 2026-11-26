@@ -48,6 +48,7 @@
   "files": [
     "../../../../../../front_end/models/devtools_state/StateManager.test.ts",
     "../../../../../../front_end/models/devtools_state/providers/CPUThrottlingStateProvider.test.ts",
+    "../../../../../../front_end/models/devtools_state/providers/NetworkStateProvider.test.ts",
     "../../../../../../front_end/models/devtools_state/providers/SettingsStateProvider.test.ts"
   ],
   "references": [

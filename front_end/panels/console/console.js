@@ -1000,6 +1000,7 @@ var Audits;
     InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
     InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
     InspectorIssueCode2["WebInstallIssue"] = "WebInstallIssue";
+    InspectorIssueCode2["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
   })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
   let GetEncodedResponseRequestEncoding;
   ((GetEncodedResponseRequestEncoding2) => {
@@ -4759,7 +4760,7 @@ var SymbolizedErrorWidget = class extends UI2.Widget.Widget {
 };
 
 // ../../front_end/panels/console/ConsoleViewMessage.ts
-var { ifDefined, until } = Directives;
+var { ifDefined, styleMap, until } = Directives;
 var { widget: widget2, widgetRef } = UI3.Widget;
 function ensureWidgetCreated() {
 }
@@ -4817,14 +4818,18 @@ function selectableRank(element) {
   return 2;
 }
 function collectSelectableElements(root, rank, result) {
-  for (const element of root.querySelectorAll("*")) {
-    const elementRank = rank ?? selectableRank(element);
+  for (const element of root.children) {
+    if (!(element instanceof HTMLElement)) {
+      continue;
+    }
     if (element.hasAttribute(SELECTABLE_ATTRIBUTE)) {
-      result.push({ element, rank: elementRank });
+      result.push({ element, rank: rank ?? selectableRank(element) });
+      continue;
     }
     if (element.shadowRoot) {
-      collectSelectableElements(element.shadowRoot, elementRank, result);
+      collectSelectableElements(element.shadowRoot, rank ?? selectableRank(element), result);
     }
+    collectSelectableElements(element, rank, result);
   }
 }
 function selectableChildrenOf(element) {
@@ -5075,17 +5080,9 @@ var hoverButtonObserver = new IntersectionObserver((results) => {
     }
   }
 });
-function appendOrShow(parent, child) {
-  if (child instanceof UI3.Widget.Widget) {
-    child.show(
-      parent,
-      null,
-      /* suppressOprhanWidgetError=*/
-      true
-    );
-  } else {
-    parent.appendChild(child);
-  }
+function renderMessageText(formatted, extraClass = "", title) {
+  const classes = extraClass ? `${extraClass} console-message-text` : "console-message-text";
+  return html3`<span class=${classes} title=${ifDefined(title)}>${formatted}</span>`;
 }
 var NODE_PARAM_VIEW = (input, _output, target) => {
   if (input.fallback) {
@@ -5514,11 +5511,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   buildMessage() {
     let messageElement;
+    let formattedContent;
     let messageText = this.message.messageText;
     if (this.message.source === Common2.Console.FrontendMessageSource.ConsoleAPI) {
       switch (this.message.type) {
         case Runtime.ConsoleAPICalledEventType.Trace:
-          messageElement = this.format(this.message.parameters || ["console.trace"]);
+          formattedContent = this.format(this.message.parameters || ["console.trace"]);
           break;
         case Runtime.ConsoleAPICalledEventType.Clear:
           messageElement = document.createElement("span");
@@ -5538,12 +5536,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         case Runtime.ConsoleAPICalledEventType.Dir: {
           const obj = this.message.parameters ? this.message.parameters[0] : void 0;
           const args = ["%O", obj];
-          messageElement = this.format(args);
+          formattedContent = this.format(args);
           break;
         }
         case Runtime.ConsoleAPICalledEventType.Profile:
         case Runtime.ConsoleAPICalledEventType.ProfileEnd:
-          messageElement = this.format([messageText]);
+          formattedContent = this.format([messageText]);
           break;
         default: {
           if (this.message.type === Runtime.ConsoleAPICalledEventType.Assert) {
@@ -5555,18 +5553,22 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
               const value = parameter.value;
               const runtimeModel = this.message.runtimeModel();
               if (runtimeModel && Bindings2.SymbolizedError.isErrorLike(value)) {
-                const remoteObj = parameter instanceof SDK3.RemoteObject.RemoteObject ? parameter : runtimeModel.createRemoteObject(parameter);
-                messageElement = document.createElement("span");
-                render3(this.renderSymbolizedError(remoteObj), messageElement);
+                const remoteObj = this.#parameterToRemoteObject(parameter);
+                formattedContent = this.renderSymbolizedError(remoteObj);
               }
             }
           }
-          const args = this.message.parameters || [messageText];
-          messageElement = messageElement || this.format(args);
+          if (!formattedContent) {
+            const args = this.message.parameters || [messageText];
+            formattedContent = this.format(args);
+          }
         }
       }
     } else if (this.message.source === Log.LogEntrySource.Network) {
-      messageElement = this.formatAsNetworkRequest() || this.format([messageText]);
+      messageElement = this.formatAsNetworkRequest() ?? void 0;
+      if (!messageElement) {
+        formattedContent = this.format([messageText]);
+      }
     } else {
       const messageInParameters = this.message.parameters && messageText === this.message.parameters[0];
       if (this.message.source === Log.LogEntrySource.Violation) {
@@ -5576,20 +5578,20 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       } else if (this.message.source === Log.LogEntrySource.Deprecation) {
         messageText = i18nString2(UIStrings2.deprecationS, { PH1: messageText });
       }
-      const args = this.message.parameters || [messageText];
+      const args = this.message.parameters ? [...this.message.parameters] : [messageText];
       if (messageInParameters) {
         args[0] = messageText;
       }
-      messageElement = this.format(args);
+      formattedContent = this.format(args);
     }
-    messageElement.classList.add("console-message-text");
+    messageElement?.classList.add("console-message-text");
     const formattedMessage = document.createElement("span");
-    formattedMessage.classList.add("source-code");
     this.anchorElement = this.buildMessageAnchor();
-    if (this.anchorElement) {
-      formattedMessage.appendChild(this.anchorElement);
-    }
-    formattedMessage.appendChild(messageElement);
+    render3(
+      html3`${this.anchorElement ?? nothing3}${formattedContent ? renderMessageText(formattedContent) : messageElement ?? nothing3}`,
+      formattedMessage,
+      { container: { classes: ["source-code"] } }
+    );
     return formattedMessage;
   }
   formatAsNetworkRequest() {
@@ -5640,7 +5642,16 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         linkElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
         return linkElement;
       });
-      appendOrShow(messageElement, fragment);
+      if (fragment instanceof UI3.Widget.Widget) {
+        fragment.show(
+          messageElement,
+          null,
+          /* suppressOrphanWidgetError=*/
+          true
+        );
+      } else {
+        messageElement.appendChild(fragment);
+      }
     }
     return messageElement;
   }
@@ -5818,21 +5829,19 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return { stackTraceElement, contentElement, messageElement, clickableElement, toggleElement };
   }
   format(rawParameters) {
-    const formattedResult = document.createElement("span");
     const parts = [];
     if (this.messagePrefix) {
       parts.push(html3`<span>${this.messagePrefix}</span>`);
     }
     if (!rawParameters.length) {
-      if (parts.length) {
-        render3(html3`${parts}`, formattedResult);
-      }
-      return formattedResult;
+      return html3`${parts}`;
     }
     let parameters = rawParameters.map((parameter) => this.#parameterToRemoteObject(parameter));
     const shouldFormatMessage = SDK3.RemoteObject.RemoteObject.type(parameters[0]) === "string" && (this.message.type !== SDK3.ConsoleModel.FrontendMessageType.Result || this.message.level === Log.LogEntryLevel.Error);
     if (shouldFormatMessage) {
-      parameters = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1), parts);
+      const substitution = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1));
+      parts.push(substitution.formatted);
+      parameters = substitution.args;
       if (parameters.length) {
         parts.push(" ");
       }
@@ -5847,8 +5856,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         parts.push(" ");
       }
     }
-    render3(html3`${parts}`, formattedResult);
-    return formattedResult;
+    return html3`${parts}`;
   }
   formatParameter(output, forceObjectFormat, includePreview) {
     if (output.customPreview()) {
@@ -6093,8 +6101,9 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     return this.renderPropertyPreview(type, subtype, resultObj.className, description);
   };
-  formatWithSubstitutionString(formatString, parameters, parts) {
+  formatWithSubstitutionString(formatString, parameters) {
     const currentStyle = /* @__PURE__ */ new Map();
+    const parts = [];
     const { tokens, args } = format(formatString, parameters);
     for (const token of tokens) {
       switch (token.type) {
@@ -6121,19 +6130,19 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
             parts.push(this.linkifyStringAsFragment(token.value));
           } else {
             const lines = token.value.split("\n");
+            const style = {
+              contain: "paint",
+              display: "inline-block",
+              "max-width": "100%"
+            };
+            for (const [property, { value, priority }] of currentStyle) {
+              style[property] = priority ? `${value} !${priority}` : value;
+            }
             for (let i = 0; i < lines.length; i++) {
               if (i > 0) {
-                parts.push(document.createElement("br"));
+                parts.push(html3`<br>`);
               }
-              const wrapper = document.createElement("span");
-              wrapper.style.setProperty("contain", "paint");
-              wrapper.style.setProperty("display", "inline-block");
-              wrapper.style.setProperty("max-width", "100%");
-              render3(this.linkifyStringAsFragment(lines[i]), wrapper);
-              for (const [property, { value, priority }] of currentStyle) {
-                wrapper.style.setProperty(property, value, priority);
-              }
-              parts.push(wrapper);
+              parts.push(html3`<span style=${styleMap(style)}>${this.linkifyStringAsFragment(lines[i])}</span>`);
             }
           }
           break;
@@ -6143,7 +6152,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
           break;
       }
     }
-    return args;
+    return { formatted: html3`${parts}`, args };
   }
   matchesFilterRegex(regexObject) {
     regexObject.lastIndex = 0;
@@ -8936,7 +8945,7 @@ import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html7, render as render7 } from "../../ui/lit/lit.js";
-var { ref: ref3, repeat: repeat2, styleMap } = Directives3;
+var { ref: ref3, repeat: repeat2, styleMap: styleMap2 } = Directives3;
 var EXPANDED_CONTENT_HEIGHT = "10000000px";
 var DEFAULT_VIEW6 = (input, output, target) => {
   const gaps = /* @__PURE__ */ new Map();
@@ -8975,10 +8984,10 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   };
   render7(
     html7`
-    <div style=${styleMap({ height: `${input.topGapHeight}px`, color: "transparent" })} aria-hidden="true"
+    <div style=${styleMap2({ height: `${input.topGapHeight}px`, color: "transparent" })} aria-hidden="true"
          ${ref3((e) => setGap("top", e))}>&#xFEFF;</div>
     <div tabindex=${input.contentTabIndex}
-         style=${styleMap({ height: input.expandContent ? EXPANDED_CONTENT_HEIGHT : void 0 })}
+         style=${styleMap2({ height: input.expandContent ? EXPANDED_CONTENT_HEIGHT : void 0 })}
          @focusin=${(event) => {
       const eventTarget = event.target;
       const itemIndex = input.items.findIndex((item2) => item2.element().isSelfOrAncestor(eventTarget));
@@ -8995,7 +9004,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     })}>
       ${repeat2(input.items, (item2) => item2, (item2) => item2.element())}
     </div>
-    <div style=${styleMap({ height: `${input.bottomGapHeight}px`, color: "transparent" })} aria-hidden="true"
+    <div style=${styleMap2({ height: `${input.bottomGapHeight}px`, color: "transparent" })} aria-hidden="true"
          ${ref3((e) => setGap("bottom", e))}>&#xFEFF;</div>`,
     target,
     {

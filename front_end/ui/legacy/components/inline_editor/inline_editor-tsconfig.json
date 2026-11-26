@@ -81,9 +81,6 @@
       "path": "../../../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../components/buttons/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../bundle-tsconfig.ref.json"
     },
     {

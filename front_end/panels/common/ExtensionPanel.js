@@ -159,6 +159,11 @@ const hashIdentifier = (id) => Platform.StringUtilities.hashCode(id).toString(36
 // Produces a stable identifier usable as (part of) viewId by either sanitizing it or hashing.
 const cleanIdentifier = (id) => Platform.StringUtilities.sanitizeIdentifier(id) || hashIdentifier(id);
 export const SIDEBAR_PANE_DEFAULT_VIEW = (input, _output, target) => {
+    const existingWidget = target.firstElementChild ? UI.Widget.Widget.get(target.firstElementChild) : undefined;
+    if ((existingWidget instanceof ExtensionView && !input.pageURL) ||
+        (existingWidget instanceof ExtensionNotifierView && (Boolean(input.pageURL) || !input.showObjectProperties))) {
+        existingWidget.hideWidget();
+    }
     // clang-format off
     render(html `
     ${input.pageURL ? widget(ExtensionView, {
@@ -188,7 +193,7 @@ export const SIDEBAR_PANE_DEFAULT_VIEW = (input, _output, target) => {
         container: {
             classes: ['fill'],
             attributes: {
-                style: input.height ? `height: ${input.height}` : undefined,
+                style: input.height && CSS.supports('height', input.height) ? `height: ${input.height}` : undefined,
             },
         },
     });

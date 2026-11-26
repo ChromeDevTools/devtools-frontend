@@ -166,17 +166,14 @@ export class ElementsBreadcrumbs extends UI.Widget.Widget {
     wasShown() {
         super.wasShown();
         this.#resizeObserver.observe(this.contentElement);
+        // Hiding can remove the crumbs from the DOM, which resets their scroll
+        // position, so scroll to the selected crumb again.
+        this.#scrollSelectedCrumbIntoView = true;
         this.requestUpdate();
     }
     willHide() {
         this.#resizeObserver.disconnect();
         super.willHide();
-    }
-    onDetach() {
-        super.onDetach();
-        // Removing the element from the DOM resets its scroll position. Treat the
-        // next show as a fresh overflow, so the selected crumb is scrolled into view.
-        this.#overflowing = false;
     }
     #onCrumbClick(node) {
         this.element.dispatchEvent(new NodeSelectedEvent(node));

@@ -37,18 +37,27 @@ export interface AiConversationOptions {
     alwaysAllowedTools?: AlwaysAllowedTools;
     targetManager?: SDK.TargetManager.TargetManager;
     /**
-     * Whether server-side content logging is allowed for this conversation.
-     * Setting this to `false` disables logging and cannot override a global `disallowLogging` policy.
+     * Whether server-side logging starts enabled (default `true`).
+     *
+     * Global `disallowLogging` in `hostConfig` at construction overrides `true`.
      */
     serverSideLoggingAllowed?: boolean;
 }
 export declare class AiConversation {
     #private;
+    /** Restores a read-only conversation with server-side logging disabled. */
     static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation;
     readonly id: string;
     readonly history: ResponseData[];
     constructor(options: AiConversationOptions);
     get isReadOnly(): boolean;
+    /**
+     * Whether server-side logging is allowed for this conversation.
+     *
+     * Reads `hostConfig` once at construction and flips permanently to `false`
+     * when an agent disables logging.
+     */
+    get serverSideLoggingAllowed(): boolean;
     static titleForSerialized(serialized: SerializedConversation): string | undefined;
     static title(query: string): string;
     get title(): string | undefined;

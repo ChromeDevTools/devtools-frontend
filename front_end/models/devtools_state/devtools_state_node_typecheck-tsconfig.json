@@ -49,6 +49,7 @@
     "../../../../../../front_end/models/devtools_state/State.ts",
     "../../../../../../front_end/models/devtools_state/StateManager.ts",
     "../../../../../../front_end/models/devtools_state/providers/CPUThrottlingStateProvider.ts",
+    "../../../../../../front_end/models/devtools_state/providers/NetworkStateProvider.ts",
     "../../../../../../front_end/models/devtools_state/providers/SettingsStateProvider.ts"
   ],
   "references": [

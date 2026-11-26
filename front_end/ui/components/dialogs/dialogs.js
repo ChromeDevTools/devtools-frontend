@@ -700,6 +700,9 @@ var ButtonDialog = class extends HTMLElement {
   #dialog = null;
   #showButton = null;
   #data = null;
+  get open() {
+    return Boolean(this.#dialog?.hasAttribute("open"));
+  }
   set data(data) {
     this.#data = data;
     void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
@@ -1072,23 +1075,6 @@ var shortcutDialog_css_default = `/*
   max-width: 100%;
 }
 
-.nav-radio-buttons {
-  display: flex;
-  flex-direction: column;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  padding-bottom: var(--sys-size-5);
-
-  & label {
-    display: flex;
-    font: var(--sys-typescale-body3-regular);
-    gap: var(--sys-size-2);
-  }
-
-  input[type="radio"] {
-    margin-left: 0;
-  }
-}
-
 .keybinds-key {
   display: flex;
   align-items: center;
@@ -1122,12 +1108,14 @@ var ShortcutDialog = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #shortcuts = [];
   #openOnRender = false;
+  #disabled = false;
   #customTitle;
   #prependedElement = null;
   get data() {
     return {
       shortcuts: this.#shortcuts,
       open: this.#openOnRender,
+      disabled: this.#disabled,
       customTitle: this.#customTitle
     };
   }
@@ -1136,6 +1124,7 @@ var ShortcutDialog = class extends HTMLElement {
     if (data.open) {
       this.#openOnRender = data.open;
     }
+    this.#disabled = Boolean(data.disabled);
     if (data.customTitle) {
       this.#customTitle = data.customTitle;
     }
@@ -1160,11 +1149,14 @@ var ShortcutDialog = class extends HTMLElement {
     if (!ComponentHelpers3.ScheduledRender.isScheduledRender(this)) {
       throw new Error("Shortcut dialog render was not scheduled");
     }
+    const openOnRender = this.#openOnRender;
+    this.#openOnRender = false;
     render4(
       html4`
       <style>${shortcutDialog_css_default}</style>
       <devtools-button-dialog .data=${{
-        openOnRender: this.#openOnRender,
+        openOnRender,
+        disabled: this.#disabled,
         closeButton: true,
         dialogTitle: this.#customTitle ?? i18nString3(UIStrings3.dialogTitle),
         variant: Buttons3.Button.Variant.TOOLBAR,
@@ -1172,6 +1164,7 @@ var ShortcutDialog = class extends HTMLElement {
         iconTitle: i18nString3(UIStrings3.showShortcutTitle),
         horizontalAlignment: "auto" /* AUTO */
       }}>
+        <slot></slot>
         <ul class="keybinds-list">
           ${this.#prependedElement ? html4`${this.#prependedElement}` : nothing2}
           ${this.#shortcuts.map(

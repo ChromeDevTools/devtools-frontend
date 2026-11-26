@@ -1,0 +1,80 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "erasableSyntaxOnly": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "noEmit": true,
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../scripts",
+    "rootDirs": [
+      "../../../../../",
+      "../../"
+    ],
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "typeRoots": [
+      "../../../../../node_modules/@types",
+      "../../../../../node_modules"
+    ],
+    "types": [
+      "node",
+      "undici-types"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../scripts/gn_deps_verifier/cli.ts",
+    "../../../../../scripts/gn_deps_verifier/extractors/gn_ast_extractor.ts",
+    "../../../../../scripts/gn_deps_verifier/extractors/typescript_analyzer.ts",
+    "../../../../../scripts/gn_deps_verifier/extractors/typescript_import.ts",
+    "../../../../../scripts/gn_deps_verifier/gn_ast/gn_ast.ts",
+    "../../../../../scripts/gn_deps_verifier/gn_ast/gn_ast_factory.ts",
+    "../../../../../scripts/gn_deps_verifier/gn_ast/gn_ast_types.ts",
+    "../../../../../scripts/gn_deps_verifier/gn_ast/gn_ast_visitor.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/extractors/gn_ast_extractor.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/extractors/typescript_analyzer.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/extractors/typescript_import.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/gn_ast/gn_ast.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/gn_ast/gn_ast_factory.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/gn_ast/gn_ast_visitor.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/utils/concurrency.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/utils/error.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/utils/gn_ast_updater.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/utils/gn_label.test.ts",
+    "../../../../../scripts/gn_deps_verifier/tests/validator.test.ts",
+    "../../../../../scripts/gn_deps_verifier/utils/concurrency.ts",
+    "../../../../../scripts/gn_deps_verifier/utils/debug.ts",
+    "../../../../../scripts/gn_deps_verifier/utils/error.ts",
+    "../../../../../scripts/gn_deps_verifier/utils/gn_ast_updater.ts",
+    "../../../../../scripts/gn_deps_verifier/utils/gn_label.ts",
+    "../../../../../scripts/gn_deps_verifier/validator.ts"
+  ],
+  "references": [
+
+  ]
+}

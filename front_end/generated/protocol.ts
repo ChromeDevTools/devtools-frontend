@@ -1747,6 +1747,19 @@ export namespace Audits {
   }
 
   /**
+   * Details for issues about a page that declares viewport-fit=cover, receives
+   * a non-zero top safe-area inset (e.g. a device cutout or system status bar),
+   * but does not consume env(safe-area-inset-top) anywhere in its CSS while
+   * having DOM content likely to be occluded by that inset.
+   */
+  export interface ViewportFitCoverMissingSafeAreaInsetTopIssueDetails {
+    /**
+     * The frame that triggered the issue.
+     */
+    frameId: Page.FrameId;
+  }
+
+  /**
    * A unique identifier for the type of issue. Each type may use one of the
    * optional fields in InspectorIssueDetails to convey more specific
    * information about the kind of issue.
@@ -1783,6 +1796,7 @@ export namespace Audits {
     EmailVerificationRequestIssue = 'EmailVerificationRequestIssue',
     LazyLoadImageIssue = 'LazyLoadImageIssue',
     WebInstallIssue = 'WebInstallIssue',
+    ViewportFitCoverMissingSafeAreaInsetTopIssue = 'ViewportFitCoverMissingSafeAreaInsetTopIssue',
   }
 
   /**
@@ -1825,6 +1839,7 @@ export namespace Audits {
     emailVerificationRequestIssueDetails?: EmailVerificationRequestIssueDetails;
     lazyLoadImageIssueDetails?: LazyLoadImageIssueDetails;
     webInstallIssueDetails?: WebInstallIssueDetails;
+    viewportFitCoverMissingSafeAreaInsetTopIssueDetails?: ViewportFitCoverMissingSafeAreaInsetTopIssueDetails;
   }
 
   /**
@@ -7516,10 +7531,6 @@ export namespace Emulation {
 
   export interface SetSafeAreaInsetsOverrideRequest {
     insets: SafeAreaInsets;
-  }
-
-  export interface SetVirtualKeyboardGeometryOverrideRequest {
-    keyboardRect?: DOM.Rect;
   }
 
   export const enum SetDeviceMetricsOverrideRequestScrollbarType {

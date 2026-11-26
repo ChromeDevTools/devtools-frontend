@@ -512,7 +512,7 @@ export class PaintProfilerCommandLogView extends UI.Widget.VBox {
         return this.#log;
     }
     set selectionWindow(window) {
-        this.#selectionWindow = window;
+        this.#selectionWindow = window ?? { left: 0, right: this.#log.length };
         this.requestUpdate();
     }
     get selectionWindow() {

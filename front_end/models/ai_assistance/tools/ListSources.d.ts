@@ -15,6 +15,13 @@ export declare class ListSourcesTool implements DataTool<Record<string, never>, 
     static idToUiSourceCode: Map<number, Workspace.UISourceCode.UISourceCode>;
     static reset(): void;
     /**
+     * Registers a readable, non-opaque `UISourceCode` in the session ID map and returns its numeric ID (reusing an
+     * existing ID if already registered). Intentionally omits origin-lock, ignore-list, and `Network`-project checks
+     * so explicitly selected files can receive IDs; `getSourceById()` enforces the origin lock on every read. Rejects
+     * opaque origins and binary files upfront so callers do not emit unusable IDs or retain them in the map.
+     */
+    static registerSource(uiSourceCode: Workspace.UISourceCode.UISourceCode): number | null;
+    /**
      * Collects readable text network `UISourceCode`s allowed by the origin lock, skipping ignore-listed and binary files.
      * Returns the deduplicated files alongside the count of distinct omitted binary URLs that have no readable counterpart.
      */

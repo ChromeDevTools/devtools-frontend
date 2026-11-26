@@ -93,9 +93,6 @@ export class CubicBezier {
         }
         return raw;
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    static Regex = /((cubic-bezier\([^)]+\))|\b(linear(?![-\(])|ease-in-out|ease-in|ease-out|ease)\b)|(linear\([^)]+\))/g;
 }
 export const LINEAR_BEZIER = new CubicBezier(new Point(0, 0), new Point(1, 1));
 export class EulerAngles {

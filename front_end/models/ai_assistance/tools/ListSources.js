@@ -28,6 +28,25 @@ export class ListSourcesTool {
         ListSourcesTool.idToUiSourceCode = new Map();
     }
     /**
+     * Registers a readable, non-opaque `UISourceCode` in the session ID map and returns its numeric ID (reusing an
+     * existing ID if already registered). Intentionally omits origin-lock, ignore-list, and `Network`-project checks
+     * so explicitly selected files can receive IDs; `getSourceById()` enforces the origin lock on every read. Rejects
+     * opaque origins and binary files upfront so callers do not emit unusable IDs or retain them in the map.
+     */
+    static registerSource(uiSourceCode) {
+        if (uiSourceCode.securityOrigin().isOpaque() || !isReadableSource(uiSourceCode)) {
+            return null;
+        }
+        const existing = ListSourcesTool.uiSourceCodeId.get(uiSourceCode);
+        if (existing !== undefined) {
+            return existing;
+        }
+        const id = ++ListSourcesTool.lastSourceId;
+        ListSourcesTool.uiSourceCodeId.set(uiSourceCode, id);
+        ListSourcesTool.idToUiSourceCode.set(id, uiSourceCode);
+        return id;
+    }
+    /**
      * Collects readable text network `UISourceCode`s allowed by the origin lock, skipping ignore-listed and binary files.
      * Returns the deduplicated files alongside the count of distinct omitted binary URLs that have no readable counterpart.
      */
@@ -53,23 +72,14 @@ export class ListSourcesTool {
                 if (!isOriginAllowedByLock(originLock, uiSourceCode.securityOrigin())) {
                     continue;
                 }
-                // Check `mimeType` first to match `ContentData#isTextContent`, which `FileFormatter` uses to decode content.
-                // `contentType().isTextType()` reports `.wasm` scripts and binary `Fetch`/`XHR` payloads as text, and
-                // `image/svg+xml` as binary.
-                const mimeType = uiSourceCode.mimeType();
-                const isReadable = mimeType ? Platform.MimeType.isTextType(mimeType) : uiSourceCode.contentType().isTextType();
                 const url = uiSourceCode.url();
-                if (!isReadable) {
+                if (!isReadableSource(uiSourceCode)) {
                     omittedBinaryUrls.add(url);
                     continue;
                 }
                 if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
                     uiSourceCodes.set(url, uiSourceCode);
-                    if (!ListSourcesTool.uiSourceCodeId.has(uiSourceCode)) {
-                        const id = ++ListSourcesTool.lastSourceId;
-                        ListSourcesTool.uiSourceCodeId.set(uiSourceCode, id);
-                        ListSourcesTool.idToUiSourceCode.set(id, uiSourceCode);
-                    }
+                    ListSourcesTool.registerSource(uiSourceCode);
                 }
             }
         }
@@ -142,5 +152,14 @@ function formatSourceName(file, establishedOrigin) {
         }
     }
     return fullName;
+}
+/**
+ * Checks `mimeType` first to match `ContentData#isTextContent`, which `FileFormatter` uses to decode content.
+ * `contentType().isTextType()` reports `.wasm` scripts and binary `Fetch`/`XHR` payloads as text, and
+ * `image/svg+xml` as binary.
+ */
+function isReadableSource(uiSourceCode) {
+    const mimeType = uiSourceCode.mimeType();
+    return mimeType ? Platform.MimeType.isTextType(mimeType) : uiSourceCode.contentType().isTextType();
 }
 //# sourceMappingURL=ListSources.js.map

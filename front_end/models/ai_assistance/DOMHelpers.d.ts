@@ -4,24 +4,45 @@ export interface GetErrorStackOutput {
 }
 export declare function getErrorStackOnThePage(this: Error): GetErrorStackOutput;
 /**
- * Collects DOM `Element` handles from `this` inside the inspected page via
- * `RemoteObject#callFunction` with `throwOnSideEffect: true`.
- *
- * Walks `this` in `JSON.stringify` order, deduplicating cycles via
- * `seenBefore` and skipping numeric `CSSStyleDeclaration` keys, and returns up
- * to `maxElements` `Element` instances typed as `unknown[]` so DOM types do not
- * leak from `DOMHelpers.d.ts` into the DOM-free `ai_assistance` foundation
- * module.
+ * Options controlling element handle collection in `stringifyObjectOnThePage`.
  */
-export declare function collectElementsOnThePage(this: unknown, maxElements: number): unknown[];
+export interface StringifyObjectOptions {
+    maxElements: number;
+    uidPlaceholderPrefix: string;
+}
 /**
- * Serializes `this` to JSON inside the inspected page via
+ * Snapshot of a page object serialized to JSON alongside collected DOM element
+ * references.
+ *
+ * When `options` is passed to `stringifyObjectOnThePage`, each collected
+ * element's tag in `json` is prefixed with `<uidPlaceholderPrefix><index>__`
+ * matching its position in `elements`. For example, for `$0.children`
+ * containing `<div id="a">` and `<span>`:
+ * - `json`: `'{"0":"<prefix>0__<div id=\"a\"></div>","1":"<prefix>1__<span></span>"}'`
+ * - `elements`: `[<div id="a">, <span>]`
+ *
+ * `elements` is typed as `unknown[]` so DOM types do not leak from
+ * `DOMHelpers.d.ts` into the DOM-free `ai_assistance` foundation module.
+ */
+export interface StringifiedPageObject {
+    json: string | undefined;
+    elements: unknown[];
+}
+/**
+ * Serializes `this` to JSON inside the inspected page through
  * `RemoteObject#callFunction` with `throwOnSideEffect: true`.
  *
- * When `resolvedUids` is provided, prepends `(uid=<id>) ` to each encountered
- * `Element` in traversal order when the corresponding UID is non-null.
+ * `RemoteObject#callFunction` sends `stringifyObjectOnThePage.toString()` to
+ * the page, so the function body must remain self-contained (no module-scope
+ * imports or helpers) and side-effect-free.
+ *
+ * When `options` is provided, collects up to `options.maxElements` DOM
+ * `Element` handles in `JSON.stringify` traversal order (replacing repeated
+ * object references with `"(cycle)"` and skipping numeric `CSSStyleDeclaration`
+ * keys) and prefixes each collected element tag with
+ * `${options.uidPlaceholderPrefix}${index}__`.
  */
-export declare function stringifyObjectOnThePage(this: unknown, resolvedUids?: ReadonlyArray<number | null>): string;
+export declare function stringifyObjectOnThePage(this: unknown, options?: StringifyObjectOptions): StringifiedPageObject;
 /**
  * Sanitizes a record of CSS property declarations against the browser's CSS
  * parser and rejects URL-referencing values.

@@ -47,7 +47,9 @@ export class RequestLinkIcon extends HTMLElement {
     #affectedRequest;
     #additionalOnClickAction;
     #reveal = Common.Revealer.reveal;
+    #requestGeneration = 0;
     set data(data) {
+        const generation = ++this.#requestGeneration;
         this.#linkToPreflight = data.linkToPreflight;
         this.#request = data.request;
         if (data.affectedRequest) {
@@ -68,10 +70,16 @@ export class RequestLinkIcon extends HTMLElement {
             }
             this.#requestResolver.waitFor(data.affectedRequest.requestId)
                 .then(request => {
+                if (generation !== this.#requestGeneration) {
+                    return;
+                }
                 this.#request = request;
                 return this.#render();
             })
                 .catch(() => {
+                if (generation !== this.#requestGeneration) {
+                    return;
+                }
                 this.#request = null;
             });
         }

@@ -632,6 +632,7 @@ var Audits;
     InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
     InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
     InspectorIssueCode2["WebInstallIssue"] = "WebInstallIssue";
+    InspectorIssueCode2["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
   })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
   let GetEncodedResponseRequestEncoding;
   ((GetEncodedResponseRequestEncoding2) => {
@@ -14736,6 +14737,8 @@ __export(NetworkManager_exports, {
   RequestConditions: () => RequestConditions,
   RequestURLPattern: () => RequestURLPattern,
   RequestURLPatternValidity: () => RequestURLPatternValidity,
+  RevealableCustomUserAgent: () => RevealableCustomUserAgent,
+  RevealableNetworkThrottling: () => RevealableNetworkThrottling,
   Slow3GConditions: () => Slow3GConditions,
   Slow4GConditions: () => Slow4GConditions,
   THROTTLING_CONDITIONS_LOOKUP: () => THROTTLING_CONDITIONS_LOOKUP,
@@ -17165,26 +17168,17 @@ var AngleMatcher = class extends AngleMatcherBase {
     return new AngleMatch(matching.ast.text(node), node);
   }
 };
-function literalToNumber(node, ast) {
-  if (node.type.name !== "NumberLiteral") {
-    return null;
-  }
-  const text = ast.text(node);
-  return Number(text.substring(0, text.length - ast.text(node.getChild("Unit")).length));
-}
 var ColorMixMatch = class {
-  constructor(text, node, space, color1, color2) {
+  constructor(text, node, space, items) {
     this.text = text;
     this.node = node;
     this.space = space;
-    this.color1 = color1;
-    this.color2 = color2;
+    this.items = items;
   }
   text;
   node;
   space;
-  color1;
-  color2;
+  items;
 };
 var ColorMixMatcherBase = matcherBase(ColorMixMatch);
 var ColorMixMatcher = class extends ColorMixMatcherBase {
@@ -17205,27 +17199,24 @@ var ColorMixMatcher = class extends ColorMixMatcherBase {
       return null;
     }
     const computedValueArgs = ASTUtils.callArgs(value);
-    if (computedValueArgs.length !== 2 && computedValueArgs.length !== 3) {
+    const hasSpace = computedValueArgs.length > 0 && computedValueTree.text(ASTUtils.stripComments(computedValueArgs[0]).next().value) === "in";
+    const [space, ...items] = hasSpace ? computedValueArgs : [[], ...computedValueArgs];
+    if (hasSpace && space.length < 2 || items.length < 1) {
       return null;
     }
-    const [space, color1, color2] = computedValueArgs.length === 3 ? computedValueArgs : [[], ...computedValueArgs];
-    if (space.length > 0 && (space.length < 2 || computedValueTree.text(ASTUtils.stripComments(space).next().value) !== "in") || color1.length < 1 || color2.length < 1) {
-      return null;
-    }
-    const p1 = color1.filter((n) => n.type.name === "NumberLiteral" && computedValueTree.text(n.getChild("Unit")) === "%");
-    const p2 = color2.filter((n) => n.type.name === "NumberLiteral" && computedValueTree.text(n.getChild("Unit")) === "%");
-    if (p1.length > 1 || p2.length > 1) {
-      return null;
-    }
-    if (p1[0] && p2[0] && (literalToNumber(p1[0], computedValueTree) ?? 0) === 0 && (literalToNumber(p2[0], computedValueTree) ?? 0) === 0) {
-      return null;
+    for (const item of items) {
+      const nodes = [...ASTUtils.stripComments(item)];
+      const nonPercentages = nodes.filter((n) => n.type.name !== "NumberLiteral" || computedValueTree.text(n.getChild("Unit")) !== "%");
+      if (nodes.length > 2 || nonPercentages.length < 1 || nonPercentages.length === 2 && !nonPercentages.some((n) => n.name === "CallExpression")) {
+        return null;
+      }
     }
     const args = ASTUtils.callArgs(node);
     if (args.length !== computedValueArgs.length) {
       return null;
     }
-    const [authoredSpace, authoredColor1, authoredColor2] = args.length === 3 ? args : [[], ...args];
-    return new ColorMixMatch(matching.ast.text(node), node, authoredSpace, authoredColor1, authoredColor2);
+    const [authoredSpace, ...authoredItems] = hasSpace ? args : [[], ...args];
+    return new ColorMixMatch(matching.ast.text(node), node, authoredSpace, authoredItems);
   }
 };
 var ContrastColorMatch = class {
@@ -37042,7 +37033,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   #requestConditions;
   #urlsForRequestInterceptor = new Platform18.MapUtilities.Multimap();
   #extraHeaders;
-  #customUserAgent = "";
+  #customUserAgent = { agent: "", enabled: false };
   #isBlocking = false;
   constructor(targetManager) {
     super();
@@ -37180,8 +37171,26 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
       void agent.invoke_setExtraHTTPHeaders({ headers: this.#extraHeaders });
     }
   }
+  customUserAgent() {
+    return this.#customUserAgent.agent;
+  }
+  customUserAgentEnabled() {
+    return this.#customUserAgent.enabled;
+  }
+  setCustomUserAgentEnabled(enabled) {
+    if (this.#customUserAgent.enabled === enabled) {
+      return;
+    }
+    this.#customUserAgent.enabled = enabled;
+    if (!enabled) {
+      this.#customUserAgent.agent = "";
+      this.#userAgentMetadataOverride = null;
+      this.updateUserAgentOverride();
+    }
+    this.dispatchEventToListeners(_MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED);
+  }
   currentUserAgent() {
-    return this.#customUserAgent ? this.#customUserAgent : this.#userAgentOverride;
+    return this.#customUserAgent.agent ? this.#customUserAgent.agent : this.#userAgentOverride;
   }
   updateUserAgentOverride() {
     const userAgent = this.currentUserAgent();
@@ -37194,7 +37203,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   setUserAgentOverride(userAgent, userAgentMetadataOverride) {
     const uaChanged = this.#userAgentOverride !== userAgent;
     this.#userAgentOverride = userAgent;
-    if (!this.#customUserAgent) {
+    if (!this.#customUserAgent.agent) {
       this.#userAgentMetadataOverride = userAgentMetadataOverride;
       this.updateUserAgentOverride();
     } else {
@@ -37205,8 +37214,11 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     }
   }
   setCustomUserAgentOverride(userAgent, userAgentMetadataOverride = null) {
-    const uaChanged = this.#customUserAgent !== userAgent;
-    this.#customUserAgent = userAgent;
+    const uaChanged = this.#customUserAgent.agent !== userAgent;
+    this.#customUserAgent.agent = userAgent;
+    if (userAgent) {
+      this.#customUserAgent.enabled = true;
+    }
     this.#userAgentMetadataOverride = userAgentMetadataOverride;
     this.updateUserAgentOverride();
     if (uaChanged) {
@@ -37310,6 +37322,10 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     Events37["REQUEST_FULFILLED"] = "RequestFulfilled";
   })(Events36 = MultitargetNetworkManager2.Events || (MultitargetNetworkManager2.Events = {}));
 })(MultitargetNetworkManager || (MultitargetNetworkManager = {}));
+var RevealableCustomUserAgent = class {
+};
+var RevealableNetworkThrottling = class {
+};
 var InterceptedRequest = class _InterceptedRequest {
   #multitargetNetworkManager;
   #fetchAgent;

@@ -25,12 +25,14 @@ export class ShortcutDialog extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #shortcuts = [];
     #openOnRender = false;
+    #disabled = false;
     #customTitle;
     #prependedElement = null;
     get data() {
         return {
             shortcuts: this.#shortcuts,
             open: this.#openOnRender,
+            disabled: this.#disabled,
             customTitle: this.#customTitle,
         };
     }
@@ -39,6 +41,7 @@ export class ShortcutDialog extends HTMLElement {
         if (data.open) {
             this.#openOnRender = data.open;
         }
+        this.#disabled = Boolean(data.disabled);
         if (data.customTitle) {
             this.#customTitle = data.customTitle;
         }
@@ -65,11 +68,14 @@ export class ShortcutDialog extends HTMLElement {
         if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
             throw new Error('Shortcut dialog render was not scheduled');
         }
+        const openOnRender = this.#openOnRender;
+        this.#openOnRender = false;
         // clang-format off
         render(html `
       <style>${shortcutDialogStyles}</style>
       <devtools-button-dialog .data=${{
-            openOnRender: this.#openOnRender,
+            openOnRender,
+            disabled: this.#disabled,
             closeButton: true,
             dialogTitle: this.#customTitle ?? i18nString(UIStrings.dialogTitle),
             variant: "toolbar" /* Buttons.Button.Variant.TOOLBAR */,
@@ -77,6 +83,7 @@ export class ShortcutDialog extends HTMLElement {
             iconTitle: i18nString(UIStrings.showShortcutTitle),
             horizontalAlignment: "auto" /* DialogHorizontalAlignment.AUTO */,
         }}>
+        <slot></slot>
         <ul class="keybinds-list">
           ${(this.#prependedElement) ? html `${this.#prependedElement}` : nothing}
           ${this.#shortcuts.map(shortcut => html `

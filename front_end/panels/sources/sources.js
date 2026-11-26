@@ -2859,6 +2859,7 @@ var Audits;
     InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
     InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
     InspectorIssueCode2["WebInstallIssue"] = "WebInstallIssue";
+    InspectorIssueCode2["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
   })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
   let GetEncodedResponseRequestEncoding;
   ((GetEncodedResponseRequestEncoding2) => {
@@ -15473,62 +15474,64 @@ var threadsSidebarPane_css_default = `/*
  * found in the LICENSE file.
  */
 
-.thread-item {
-  padding: 3px var(--sys-size-5) 3px var(--sys-size-9);
-  position: relative;
-  min-height: 18px;
-  line-height: 15px;
-  display: flex;
-  flex-wrap: wrap;
-  appearance: none;
-  border-width: 0;
-  background-color: var(--sys-color-cdt-base-container);
-  width: 100%;
-}
-
-.thread-item + .thread-item {
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.thread-item:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
-
-.thread-item:focus-visible {
-  background-color: var(--sys-color-tonal-container);
-}
-
-.thread-item-title,
-.thread-item-paused-state {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.thread-item-paused-state {
-  color: var(--sys-color-state-disabled);
-  margin-left: auto;
-  padding: 0 10px;
-}
-
-.selected-thread-icon {
-  position: absolute;
-  top: 3px;
-  left: var(--sys-size-3);
-  width: var(--sys-size-8);
-  height: var(--sys-size-8);
-}
-
-@media (forced-colors: active) {
-  .thread-item:hover,
-  .thread-item:focus-visible {
-    forced-color-adjust: none;
-    background-color: Highlight;
+@scope to (devtools-widget > *) {
+  .thread-item {
+    padding: 3px var(--sys-size-5) 3px var(--sys-size-9);
+    position: relative;
+    min-height: 18px;
+    line-height: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    appearance: none;
+    border-width: 0;
+    background-color: var(--sys-color-cdt-base-container);
+    width: 100%;
   }
 
-  .thread-item:hover > div,
-  .thread-item:focus-visible > div {
-    color: HighlightText;
+  .thread-item + .thread-item {
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  }
+
+  .thread-item:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  .thread-item:focus-visible {
+    background-color: var(--sys-color-tonal-container);
+  }
+
+  .thread-item-title,
+  .thread-item-paused-state {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .thread-item-paused-state {
+    color: var(--sys-color-state-disabled);
+    margin-left: auto;
+    padding: 0 10px;
+  }
+
+  .selected-thread-icon {
+    position: absolute;
+    top: 3px;
+    left: var(--sys-size-3);
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+  }
+
+  @media (forced-colors: active) {
+    .thread-item:hover,
+    .thread-item:focus-visible {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
+
+    .thread-item:hover > div,
+    .thread-item:focus-visible > div {
+      color: HighlightText;
+    }
   }
 }
 
@@ -17746,51 +17749,53 @@ var filteredUISourceCodeListProvider_css_default = `/*
  * found in the LICENSE file.
  */
 
-.filtered-list-widget-item > .filtered-ui-source-code-list-item {
-  align-content: center;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--sys-size-2);
-  line-height: initial;
-}
+@scope to (devtools-widget > *) {
+  :scope.filtered-list-widget-item > .filtered-ui-source-code-list-item {
+    align-content: center;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--sys-size-2);
+    line-height: initial;
+  }
 
-.filtered-ui-source-code-list-item.is-ignore-listed * {
-  color: var(--sys-color-state-disabled);
-}
+  .filtered-ui-source-code-list-item.is-ignore-listed * {
+    color: var(--sys-color-state-disabled);
+  }
 
-.filtered-ui-source-code-title {
-  grid-column: 1;
-  grid-row: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .filtered-ui-source-code-title {
+    grid-column: 1;
+    grid-row: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.filtered-ui-source-code-title:not(.search-mode) {
-  font-weight: var(--ref-typeface-weight-bold);
-}
+  .filtered-ui-source-code-title:not(.search-mode) {
+    font-weight: var(--ref-typeface-weight-bold);
+  }
 
-.filtered-ui-source-code-subtitle {
-  grid-column: 1;
-  grid-row: 2;
-  flex: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--sys-color-on-surface-subtle);
-  display: flex;
-  white-space: pre;
-}
+  .filtered-ui-source-code-subtitle {
+    grid-column: 1;
+    grid-row: 2;
+    flex: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--sys-color-on-surface-subtle);
+    display: flex;
+    white-space: pre;
+  }
 
-.filtered-ui-source-code-subtitle .first-part {
-  flex-shrink: 1000;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .filtered-ui-source-code-subtitle .first-part {
+    flex-shrink: 1000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.filtered-ui-source-code-list-item > .tag {
-  grid-column: 2;
-  grid-row: 1 / 3;
-  align-self: center;
-  white-space: nowrap;
+  .filtered-ui-source-code-list-item > .tag {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    white-space: nowrap;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./filteredUISourceCodeListProvider.css")} */`;
@@ -18847,7 +18852,7 @@ import * as StackTrace7 from "../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
-import { html as html24, nothing as nothing15, render as render16 } from "../../ui/lit/lit.js";
+import { Directives as Directives8, html as html24, nothing as nothing15, render as render16 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
@@ -18964,7 +18969,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
           <style>${ObjectUI3.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI3.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${scopeChainSidebarPane_css_default}</style>
-          ${input.scopeChain?.map((item2) => createScopeSection(item2)) ?? nothing15}
+          ${Directives8.repeat(input.scopeChain, (item2) => item2.objectTree, (item2) => createScopeSection(item2))}
         </ul>`}>
       </devtools-tree>` : html24`
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString23(UIStrings24.loading) : i18nString23(UIStrings24.notPaused)}</div>`}
@@ -19155,7 +19160,7 @@ import * as TextEditor6 from "../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
-import { Directives as Directives8, html as html25, nothing as nothing16, render as render17 } from "../../ui/lit/lit.js";
+import { Directives as Directives9, html as html25, nothing as nothing16, render as render17 } from "../../ui/lit/lit.js";
 import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -19358,7 +19363,7 @@ var UIStrings25 = {
 var str_25 = i18n49.i18n.registerUIStrings("panels/sources/WatchExpressionsSidebarPane.ts", UIStrings25);
 var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var watchExpressionsSidebarPaneInstance;
-var { classMap: classMap5, ifDefined: ifDefined4 } = Directives8;
+var { classMap: classMap5, ifDefined: ifDefined4 } = Directives9;
 var { widget: widget8 } = UI23.Widget;
 var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
   const e = input.expression;

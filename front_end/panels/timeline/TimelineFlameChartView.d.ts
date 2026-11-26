@@ -21,32 +21,10 @@ export declare const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, numbe
 declare const TimelineFlameChartViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class TimelineFlameChartView extends TimelineFlameChartViewBase implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
     #private;
-    private readonly delegate;
-    /**
-     * Tracks the indexes of matched entries when the user searches the panel.
-     * Defaults to undefined which indicates the user has not searched.
-     */
-    private searchResults;
-    private readonly networkSplitWidget;
     private mainDataProvider;
     private readonly mainFlameChart;
-    private networkDataProvider;
     private readonly networkFlameChart;
-    private readonly networkPane;
-    private readonly splitResizer;
-    private readonly chartSplitWidget;
-    private readonly countersView;
-    private readonly detailsSplitWidget;
     private readonly detailsView;
-    private readonly onMainAddEntryLabelAnnotation;
-    private readonly onNetworkAddEntryLabelAnnotation;
-    private readonly onMainEntrySelected;
-    private readonly onNetworkEntrySelected;
-    private readonly groupBySetting;
-    private searchableView;
-    private needsResizeToPreferredHeights?;
-    private selectedSearchResult?;
-    private searchRegex?;
     constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager);
     containingElement(): HTMLElement;
     dimThirdPartiesIfRequired(): void;
@@ -73,7 +51,14 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     getMainFlameChart(): PerfUI.FlameChart.FlameChart;
     getNetworkFlameChart(): PerfUI.FlameChart.FlameChart;
     updateSelectedGroup(flameChart: PerfUI.FlameChart.FlameChart, group: PerfUI.FlameChart.Group | null): void;
-    setModel(newParsedTrace: Trace.TraceModel.ParsedTrace, eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap): void;
+    /**
+     * Sets the active trace and rebuilds the flame charts, or releases all
+     * trace-scoped references when `data` is `null`.
+     */
+    setModel(data: {
+        parsedTrace: Trace.TraceModel.ParsedTrace;
+        eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap;
+    } | null): void;
     /**
      * Resets the state of the UI data and initializes it again with the
      * current parsed trace.
@@ -91,11 +76,9 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
      * order to save it to disk as part of the trace.
      */
     getPersistedConfigMetadata(): Trace.Types.File.PersistedTraceVisualConfig;
-    reset(): void;
     setupWindowTimes(): void;
     hasHiddenTracks(): boolean;
     updateLinkSelectionAnnotationWithToEntry(dataProvider: TimelineFlameChartDataProvider | TimelineFlameChartNetworkDataProvider, entryIndex: number): void;
-    private onEntryHovered;
     highlightEvent(event: Trace.Types.Events.Event | null): void;
     willHide(): void;
     onDetach(): void;
@@ -113,19 +96,14 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     addOverlay<T extends Trace.Types.Overlays.Overlay>(newOverlay: T): T;
     bulkRemoveOverlays(overlays: Trace.Types.Overlays.Overlay[]): void;
     removeOverlay(removedOverlay: Trace.Types.Overlays.Overlay): void;
+    removeOverlaysOfType(type: Trace.Types.Overlays.Overlay['type']): number;
+    hasMainEntryAt(x: number, y: number): boolean;
     updateExistingOverlay<T extends Trace.Types.Overlays.Overlay>(existingOverlay: T, newData: Partial<T>): void;
     enterLabelEditMode(overlay: Trace.Types.Overlays.EntryLabel): void;
     bringLabelForward(overlay: Trace.Types.Overlays.EntryLabel): void;
     enterMainChartTrackConfigurationMode(): void;
     showAllMainChartTracks(): void;
-    private onAddEntryLabelAnnotation;
     onEntriesLinkAnnotationCreate(dataProvider: TimelineFlameChartDataProvider | TimelineFlameChartNetworkDataProvider, entryFromIndex: number, linkCreateButton?: boolean): void;
-    /**
-     * This is invoked when the user uses their KEYBOARD ONLY to navigate between
-     * events.
-     * It IS NOT called when the user uses the mouse. See `onEntryInvoked`.
-     */
-    private onEntrySelected;
     handleToEntryOfLinkBetweenEntriesSelection(toIndex: number): void;
     resizeToPreferredHeights(): void;
     setSearchableView(searchableView: UI.SearchableView.SearchableView): void;
@@ -134,7 +112,6 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     supportsCaseSensitiveSearch(): boolean;
     supportsWholeWordSearch(): boolean;
     supportsRegexSearch(): boolean;
-    private updateSearchResults;
     /**
      * Returns the indexes of the elements that matched the most recent
      * query. Elements are indexed by the data provider and correspond
@@ -161,8 +138,6 @@ export declare const FlameChartStyle: {
 };
 export declare class TimelineFlameChartMarker implements PerfUI.FlameChart.FlameChartMarker {
     #private;
-    private readonly startOffset;
-    private style;
     constructor(startTime: number, startOffset: number, style: TimelineMarkerStyle);
     startTime(): number;
     color(): string;
@@ -178,11 +153,17 @@ export declare const enum ColorBy {
  */
 export declare function groupForLevel(groups: PerfUI.FlameChart.Group[], level: number): PerfUI.FlameChart.Group | null;
 export declare const enum Events {
-    ENTRY_LABEL_ANNOTATION_CLICKED = "EntryLabelAnnotationClicked"
+    ENTRY_LABEL_ANNOTATION_CLICKED = "EntryLabelAnnotationClicked",
+    MAIN_ENTRY_HOVERED = "MainEntryHovered",
+    TIME_RANGE_MOUSE_OVER = "TimeRangeMouseOver",
+    TIME_RANGE_MOUSE_OUT = "TimeRangeMouseOut"
 }
 export interface EventTypes {
     [Events.ENTRY_LABEL_ANNOTATION_CLICKED]: {
         entry: Trace.Types.Events.Event;
     };
+    [Events.MAIN_ENTRY_HOVERED]: number;
+    [Events.TIME_RANGE_MOUSE_OVER]: Trace.Types.Overlays.TimeRangeLabel;
+    [Events.TIME_RANGE_MOUSE_OUT]: void;
 }
 export {};

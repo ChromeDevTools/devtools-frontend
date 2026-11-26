@@ -25,7 +25,7 @@ import { isOriginAllowedByLock, } from './Tool.js';
 export class SetElementStylesTool {
     name = "setElementStyles" /* ToolName.SET_ELEMENT_STYLES */;
     permissionPrompt = "never" /* PermissionPrompt.NEVER */;
-    description = 'Applies CSS style declarations to one or more elements on the inspected page identified by their backend node IDs (uids). Prefer this tool over executeJavaScript whenever modifying or testing CSS styles on elements.';
+    description = 'Applies CSS style declarations to one or more elements on the inspected page identified by their backend node IDs (uids). Only call this tool when the user asks to change, fix, or preview CSS styles live—never on diagnostic ("why") or how-to ("how do I" / "how can I") queries or to speculatively test hypotheses. Prefer this tool over executeJavaScript whenever modifying CSS styles.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: '',

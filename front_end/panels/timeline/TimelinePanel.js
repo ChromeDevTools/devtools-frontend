@@ -32,6 +32,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import '../../ui/components/dialogs/dialogs.js';
 import '../../ui/legacy/legacy.js';
 import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
@@ -49,7 +50,7 @@ import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/tra
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
-import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -325,6 +326,60 @@ let timelinePanelInstance;
 // Total time to wait for source maps to load before giving up so trace processing can proceed.
 const SOURCE_MAP_LOAD_TIMEOUT_MS = 5000;
 const TimelinePanelBase = Common.ObjectWrapper.eventMixin(UI.Panel.Panel);
+function renderRightToolbar(input) {
+    const { settingsToggle } = input;
+    // clang-format off
+    return html `
+    <devtools-toolbar class="timeline-right-toolbar" role="presentation">
+      ${!input.isNode && input.canRecord && settingsToggle ? html `
+        <div class="toolbar-divider"></div>
+        <devtools-button class="toolbar-button timeline-settings-toggle"
+            jslog=${VisualLogging.toggle().track({ click: true }).context('timeline-settings-toggle')}
+            .data=${{
+        variant: "icon_toggle" /* Buttons.Button.Variant.ICON_TOGGLE */,
+        iconName: 'gear',
+        toggledIconName: 'gear-filled',
+        toggleType: "primary-toggle" /* Buttons.Button.ToggleType.PRIMARY */,
+        toggleOnClick: false,
+        toggled: settingsToggle.toggled,
+        checked: settingsToggle.checked,
+        disabled: input.isLoading,
+        title: settingsToggle.title,
+        accessibleLabel: settingsToggle.title,
+    }}
+            @click=${settingsToggle.onToggle}></devtools-button>` : nothing}
+      ${input.navigationSettingInitialized ? html `
+        <devtools-shortcut-dialog class="toolbar-item"
+            jslog=${VisualLogging.action().track({ click: true }).context('timeline.shortcuts-dialog-toggle')}
+            .data=${{
+        customTitle: input.shortcutsDialogTitle,
+        shortcuts: input.shortcuts,
+        open: input.shortcutsDialogOpen,
+        disabled: input.isLoading,
+    }}>
+          <form class="nav-radio-buttons" role="radiogroup">
+            <label>
+              <input type="radio" name="flamechart-selected-navigation"
+                  jslog=${VisualLogging.toggle().track({ change: true }).context('timeline.select-modern-navigation')}
+                  .checked=${!input.isNavClassic}
+                  @change=${() => input.onNavRadioChange('modern')}>
+              Modern - normal scrolling
+            </label>
+            <label>
+              <input type="radio" name="flamechart-selected-navigation"
+                  jslog=${VisualLogging.toggle().track({ change: true }).context('timeline.select-classic-navigation')}
+                  .checked=${input.isNavClassic}
+                  @change=${() => input.onNavRadioChange('classic')}>
+              Classic - scroll to zoom
+            </label>
+          </form>
+        </devtools-shortcut-dialog>` : nothing}
+    </devtools-toolbar>`;
+    // clang-format on
+}
+export const DEFAULT_RIGHT_TOOLBAR_VIEW = (input, _output, target) => {
+    render(renderRightToolbar(input), target);
+};
 class GlobalNetworkThrottlingSelect extends MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect {
     constructor(element) {
         super(element, {
@@ -430,7 +485,9 @@ export class TimelinePanel extends TimelinePanelBase {
     showScreenshotsSetting;
     showMemorySetting;
     panelToolbar;
-    panelRightToolbar;
+    #rightToolbarContainer = document.createElement('div');
+    #isolateSelector;
+    #thirdPartyCheckboxDisabled = false;
     timelinePane;
     #minimapComponent = new TimelineMiniMap();
     #viewMode = { mode: 'LANDING_PAGE' };
@@ -456,7 +513,9 @@ export class TimelinePanel extends TimelinePanelBase {
     statusPaneContainer;
     flameChart;
     #searchableView;
-    showSettingsPaneButton;
+    #hasSettingsToggle = false;
+    /** Warnings shown in the settings toggle tooltip, e.g. enabled throttling or capture overhead. */
+    #settingsToggleWarnings = [];
     showSettingsPaneSetting;
     #showSettingsPane = false;
     #uiControlsEnabled = true;
@@ -485,7 +544,6 @@ export class TimelinePanel extends TimelinePanelBase {
     i18nString(UIStrings.sidebarShown), i18nString(UIStrings.sidebarHidden), 'timeline.sidebar');
     #sideBar = new TimelineComponents.Sidebar.SidebarWidget();
     #eventToRelatedInsights = new Map();
-    #shortcutsDialog = new Dialogs.ShortcutDialog.ShortcutDialog();
     /**
      * Track if the user has opened the shortcuts dialog before. We do this so that the
      * very first time the performance panel is open after the shortcuts dialog ships, we can
@@ -505,21 +563,19 @@ export class TimelinePanel extends TimelinePanelBase {
      * widgets, to avoid this complexity.
      */
     #restoreSidebarVisibilityOnTraceLoad = false;
-    /**
-     * Navigation radio buttons located in the shortcuts dialog.
-     */
-    #navigationRadioButtons = document.createElement('form');
-    #modernNavRadioButton = UI.UIUtils.createRadioButton('flamechart-selected-navigation', 'Modern - normal scrolling', 'timeline.select-modern-navigation');
-    #classicNavRadioButton = UI.UIUtils.createRadioButton('flamechart-selected-navigation', 'Classic - scroll to zoom', 'timeline.select-classic-navigation');
+    #navigationSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.flamechartSelectedNavigationSettingDescriptor);
     #navigationSettingInitialized = false;
+    #shortcutsDialogOpen = false;
     #onMainEntryHovered;
     #hiddenTracksInfoBarByParsedTrace = new WeakMap();
     #resourceLoader;
     #targetManager;
     #isolateManager;
+    #rightToolbarView;
     #settingsPaneView;
-    constructor(resourceLoader, targetManager, isolateManager, commentManager, traceModel, settingsPaneView = DEFAULT_SETTINGS_PANE_VIEW) {
+    constructor(resourceLoader, targetManager, isolateManager, commentManager, traceModel, rightToolbarView = DEFAULT_RIGHT_TOOLBAR_VIEW, settingsPaneView = DEFAULT_SETTINGS_PANE_VIEW) {
         super('timeline');
+        this.#rightToolbarView = rightToolbarView;
         this.#settingsPaneView = settingsPaneView;
         this.#resourceLoader = resourceLoader;
         this.#targetManager = targetManager;
@@ -534,6 +590,9 @@ export class TimelinePanel extends TimelinePanelBase {
         this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
         this.recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
         this.#historyManager = new TimelineHistoryManager(this.#minimapComponent, this.#isNode);
+        if (this.#isNode) {
+            this.#isolateSelector = new IsolateSelector(this.#targetManager, this.#isolateManager);
+        }
         this.traceLoadStart = null;
         this.disableCaptureJSProfileSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineDisableJsSamplingSettingDescriptor);
         this.captureLayersAndPicturesSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineCaptureLayersAndPicturesSettingDescriptor);
@@ -557,8 +616,8 @@ export class TimelinePanel extends TimelinePanelBase {
         this.panelToolbar = timelineToolbarContainer.createChild('devtools-toolbar', 'timeline-main-toolbar');
         this.panelToolbar.role = 'presentation';
         this.panelToolbar.wrappable = true;
-        this.panelRightToolbar = timelineToolbarContainer.createChild('devtools-toolbar');
-        this.panelRightToolbar.role = 'presentation';
+        this.#rightToolbarContainer.style.display = 'contents';
+        timelineToolbarContainer.appendChild(this.#rightToolbarContainer);
         if (!this.#isNode && this.canRecord()) {
             this.createSettingsPane();
             this.updateShowSettingsToolbarButton();
@@ -579,7 +638,7 @@ export class TimelinePanel extends TimelinePanelBase {
         this.flameChart = new TimelineFlameChartView(this, commentManager);
         this.element.addEventListener('toggle-popover', event => this.flameChart.togglePopover(event.detail));
         this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
-        this.flameChart.getMainFlameChart().addEventListener("EntryHovered" /* PerfUI.FlameChart.Events.ENTRY_HOVERED */, this.#onMainEntryHovered);
+        this.flameChart.addEventListener("MainEntryHovered" /* TimelineFlameChartViewEvents.MAIN_ENTRY_HOVERED */, this.#onMainEntryHovered);
         this.flameChart.addEventListener("EntryLabelAnnotationClicked" /* TimelineFlameChartViewEvents.ENTRY_LABEL_ANNOTATION_CLICKED */, event => {
             const selection = selectionFromEvent(event.data.entry);
             this.select(selection);
@@ -596,15 +655,14 @@ export class TimelinePanel extends TimelinePanelBase {
         this.#splitWidget.setSidebarWidget(this.#sideBar);
         this.#splitWidget.enableShowModeSaving();
         this.#splitWidget.show(this.element);
-        this.flameChart.overlays().addEventListener(Overlays.Overlays.TimeRangeMouseOverEvent.eventName, event => {
-            const { overlay } = event;
-            const overlayBounds = Overlays.Overlays.traceWindowContainingOverlays([overlay]);
+        this.flameChart.addEventListener("TimeRangeMouseOver" /* TimelineFlameChartViewEvents.TIME_RANGE_MOUSE_OVER */, event => {
+            const overlayBounds = Overlays.Overlays.traceWindowContainingOverlays([event.data]);
             if (!overlayBounds) {
                 return;
             }
             this.#minimapComponent.highlightBounds(overlayBounds, /* withBracket */ false);
         });
-        this.flameChart.overlays().addEventListener(Overlays.Overlays.TimeRangeMouseOutEvent.eventName, () => {
+        this.flameChart.addEventListener("TimeRangeMouseOut" /* TimelineFlameChartViewEvents.TIME_RANGE_MOUSE_OUT */, () => {
             this.#minimapComponent.clearBoundsHighlight();
         });
         this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightDeactivated.eventName, () => {
@@ -670,10 +728,38 @@ export class TimelinePanel extends TimelinePanelBase {
         this.performUpdate();
     }
     // Accessed in web_tests.
+    get panelRightToolbar() {
+        return this.element.querySelector('.timeline-right-toolbar');
+    }
+    // Accessed in web_tests.
+    get showSettingsPaneButton() {
+        const element = this.element.querySelector('.timeline-settings-toggle');
+        return element ? { element } : null;
+    }
+    // Accessed in web_tests.
     get settingsPane() {
         return this.element.querySelector('.timeline-settings-pane');
     }
     performUpdate() {
+        const isNavClassic = this.#navigationSetting.get() === 'classic';
+        const shortcutsDialogOpen = this.#shortcutsDialogOpen;
+        this.#shortcutsDialogOpen = false;
+        this.#rightToolbarView({
+            isNode: this.#isNode,
+            canRecord: this.canRecord(),
+            isLoading: this.state === "Loading" /* State.LOADING */,
+            settingsToggle: this.#settingsToggleViewInput(),
+            navigationSettingInitialized: this.#navigationSettingInitialized,
+            isNavClassic,
+            shortcutsDialogTitle: i18nString(UIStrings.shortcutsDialogTitle),
+            shortcuts: this.#getShortcutsInfo(isNavClassic),
+            shortcutsDialogOpen,
+            onNavRadioChange: mode => {
+                this.#shortcutsDialogOpen = false;
+                this.#navigationSetting.set(mode);
+                this.#updateNavigationSettingSelection();
+            },
+        }, undefined, this.#rightToolbarContainer);
         this.#settingsPaneView({
             isNode: this.#isNode,
             canRecord: this.canRecord(),
@@ -724,6 +810,10 @@ export class TimelinePanel extends TimelinePanelBase {
      * If the checkbox was checked, we flip it to indeterminiate to communicate it doesn't currently apply.
      */
     set3PCheckboxDisabled(disabled) {
+        if (this.#thirdPartyCheckboxDisabled === disabled) {
+            return;
+        }
+        this.#thirdPartyCheckboxDisabled = disabled;
         this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
         if (this.#dimThirdPartiesSetting?.get()) {
             this.#thirdPartyCheckbox?.setIndeterminate(disabled);
@@ -792,10 +882,13 @@ export class TimelinePanel extends TimelinePanelBase {
     wasShown() {
         super.wasShown();
         UI.Context.Context.instance().setFlavor(TimelinePanel, this);
+        this.#navigationSetting.addChangeListener(this.requestUpdate, this);
+        this.requestUpdate();
         // Record the performance tool load time.
         UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('timeline', 'DevTools.Launch.Timeline');
     }
     willHide() {
+        this.#navigationSetting.removeChangeListener(this.requestUpdate, this);
         super.willHide();
         UI.Context.Context.instance().setFlavor(TimelinePanel, null);
         this.#historyManager.cancelIfShowing();
@@ -1095,64 +1188,26 @@ export class TimelinePanel extends TimelinePanelBase {
             this.#thirdPartyCheckbox = dimThirdPartiesCheckbox;
             this.panelToolbar.appendToolbarItem(dimThirdPartiesCheckbox);
         }
-        // Isolate selector
-        if (this.#isNode) {
-            const isolateSelector = new IsolateSelector(this.#targetManager, this.#isolateManager);
+        if (this.#isolateSelector) {
             this.panelToolbar.appendSeparator();
-            this.panelToolbar.appendToolbarItem(isolateSelector);
-        }
-        // Settings
-        if (!this.#isNode && canRecord && this.showSettingsPaneButton) {
-            this.panelRightToolbar.appendSeparator();
-            this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
+            this.panelToolbar.appendToolbarItem(this.#isolateSelector);
         }
     }
     #setupNavigationSetting() {
-        const navSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.flamechartSelectedNavigationSettingDescriptor);
-        const currentNavSetting = navSetting.get();
         const hideTheDialogForTests = localStorage.getItem('hide-shortcuts-dialog-for-test');
         const userHadShortcutsDialogOpenedOnce = this.#userHadShortcutsDialogOpenedOnce.get();
-        this.#shortcutsDialog.prependElement(this.#navigationRadioButtons);
-        // Add the shortcuts dialog button to the toolbar.
-        const dialogToolbarItem = new UI.Toolbar.ToolbarItem(this.#shortcutsDialog);
-        dialogToolbarItem.element.setAttribute('jslog', `${VisualLogging.action().track({ click: true }).context('timeline.shortcuts-dialog-toggle')}`);
-        this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
         this.#updateNavigationSettingSelection();
-        // The setting could have been changed from the Devtools Settings. Therefore, we
-        // need to update the radio buttons selection when the dialog is open.
-        this.#shortcutsDialog.addEventListener('click', this.#updateNavigationSettingSelection.bind(this));
-        this.#shortcutsDialog.data = {
-            customTitle: i18nString(UIStrings.shortcutsDialogTitle),
-            shortcuts: this.#getShortcutsInfo(currentNavSetting === 'classic'),
-            open: !userHadShortcutsDialogOpenedOnce && hideTheDialogForTests !== 'true' &&
-                !Host.InspectorFrontendHost.isUnderTest(),
-        };
-        this.#navigationRadioButtons.classList.add('nav-radio-buttons');
-        UI.ARIAUtils.markAsRadioGroup(this.#navigationRadioButtons);
-        // Change EventListener is only triggered when the radio button is selected
-        this.#modernNavRadioButton.radio.addEventListener('change', () => {
-            this.#shortcutsDialog.data = { shortcuts: this.#getShortcutsInfo(/* isNavClassic */ false) };
-            navSetting.set('modern');
-        });
-        this.#classicNavRadioButton.radio.addEventListener('change', () => {
-            this.#shortcutsDialog.data = { shortcuts: this.#getShortcutsInfo(/* isNavClassic */ true) };
-            navSetting.set('classic');
-        });
-        this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton.label);
-        this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton.label);
+        this.#shortcutsDialogOpen = !userHadShortcutsDialogOpenedOnce && hideTheDialogForTests !== 'true' &&
+            !Host.InspectorFrontendHost.isUnderTest();
         this.#userHadShortcutsDialogOpenedOnce.set(true);
-        return this.#navigationRadioButtons;
+        this.requestUpdate();
     }
     #updateNavigationSettingSelection() {
-        const currentNavSetting = Common.Settings.Settings.instance()
-            .resolve(SettingUIRegistration.TimelineSettings.flamechartSelectedNavigationSettingDescriptor)
-            .get();
+        const currentNavSetting = this.#navigationSetting.get();
         if (currentNavSetting === 'classic') {
-            this.#classicNavRadioButton.radio.checked = true;
             Host.userMetrics.navigationSettingAtFirstTimelineLoad(Host.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_CLASSIC);
         }
         else if (currentNavSetting === 'modern') {
-            this.#modernNavRadioButton.radio.checked = true;
             Host.userMetrics.navigationSettingAtFirstTimelineLoad(Host.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_MODERN);
         }
     }
@@ -1229,7 +1284,7 @@ export class TimelinePanel extends TimelinePanelBase {
     createSettingsPane() {
         this.showSettingsPaneSetting =
             Common.Settings.Settings.instance().createSetting('timeline-show-settings-toolbar', false);
-        this.showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.captureSettings), 'gear-filled', 'timeline-settings-toggle');
+        this.#hasSettingsToggle = true;
         SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, this.updateShowSettingsToolbarButton, this);
         SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener("RateChanged" /* SDK.CPUThrottlingManager.Events.RATE_CHANGED */, this.updateShowSettingsToolbarButton, this);
         this.disableCaptureJSProfileSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
@@ -1237,7 +1292,25 @@ export class TimelinePanel extends TimelinePanelBase {
         this.captureSelectorStatsSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
         this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility, this);
         this.#showSettingsPane = this.showSettingsPaneSetting.get();
-        this.showSettingsPaneButton.setToggled(this.#showSettingsPane);
+    }
+    #toggleSettingsPane = () => {
+        // The pane can be hidden while the setting stays enabled (see `#hideLandingPage`),
+        // so toggle the visible state rather than the setting value.
+        this.#showSettingsPane = !this.#showSettingsPane;
+        this.showSettingsPaneSetting.set(this.#showSettingsPane);
+        this.requestUpdate();
+    };
+    #settingsToggleViewInput() {
+        if (!this.#hasSettingsToggle) {
+            return null;
+        }
+        const warnings = this.#settingsToggleWarnings;
+        return {
+            toggled: this.#showSettingsPane,
+            checked: warnings.length > 0,
+            title: warnings.length ? warnings.join('\n') : i18nString(UIStrings.captureSettings),
+            onToggle: this.#toggleSettingsPane,
+        };
     }
     prepareToLoadTimeline() {
         console.assert(this.state === "Idle" /* State.IDLE */);
@@ -1252,7 +1325,7 @@ export class TimelinePanel extends TimelinePanelBase {
         }
         // Do not show this Context menu on FlameChart entries because we have a different context menu for FlameChart entries
         const mouseEvent = event;
-        if (this.flameChart.getMainFlameChart().coordinatesToEntryIndex(mouseEvent.offsetX, mouseEvent.offsetY) !== -1) {
+        if (this.flameChart.hasMainEntryAt(mouseEvent.offsetX, mouseEvent.offsetY)) {
             return;
         }
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -1625,11 +1698,10 @@ export class TimelinePanel extends TimelinePanelBase {
             return;
         }
         this.#showSettingsPane = showSettingsPane;
-        this.showSettingsPaneButton?.setToggled(showSettingsPane);
         this.requestUpdate();
     }
     updateShowSettingsToolbarButton() {
-        if (!this.showSettingsPaneButton) {
+        if (!this.#hasSettingsToggle) {
             return;
         }
         const messages = [];
@@ -1648,15 +1720,8 @@ export class TimelinePanel extends TimelinePanelBase {
         if (this.disableCaptureJSProfileSetting.get()) {
             messages.push(i18nString(UIStrings.JavascriptSamplingIsDisabled));
         }
-        this.showSettingsPaneButton.setChecked(messages.length > 0);
-        this.showSettingsPaneButton.element.style.setProperty('--dot-toggle-top', '16px');
-        this.showSettingsPaneButton.element.style.setProperty('--dot-toggle-left', '15px');
-        if (messages.length) {
-            this.showSettingsPaneButton.setTitle(messages.join('\n'));
-        }
-        else {
-            this.showSettingsPaneButton.setTitle(i18nString(UIStrings.captureSettings));
-        }
+        this.#settingsToggleWarnings = messages;
+        this.requestUpdate();
     }
     setUIControlsEnabled(enabled) {
         this.#uiControlsEnabled = enabled;
@@ -1846,7 +1911,7 @@ export class TimelinePanel extends TimelinePanelBase {
         this.toggleRecordAction.setEnabled(this.state === "Recording" /* State.RECORDING */ || this.state === "Idle" /* State.IDLE */);
         this.askAiButton?.setEnabled(this.state === "Idle" /* State.IDLE */ && this.#hasActiveTrace());
         this.panelToolbar.setEnabled(this.state !== "Loading" /* State.LOADING */);
-        this.panelRightToolbar.setEnabled(this.state !== "Loading" /* State.LOADING */);
+        this.requestUpdate();
         if (!this.canRecord()) {
             return;
         }
@@ -1876,9 +1941,7 @@ export class TimelinePanel extends TimelinePanelBase {
         this.#instantiateNewModel();
         ModificationsManager.reset();
         this.#uninstallSourceMapsResolver();
-        this.flameChart.getMainDataProvider().reset();
-        this.flameChart.getNetworkDataProvider().reset();
-        this.flameChart.reset();
+        this.flameChart.setModel(null);
         this.#changeView({ mode: 'LANDING_PAGE' });
         UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, null);
     }
@@ -1937,7 +2000,7 @@ export class TimelinePanel extends TimelinePanelBase {
             console.error('ModificationsManager could not be created or activated.');
         }
         this.statusDialog?.updateProgressBar(i18nString(UIStrings.processed), 70);
-        this.flameChart.setModel(parsedTrace, this.#eventToRelatedInsights);
+        this.flameChart.setModel({ parsedTrace, eventToRelatedInsightsMap: this.#eventToRelatedInsights });
         this.flameChart.resizeToPreferredHeights();
         // Reset the visual selection as we've just swapped to a new trace.
         void this.flameChart.setSelectionAndReveal(null);
@@ -1946,7 +2009,7 @@ export class TimelinePanel extends TimelinePanelBase {
         const exclusiveFilter = this.#exclusiveFilterPerTrace.get(traceIndex) ?? null;
         this.#applyActiveFilters(parsedTrace.data.Meta.traceIsGeneric, exclusiveFilter);
         this.saveButton.element.updateContentVisibility({
-            annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false,
+            annotationsExist: Boolean(currentManager && currentManager.getAnnotations().length > 0),
         });
         // Add ModificationsManager listeners for annotations change to update the
         // Annotation Overlays.
@@ -2070,7 +2133,7 @@ export class TimelinePanel extends TimelinePanelBase {
         const annotationEntryToColorMap = this.buildColorsAnnotationsMap(annotations);
         this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
         this.saveButton.element.updateContentVisibility({
-            annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false,
+            annotationsExist: Boolean(currentManager && currentManager.getAnnotations().length > 0),
         });
     }
     /**
@@ -2126,7 +2189,7 @@ export class TimelinePanel extends TimelinePanelBase {
         }
         const maybeOverlay = createHiddenTracksOverlay(parsedTrace, {
             onClose: () => {
-                this.flameChart.overlays().removeOverlaysOfType('BOTTOM_INFO_BAR');
+                this.flameChart.removeOverlaysOfType('BOTTOM_INFO_BAR');
                 this.#hiddenTracksInfoBarByParsedTrace.set(parsedTrace, 'DISMISSED');
             },
             onShowAllTracks: () => {
@@ -2204,7 +2267,6 @@ export class TimelinePanel extends TimelinePanelBase {
     #hideLandingPage() {
         this.landingPage.detach();
         // Hide pane settings in trace view to conserve UI space, but preserve underlying setting.
-        this.showSettingsPaneButton?.setToggled(false);
         this.#showSettingsPane = false;
         this.requestUpdate();
     }
@@ -2246,7 +2308,7 @@ export class TimelinePanel extends TimelinePanelBase {
         // resolving source maps). Thus, we must reappend the flamechart
         // entries.
         this.flameChart.getMainDataProvider().timelineData(true);
-        this.flameChart.getMainFlameChart().update();
+        this.flameChart.refreshMainFlameChart();
     }
     /**
      * This is called with we are done loading a trace from a file, or after we

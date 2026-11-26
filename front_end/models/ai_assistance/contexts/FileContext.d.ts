@@ -12,6 +12,11 @@ export declare class FileContext extends ConversationContext<Workspace.UISourceC
     getOrigin(): SDK.SecurityOrigin.SecurityOrigin;
     getItem(): Workspace.UISourceCode.UISourceCode;
     getTitle(): string;
+    /**
+     * Registers the selected file and includes its `File ID` so the model can page
+     * truncated content with `getSourceContent` and match `listSources` rows without
+     * an extra `listSources` call.
+     */
     getPromptDetails(): Promise<string | null>;
     getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]] | null>;
     refresh(): Promise<void>;

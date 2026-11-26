@@ -1,3 +1,4 @@
 import * as DeviceModeModel from './DeviceModeModel.js';
 import * as EmulatedDevices from './EmulatedDevices.js';
-export { DeviceModeModel, EmulatedDevices, };
+import * as UserAgentGroups from './UserAgentGroups.js';
+export { DeviceModeModel, EmulatedDevices, UserAgentGroups, };

@@ -594,7 +594,6 @@ __export(StringUtilities_exports, {
   regexSpecialCharacters: () => regexSpecialCharacters,
   removeURLFragment: () => removeURLFragment,
   replaceControlCharacters: () => replaceControlCharacters,
-  replaceLast: () => replaceLast,
   reverse: () => reverse,
   safeEscapeUnicode: () => safeEscapeUnicode,
   sanitizeIdentifier: () => sanitizeIdentifier,
@@ -1144,13 +1143,6 @@ function toSnakeCase(text) {
   const result = text.replace(/(\p{L})(\p{N})/gu, "$1_$2").replace(/(\p{Lu}+)(\p{Lu}\p{Ll})/gu, "$1_$2").replace(/(\p{Ll}|\p{N})(\p{Lu})/gu, "$1_$2").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "_").replace(/^_|_$/g, "");
   return result;
 }
-var replaceLast = function(input, search, replacement) {
-  const replacementStartIndex = input.lastIndexOf(search);
-  if (replacementStartIndex === -1) {
-    return input;
-  }
-  return input.slice(0, replacementStartIndex) + input.slice(replacementStartIndex).replace(search, replacement);
-};
 var stringifyWithPrecision = function stringifyWithPrecision2(s, precision = 2) {
   if (precision === 0) {
     return s.toFixed(0);

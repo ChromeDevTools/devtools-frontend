@@ -86,6 +86,14 @@ export declare class ChatView extends HTMLElement {
     focusTextInput(): void;
     setInputValue(text: string): void;
     restoreScrollPosition(): void;
+    /**
+     * Re-pins auto-scroll and jumps to the current bottom.
+     *
+     * Callers invoke this right after `requestUpdate()` before new messages
+     * render, so setting `#pinScrollToBottom` unconditionally lets
+     * `#messagesContainerResizeObserver` follow the post-render height increase
+     * even if `mainElement` is not mounted yet.
+     */
     scrollToBottom(): void;
 }
 declare global {

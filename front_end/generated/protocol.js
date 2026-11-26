@@ -615,6 +615,7 @@ export var Audits;
         InspectorIssueCode["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
         InspectorIssueCode["LazyLoadImageIssue"] = "LazyLoadImageIssue";
         InspectorIssueCode["WebInstallIssue"] = "WebInstallIssue";
+        InspectorIssueCode["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
     })(InspectorIssueCode = Audits.InspectorIssueCode || (Audits.InspectorIssueCode = {}));
     let GetEncodedResponseRequestEncoding;
     (function (GetEncodedResponseRequestEncoding) {

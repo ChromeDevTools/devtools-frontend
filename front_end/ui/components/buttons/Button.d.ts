@@ -59,6 +59,10 @@ interface CommonButtonData {
      * Sets aria-expanded on the internal <button> element.
      */
     accessibleExpanded?: boolean;
+    /**
+     * Sets aria-description on the internal <button> element.
+     */
+    accessibleDescription?: string;
 }
 export type ButtonData = CommonButtonData & ({
     variant: Variant.PRIMARY_TOOLBAR | Variant.TOOLBAR | Variant.ICON;
@@ -93,6 +97,8 @@ export declare class Button extends HTMLElement {
     get accessibleLabel(): string | undefined;
     set accessibleExpanded(expanded: boolean | undefined);
     get accessibleExpanded(): boolean | undefined;
+    set accessibleDescription(description: string | undefined);
+    get accessibleDescription(): string | undefined;
     set reducedFocusRing(reducedFocusRing: boolean);
     set type(type: ButtonType);
     get title(): string;

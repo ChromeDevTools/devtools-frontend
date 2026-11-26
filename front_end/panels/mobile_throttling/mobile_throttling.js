@@ -903,6 +903,7 @@ import * as CrUXManager3 from "../../models/crux-manager/crux-manager.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
+import * as PanelUtils from "../utils/utils.js";
 var { render: render3, html: html3, Directives: Directives3 } = Lit2;
 var UIStrings5 = {
   /**
@@ -973,6 +974,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       }
     }
   }
+  output.focusAndHighlight = () => {
+    target.focus();
+    PanelUtils.PanelUtils.highlightElement(target);
+  };
   render3(
     // clang-format off
     html3`${input.throttlingGroups.map(
@@ -1040,6 +1045,7 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
   #currentConditions;
   #title;
   #view;
+  #viewOutput = {};
   #variant = _NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS;
   #disabled = false;
   #boundToGlobalConditions = false;
@@ -1174,6 +1180,9 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
     this.#title = title;
     this.requestUpdate();
   }
+  focusAndHighlight() {
+    this.#viewOutput.focusAndHighlight?.();
+  }
   performUpdate() {
     const customNetworkConditionsSetting = SDK5.NetworkManager.customUserNetworkConditionsSetting(this.#settings);
     const customNetworkConditions = customNetworkConditionsSetting.get();
@@ -1225,7 +1234,7 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
       throttlingGroups,
       customConditionsGroup
     };
-    this.#view(viewInput, void 0, this.contentElement);
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
 };
 ((NetworkThrottlingSelect2) => {

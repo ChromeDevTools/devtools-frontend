@@ -19,6 +19,10 @@ export default `/*
   color: var(--color); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
+.swatch-icon.mix-only {
+  inline-size: 10px;
+}
+
 .swatch {
   aspect-ratio: 1 / 1;
   display: inline-block;

@@ -79,7 +79,10 @@ export declare const SUGGEST_FOLLOW_UPS_FUNCTION_NAME = "suggestFollowUps";
  *   matching synthetic `"Suggestions recorded."` responses.
  * - `suggestFollowUps` alone with empty text: `AiAgent#run()` retains valid
  *   suggestions for the run, and `AiAgent#runFunctionCalls()` requests the
- *   final Markdown answer.
+ *   final Markdown answer. When the run ends, `AiAgent#handleFinalResponse()`
+ *   removes the empty-text call and its response from history and records the
+ *   call with the answer instead, so the model does not repeat the empty-text
+ *   call in later turns.
  * - `suggestFollowUps` alongside other tools: `AiAgent#run()` discards the
  *   premature suggestions, and `AiAgent#runFunctionCalls()` instructs the
  *   model to call `suggestFollowUps` only in the final response.
@@ -326,9 +329,21 @@ export type AllowedOriginResult = {
 } | {
     blocked: true;
 };
+/**
+ * Controls whether server-side logging is allowed (defaults to `false`).
+ *
+ * Once `disable()` runs, `isAllowed()` stays `false`.
+ */
+export declare class ServerSideLoggingPolicy {
+    #private;
+    constructor(allowed?: boolean);
+    isAllowed(): boolean;
+    disable(): void;
+}
 export interface AgentOptions {
     aidaClient: Host.AidaClient.AidaClient;
-    serverSideLoggingAllowed?: boolean;
+    /** Disables server-side logging when omitted. */
+    serverSideLogging?: ServerSideLoggingPolicy;
     sessionId?: string;
     confirmSideEffectForTest?: typeof Promise.withResolvers;
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
@@ -671,13 +686,7 @@ export declare abstract class AiAgent<T> {
      * `runEntries` are discarded instead of committed to `#history`.
      */
     clearCache(): void;
-    /**
-     * Disables server-side logging for the remainder of this agent instance's lifetime.
-     *
-     * Logging deactivation is irreversible for the session. Conversation history
-     * accumulates across turns; re-enabling logging later would leak sensitive
-     * data from prior turns to AIDA.
-     */
+    /** Permanently disables server-side logging for subsequent requests. */
     protected disableServerSideLogging(): void;
     /**
      * Preamble features appended to the `client_version` in metadata.

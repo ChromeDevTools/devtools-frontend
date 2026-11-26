@@ -110,7 +110,9 @@ var RequestLinkIcon = class extends HTMLElement {
   #affectedRequest;
   #additionalOnClickAction;
   #reveal = Common.Revealer.reveal;
+  #requestGeneration = 0;
   set data(data) {
+    const generation = ++this.#requestGeneration;
     this.#linkToPreflight = data.linkToPreflight;
     this.#request = data.request;
     if (data.affectedRequest) {
@@ -130,9 +132,15 @@ var RequestLinkIcon = class extends HTMLElement {
         throw new Error("A `RequestResolver` must be provided if an `affectedRequest` is provided.");
       }
       this.#requestResolver.waitFor(data.affectedRequest.requestId).then((request) => {
+        if (generation !== this.#requestGeneration) {
+          return;
+        }
         this.#request = request;
         return this.#render();
       }).catch(() => {
+        if (generation !== this.#requestGeneration) {
+          return;
+        }
         this.#request = null;
       });
     }

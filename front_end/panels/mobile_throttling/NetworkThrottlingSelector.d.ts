@@ -14,7 +14,10 @@ interface ViewInput {
     onSelect: (conditions: SDK.NetworkManager.ThrottlingConditions) => void;
     onAddCustomConditions: () => void;
 }
-export type ViewFunction = (input: ViewInput, output: undefined, target: HTMLSelectElement) => void;
+export interface ViewOutput {
+    focusAndHighlight?: () => void;
+}
+export type ViewFunction = (input: ViewInput, output: ViewOutput, target: HTMLSelectElement) => void;
 export declare const DEFAULT_VIEW: ViewFunction;
 export declare const enum Events {
     CONDITIONS_CHANGED = "ConditionsChanged"
@@ -52,6 +55,7 @@ export declare class NetworkThrottlingSelect extends NetworkThrottlingSelectBase
     set variant(variant: NetworkThrottlingSelect.Variant);
     get title(): string | undefined;
     set title(title: string | undefined);
+    focusAndHighlight(): void;
     performUpdate(): void;
 }
 export declare namespace NetworkThrottlingSelect {

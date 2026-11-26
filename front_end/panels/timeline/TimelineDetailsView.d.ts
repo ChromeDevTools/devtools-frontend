@@ -45,6 +45,7 @@ export declare const SUMMARY_TAB_VIEW: SummaryTabView;
 declare const TimelineDetailsPaneBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>;
 export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     #private;
+    delegate?: Pick<TimelineModeViewDelegate, 'highlightEvent'>;
     private tabbedPane;
     private readonly defaultDetailsWidget;
     private rangeDetailViews;
@@ -53,6 +54,7 @@ export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     private lazySelectorStatsView;
     static makeEventWidget(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): TimelineDetailsPane;
     constructor(delegate: Pick<TimelineModeViewDelegate, 'highlightEvent'>, summaryTabView?: SummaryTabView);
+    constructor(element?: HTMLElement, summaryTabView?: SummaryTabView);
     performUpdate(): void;
     wasShown(): void;
     willHide(): void;

@@ -1822,7 +1822,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     #requestConditions;
     #urlsForRequestInterceptor = new Platform.MapUtilities.Multimap();
     #extraHeaders;
-    #customUserAgent = '';
+    #customUserAgent = { agent: '', enabled: false };
     #isBlocking = false;
     constructor(targetManager) {
         super();
@@ -1954,8 +1954,26 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
             void agent.invoke_setExtraHTTPHeaders({ headers: this.#extraHeaders });
         }
     }
+    customUserAgent() {
+        return this.#customUserAgent.agent;
+    }
+    customUserAgentEnabled() {
+        return this.#customUserAgent.enabled;
+    }
+    setCustomUserAgentEnabled(enabled) {
+        if (this.#customUserAgent.enabled === enabled) {
+            return;
+        }
+        this.#customUserAgent.enabled = enabled;
+        if (!enabled) {
+            this.#customUserAgent.agent = '';
+            this.#userAgentMetadataOverride = null;
+            this.updateUserAgentOverride();
+        }
+        this.dispatchEventToListeners("CustomUserAgentChanged" /* MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED */);
+    }
     currentUserAgent() {
-        return this.#customUserAgent ? this.#customUserAgent : this.#userAgentOverride;
+        return this.#customUserAgent.agent ? this.#customUserAgent.agent : this.#userAgentOverride;
     }
     updateUserAgentOverride() {
         const userAgent = this.currentUserAgent();
@@ -1966,7 +1984,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     setUserAgentOverride(userAgent, userAgentMetadataOverride) {
         const uaChanged = (this.#userAgentOverride !== userAgent);
         this.#userAgentOverride = userAgent;
-        if (!this.#customUserAgent) {
+        if (!this.#customUserAgent.agent) {
             this.#userAgentMetadataOverride = userAgentMetadataOverride;
             this.updateUserAgentOverride();
         }
@@ -1978,8 +1996,11 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         }
     }
     setCustomUserAgentOverride(userAgent, userAgentMetadataOverride = null) {
-        const uaChanged = this.#customUserAgent !== userAgent;
-        this.#customUserAgent = userAgent;
+        const uaChanged = this.#customUserAgent.agent !== userAgent;
+        this.#customUserAgent.agent = userAgent;
+        if (userAgent) {
+            this.#customUserAgent.enabled = true;
+        }
         this.#userAgentMetadataOverride = userAgentMetadataOverride;
         this.updateUserAgentOverride();
         if (uaChanged) {
@@ -2080,6 +2101,18 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         Events["REQUEST_FULFILLED"] = "RequestFulfilled";
     })(Events = MultitargetNetworkManager.Events || (MultitargetNetworkManager.Events = {}));
 })(MultitargetNetworkManager || (MultitargetNetworkManager = {}));
+/**
+ * Passed to `Common.Revealer.reveal` to open and highlight the user
+ * agent setting in the Network Conditions drawer.
+ */
+export class RevealableCustomUserAgent {
+}
+/**
+ * Passed to `Common.Revealer.reveal` to open and highlight the
+ * throttling control in the Network panel.
+ */
+export class RevealableNetworkThrottling {
+}
 export class InterceptedRequest {
     #multitargetNetworkManager;
     #fetchAgent;

@@ -32,7 +32,7 @@ import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, nothing, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.js';
 const UIStrings = {
@@ -107,7 +107,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${scopeChainSidebarPaneStyles}</style>
-          ${input.scopeChain?.map(item => createScopeSection(item)) ?? nothing}
+          ${Directives.repeat(input.scopeChain, item => item.objectTree, item => createScopeSection(item))}
         </ul>`}>
       </devtools-tree>` : html `
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString(UIStrings.loading) : i18nString(UIStrings.notPaused)}</div>`}

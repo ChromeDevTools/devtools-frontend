@@ -9,60 +9,62 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.media-attributes-view {
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.media-property-renderer {
-  line-height: var(--sys-size-9);
-  min-height: var(--sys-size-12);
-  padding: var(--sys-size-3) var(--sys-size-5);
-  display: block;
-  overflow: hidden;
-
-  &:hover {
-    background: var(--sys-color-state-hover-on-subtle);
+@scope to (devtools-widget > *) {
+  .media-attributes-view {
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }
-}
 
-.media-property-renderer:nth-child(even of :not(.media-property-renderer-hidden)):not(:hover) {
-  background: var(--sys-color-surface1);
-}
-
-.media-property-renderer:has(.json-view) {
-  padding-bottom: 0;
-}
-
-.media-property-renderer:has(.json-view > .expanded) {
-  padding-bottom: var(--sys-size-3);
-}
-
-.media-property-renderer-hidden {
-  display: none;
-}
-
-.media-property-renderer-title {
-  font-size: var(--sys-typescale-body4-size);
-  float: left;
-  width: var(--sys-size-23);
-}
-
-.media-property-renderer-title::first-letter {
-  text-transform: uppercase;
-}
-
-.media-property-renderer-contents {
-  position: relative;
-
-  & > .json-view {
+  .media-property-renderer {
+    line-height: var(--sys-size-9);
+    min-height: var(--sys-size-12);
+    padding: var(--sys-size-3) var(--sys-size-5);
+    display: block;
     overflow: hidden;
-    padding: 0;
-  }
-}
 
-.media-properties-frame {
-  display: block;
-  overflow-x: hidden;
+    &:hover {
+      background: var(--sys-color-state-hover-on-subtle);
+    }
+  }
+
+  .media-property-renderer:nth-child(even of :not(.media-property-renderer-hidden)):not(:hover) {
+    background: var(--sys-color-surface1);
+  }
+
+  .media-property-renderer:has(.json-view) {
+    padding-bottom: 0;
+  }
+
+  .media-property-renderer:has(.json-view > .expanded) {
+    padding-bottom: var(--sys-size-3);
+  }
+
+  .media-property-renderer-hidden {
+    display: none;
+  }
+
+  .media-property-renderer-title {
+    font-size: var(--sys-typescale-body4-size);
+    float: left;
+    width: var(--sys-size-23);
+  }
+
+  .media-property-renderer-title::first-letter {
+    text-transform: uppercase;
+  }
+
+  .media-property-renderer-contents {
+    position: relative;
+
+    & > .json-view {
+      overflow: hidden;
+      padding: 0;
+    }
+  }
+
+  :scope.media-properties-frame {
+    display: block;
+    overflow-x: hidden;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./playerPropertiesView.css')} */`;

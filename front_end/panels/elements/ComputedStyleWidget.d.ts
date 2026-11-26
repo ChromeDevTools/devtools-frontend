@@ -21,23 +21,24 @@ export type ComputedStyleData = {
     name: string;
 };
 export interface ComputedStyleWidgetInput {
-    computedStylesTree: TreeOutline.TreeOutline.TreeOutline<ComputedStyleData>;
+    treeData: TreeOutline.TreeOutline.TreeOutlineData<ComputedStyleData>;
+    isNarrow: boolean;
     hasMatches: boolean;
     showInheritedComputedStylePropertiesSetting: Common.Settings.Setting<boolean>;
     groupComputedStylesSetting: Common.Settings.Setting<boolean>;
-    onFilterChanged: (newFilterText: string) => void;
+    onFilterChanged: (filterText: string) => void;
     filterText: string;
     filterIsRegex: boolean;
-    onRegexToggled: (regexToggled: boolean) => void;
+    onRegexToggled: (isRegex: boolean) => void;
     includeToolbar: boolean;
 }
-export type View = (input: ComputedStyleWidgetInput, output: null, target: HTMLElement) => void;
+export interface ViewOutput {
+    expandGroupLists?: () => Promise<void>;
+}
+export type View = (input: ComputedStyleWidgetInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class ComputedStyleWidget extends UI.Widget.VBox {
     #private;
-    private readonly showInheritedComputedStylePropertiesSetting;
-    private readonly groupComputedStylesSetting;
-    private filterRegex;
     private readonly linkifier;
     private readonly imagePreviewPopover;
     constructor(element?: HTMLElement, view?: View);
@@ -57,16 +58,10 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     set matchedStyles(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles | null);
     set propertyTraces(propertyTraces: Map<string, SDK.CSSProperty.CSSProperty[]> | null);
     performUpdate(): Promise<void>;
-    private rebuildAlphabeticalList;
-    private rebuildGroupedList;
     private buildTraceNode;
     private createTreeNodeRenderer;
     private buildTreeNode;
     private handleContextMenuEvent;
-    private onRegexToggled;
-    private onFilterChanged;
     filterComputedStyles(regex: RegExp | null): Promise<void>;
     private nodeFilter;
-    private filterAlphabeticalList;
-    private filterGroupLists;
 }

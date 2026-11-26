@@ -79,6 +79,7 @@ export function hasWebSafeScheme(url) {
  */
 const PRIVILEGED_SCHEMES = new Set([
     'chrome:',
+    'chrome-distiller:',
     'chrome-error:',
     'chrome-extension:',
     'chrome-search:',

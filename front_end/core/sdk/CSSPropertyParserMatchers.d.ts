@@ -134,9 +134,8 @@ export declare class ColorMixMatch implements Match {
     readonly text: string;
     readonly node: CodeMirror.SyntaxNode;
     readonly space: CodeMirror.SyntaxNode[];
-    readonly color1: CodeMirror.SyntaxNode[];
-    readonly color2: CodeMirror.SyntaxNode[];
-    constructor(text: string, node: CodeMirror.SyntaxNode, space: CodeMirror.SyntaxNode[], color1: CodeMirror.SyntaxNode[], color2: CodeMirror.SyntaxNode[]);
+    readonly items: CodeMirror.SyntaxNode[][];
+    constructor(text: string, node: CodeMirror.SyntaxNode, space: CodeMirror.SyntaxNode[], items: CodeMirror.SyntaxNode[][]);
 }
 declare const ColorMixMatcherBase: MatcherClass<ColorMixMatch>;
 export declare class ColorMixMatcher extends ColorMixMatcherBase {

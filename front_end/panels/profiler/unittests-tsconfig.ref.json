@@ -16,6 +16,7 @@
     "../../../../../../front_end/panels/profiler/HeapDetachedElementsView.test.ts",
     "../../../../../../front_end/panels/profiler/HeapProfileView.test.ts",
     "../../../../../../front_end/panels/profiler/HeapSnapshotDataGrids.test.ts",
+    "../../../../../../front_end/panels/profiler/HeapSnapshotGridNodes.test.ts",
     "../../../../../../front_end/panels/profiler/HeapSnapshotView.test.ts",
     "../../../../../../front_end/panels/profiler/HeapTimelineOverview.test.ts",
     "../../../../../../front_end/panels/profiler/IsolateSelector.test.ts",

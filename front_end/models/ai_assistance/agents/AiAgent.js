@@ -82,7 +82,10 @@ const SUGGEST_FOLLOW_UPS_PREMATURE_RESULT = 'Ignored: call suggestFollowUps only
  *   matching synthetic `"Suggestions recorded."` responses.
  * - `suggestFollowUps` alone with empty text: `AiAgent#run()` retains valid
  *   suggestions for the run, and `AiAgent#runFunctionCalls()` requests the
- *   final Markdown answer.
+ *   final Markdown answer. When the run ends, `AiAgent#handleFinalResponse()`
+ *   removes the empty-text call and its response from history and records the
+ *   call with the answer instead, so the model does not repeat the empty-text
+ *   call in later turns.
  * - `suggestFollowUps` alongside other tools: `AiAgent#run()` discards the
  *   premature suggestions, and `AiAgent#runFunctionCalls()` instructs the
  *   model to call `suggestFollowUps` only in the final response.
@@ -135,6 +138,24 @@ export var MultimodalInputType;
     MultimodalInputType["SCREENSHOT"] = "screenshot";
     MultimodalInputType["UPLOADED_IMAGE"] = "uploaded-image";
 })(MultimodalInputType || (MultimodalInputType = {}));
+/**
+ * Controls whether server-side logging is allowed (defaults to `false`).
+ *
+ * Once `disable()` runs, `isAllowed()` stays `false`.
+ */
+export class ServerSideLoggingPolicy {
+    #allowed;
+    constructor(allowed = false) {
+        this.#allowed = allowed;
+    }
+    isAllowed() {
+        return this.#allowed;
+    }
+    disable() {
+        // Irreversible: earlier turns remain in history and would leak if re-enabled.
+        this.#allowed = false;
+    }
+}
 export const MAX_STEPS = 20;
 /**
  * The response sent for each function call that did not run because an
@@ -237,11 +258,7 @@ class CrossOriginError extends Error {
 export class AiAgent {
     #sessionId;
     #aidaClient;
-    /**
-     * Tracks the dynamic runtime state of logging. Even if logging is allowed
-     * by policy, tools or sensitive contexts can deactivate this to avoid logging sensitive data.
-     */
-    #serverSideLoggingActive;
+    #serverSideLogging;
     confirmSideEffect;
     #functionDeclarations = new Map();
     #allowedOrigin;
@@ -261,7 +278,7 @@ export class AiAgent {
     #facts = new Set();
     constructor(opts) {
         this.#aidaClient = opts.aidaClient;
-        this.#serverSideLoggingActive = opts.serverSideLoggingAllowed ?? false;
+        this.#serverSideLogging = opts.serverSideLogging ?? new ServerSideLoggingPolicy();
         this.#sessionId = opts.sessionId ?? crypto.randomUUID();
         this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
         this.#history = opts.history ?? [];
@@ -304,15 +321,9 @@ export class AiAgent {
      */
     clearCache() {
     }
-    /**
-     * Disables server-side logging for the remainder of this agent instance's lifetime.
-     *
-     * Logging deactivation is irreversible for the session. Conversation history
-     * accumulates across turns; re-enabling logging later would leak sensitive
-     * data from prior turns to AIDA.
-     */
+    /** Permanently disables server-side logging for subsequent requests. */
     disableServerSideLogging() {
-        this.#serverSideLoggingActive = false;
+        this.#serverSideLogging.disable();
     }
     /**
      * Preamble features appended to the `client_version` in metadata.
@@ -366,7 +377,7 @@ export class AiAgent {
                 model_id: this.options.modelId || undefined,
             },
             metadata: {
-                disable_user_content_logging: !(this.#serverSideLoggingActive ?? false),
+                disable_user_content_logging: !this.#serverSideLogging.isAllowed(),
                 string_session_id: this.#sessionId,
                 user_tier: userTier,
                 client_version: Root.Runtime.getChromeVersion() + this.preambleFeatures().map(feature => `+${feature}`).join(''),
@@ -593,7 +604,10 @@ export class AiAgent {
      *   without committing `runEntries`.
      * - Otherwise, records the answer (and any `suggestFollowUps` calls verbatim
      *   with matching synthetic `functionResponse` parts) in `#history` and yields
-     *   a completed `ANSWER` with follow-up suggestions.
+     *   a completed `ANSWER` with follow-up suggestions. Empty-text
+     *   `suggestFollowUps` steps from earlier in the run are left out of the
+     *   saved history; if the answer has no `suggestFollowUps` call, the last
+     *   removed call is recorded with the answer.
      */
     async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId, runEntries, latestSuggestions) {
         if (!textResponse.trim()) {
@@ -603,19 +617,21 @@ export class AiAgent {
         }
         const parsedResponse = this.parseTextResponse(textResponse);
         debugLog(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
+        const { entries, removedCall } = removeEmptyTextFollowUpSteps(runEntries);
+        const finalCalls = functionCalls ?? (removedCall ? [removedCall] : undefined);
         const modelParts = [{ text: parsedResponse.answer }];
-        if (functionCalls) {
-            modelParts.push(...functionCalls.map(functionCall => ({ functionCall })));
+        if (finalCalls) {
+            modelParts.push(...finalCalls.map(functionCall => ({ functionCall })));
         }
-        runEntries.push({
+        entries.push({
             parts: modelParts,
             role: Host.AidaClient.Role.MODEL,
         });
-        if (functionCalls) {
+        if (finalCalls) {
             // Pair every `functionCall` with a synthetic `functionResponse` so `historical_contexts`
             // stays valid before the next `USER` turn and retains `[text, suggestFollowUps]` examples.
-            runEntries.push({
-                parts: functionCalls.map(functionCall => ({
+            entries.push({
+                parts: finalCalls.map(functionCall => ({
                     functionResponse: {
                         name: functionCall.name,
                         response: { result: SUGGEST_FOLLOW_UPS_RECORDED_RESULT },
@@ -624,7 +640,7 @@ export class AiAgent {
                 role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
             });
         }
-        this.#commitRun(runEntries);
+        this.#commitRun(entries);
         // The `parsedResponse.suggestions` fallback for text-parsed `SUGGESTIONS:`
         // remains only while V1 agents (`StylingAgent`, `PerformanceAgent`) exist.
         const suggestions = latestSuggestions ?? parsedResponse.suggestions;
@@ -1030,6 +1046,52 @@ export function sanitizeSuggestionsList(parsed) {
         return undefined;
     }
     return sanitized;
+}
+function isSuggestFollowUpsCall(part) {
+    return 'functionCall' in part && part.functionCall.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME;
+}
+function isSuggestFollowUpsResponse(part) {
+    return 'functionResponse' in part && part.functionResponse.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME;
+}
+/**
+ * Returns whether `content` exists, has at least one part, and every part
+ * matches `predicate`. The length check is needed because `Array#every()`
+ * returns `true` for an empty array, which would treat a message with no
+ * parts as matching.
+ */
+function consistsOnlyOf(content, predicate) {
+    return content !== undefined && content.parts.length > 0 && content.parts.every(predicate);
+}
+/**
+ * Returns whether `current` and `next` form an empty-text `suggestFollowUps`
+ * step: a `MODEL` entry with only `suggestFollowUps` calls (no text), followed
+ * by an entry with only their `functionResponse` parts.
+ */
+function isEmptyTextFollowUpStep(current, next) {
+    if (current.role !== Host.AidaClient.Role.MODEL) {
+        return false;
+    }
+    return consistsOnlyOf(current, isSuggestFollowUpsCall) && consistsOnlyOf(next, isSuggestFollowUpsResponse);
+}
+/**
+ * Returns `runEntries` without empty-text `suggestFollowUps` steps, and the
+ * `suggestFollowUps` call from the last removed step.
+ *
+ * If history keeps these steps, the model treats them as examples and repeats
+ * the empty-text call in later turns.
+ */
+function removeEmptyTextFollowUpSteps(runEntries) {
+    const entries = [];
+    let removedCall;
+    for (let i = 0; i < runEntries.length; i++) {
+        if (isEmptyTextFollowUpStep(runEntries[i], runEntries[i + 1])) {
+            removedCall = runEntries[i].parts.findLast(isSuggestFollowUpsCall)?.functionCall;
+            i++; // Also skip the step's `functionResponse` entry.
+            continue;
+        }
+        entries.push(runEntries[i]);
+    }
+    return { entries, removedCall };
 }
 /**
  * Parses `suggestions` as a JSON array and returns its non-empty string items,

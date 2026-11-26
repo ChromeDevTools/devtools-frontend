@@ -1,3 +1,4 @@
+import '../../ui/components/dialogs/dialogs.js';
 import '../../ui/legacy/legacy.js';
 import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
@@ -6,6 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Trace from '../../models/trace/trace.js';
+import type * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as TimelineComponents from './components/components.js';
 import { type Client } from './TimelineController.js';
@@ -13,6 +15,27 @@ import { TimelineFlameChartView } from './TimelineFlameChartView.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 import type * as Utils from './utils/utils.js';
 declare const TimelinePanelBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Panel.Panel>;
+export interface SettingsToggleViewInput {
+    toggled: boolean;
+    /** Shows the dot indicator when capture settings add overhead or throttling is enabled. */
+    checked: boolean;
+    title: string;
+    onToggle: () => void;
+}
+export interface RightToolbarViewInput {
+    isNode: boolean;
+    canRecord: boolean;
+    isLoading: boolean;
+    settingsToggle: SettingsToggleViewInput | null;
+    navigationSettingInitialized: boolean;
+    isNavClassic: boolean;
+    shortcutsDialogTitle: Platform.UIString.LocalizedString;
+    shortcuts: Dialogs.ShortcutDialog.Shortcut[];
+    shortcutsDialogOpen: boolean;
+    onNavRadioChange: (mode: 'modern' | 'classic') => void;
+}
+export type RightToolbarView = (input: RightToolbarViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_RIGHT_TOOLBAR_VIEW: RightToolbarView;
 export interface SettingsPaneViewInput {
     isNode: boolean;
     canRecord: boolean;
@@ -53,11 +76,9 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
     private showScreenshotsSetting;
     private showMemorySetting;
     private readonly panelToolbar;
-    private readonly panelRightToolbar;
     private readonly timelinePane;
     private readonly statusPaneContainer;
     private readonly flameChart;
-    private showSettingsPaneButton?;
     private showSettingsPaneSetting;
     private controller;
     private cpuProfiler;
@@ -73,7 +94,11 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
     private showMemoryToolbarCheckbox?;
     private selection;
     private traceLoadStart;
-    constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, targetManager: SDK.TargetManager.TargetManager, isolateManager: SDK.IsolateManager.IsolateManager, commentManager: CommentManager.CommentManager.CommentManager, traceModel?: Trace.TraceModel.Model, settingsPaneView?: SettingsPaneView);
+    constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, targetManager: SDK.TargetManager.TargetManager, isolateManager: SDK.IsolateManager.IsolateManager, commentManager: CommentManager.CommentManager.CommentManager, traceModel?: Trace.TraceModel.Model, rightToolbarView?: RightToolbarView, settingsPaneView?: SettingsPaneView);
+    get panelRightToolbar(): HTMLElement | null;
+    get showSettingsPaneButton(): {
+        element: HTMLElement;
+    } | null;
     get settingsPane(): HTMLElement | null;
     performUpdate(): void;
     zoomEvent(event: Trace.Types.Events.Event): void;

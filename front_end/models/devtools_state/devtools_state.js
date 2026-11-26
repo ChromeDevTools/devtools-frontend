@@ -20,6 +20,7 @@ __export(State_exports, {
 });
 var StateKind = /* @__PURE__ */ ((StateKind2) => {
   StateKind2["CPU_THROTTLING"] = "cpu-throttling";
+  StateKind2["USER_AGENT"] = "user-agent";
   StateKind2["CACHE_DISABLED"] = "cache-disabled";
   StateKind2["JAVASCRIPT_DISABLED"] = "java-script-disabled";
   return StateKind2;
@@ -75,19 +76,74 @@ var CPUThrottlingStateProvider = class extends Common.ObjectWrapper.ObjectWrappe
   }
 };
 
+// ../../front_end/models/devtools_state/providers/NetworkStateProvider.ts
+var NetworkStateProvider_exports = {};
+__export(NetworkStateProvider_exports, {
+  NetworkStateProvider: () => NetworkStateProvider
+});
+import * as Common2 from "../../core/common/common.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+var NetworkStateProvider = class extends Common2.ObjectWrapper.ObjectWrapper {
+  #networkManager;
+  #eventListeners;
+  #lastUserAgent;
+  constructor(networkManager) {
+    super();
+    this.#networkManager = networkManager;
+    this.#lastUserAgent = networkManager.customUserAgent();
+    this.#eventListeners = [
+      this.#networkManager.addEventListener(
+        SDK2.NetworkManager.MultitargetNetworkManager.Events.CUSTOM_USER_AGENT_CHANGED,
+        () => {
+          const state = this.#userAgentState();
+          if (state.value === this.#lastUserAgent) {
+            return;
+          }
+          this.#lastUserAgent = state.value;
+          this.dispatchEventToListeners("StateChanged" /* STATE_CHANGED */, state);
+        }
+      )
+    ];
+  }
+  allStates() {
+    return [this.#userAgentState()];
+  }
+  async reveal(kind) {
+    if (kind === "user-agent" /* USER_AGENT */) {
+      await Common2.Revealer.reveal(new SDK2.NetworkManager.RevealableCustomUserAgent());
+    }
+  }
+  reset(kind) {
+    if (kind === "user-agent" /* USER_AGENT */ && this.#networkManager.customUserAgentEnabled()) {
+      this.#networkManager.setCustomUserAgentEnabled(false);
+    }
+  }
+  #userAgentState() {
+    const userAgent = this.#networkManager.customUserAgent();
+    return {
+      kind: "user-agent" /* USER_AGENT */,
+      value: userAgent,
+      isDefault: userAgent === ""
+    };
+  }
+  dispose() {
+    Common2.EventTarget.removeEventListeners(this.#eventListeners);
+  }
+};
+
 // ../../front_end/models/devtools_state/providers/SettingsStateProvider.ts
 var SettingsStateProvider_exports = {};
 __export(SettingsStateProvider_exports, {
   SettingsStateProvider: () => SettingsStateProvider
 });
-import * as Common2 from "../../core/common/common.js";
-import * as SDK2 from "../../core/sdk/sdk.js";
+import * as Common3 from "../../core/common/common.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
 var TRACKED_SETTINGS = [
-  { kind: "cache-disabled" /* CACHE_DISABLED */, descriptor: SDK2.SDKSettings.cacheDisabledSettingDescriptor },
-  { kind: "java-script-disabled" /* JAVASCRIPT_DISABLED */, descriptor: SDK2.SDKSettings.javaScriptDisabledSettingDescriptor }
+  { kind: "cache-disabled" /* CACHE_DISABLED */, descriptor: SDK3.SDKSettings.cacheDisabledSettingDescriptor },
+  { kind: "java-script-disabled" /* JAVASCRIPT_DISABLED */, descriptor: SDK3.SDKSettings.javaScriptDisabledSettingDescriptor }
 ];
 var TRACKED_SETTINGS_BY_NAME = new Map(TRACKED_SETTINGS.map((entry) => [entry.descriptor.name, entry]));
-var SettingsStateProvider = class extends Common2.ObjectWrapper.ObjectWrapper {
+var SettingsStateProvider = class extends Common3.ObjectWrapper.ObjectWrapper {
   #settings;
   #eventListeners;
   constructor(settings) {
@@ -109,7 +165,7 @@ var SettingsStateProvider = class extends Common2.ObjectWrapper.ObjectWrapper {
   async reveal(kind) {
     for (const entry of TRACKED_SETTINGS) {
       if (entry.kind === kind) {
-        await Common2.Revealer.reveal(this.#settings.resolve(entry.descriptor));
+        await Common3.Revealer.reveal(this.#settings.resolve(entry.descriptor));
       }
     }
   }
@@ -134,7 +190,7 @@ var SettingsStateProvider = class extends Common2.ObjectWrapper.ObjectWrapper {
     };
   }
   dispose() {
-    Common2.EventTarget.removeEventListeners(this.#eventListeners);
+    Common3.EventTarget.removeEventListeners(this.#eventListeners);
   }
 };
 
@@ -143,8 +199,8 @@ var StateManager_exports = {};
 __export(StateManager_exports, {
   StateManager: () => StateManager
 });
-import * as Common3 from "../../core/common/common.js";
-var StateManager = class extends Common3.ObjectWrapper.ObjectWrapper {
+import * as Common4 from "../../core/common/common.js";
+var StateManager = class extends Common4.ObjectWrapper.ObjectWrapper {
   #providers;
   #eventListeners;
   constructor(providers) {
@@ -177,7 +233,7 @@ var StateManager = class extends Common3.ObjectWrapper.ObjectWrapper {
     }
   }
   dispose() {
-    Common3.EventTarget.removeEventListeners(this.#eventListeners);
+    Common4.EventTarget.removeEventListeners(this.#eventListeners);
     for (const provider of this.#providers) {
       provider.dispose();
     }
@@ -185,6 +241,7 @@ var StateManager = class extends Common3.ObjectWrapper.ObjectWrapper {
 };
 export {
   CPUThrottlingStateProvider_exports as CPUThrottlingStateProvider,
+  NetworkStateProvider_exports as NetworkStateProvider,
   SettingsStateProvider_exports as SettingsStateProvider,
   State_exports as State,
   StateManager_exports as StateManager

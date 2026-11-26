@@ -44,6 +44,11 @@ export default `/*
   }
 }
 
+.timeline-settings-toggle {
+  --dot-toggle-top: 16px;
+  --dot-toggle-left: 15px;
+}
+
 .timeline-settings-pane {
   display: grid;
   grid-template-columns: 50% 50%;
@@ -82,10 +87,6 @@ export default `/*
 
 #timeline-overview-grid .resources-divider-label {
   top: var(--sys-size-1);
-}
-
-.timeline-details-split {
-  flex: auto;
 }
 
 .timeline.panel .status-pane-container {
@@ -170,10 +171,6 @@ export default `/*
   width: 100%;
   overflow: hidden;
   line-height: 18px;
-}
-
-.timeline-flamechart {
-  overflow: hidden;
 }
 
 .timeline-layers-view-properties table {
@@ -314,6 +311,23 @@ devtools-toolbar {
 
     .history-dropdown-button[disabled] > .content::after {
       background-color: GrayText;
+    }
+  }
+
+  .nav-radio-buttons {
+    display: flex;
+    flex-direction: column;
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    padding-bottom: var(--sys-size-5);
+
+    & label {
+      display: flex;
+      font: var(--sys-typescale-body3-regular);
+      gap: var(--sys-size-2);
+    }
+
+    input[type="radio"] {
+      margin-left: 0;
     }
   }
 }

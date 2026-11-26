@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Buttons from '../../../components/buttons/buttons.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import linkSwatchStyles from './linkSwatch.css.js';
@@ -43,7 +42,6 @@ export class LinkSwatch extends HTMLElement {
         const tooltipId = tooltip && 'tooltipId' in tooltip && tooltip.tooltipId || undefined;
         // clang-format off
         render(html `
-        <style>${Buttons.textButtonStyles}</style>
         <style>${linkSwatchStyles}</style>
         <button .disabled=${!isDefined} class=${classes} type="button" title=${ifDefined(title)}
                 aria-details=${ifDefined(tooltipId)} @click=${onActivate} @keydown=${onActivate}

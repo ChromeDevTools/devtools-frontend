@@ -96,6 +96,9 @@
     },
     {
       "path": "../common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../utils/bundle-tsconfig.ref.json"
     }
   ]
 }

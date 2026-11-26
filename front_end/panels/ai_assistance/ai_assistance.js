@@ -4157,6 +4157,7 @@ var Audits;
     InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
     InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
     InspectorIssueCode2["WebInstallIssue"] = "WebInstallIssue";
+    InspectorIssueCode2["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
   })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
   let GetEncodedResponseRequestEncoding;
   ((GetEncodedResponseRequestEncoding2) => {
@@ -8432,6 +8433,7 @@ var ChatView = class extends HTMLElement {
    * This is true when:
    *   - The scroll is at the very bottom, allowing new messages to push the scroll down automatically.
    *   - The panel is initially rendered and the user hasn't scrolled yet.
+   *   - `scrollToBottom()` is called.
    *
    * It is set to false when the user scrolls up to view previous messages.
    */
@@ -8482,7 +8484,16 @@ var ChatView = class extends HTMLElement {
     }
     this.#setMainElementScrollTop(this.#scrollTop);
   }
+  /**
+   * Re-pins auto-scroll and jumps to the current bottom.
+   *
+   * Callers invoke this right after `requestUpdate()` before new messages
+   * render, so setting `#pinScrollToBottom` unconditionally lets
+   * `#messagesContainerResizeObserver` follow the post-render height increase
+   * even if `mainElement` is not mounted yet.
+   */
   scrollToBottom() {
+    this.#pinScrollToBottom = true;
     if (!this.#output.mainElement) {
       return;
     }
@@ -8495,17 +8506,19 @@ var ChatView = class extends HTMLElement {
     if (!this.#output.mainElement) {
       return;
     }
-    if (this.#pinScrollToBottom) {
-      this.#setMainElementScrollTop(this.#output.mainElement.scrollHeight);
-    }
+    this.#setMainElementScrollTop(this.#output.mainElement.scrollHeight);
   }
   #setMainElementScrollTop(scrollTop) {
     if (!this.#output.mainElement) {
       return;
     }
-    this.#scrollTop = scrollTop;
-    this.#isProgrammaticScroll = true;
+    const previousScrollTop = this.#output.mainElement.scrollTop;
     this.#output.mainElement.scrollTop = scrollTop;
+    const nextScrollTop = this.#output.mainElement.scrollTop;
+    if (nextScrollTop !== previousScrollTop) {
+      this.#scrollTop = nextScrollTop;
+      this.#isProgrammaticScroll = true;
+    }
   }
   #handleMessageContainerRef = (el) => {
     this.#messagesContainerElement = el;
@@ -11078,7 +11091,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
         }
         if (!this.#conversation?.isReadOnly) {
           this.requestUpdate();
-          if (data.type === AiAssistanceModel8.AiAgent.ResponseType.CONTEXT || data.type === AiAssistanceModel8.AiAgent.ResponseType.SIDE_EFFECT) {
+          if (data.type === AiAssistanceModel8.AiAgent.ResponseType.USER_QUERY || data.type === AiAssistanceModel8.AiAgent.ResponseType.SIDE_EFFECT) {
             this.#viewOutput.chatView?.scrollToBottom();
           }
           switch (data.type) {

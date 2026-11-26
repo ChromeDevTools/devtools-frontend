@@ -215,10 +215,6 @@ export const UIStrings = {
      */
     RangeExpand: "Range.expand() is deprecated. Please use Selection.modify() instead.",
     /**
-     * @description A deprecation warning shown in the DevTools Issues tab. It's shown when the Storage Access API is automatically granted by Related Website Sets. The placeholder will always be the string `Related Website Sets`.
-     */
-    RelatedWebsiteSets: "`Related Website Sets` is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details.",
-    /**
      * @description This warning occurs when a subresource loaded by a page has a URL with an authority portion. These are disallowed.
      */
     RequestedSubresourceWithEmbeddedCredentials: "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked.",
@@ -416,9 +412,6 @@ export const DEPRECATIONS_METADATA = {
     "RTCPeerConnectionGetStatsLegacyNonCompliant": {
         "chromeStatusFeature": 4631626228695040,
         "milestone": 117
-    },
-    "RelatedWebsiteSets": {
-        "chromeStatusFeature": 5194473869017088
     },
     "RequestedSubresourceWithEmbeddedCredentials": {
         "chromeStatusFeature": 5669008342777856

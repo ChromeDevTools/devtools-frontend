@@ -165,8 +165,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
     }
     #updateMemoryFromContentData() {
         this.#memory = Common.Base64.decode(this.streamingContent.content().base64);
-        this.#address =
-            Math.min(Math.floor(this.#memory.length * this.activePositionPercentage), Math.max(0, this.#memory.length - 1));
+        this.#address = Math.min(this.#address, Math.max(0, this.#memory.length - 1));
         this.requestUpdate();
     }
     #onAddressChanged(address) {
@@ -234,8 +233,9 @@ export class BinaryResourceView extends UI.Widget.VBox {
         else if (this.#viewOutput.activeView) {
             this.activePositionPercentage = this.#viewOutput.activeView.getPositionPercentage();
         }
-        this.#address =
-            Math.min(Math.floor(this.#memory.length * this.activePositionPercentage), Math.max(0, this.#memory.length - 1));
+        if (newViewType === 'hex') {
+            this.#address = Math.min(Math.floor(this.#memory.length * this.activePositionPercentage), Math.max(0, this.#memory.length - 1));
+        }
         this.binaryViewTypeSetting.set(newViewType);
         this.requestUpdate();
     }

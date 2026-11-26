@@ -11,6 +11,9 @@ export class ButtonDialog extends HTMLElement {
     #dialog = null;
     #showButton = null;
     #data = null;
+    get open() {
+        return Boolean(this.#dialog?.hasAttribute('open'));
+    }
     set data(data) {
         this.#data = data;
         void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);

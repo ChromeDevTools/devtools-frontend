@@ -2,7 +2,7 @@ import * as Root from '../root/root.js';
 import type { Console } from './Console.js';
 import type { EventDescriptor, EventTargetEvent, GenericEvents } from './EventTarget.js';
 import { ObjectWrapper } from './Object.js';
-import { getLocalizedSettingsCategory, maybeRemoveSettingExtension, type RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, type SettingExtensionOption, type SettingRegistration, SettingType } from './SettingRegistration.js';
+import { getLocalizedSettingsCategory, type RegExpSettingItem, SettingCategory, type SettingExtensionOption, SettingType } from './SettingRegistration.js';
 /**
  * Describes and configures a Setting.
  *
@@ -67,7 +67,6 @@ export interface SettingsCreationOptions {
     syncedStorage: SettingsStorage;
     globalStorage: SettingsStorage;
     localStorage: SettingsStorage;
-    settingRegistrations: SettingRegistration[];
     logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>;
     runSettingsMigration?: boolean;
     console: Console;
@@ -84,33 +83,19 @@ export declare class Settings {
     readonly syncedStorage: SettingsStorage;
     readonly globalStorage: SettingsStorage;
     readonly localStorage: SettingsStorage;
-    settingNameSet: Set<string>;
-    readonly moduleSettings: Map<string, Setting<unknown>>;
-    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console, }: SettingsCreationOptions);
-    getRegisteredSettings(): SettingRegistration[];
+    constructor({ syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration, console, }: SettingsCreationOptions);
     static hasInstance(): boolean;
     static instance(opts?: {
         forceNew: boolean | null;
         syncedStorage: SettingsStorage | null;
         globalStorage: SettingsStorage | null;
         localStorage: SettingsStorage | null;
-        settingRegistrations: SettingRegistration[] | null;
         console: Console | null;
         logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>;
         runSettingsMigration?: boolean;
     }): Settings;
     static removeInstance(): void;
-    private registerModuleSetting;
     static normalizeSettingName(name: string): string;
-    /**
-     * Prefer a module setting if this setting is one that you might not want to
-     * surface to the user to control themselves. Examples of these are settings
-     * to store UI state such as how a user choses to position a split widget or
-     * which panel they last opened.
-     * If you are creating a setting that you expect the user to control, and
-     * sync, prefer {@link Settings.createSetting}
-     */
-    moduleSetting<T = any>(settingName: string): Setting<T>;
     settingForTest(settingName: string): Setting<unknown>;
     /** The event target shared by all settings. Change listeners are registered with the setting name as event type. */
     get eventTargetForTest(): ObjectWrapper<GenericEvents>;
@@ -132,9 +117,8 @@ export declare class Settings {
     /**
      * Resolves a setting descriptor to a concrete {@link Setting} instance.
      *
-     * If a setting with the same name already exists (either pre-registered or
-     * previously resolved), that instance is returned. Otherwise, a new setting
-     * is created and registered.
+     * If a setting with the same name already exists in the registry, that
+     * instance is returned. Otherwise, a new setting is created and registered.
      *
      * @param descriptor The descriptor defining the setting. Must not be conditional.
      * @throws If the descriptor is conditional (contains `isAvailable`). Use `maybeResolve` instead.
@@ -205,7 +189,6 @@ export declare class Setting<V> {
     forceGet(): Promise<V>;
     set(value: V): void;
     setSettingType(type: SettingType): void;
-    setRegistration(registration: SettingRegistration): void;
     type(): SettingType | null;
     private printSettingsSavingError;
 }
@@ -234,4 +217,4 @@ export declare const enum SettingStorageType {
      */
     SESSION = "Session"
 }
-export { getLocalizedSettingsCategory, maybeRemoveSettingExtension, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType, };
+export { getLocalizedSettingsCategory, RegExpSettingItem, SettingCategory, SettingExtensionOption, SettingType, };

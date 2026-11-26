@@ -129,6 +129,7 @@ export class TimelinePaintProfilerView extends UI.Widget.VBox {
     #updateSnapshot() {
         this.#snapshot = null;
         this.#log = [];
+        this.#selectionWindow = null;
         this.requestUpdate();
         let snapshotPromise;
         if (this.#pendingSnapshot) {
@@ -175,6 +176,7 @@ export class TimelinePaintProfilerView extends UI.Widget.VBox {
             this.#snapshot = snapshot;
             this.#log = log || [];
             this.#clipRect = clipRect;
+            this.#selectionWindow = null;
             this.requestUpdate();
         }
     }

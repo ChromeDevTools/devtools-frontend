@@ -14,7 +14,6 @@ export declare class SplitWidget extends SplitWidgetBase {
     setSidebarWidget(widget: AnyWidget): void;
     mainWidget(): AnyWidget | null;
     sidebarWidget(): AnyWidget | null;
-    sidebarElement(): HTMLElement;
     childWasDetached(widget: Widget): void;
     isSidebarSecond(): boolean;
     enableShowModeSaving(): void;

@@ -1417,6 +1417,7 @@ var Audits;
     InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
     InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
     InspectorIssueCode2["WebInstallIssue"] = "WebInstallIssue";
+    InspectorIssueCode2["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
   })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
   let GetEncodedResponseRequestEncoding;
   ((GetEncodedResponseRequestEncoding2) => {
@@ -3720,7 +3721,6 @@ import * as SDK2 from "../../core/sdk/sdk.js";
 var DOMHelpers_exports = {};
 __export(DOMHelpers_exports, {
   adoptStyleSheetInShadowRoot: () => adoptStyleSheetInShadowRoot,
-  collectElementsOnThePage: () => collectElementsOnThePage,
   dispatchAiAssistanceDoneEvent: () => dispatchAiAssistanceDoneEvent,
   getErrorStackOnThePage: () => getErrorStackOnThePage,
   removeInlineStyleProperties: () => removeInlineStyleProperties,
@@ -3731,10 +3731,10 @@ import * as Platform2 from "../../core/platform/platform.js";
 function getErrorStackOnThePage() {
   return { stack: "", message: this.message };
 }
-function collectElementsOnThePage(maxElements) {
+function stringifyObjectOnThePage(options) {
   const seenBefore = /* @__PURE__ */ new Map();
   const elements = [];
-  JSON.stringify(this, function replacer(key, value) {
+  const json = JSON.stringify(this, function replacer(key, value) {
     if (typeof value === "object" && value !== null) {
       if (seenBefore.has(value)) {
         return "(cycle)";
@@ -3742,33 +3742,11 @@ function collectElementsOnThePage(maxElements) {
       seenBefore.set(value, true);
     }
     if (value instanceof Element) {
-      if (elements.length < maxElements) {
+      let uidPrefix = "";
+      if (options && elements.length < options.maxElements) {
+        uidPrefix = `${options.uidPlaceholderPrefix}${elements.length}__`;
         elements.push(value);
       }
-      return "";
-    }
-    if (this instanceof CSSStyleDeclaration) {
-      if (!isNaN(Number(key))) {
-        return void 0;
-      }
-    }
-    return value;
-  });
-  return elements;
-}
-function stringifyObjectOnThePage(resolvedUids) {
-  const seenBefore = /* @__PURE__ */ new Map();
-  let elementIndex = 0;
-  return JSON.stringify(this, function replacer(key, value) {
-    if (typeof value === "object" && value !== null) {
-      if (seenBefore.has(value)) {
-        return "(cycle)";
-      }
-      seenBefore.set(value, true);
-    }
-    if (value instanceof Element) {
-      const uid = resolvedUids?.[elementIndex++];
-      const uidPrefix = uid ? `(uid=${uid}) ` : "";
       const idAttribute = value.id ? ` id="${value.id}"` : "";
       const classAttr = value.getAttribute("class");
       const classAttribute = classAttr ? ` class="${classAttr}"` : "";
@@ -3782,6 +3760,7 @@ function stringifyObjectOnThePage(resolvedUids) {
     }
     return value;
   });
+  return { json, elements };
 }
 var DISALLOWED_CSS_URL_FUNCTION_REGEX = /(?:^|[^a-zA-Z0-9_-])(?:-webkit-image-set|image-set|url|src)\s*\(/i;
 function isDisallowedCssValue(value) {
@@ -4003,6 +3982,14 @@ function formatError(message) {
 }
 var SideEffectError = class extends Error {
 };
+function releaseProperties(properties, internalProperties) {
+  for (const property of [...properties ?? [], ...internalProperties ?? []]) {
+    property.value?.release();
+    property.symbol?.release();
+    property.getter?.release();
+    property.setter?.release();
+  }
+}
 async function resolveElementBackendNodeIds(elementsArray, domAgent) {
   const { properties, internalProperties } = await elementsArray.getOwnProperties(false);
   try {
@@ -4029,12 +4016,7 @@ async function resolveElementBackendNodeIds(elementsArray, domAgent) {
     }
     return resolvedUids;
   } finally {
-    for (const property of [...properties ?? [], ...internalProperties ?? []]) {
-      property.value?.release();
-      property.symbol?.release();
-      property.getter?.release();
-      property.setter?.release();
-    }
+    releaseProperties(properties, internalProperties);
   }
 }
 async function callPageFunction(object, fn, args) {
@@ -4050,29 +4032,45 @@ async function callPageFunction(object, fn, args) {
   return res.object;
 }
 async function stringifyRemoteObjectOnThePage(object) {
-  const elementsArray = await callPageFunction(
+  const uidPlaceholderPrefix = `__devtools_uid_${crypto.randomUUID()}_`;
+  const resultObject = await callPageFunction(
     object,
-    collectElementsOnThePage,
-    [{ value: MAX_SERIALIZED_ELEMENT_UIDS }]
+    stringifyObjectOnThePage,
+    [{ value: { maxElements: MAX_SERIALIZED_ELEMENT_UIDS, uidPlaceholderPrefix } }]
   );
-  let serialized;
   try {
-    if (elementsArray.type !== Runtime.RemoteObjectType.Object || elementsArray.subtype !== Runtime.RemoteObjectSubtype.Array) {
+    if (resultObject.type !== Runtime.RemoteObjectType.Object) {
       throw new Error("Could not stringify the object" + object);
     }
-    const resolvedUids = elementsArray.arrayLength() > 0 ? await resolveElementBackendNodeIds(elementsArray, object.runtimeModel().target().domAgent()) : void 0;
-    serialized = await callPageFunction(
-      object,
-      stringifyObjectOnThePage,
-      resolvedUids ? [{ value: resolvedUids }] : void 0
-    );
-    if (serialized.type !== Runtime.RemoteObjectType.String) {
-      throw new Error("Could not stringify the object" + object);
+    const { properties, internalProperties } = await resultObject.getOwnProperties(false);
+    try {
+      const jsonProp = properties?.find((property) => property.name === "json")?.value;
+      const elementsProp = properties?.find((property) => property.name === "elements")?.value;
+      if (!jsonProp || jsonProp.type !== Runtime.RemoteObjectType.String || typeof jsonProp.value !== "string") {
+        throw new Error("Could not stringify the object" + object);
+      }
+      if (!elementsProp || elementsProp.subtype !== Runtime.RemoteObjectSubtype.Array) {
+        throw new Error("Could not stringify the object" + object);
+      }
+      let json = jsonProp.value;
+      const elementCount = elementsProp.arrayLength();
+      if (elementCount > 0) {
+        const resolvedUids = await resolveElementBackendNodeIds(
+          elementsProp,
+          object.runtimeModel().target().domAgent()
+        );
+        const maxElements = Math.max(elementCount, resolvedUids.length);
+        for (let i = 0; i < maxElements; i++) {
+          const uid = resolvedUids[i];
+          json = json.replaceAll(`${uidPlaceholderPrefix}${i}__`, () => uid ? `(uid=${uid}) ` : "");
+        }
+      }
+      return json;
+    } finally {
+      releaseProperties(properties, internalProperties);
     }
-    return serialized.value;
   } finally {
-    elementsArray.release();
-    serialized?.release();
+    resultObject.release();
   }
 }
 async function stringifyRemoteObject(object, functionDeclaration) {
@@ -8568,6 +8566,25 @@ var ListSourcesTool = class _ListSourcesTool {
     _ListSourcesTool.idToUiSourceCode = /* @__PURE__ */ new Map();
   }
   /**
+   * Registers a readable, non-opaque `UISourceCode` in the session ID map and returns its numeric ID (reusing an
+   * existing ID if already registered). Intentionally omits origin-lock, ignore-list, and `Network`-project checks
+   * so explicitly selected files can receive IDs; `getSourceById()` enforces the origin lock on every read. Rejects
+   * opaque origins and binary files upfront so callers do not emit unusable IDs or retain them in the map.
+   */
+  static registerSource(uiSourceCode) {
+    if (uiSourceCode.securityOrigin().isOpaque() || !isReadableSource(uiSourceCode)) {
+      return null;
+    }
+    const existing = _ListSourcesTool.uiSourceCodeId.get(uiSourceCode);
+    if (existing !== void 0) {
+      return existing;
+    }
+    const id = ++_ListSourcesTool.lastSourceId;
+    _ListSourcesTool.uiSourceCodeId.set(uiSourceCode, id);
+    _ListSourcesTool.idToUiSourceCode.set(id, uiSourceCode);
+    return id;
+  }
+  /**
    * Collects readable text network `UISourceCode`s allowed by the origin lock, skipping ignore-listed and binary files.
    * Returns the deduplicated files alongside the count of distinct omitted binary URLs that have no readable counterpart.
    */
@@ -8589,20 +8606,14 @@ var ListSourcesTool = class _ListSourcesTool {
         if (!isOriginAllowedByLock(originLock, uiSourceCode.securityOrigin())) {
           continue;
         }
-        const mimeType = uiSourceCode.mimeType();
-        const isReadable = mimeType ? Platform5.MimeType.isTextType(mimeType) : uiSourceCode.contentType().isTextType();
         const url = uiSourceCode.url();
-        if (!isReadable) {
+        if (!isReadableSource(uiSourceCode)) {
           omittedBinaryUrls.add(url);
           continue;
         }
         if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
           uiSourceCodes.set(url, uiSourceCode);
-          if (!_ListSourcesTool.uiSourceCodeId.has(uiSourceCode)) {
-            const id = ++_ListSourcesTool.lastSourceId;
-            _ListSourcesTool.uiSourceCodeId.set(uiSourceCode, id);
-            _ListSourcesTool.idToUiSourceCode.set(id, uiSourceCode);
-          }
+          _ListSourcesTool.registerSource(uiSourceCode);
         }
       }
     }
@@ -8668,6 +8679,10 @@ function formatSourceName(file, establishedOrigin) {
   }
   return fullName;
 }
+function isReadableSource(uiSourceCode) {
+  const mimeType = uiSourceCode.mimeType();
+  return mimeType ? Platform5.MimeType.isTextType(mimeType) : uiSourceCode.contentType().isTextType();
+}
 
 // ../../front_end/models/ai_assistance/tools/GetSourceContent.ts
 var UIStringsNotTranslate4 = {
@@ -8685,7 +8700,7 @@ function titleFromArgs(args) {
 var GetSourceContentTool = class {
   name = "getSourceContent" /* GET_SOURCE_CONTENT */;
   permissionPrompt = "never" /* NEVER */;
-  description = 'Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources. Long files are returned in parts. If the result ends with a "Content truncated" notice, call this function again with the same id and the offset given in the notice to read the next part.';
+  description = 'Retrieves the formatted content and metadata of a source file by its numeric ID (from listSources or the File ID in # Selected file). Long files are returned in parts. If the result ends with a "Content truncated" notice, call this function again with the same id and the offset given in the notice to read the next part.';
   parameters = {
     type: Host10.AidaClient.ParametersTypes.OBJECT,
     description: "",
@@ -9905,6 +9920,7 @@ __export(AiAgent_exports, {
   MultimodalInputType: () => MultimodalInputType,
   ResponseType: () => ResponseType,
   SUGGEST_FOLLOW_UPS_FUNCTION_NAME: () => SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+  ServerSideLoggingPolicy: () => ServerSideLoggingPolicy,
   aidaErrorToErrorType: () => aidaErrorToErrorType,
   sanitizeSuggestions: () => sanitizeSuggestions,
   sanitizeSuggestionsList: () => sanitizeSuggestionsList
@@ -9949,6 +9965,18 @@ var MultimodalInputType = /* @__PURE__ */ ((MultimodalInputType2) => {
   MultimodalInputType2["UPLOADED_IMAGE"] = "uploaded-image";
   return MultimodalInputType2;
 })(MultimodalInputType || {});
+var ServerSideLoggingPolicy = class {
+  #allowed;
+  constructor(allowed = false) {
+    this.#allowed = allowed;
+  }
+  isAllowed() {
+    return this.#allowed;
+  }
+  disable() {
+    this.#allowed = false;
+  }
+};
 var MAX_STEPS = 20;
 var NOT_EXECUTED_AFTER_CONTEXT_CHANGE = "Not executed: the conversation switched to a new context before this call ran.";
 var USER_DENIED_CALL = "Error: The user denied this call, so it did not run. Other calls in the same response were handled separately; check their responses.";
@@ -10033,11 +10061,7 @@ var CrossOriginError = class extends Error {
 var AiAgent = class {
   #sessionId;
   #aidaClient;
-  /**
-   * Tracks the dynamic runtime state of logging. Even if logging is allowed
-   * by policy, tools or sensitive contexts can deactivate this to avoid logging sensitive data.
-   */
-  #serverSideLoggingActive;
+  #serverSideLogging;
   confirmSideEffect;
   #functionDeclarations = /* @__PURE__ */ new Map();
   #allowedOrigin;
@@ -10057,7 +10081,7 @@ var AiAgent = class {
   #facts = /* @__PURE__ */ new Set();
   constructor(opts) {
     this.#aidaClient = opts.aidaClient;
-    this.#serverSideLoggingActive = opts.serverSideLoggingAllowed ?? false;
+    this.#serverSideLogging = opts.serverSideLogging ?? new ServerSideLoggingPolicy();
     this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
@@ -10099,15 +10123,9 @@ var AiAgent = class {
    */
   clearCache() {
   }
-  /**
-   * Disables server-side logging for the remainder of this agent instance's lifetime.
-   *
-   * Logging deactivation is irreversible for the session. Conversation history
-   * accumulates across turns; re-enabling logging later would leak sensitive
-   * data from prior turns to AIDA.
-   */
+  /** Permanently disables server-side logging for subsequent requests. */
   disableServerSideLogging() {
-    this.#serverSideLoggingActive = false;
+    this.#serverSideLogging.disable();
   }
   /**
    * Preamble features appended to the `client_version` in metadata.
@@ -10161,7 +10179,7 @@ var AiAgent = class {
         model_id: this.options.modelId || void 0
       },
       metadata: {
-        disable_user_content_logging: !(this.#serverSideLoggingActive ?? false),
+        disable_user_content_logging: !this.#serverSideLogging.isAllowed(),
         string_session_id: this.#sessionId,
         user_tier: userTier,
         client_version: Root4.Runtime.getChromeVersion() + this.preambleFeatures().map((feature) => `+${feature}`).join("")
@@ -10371,7 +10389,10 @@ var AiAgent = class {
    *   without committing `runEntries`.
    * - Otherwise, records the answer (and any `suggestFollowUps` calls verbatim
    *   with matching synthetic `functionResponse` parts) in `#history` and yields
-   *   a completed `ANSWER` with follow-up suggestions.
+   *   a completed `ANSWER` with follow-up suggestions. Empty-text
+   *   `suggestFollowUps` steps from earlier in the run are left out of the
+   *   saved history; if the answer has no `suggestFollowUps` call, the last
+   *   removed call is recorded with the answer.
    */
   async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId, runEntries, latestSuggestions) {
     if (!textResponse.trim()) {
@@ -10384,17 +10405,19 @@ var AiAgent = class {
     }
     const parsedResponse = this.parseTextResponse(textResponse);
     debugLog2(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
+    const { entries, removedCall } = removeEmptyTextFollowUpSteps(runEntries);
+    const finalCalls = functionCalls ?? (removedCall ? [removedCall] : void 0);
     const modelParts = [{ text: parsedResponse.answer }];
-    if (functionCalls) {
-      modelParts.push(...functionCalls.map((functionCall) => ({ functionCall })));
+    if (finalCalls) {
+      modelParts.push(...finalCalls.map((functionCall) => ({ functionCall })));
     }
-    runEntries.push({
+    entries.push({
       parts: modelParts,
       role: Host23.AidaClient.Role.MODEL
     });
-    if (functionCalls) {
-      runEntries.push({
-        parts: functionCalls.map((functionCall) => ({
+    if (finalCalls) {
+      entries.push({
+        parts: finalCalls.map((functionCall) => ({
           functionResponse: {
             name: functionCall.name,
             response: { result: SUGGEST_FOLLOW_UPS_RECORDED_RESULT }
@@ -10403,7 +10426,7 @@ var AiAgent = class {
         role: Host23.AidaClient.Role.ROLE_UNSPECIFIED
       });
     }
-    this.#commitRun(runEntries);
+    this.#commitRun(entries);
     const suggestions = latestSuggestions ?? parsedResponse.suggestions;
     yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId, suggestions);
   }
@@ -10777,6 +10800,34 @@ function sanitizeSuggestionsList(parsed) {
     return void 0;
   }
   return sanitized;
+}
+function isSuggestFollowUpsCall(part) {
+  return "functionCall" in part && part.functionCall.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME;
+}
+function isSuggestFollowUpsResponse(part) {
+  return "functionResponse" in part && part.functionResponse.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME;
+}
+function consistsOnlyOf(content, predicate) {
+  return content !== void 0 && content.parts.length > 0 && content.parts.every(predicate);
+}
+function isEmptyTextFollowUpStep(current, next) {
+  if (current.role !== Host23.AidaClient.Role.MODEL) {
+    return false;
+  }
+  return consistsOnlyOf(current, isSuggestFollowUpsCall) && consistsOnlyOf(next, isSuggestFollowUpsResponse);
+}
+function removeEmptyTextFollowUpSteps(runEntries) {
+  const entries = [];
+  let removedCall;
+  for (let i = 0; i < runEntries.length; i++) {
+    if (isEmptyTextFollowUpStep(runEntries[i], runEntries[i + 1])) {
+      removedCall = runEntries[i].parts.findLast(isSuggestFollowUpsCall)?.functionCall;
+      i++;
+      continue;
+    }
+    entries.push(runEntries[i]);
+  }
+  return { entries, removedCall };
 }
 function sanitizeSuggestions(suggestions) {
   try {
@@ -11765,7 +11816,7 @@ import * as SDK26 from "../../core/sdk/sdk.js";
 var SetElementStylesTool = class {
   name = "setElementStyles" /* SET_ELEMENT_STYLES */;
   permissionPrompt = "never" /* NEVER */;
-  description = "Applies CSS style declarations to one or more elements on the inspected page identified by their backend node IDs (uids). Prefer this tool over executeJavaScript whenever modifying or testing CSS styles on elements.";
+  description = 'Applies CSS style declarations to one or more elements on the inspected page identified by their backend node IDs (uids). Only call this tool when the user asks to change, fix, or preview CSS styles live\u2014never on diagnostic ("why") or how-to ("how do I" / "how can I") queries or to speculatively test hypotheses. Prefer this tool over executeJavaScript whenever modifying CSS styles.';
   parameters = {
     type: Host28.AidaClient.ParametersTypes.OBJECT,
     description: "",
@@ -12633,8 +12684,16 @@ var FileContext = class extends ConversationContext {
   getTitle() {
     return this.#file.displayName();
   }
+  /**
+   * Registers the selected file and includes its `File ID` so the model can page
+   * truncated content with `getSourceContent` and match `listSources` rows without
+   * an extra `listSources` call.
+   */
   async getPromptDetails() {
-    return `# Selected file
+    const fileId = ListSourcesTool.registerSource(this.#file);
+    const header = fileId !== null ? `# Selected file
+File ID: ${fileId}` : "# Selected file";
+    return `${header}
 ${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
   }
   async getUserFacingDetails() {
@@ -15419,7 +15478,7 @@ var skill4 = {
     "listSources",
     "getSourceContent"
   ],
-  "instructions": '# Tools & Workflow\n\n1. **Discover Files (`listSources`)**:\n   - Call `listSources` to retrieve all deployed and authored source files (including source-mapped files) in the workspace matching the active origin.\n   - The output is formatted as `id;name` lines. Same-origin `http(s)` files omit the locked origin scheme and host (e.g. `/assets/app.js`, `/(index)`), while virtual source-map files retain their scheme (e.g. `webpack:///./src/index.ts`).\n\n2. **Inspect File Content (`getSourceContent`)**:\n   - Call `getSourceContent` with the numeric `id` to retrieve the source code.\n   - Long files are returned in parts. If the result ends with a "Content truncated" notice, call `getSourceContent` again with the same `id` and the `offset` from the notice. Do not repeat a call with the same `id` and `offset`; it returns the same content.\n   - Parts are split by character count, so a part can end or start partway through a line or token. Do not treat text cut at a part boundary as a syntax error; read the next part instead.\n\n# Considerations\n\n* Provide clean code snippets with direct line references where helpful.\n* Redact sensitive personal data, secrets, or API keys found in source files.'
+  "instructions": '# Tools & Workflow\n\n1. **Discover Files (`listSources`)**:\n   - Call `listSources` to retrieve all deployed and authored source files (including source-mapped files) in the workspace matching the active origin.\n   - The output is formatted as `id;name` lines. Same-origin `http(s)` files omit the locked origin scheme and host (e.g. `/assets/app.js`, `/(index)`), while virtual source-map files retain their scheme (e.g. `webpack:///./src/index.ts`).\n\n2. **Inspect File Content (`getSourceContent`)**:\n   - Call `getSourceContent` with the numeric `id` and an optional `offset` (a 0-based character index from the start of the file, defaulting to `0`) to retrieve the source code.\n   - Long files are returned in parts. If a result ends with a "Content truncated" notice, call `getSourceContent` again with the same `id` and the `offset` from the notice to read the next part. Do not repeat a call with the same `id` and `offset`; it returns the same content.\n   - If `# Selected file` includes a `File ID`, it already contains the start of that file (`offset: 0`): do not call `getSourceContent` without an offset or with `offset: 0` for that `File ID`. If `# Selected file` ends with a "Content truncated" notice, call `getSourceContent` directly with that `File ID` and the `offset` from the notice without calling `listSources` first.\n   - Parts are split by character count, so a part can end or start partway through a line or token. Do not treat text cut at a part boundary as a syntax error; read the next part instead.\n\n# Considerations\n\n* Provide clean code snippets with direct line references where helpful.\n* **Internal IDs**: `File ID` and `id` values are internal DevTools lookup keys; refer to files by name or URL and never output raw `File ID` or `id` values as text.\n* Redact sensitive personal data, secrets, or API keys found in source files.'
 };
 
 // gen/front_end/models/ai_assistance/skills/storage.skill.js
@@ -15446,7 +15505,7 @@ var skill6 = {
     "getStyles",
     "setElementStyles"
   ],
-  "instructions": "# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element's `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: 'display', value: 'flex'}, {name: 'justify-content', value: 'center'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.\n   - When you need the numeric `uid` for an element not already listed in the active context, return the DOM `Element` itself in `data` (directly or inside an object/array) and read the numeric `uid` from its serialized `(uid=<id>)` prefix (for example `(uid=15) <div id=\"card\">...</div>`), then pass that numeric `uid` to `getStyles` or `setElementStyles`. Never guess numeric `uid`s.\n   - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
+  "instructions": '# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `[\'display\', \'position\', \'flex-direction\', \'z-index\']`). Do not use generic values like "all" or "*".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - Only call `setElementStyles` when the user asks to change, fix, or preview styles on the live page. On diagnostic ("why...") or how-to ("how do I..." / "how can I...") queries, stay read-only, explain the CSS fix, and offer to apply it.\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element\'s `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: \'display\', value: \'flex\'}, {name: \'justify-content\', value: \'center\'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.\n   - On informational, diagnostic ("why..."), and how-to ("how do I..." / "how can I...") queries, keep `executeJavaScript` strictly read-only: do not mutate DOM or styles, scroll the page (`scrollTo`, `scrollIntoView`, `scrollTop`), or dispatch synthetic events (such as `click` or `WheelEvent`) unless the user asks to apply a change or run a live interaction test.\n   - When you need the numeric `uid` for an element not already listed in the active context, return the DOM `Element` itself in `data` (directly or inside an object/array) and read the numeric `uid` from its serialized `(uid=<id>)` prefix (for example `(uid=15) <div id="card">...</div>`), then pass that numeric `uid` to `getStyles` or `setElementStyles`. Never guess numeric `uid`s.\n   - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context.'
 };
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
@@ -15515,7 +15574,8 @@ Your role is to help web developers debug, analyze, and optimize web application
 # Constraints
 * **CRITICAL**: You are a web development assistant. NEVER provide answers to questions of unrelated topics (such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non-web-development topics). If asked about these, respond with: "Sorry, I can't answer that. I'm best at questions about web development and debugging."
 * **CRITICAL**: Do not write standalone scripts (such as Python or bash) or arbitrary code to interact with the environment. The only way to execute code in the inspected page is via the 'executeJavaScript' tool.
-* **CRITICAL**: Do not expose raw, internal system identifiers (such as database IDs, internal node paths, or event keys) directly to the user. Use descriptive names instead.`;
+* **CRITICAL**: Do not expose raw, internal system identifiers (such as database IDs, internal node paths, or event keys) directly to the user. Use descriptive names instead.
+* **CRITICAL**: Stay read-only on informational (e.g., "what...", "where..."), diagnostic (e.g., "why..."), and how-to (e.g., "how do I...", "how can I...") queries. Do NOT modify live page state\u2014even temporarily to test a hypothesis\u2014(CSS styles, DOM nodes, text, attributes, scroll position, or simulated clicks/events) unless the user asks you to make a change, apply a fix, or run a live test (e.g., "make...", "change...", "fix...", "apply...", "try...", "click..."). When a live fix is possible on a read-only query, explain the solution first and offer to apply it on the live page (and include it as a follow-up suggestion).`;
 var AiAgent2 = class extends AiAgent {
   /**
    * Tracks skills, `PromptFact` instances, and context details committed to `AiAgent.#history`.
@@ -15959,6 +16019,7 @@ ${text}`);
   return detailsMarkdown.join("\n\n");
 }
 var AiConversation = class _AiConversation {
+  /** Restores a read-only conversation with server-side logging disabled. */
   static fromSerializedConversation(serializedConversation) {
     const history = serializedConversation.history.map((entry) => {
       if (entry.type === "side-effect" /* SIDE_EFFECT */) {
@@ -15975,7 +16036,9 @@ var AiConversation = class _AiConversation {
       type: serializedConversation.type,
       data: history,
       id: serializedConversation.id,
-      isReadOnly: true
+      isReadOnly: true,
+      // Serialized history does not track prior sensitive tool calls; keep logging off.
+      serverSideLoggingAllowed: false
     });
   }
   id;
@@ -15997,7 +16060,7 @@ var AiConversation = class _AiConversation {
   #aiHistoryStorage;
   #targetManager;
   #alwaysAllowedTools;
-  #serverSideLoggingAllowed;
+  #serverSideLogging;
   constructor(options) {
     const {
       type,
@@ -16025,7 +16088,7 @@ var AiConversation = class _AiConversation {
     this.#aiHistoryStorage = aiHistoryStorage;
     this.#targetManager = targetManager;
     this.#alwaysAllowedTools = alwaysAllowedTools;
-    this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
+    this.#serverSideLogging = new ServerSideLoggingPolicy(serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed());
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.history = this.#reconstructHistory(data);
@@ -16033,6 +16096,15 @@ var AiConversation = class _AiConversation {
   }
   get isReadOnly() {
     return this.#isReadOnly;
+  }
+  /**
+   * Whether server-side logging is allowed for this conversation.
+   *
+   * Reads `hostConfig` once at construction and flips permanently to `false`
+   * when an agent disables logging.
+   */
+  get serverSideLoggingAllowed() {
+    return this.#serverSideLogging.isAllowed();
   }
   static titleForSerialized(serialized) {
     const query = serialized.history.find((item) => item.type === "user-query" /* USER_QUERY */)?.query;
@@ -16242,7 +16314,7 @@ ${item.text.trim()}`);
     const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
     const baseOptions = {
       aidaClient: this.#aidaClient,
-      serverSideLoggingAllowed: this.#serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed(),
+      serverSideLogging: this.#serverSideLogging,
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,

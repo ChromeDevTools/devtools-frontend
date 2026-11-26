@@ -18,6 +18,7 @@ export interface ButtonDialogData {
 }
 export declare class ButtonDialog extends HTMLElement {
     #private;
+    get open(): boolean;
     set data(data: ButtonDialogData);
     set state(state: ButtonDialogState);
 }

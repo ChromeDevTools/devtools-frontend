@@ -48,6 +48,7 @@
     "../../../../../../front_end/models/devtools_state/State.ts",
     "../../../../../../front_end/models/devtools_state/StateManager.ts",
     "../../../../../../front_end/models/devtools_state/providers/CPUThrottlingStateProvider.ts",
+    "../../../../../../front_end/models/devtools_state/providers/NetworkStateProvider.ts",
     "../../../../../../front_end/models/devtools_state/providers/SettingsStateProvider.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

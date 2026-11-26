@@ -24,7 +24,6 @@ export declare class CubicBezier {
     static parse(text: string): CubicBezier | null;
     evaluateAt(t: number): Point;
     asCSSText(): string;
-    static readonly Regex: RegExp;
 }
 export declare const LINEAR_BEZIER: CubicBezier;
 export declare class EulerAngles {

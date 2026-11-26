@@ -9,13 +9,16 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.json-view {
-  padding: var(--sys-size-2) var(--sys-size-4);
-  overflow: auto;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    padding: var(--sys-size-2) var(--sys-size-4);
+    overflow: auto;
+  }
 
-devtools-tree {
-  display: block;
+  .json-view-tree {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./jsonView.css')} */`;

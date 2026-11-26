@@ -4,7 +4,7 @@
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import { ObjectWrapper } from './Object.js';
-import { getLocalizedSettingsCategory, maybeRemoveSettingExtension, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingType, } from './SettingRegistration.js';
+import { getLocalizedSettingsCategory, SettingCategory, SettingType, } from './SettingRegistration.js';
 import { VersionController } from './VersionController.js';
 export var SettingAvailability;
 (function (SettingAvailability) {
@@ -43,37 +43,20 @@ export class Settings {
     syncedStorage;
     globalStorage;
     localStorage;
-    #settingRegistrations;
     #sessionStorage = new SettingsStorage({});
-    settingNameSet = new Set();
     #eventSupport = new SettingsEventSupport();
     #registry = new Map();
-    moduleSettings = new Map();
     #logSettingAccess;
     #console;
-    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console, }) {
+    constructor({ syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration, console, }) {
         this.#console = console;
         this.syncedStorage = syncedStorage;
         this.globalStorage = globalStorage;
         this.localStorage = localStorage;
-        this.#settingRegistrations = settingRegistrations;
         this.#logSettingAccess = logSettingAccess;
-        for (const registration of this.#settingRegistrations) {
-            const { settingName, defaultValue, storageType } = registration;
-            const isRegex = registration.settingType === "regex" /* SettingType.REGEX */;
-            const evaluatedDefaultValue = typeof defaultValue === 'function' ? defaultValue(Root.Runtime.hostConfig) : defaultValue;
-            const setting = isRegex && typeof evaluatedDefaultValue === 'string' ?
-                this.createRegExpSetting(settingName, evaluatedDefaultValue, undefined, storageType) :
-                this.createSetting(settingName, evaluatedDefaultValue, storageType);
-            setting.setRegistration(registration);
-            this.registerModuleSetting(setting);
-        }
         if (runSettingsMigration) {
             new VersionController(this).updateVersion();
         }
-    }
-    getRegisteredSettings() {
-        return this.#settingRegistrations;
     }
     static hasInstance() {
         return Root.DevToolsContext.globalInstance().has(Settings);
@@ -83,19 +66,17 @@ export class Settings {
         syncedStorage: null,
         globalStorage: null,
         localStorage: null,
-        settingRegistrations: null,
         console: null,
     }) {
-        const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console, } = opts;
+        const { forceNew, syncedStorage, globalStorage, localStorage, logSettingAccess, runSettingsMigration, console, } = opts;
         if (!Root.DevToolsContext.globalInstance().has(Settings) || forceNew) {
-            if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations || !console) {
+            if (!syncedStorage || !globalStorage || !localStorage || !console) {
                 throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
             }
             Root.DevToolsContext.globalInstance().set(Settings, new Settings({
                 syncedStorage,
                 globalStorage,
                 localStorage,
-                settingRegistrations,
                 logSettingAccess,
                 runSettingsMigration,
                 console,
@@ -105,14 +86,6 @@ export class Settings {
     }
     static removeInstance() {
         Root.DevToolsContext.globalInstance().delete(Settings);
-    }
-    registerModuleSetting(setting) {
-        const settingName = setting.name;
-        if (this.settingNameSet.has(settingName)) {
-            throw new Error(`Duplicate Setting name '${settingName}'`);
-        }
-        this.settingNameSet.add(settingName);
-        this.moduleSettings.set(setting.name, setting);
     }
     static normalizeSettingName(name) {
         if ([
@@ -125,22 +98,6 @@ export class Settings {
             return name;
         }
         return Platform.StringUtilities.toKebabCase(name);
-    }
-    /**
-     * Prefer a module setting if this setting is one that you might not want to
-     * surface to the user to control themselves. Examples of these are settings
-     * to store UI state such as how a user choses to position a split widget or
-     * which panel they last opened.
-     * If you are creating a setting that you expect the user to control, and
-     * sync, prefer {@link Settings.createSetting}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    moduleSetting(settingName) {
-        const setting = this.moduleSettings.get(settingName);
-        if (!setting) {
-            throw new Error('No setting registered: ' + settingName);
-        }
-        return setting;
     }
     settingForTest(settingName) {
         const setting = this.#registry.get(settingName);
@@ -209,9 +166,8 @@ export class Settings {
     /**
      * Resolves a setting descriptor to a concrete {@link Setting} instance.
      *
-     * If a setting with the same name already exists (either pre-registered or
-     * previously resolved), that instance is returned. Otherwise, a new setting
-     * is created and registered.
+     * If a setting with the same name already exists in the registry, that
+     * instance is returned. Otherwise, a new setting is created and registered.
      *
      * @param descriptor The descriptor defining the setting. Must not be conditional.
      * @throws If the descriptor is conditional (contains `isAvailable`). Use `maybeResolve` instead.
@@ -224,8 +180,11 @@ export class Settings {
         return this.#resolve(descriptor);
     }
     #resolve(descriptor) {
-        let setting = this.moduleSettings.get(descriptor.name);
+        let setting = this.#registry.get(descriptor.name);
         if (setting) {
+            if (setting.type() === null) {
+                setting.setSettingType(descriptor.type);
+            }
             return setting;
         }
         const { name, type, defaultValue, storageType } = descriptor;
@@ -236,7 +195,6 @@ export class Settings {
             this.createRegExpSetting(name, evaluatedDefaultValue, undefined, storageType) :
             this.createSetting(name, evaluatedDefaultValue, storageType);
         setting.setSettingType(type);
-        this.registerModuleSetting(setting);
         return setting;
     }
     /**
@@ -346,7 +304,6 @@ export class Setting {
     defaultValue;
     eventSupport;
     storage;
-    #registration = null;
     #type = null;
     #requiresUserAction;
     #value;
@@ -368,7 +325,6 @@ export class Setting {
             name: this.name,
             type: this.type() ?? "boolean" /* SettingType.BOOLEAN */,
             defaultValue: this.defaultValue,
-            storageType: this.#registration?.storageType,
         };
     }
     addChangeListener(listener, thisObject) {
@@ -459,14 +415,8 @@ export class Setting {
     setSettingType(type) {
         this.#type = type;
     }
-    setRegistration(registration) {
-        this.#registration = registration;
-        if (registration.settingType) {
-            this.#type = registration.settingType;
-        }
-    }
     type() {
-        return this.#type ?? this.#registration?.settingType ?? null;
+        return this.#type ?? null;
     }
     printSettingsSavingError(message, value) {
         const errorMessage = 'Error saving setting with name: ' + this.name + ', value length: ' + value.length + '. Error: ' + message;
@@ -537,5 +487,5 @@ export var SettingStorageType;
      */
     SettingStorageType["SESSION"] = "Session";
 })(SettingStorageType || (SettingStorageType = {}));
-export { getLocalizedSettingsCategory, maybeRemoveSettingExtension, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingType, };
+export { getLocalizedSettingsCategory, SettingCategory, SettingType, };
 //# sourceMappingURL=Settings.js.map

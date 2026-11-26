@@ -2,6 +2,7 @@ import '../../ui/kit/kit.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 /**
  * Presentation model for a single token row. All values are pre-formatted by
@@ -20,7 +21,9 @@ export interface TokenRow {
 }
 export interface ViewInput {
     tokens: TokenRow[];
+    filters: TextUtils.TextUtils.ParsedFilter[];
     selectedTokenId: string | null;
+    onFilterChanged: (filterText: string) => void;
     onSelect: (tokenId: string) => void;
     onDeselect: () => void;
     onDeleteAll: () => void;

@@ -1,3 +1,5 @@
+import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as EmulationComponents from '../settings/emulation/components/components.js';
@@ -18,6 +20,7 @@ export interface NetworkConfigViewInput {
 }
 export interface NetworkConfigViewOutput {
     selectCustomUserAgentInput?: () => void;
+    focusAndHighlightCustomUserAgentSelect?: () => void;
 }
 export type View = (input: NetworkConfigViewInput, output: NetworkConfigViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
@@ -29,14 +32,9 @@ export declare class NetworkConfigView extends UI.Widget.VBox {
     }): NetworkConfigView;
     performUpdate(): void;
     wasShown(): void;
+    willHide(): void;
+    revealUserAgent(): void;
 }
-interface UserAgentGroup {
-    title: string;
-    values: Array<{
-        title: string;
-        value: string;
-        metadata: Protocol.Emulation.UserAgentMetadata | null;
-    }>;
+export declare class UserAgentRevealer implements Common.Revealer.Revealer<SDK.NetworkManager.RevealableCustomUserAgent> {
+    reveal(): Promise<void>;
 }
-export declare const userAgentGroups: UserAgentGroup[];
-export {};

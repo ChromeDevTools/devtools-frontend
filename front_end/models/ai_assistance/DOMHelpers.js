@@ -13,20 +13,24 @@ export function getErrorStackOnThePage() {
     return { stack: '', message: this.message };
 }
 /**
- * Collects DOM `Element` handles from `this` inside the inspected page via
+ * Serializes `this` to JSON inside the inspected page through
  * `RemoteObject#callFunction` with `throwOnSideEffect: true`.
  *
- * Walks `this` in `JSON.stringify` order, deduplicating cycles via
- * `seenBefore` and skipping numeric `CSSStyleDeclaration` keys, and returns up
- * to `maxElements` `Element` instances typed as `unknown[]` so DOM types do not
- * leak from `DOMHelpers.d.ts` into the DOM-free `ai_assistance` foundation
- * module.
+ * `RemoteObject#callFunction` sends `stringifyObjectOnThePage.toString()` to
+ * the page, so the function body must remain self-contained (no module-scope
+ * imports or helpers) and side-effect-free.
+ *
+ * When `options` is provided, collects up to `options.maxElements` DOM
+ * `Element` handles in `JSON.stringify` traversal order (replacing repeated
+ * object references with `"(cycle)"` and skipping numeric `CSSStyleDeclaration`
+ * keys) and prefixes each collected element tag with
+ * `${options.uidPlaceholderPrefix}${index}__`.
  */
 /* istanbul ignore next */
-export function collectElementsOnThePage(maxElements) {
+export function stringifyObjectOnThePage(options) {
     const seenBefore = new Map();
     const elements = [];
-    JSON.stringify(this, function replacer(key, value) {
+    const json = JSON.stringify(this, function replacer(key, value) {
         if (typeof value === 'object' && value !== null) {
             if (seenBefore.has(value)) {
                 return '(cycle)';
@@ -34,42 +38,11 @@ export function collectElementsOnThePage(maxElements) {
             seenBefore.set(value, true);
         }
         if (value instanceof Element) {
-            if (elements.length < maxElements) {
+            let uidPrefix = '';
+            if (options && elements.length < options.maxElements) {
+                uidPrefix = `${options.uidPlaceholderPrefix}${elements.length}__`;
                 elements.push(value);
             }
-            return '';
-        }
-        if (this instanceof CSSStyleDeclaration) {
-            // Do not add number keys to the output.
-            if (!isNaN(Number(key))) {
-                return undefined;
-            }
-        }
-        return value;
-    });
-    return elements;
-}
-/**
- * Serializes `this` to JSON inside the inspected page via
- * `RemoteObject#callFunction` with `throwOnSideEffect: true`.
- *
- * When `resolvedUids` is provided, prepends `(uid=<id>) ` to each encountered
- * `Element` in traversal order when the corresponding UID is non-null.
- */
-/* istanbul ignore next */
-export function stringifyObjectOnThePage(resolvedUids) {
-    const seenBefore = new Map();
-    let elementIndex = 0;
-    return JSON.stringify(this, function replacer(key, value) {
-        if (typeof value === 'object' && value !== null) {
-            if (seenBefore.has(value)) {
-                return '(cycle)';
-            }
-            seenBefore.set(value, true);
-        }
-        if (value instanceof Element) {
-            const uid = resolvedUids?.[elementIndex++];
-            const uidPrefix = uid ? `(uid=${uid}) ` : '';
             const idAttribute = value.id ? ` id="${value.id}"` : '';
             // Read the raw attribute rather than `classList` to avoid allocating a
             // DOMTokenList under throwOnSideEffect, and to handle `SVGElement`
@@ -87,6 +60,7 @@ export function stringifyObjectOnThePage(resolvedUids) {
         }
         return value;
     });
+    return { json, elements };
 }
 const DISALLOWED_CSS_URL_FUNCTION_REGEX = /(?:^|[^a-zA-Z0-9_-])(?:-webkit-image-set|image-set|url|src)\s*\(/i;
 function isDisallowedCssValue(value) {

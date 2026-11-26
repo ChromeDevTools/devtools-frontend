@@ -103,8 +103,6 @@ export declare function toKebabCaseKeys<T>(settingValue: Record<string, T>): Rec
  * @returns The snake_case version of the input string.
  */
 export declare function toSnakeCase(text: string): string;
-/** Replaces the last occurrence of parameter `search` with parameter `replacement` in `input` **/
-export declare const replaceLast: (input: string, search: string, replacement: string) => string;
 export declare const stringifyWithPrecision: (s: number, precision?: number) => string;
 /**
  * Somewhat efficiently concatenates 2 base64 encoded strings.

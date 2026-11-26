@@ -5,7 +5,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type { TimelineModeViewDelegate } from './TimelinePanel.js';
 export declare class CountersGraph extends UI.Widget.VBox {
     #private;
-    private readonly delegate;
+    delegate?: TimelineModeViewDelegate;
     private readonly calculator;
     private readonly header;
     readonly toolbar: UI.Toolbar.Toolbar;
@@ -20,6 +20,7 @@ export declare class CountersGraph extends UI.Widget.VBox {
     currentValuesBar?: HTMLElement;
     private markerXPosition?;
     constructor(delegate: TimelineModeViewDelegate);
+    constructor(element?: HTMLElement);
     setModel(parsedTrace: Trace.TraceModel.ParsedTrace | null, events: Trace.Types.Events.Event[] | null): void;
     private createCurrentValuesBar;
     private createCounter;

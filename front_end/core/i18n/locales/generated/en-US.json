@@ -1328,9 +1328,6 @@
   "generated/Deprecation.ts | RangeExpand": {
     "message": "Range.expand() is deprecated. Please use Selection.modify() instead."
   },
-  "generated/Deprecation.ts | RelatedWebsiteSets": {
-    "message": "Related Website Sets is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details."
-  },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
   },
@@ -6788,11 +6785,17 @@
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "Delete queued comment"
   },
+  "panels/common/CommentThreadWidget.ts | editQueuedComment": {
+    "message": "Edit queued comment"
+  },
   "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
     "message": "The element is no longer available"
   },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "Queue comment"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentAriaDescription": {
+    "message": "Press {PH1}+Enter to queue the comment"
   },
   "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
     "message": "{PH1} + ↵ to queue comments"
@@ -6902,6 +6905,9 @@
   "panels/common/StateChangesStatusBarPills.ts | cpuThrottling": {
     "message": "CPU ({PH1}×)"
   },
+  "panels/common/StateChangesStatusBarPills.ts | customUserAgent": {
+    "message": "Custom"
+  },
   "panels/common/StateChangesStatusBarPills.ts | enableCache": {
     "message": "Enable cache"
   },
@@ -6923,8 +6929,14 @@
   "panels/common/StateChangesStatusBarPills.ts | resetMenuItem": {
     "message": "Reset"
   },
+  "panels/common/StateChangesStatusBarPills.ts | resetUserAgent": {
+    "message": "Reset user agent"
+  },
   "panels/common/StateChangesStatusBarPills.ts | stopCpuThrottling": {
     "message": "Stop CPU throttling"
+  },
+  "panels/common/StateChangesStatusBarPills.ts | userAgent": {
+    "message": "User agent ({PH1})"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Open Console to view {PH1}"
@@ -12358,6 +12370,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | internalNodeSummary": {
     "message": "An object allocated by a component other than V8, such as C++ objects defined by Blink"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | levelS": {
+    "message": "Level {PH1}"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | mapSummary": {
     "message": "An internal object representing the shape of a JavaScript Object (not a JavaScript Map)"

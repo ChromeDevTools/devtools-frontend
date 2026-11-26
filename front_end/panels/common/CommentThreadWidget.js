@@ -28,6 +28,11 @@ const UIStrings = {
      */
     deleteQueuedComment: 'Delete queued comment',
     /**
+     * @description Tooltip on the text of a queued comment (a comment saved locally but not yet sent to the agent).
+     * Clicking the text, or pressing Enter or Space while it has focus, opens it for editing.
+     */
+    editQueuedComment: 'Edit queued comment',
+    /**
      * @description Alt text for the checkmark icon in the comment thread header indicating that comments have been sent
      * to the agent.
      */
@@ -64,6 +69,12 @@ const UIStrings = {
      * @example {Ctrl} PH1
      */
     queueCommentsPlaceholder: '{PH1} + \u21b5 to queue comments',
+    /**
+     * @description Accessible description for the Send to agent button, informing screen reader users of the keyboard
+     * shortcut to queue the comment instead of sending it immediately.
+     * @example {Ctrl} PH1
+     */
+    queueCommentAriaDescription: 'Press {PH1}+Enter to queue the comment',
     /**
      * @description Banner text shown at the bottom of a comment thread when the element the comment was
      * attached to has been removed and can no longer be found.
@@ -176,6 +187,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       ${showCommentInput ? html `
         <textarea
           ${ref(input.textAreaRef)}
+          autofocus
           class="devtools-text-input input"
           rows="1"
           aria-label=${i18nString(UIStrings.commentInputAriaLabel)}
@@ -212,6 +224,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           </devtools-tooltip>
           <devtools-button
             aria-label=${buttonText}
+            .accessibleDescription=${input.isEditing ? undefined : input.queueCommentDescription}
             .disabled=${!input.commentText.trim()}
             @mousedown=${(event) => {
         event.preventDefault();
@@ -221,13 +234,16 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             ${buttonText}
           </devtools-button>
         </div>
-      ` : html `<div class="thread-body">${input.comments.map(comment => comment.author === 'DEVELOPER' ? html `
-          <div class="comment-text"
-            @click=${() => { input.onSetEditMode(true); }}
-          >
-            ${comment.text}
-          </div>
-        ` : html `
+      ` : html `<div class="thread-body">${input.comments.map(comment => comment.author === 'DEVELOPER' ? (input.status === 'ACTIVE' ? html `
+            <button class="comment-text"
+              autofocus
+              title=${i18nString(UIStrings.editQueuedComment)}
+              @click=${() => input.onSetEditMode(true)}
+              jslog=${VisualLogging.action('comments-edit-queued-comment').track({ click: true })}
+            >${comment.text}</button>
+          ` : html `
+            <div class="comment-text">${comment.text}</div>
+          `) : html `
           <div class="agent-response">
             <div class="elbow"></div>
             <div class="response-content">
@@ -315,6 +331,10 @@ export class CommentThreadWidget extends UI.Widget.Widget {
         this.#commentText = commentText;
         this.#isEditing = value;
         this.requestUpdate();
+        if (value) {
+            // The clicked comment is replaced by the textarea (the `autofocus` element while editing).
+            void this.updateComplete.then(() => this.focus());
+        }
     };
     #handleQueueModifierChange = (pressed) => {
         if (this.#isQueueModifierPressed !== pressed) {
@@ -343,6 +363,8 @@ export class CommentThreadWidget extends UI.Widget.Widget {
         this.#isEditing = false;
         this.#submit(text, this.onSaveEdit);
         this.requestUpdate();
+        // The textarea is removed when leaving edit mode; focus moves to the `autofocus` comment.
+        void this.updateComplete.then(() => this.focus());
     };
     #handleCommentTextChange = (event) => {
         const input = event.target;
@@ -355,6 +377,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
             comments: this.#comments,
             commentText: this.#commentText,
             placeholder: i18nString(UIStrings.queueCommentsPlaceholder, { PH1: Host.Platform.isMac() ? '⌘' : 'Ctrl' }),
+            queueCommentDescription: i18nString(UIStrings.queueCommentAriaDescription, { PH1: Host.Platform.isMac() ? 'Command' : 'Ctrl' }),
             isQueueModifierPressed: this.#isQueueModifierPressed,
             elementRemoved: this.#elementRemoved,
             textAreaRef: this.#textAreaRef,

@@ -672,14 +672,6 @@ export function toSnakeCase(text) {
         .replace(/^_|_$/g, ''); // 5
     return result;
 }
-/** Replaces the last occurrence of parameter `search` with parameter `replacement` in `input` **/
-export const replaceLast = function (input, search, replacement) {
-    const replacementStartIndex = input.lastIndexOf(search);
-    if (replacementStartIndex === -1) {
-        return input;
-    }
-    return input.slice(0, replacementStartIndex) + input.slice(replacementStartIndex).replace(search, replacement);
-};
 export const stringifyWithPrecision = function stringifyWithPrecision(s, precision = 2) {
     if (precision === 0) {
         return s.toFixed(0);

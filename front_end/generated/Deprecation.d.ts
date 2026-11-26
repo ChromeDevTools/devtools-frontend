@@ -212,10 +212,6 @@ export declare const UIStrings: {
      */
     readonly RangeExpand: "Range.expand() is deprecated. Please use Selection.modify() instead.";
     /**
-     * @description A deprecation warning shown in the DevTools Issues tab. It's shown when the Storage Access API is automatically granted by Related Website Sets. The placeholder will always be the string `Related Website Sets`.
-     */
-    readonly RelatedWebsiteSets: "`Related Website Sets` is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details.";
-    /**
      * @description This warning occurs when a subresource loaded by a page has a URL with an authority portion. These are disallowed.
      */
     readonly RequestedSubresourceWithEmbeddedCredentials: "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked.";

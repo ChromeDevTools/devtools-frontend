@@ -9,27 +9,29 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.link-swatch-link {
-  display: inline;
-}
+@scope to (devtools-widget > *) {
+  .link-swatch-link {
+    display: inline;
+  }
 
-.link-swatch-link:not(.undefined) {
-  cursor: pointer;
-  text-underline-offset: var(--sys-size-2);
-  color: var(--text-link);
-}
+  .link-swatch-link:not(.undefined) {
+    cursor: pointer;
+    text-underline-offset: var(--sys-size-2);
+    color: var(--text-link);
+  }
 
-.link-swatch-link:hover:not(.undefined) {
-  text-decoration: underline;
-}
+  .link-swatch-link:hover:not(.undefined) {
+    text-decoration: underline;
+  }
 
-.link-swatch-link:focus:not(:focus-visible) {
-  outline: none;
-}
+  .link-swatch-link:focus:not(:focus-visible) {
+    outline: none;
+  }
 
-.link-swatch-link.undefined {
-  opacity: 100%;
-  color: var(--text-disabled);
+  .link-swatch-link.undefined {
+    opacity: 100%;
+    color: var(--text-disabled);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./linkSwatch.css')} */`;

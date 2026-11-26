@@ -325,7 +325,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     detailsWidget;
     preserveLogSetting;
     recordLogSetting;
-    throttlingSelect;
+    #throttlingSelector;
     displayScreenshotDelay;
     backendLinking;
     #settingsPaneView;
@@ -419,7 +419,7 @@ export class NetworkPanel extends UI.Panel.Panel {
         this.recordLogSetting =
             Common.Settings.Settings.instance().resolve(Logs.NetworkLog.recordNetworkLogSettingDescriptor);
         this.recordLogSetting.addChangeListener(({ data }) => this.toggleRecord(data));
-        this.throttlingSelect = this.createThrottlingConditionsSelect();
+        this.#throttlingSelector = this.createThrottlingConditionsSelect();
         this.setupToolbarButtons(splitWidget);
         this.toggleRecord(this.recordLogSetting.get());
         this.#toggleShowOverview();
@@ -459,7 +459,10 @@ export class NetworkPanel extends UI.Panel.Panel {
         panel.filterBar.focus();
     }
     throttlingSelectForTest() {
-        return this.throttlingSelect;
+        return this.#throttlingSelector.toolbarItem;
+    }
+    revealNetworkThrottling() {
+        this.#throttlingSelector.widget.focusAndHighlight();
     }
     updateNetworkLogWindow(startTimeMs, endTimeMs) {
         const startTime = Math.max(this.calculator.minimumBoundary(), startTimeMs / 1000);
@@ -506,7 +509,7 @@ export class NetworkPanel extends UI.Panel.Panel {
         this.panelToolbar.appendSeparator();
         const disableCacheCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor), i18nString(UIStrings.disableCacheWhileDevtoolsIsOpen), i18nString(UIStrings.disableCache));
         this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
-        this.panelToolbar.appendToolbarItem(this.throttlingSelect);
+        this.panelToolbar.appendToolbarItem(this.#throttlingSelector.toolbarItem);
         const networkConditionsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.moreNetworkConditions), 'network-settings', undefined, 'network-conditions');
         networkConditionsButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, () => {
             void UI.ViewManager.ViewManager.instance().showView('network.config');
@@ -541,8 +544,8 @@ export class NetworkPanel extends UI.Panel.Panel {
     createThrottlingConditionsSelect() {
         const toolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
         toolbarItem.setMaxWidth(160);
-        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(toolbarItem.element, i18nString(UIStrings.throttling));
-        return toolbarItem;
+        const widget = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(toolbarItem.element, i18nString(UIStrings.throttling));
+        return { toolbarItem, widget };
     }
     toggleRecord(toggled) {
         this.toggleRecordAction.setToggled(toggled);
@@ -985,6 +988,12 @@ export class RequestLocationRevealer {
         if (location.header) {
             view.revealHeader(location.header.section, location.header.header?.name);
         }
+    }
+}
+export class NetworkThrottlingRevealer {
+    async reveal() {
+        await UI.ViewManager.ViewManager.instance().showView('network');
+        NetworkPanel.instance().revealNetworkThrottling();
     }
 }
 let searchNetworkViewInstance;

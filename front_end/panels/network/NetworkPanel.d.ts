@@ -66,7 +66,6 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     private readonly detailsWidget;
     private preserveLogSetting;
     recordLogSetting: Common.Settings.Setting<boolean>;
-    private readonly throttlingSelect;
     private readonly displayScreenshotDelay;
     readonly backendLinking: BackendLinking | null;
     constructor(displayScreenshotDelay: number, settingsPaneView?: SettingsPaneView);
@@ -79,6 +78,7 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
         filterValue: string;
     }>): Promise<void>;
     throttlingSelectForTest(): UI.Toolbar.ToolbarItem;
+    revealNetworkThrottling(): void;
     private updateNetworkLogWindow;
     private onWindowChanged;
     private searchToggleClick;
@@ -140,6 +140,9 @@ export declare class ActionDelegate implements UI.ActionRegistration.ActionDeleg
 }
 export declare class RequestLocationRevealer implements Common.Revealer.Revealer<NetworkForward.UIRequestLocation.UIRequestLocation> {
     reveal(location: NetworkForward.UIRequestLocation.UIRequestLocation): Promise<void>;
+}
+export declare class NetworkThrottlingRevealer implements Common.Revealer.Revealer<SDK.NetworkManager.RevealableNetworkThrottling> {
+    reveal(): Promise<void>;
 }
 export declare class SearchNetworkView extends Search.SearchView.SearchView {
     private constructor();

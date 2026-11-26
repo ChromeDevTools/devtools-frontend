@@ -24,26 +24,28 @@ var eventDisplayTable_css_default = `/*
  * found in the LICENSE file.
  */
 
-devtools-data-grid.no-border-top-datagrid {
-  /* make sure there is no top border, it ruins the menu view */
-  border-top: 0;
-}
+@scope to (devtools-widget > *) {
+  devtools-data-grid.no-border-top-datagrid {
+    /* make sure there is no top border, it ruins the menu view */
+    border-top: 0;
+  }
 
-devtools-data-grid.event-display-table-contents-table-container {
-  height: 100%;
-}
+  devtools-data-grid.event-display-table-contents-table-container {
+    height: 100%;
+  }
 
-.event-display-table-basic-text-table-entry {
-  line-height: 26px;
-}
+  .event-display-table-basic-text-table-entry {
+    line-height: 26px;
+  }
 
-.event-display-table-contents-json-wrapper > devtools-widget.json-view {
-  overflow: visible;
-}
+  .event-display-table-contents-json-wrapper > devtools-widget.json-view {
+    overflow: visible;
+  }
 
-.data-grid > .data-container > table.data {
-  height: auto;
-  table-layout: auto;
+  .data-grid > .data-container > table.data {
+    height: auto;
+    table-layout: auto;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./eventDisplayTable.css")} */`;
@@ -1479,60 +1481,62 @@ var playerPropertiesView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.media-attributes-view {
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.media-property-renderer {
-  line-height: var(--sys-size-9);
-  min-height: var(--sys-size-12);
-  padding: var(--sys-size-3) var(--sys-size-5);
-  display: block;
-  overflow: hidden;
-
-  &:hover {
-    background: var(--sys-color-state-hover-on-subtle);
+@scope to (devtools-widget > *) {
+  .media-attributes-view {
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }
-}
 
-.media-property-renderer:nth-child(even of :not(.media-property-renderer-hidden)):not(:hover) {
-  background: var(--sys-color-surface1);
-}
-
-.media-property-renderer:has(.json-view) {
-  padding-bottom: 0;
-}
-
-.media-property-renderer:has(.json-view > .expanded) {
-  padding-bottom: var(--sys-size-3);
-}
-
-.media-property-renderer-hidden {
-  display: none;
-}
-
-.media-property-renderer-title {
-  font-size: var(--sys-typescale-body4-size);
-  float: left;
-  width: var(--sys-size-23);
-}
-
-.media-property-renderer-title::first-letter {
-  text-transform: uppercase;
-}
-
-.media-property-renderer-contents {
-  position: relative;
-
-  & > .json-view {
+  .media-property-renderer {
+    line-height: var(--sys-size-9);
+    min-height: var(--sys-size-12);
+    padding: var(--sys-size-3) var(--sys-size-5);
+    display: block;
     overflow: hidden;
-    padding: 0;
-  }
-}
 
-.media-properties-frame {
-  display: block;
-  overflow-x: hidden;
+    &:hover {
+      background: var(--sys-color-state-hover-on-subtle);
+    }
+  }
+
+  .media-property-renderer:nth-child(even of :not(.media-property-renderer-hidden)):not(:hover) {
+    background: var(--sys-color-surface1);
+  }
+
+  .media-property-renderer:has(.json-view) {
+    padding-bottom: 0;
+  }
+
+  .media-property-renderer:has(.json-view > .expanded) {
+    padding-bottom: var(--sys-size-3);
+  }
+
+  .media-property-renderer-hidden {
+    display: none;
+  }
+
+  .media-property-renderer-title {
+    font-size: var(--sys-typescale-body4-size);
+    float: left;
+    width: var(--sys-size-23);
+  }
+
+  .media-property-renderer-title::first-letter {
+    text-transform: uppercase;
+  }
+
+  .media-property-renderer-contents {
+    position: relative;
+
+    & > .json-view {
+      overflow: hidden;
+      padding: 0;
+    }
+  }
+
+  :scope.media-properties-frame {
+    display: block;
+    overflow-x: hidden;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./playerPropertiesView.css")} */`;

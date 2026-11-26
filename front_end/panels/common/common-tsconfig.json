@@ -107,6 +107,9 @@
       "path": "../../models/devtools_state/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/emulation/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/extensions/bundle-tsconfig.ref.json"
     },
     {

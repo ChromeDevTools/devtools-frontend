@@ -9,237 +9,247 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.timeline-overlays-container {
-  position: absolute;
-  inset: 0;
-  /* Ensure it appears on top of everything */
-  z-index: 200;
-  pointer-events: none;
-}
-
-.overlay-item {
-  position: absolute;
-  /* The FlameChartView will move these as the FlameChart is drawn */
-  top: 0;
-  left: 0;
-}
-
-.overlay-type-ENTRY_LABEL {
-  /* keep these above the selected entry overline, else they can become hard to read */
-  z-index: 2;
-  transition: opacity 0.2s;
-
-  /* if an overlay is being edited, keep it above the rest so the user is not obstructed */
-  /* also bump the z-index if the label is being hovered, to ensure it appears above any other labels that might obstruct it */
-  &:has([data-user-editing-label]),
-  &:hover {
-    z-index: 4;
+@scope to (devtools-widget > *) {
+  :scope {
+    overflow: hidden;
   }
 
-  /* Added to the selected entry label to bring it forward. Hovered entry's label will still be on top */
-  &.bring-forward {
-    z-index: 3;
-  }
-}
-
-
-.overlay-type-COMMENT_PIN {
-  /* This element is an invisible anchor box. The shared comments overlay draws the highlight, pin and popup relative to it. */
-  pointer-events: none;
-  box-sizing: border-box;
-}
-
-.overlay-type-ENTRY_SELECTED,
-.overlay-type-ENTRY_OUTLINE {
-  pointer-events: none;
-  border: var(--sys-size-2) solid var(--sys-color-primary);
-  background-color: var(--sys-color-state-ripple-primary);
-
-  &.cut-off-top {
-    border-top: none;
+  devtools-split-view,
+  .timeline-details-split {
+    flex: auto;
   }
 
-  &.cut-off-bottom {
-    border-bottom: none;
+  .timeline-overlays-container {
+    position: absolute;
+    inset: 0;
+    /* Ensure it appears on top of everything */
+    z-index: 200;
+    pointer-events: none;
   }
 
-  &.cut-off-right {
-    border-right: none;
-  }
-
-  &.cut-off-left {
-    border-left: none;
-  }
-}
-
-.overlay-type-ENTRY_SELECTED {
-  /* Ensure ENTRY_SELECTED overlays are always displayed on top of ENTRY_OUTLINE overlays */
-  z-index: 1;
-}
-
-.overlay-type-ENTRY_OUTLINE {
-  background-color: transparent;
-  border-width: var(--sys-size-1);
-  /* Ensure ENTRY_SELECTED overlays are always displayed on top of ENTRY_OUTLINE overlays */
-  z-index: 0;
-
-  &.outline-reason-ERROR {
-    border-color: var(--sys-color-error-bright);
-  }
-
-  &.outline-reason-INFO {
-    border-color: var(--sys-color-primary);
-  }
-}
-
-.overlay-type-CANDY_STRIPED_TIME_RANGE {
-  --red-stripe-width: var(--sys-size-2);
-  --white-stripe-width: var(--sys-size-4);
-
-  background-image:
-    repeating-linear-gradient(
-      315deg,
-      var(--sys-color-error-bright),
-      var(--sys-color-error-bright) var(--red-stripe-width),
-      transparent var(--red-stripe-width),
-      transparent var(--white-stripe-width)
-    );
-  border: var(--sys-size-1) solid var(--sys-color-error-bright);
-
-  &.cut-off-bottom {
-    border-bottom: none;
-  }
-
-  &.cut-off-top {
-    border-top: none;
-  }
-
-  &.cut-off-right {
-    border-right: none;
-  }
-
-  &.cut-off-left {
-    border-left: none;
-  }
-}
-
-.overlay-type-ENTRIES_LINK {
-  height: 100%;
-  width: 100%;
-}
-
-.overlay-type-TIME_RANGE {
-  top: 0;
-  bottom: 0;
-
-  &.overlap-1 {
-    bottom: var(--sys-size-17);
-  }
-
-  &.overlap-2 {
-    bottom: var(--sys-size-20);
-  }
-}
-
-.overlay-type-TIMESTAMP_MARKER {
-  top: 0;
-  bottom: 0;
-  width: var(--sys-size-2);
-  background-color: var(--sys-color-primary);
-  pointer-events: none;
-}
-
-.timeline-entry-tooltip-element:not(:empty) {
-  z-index: 2000;
-  position: absolute;
-  contain: content;
-  background-color: var(--sys-color-cdt-base-container);
-  pointer-events: none;
-  padding: var(--sys-size-3) var(--sys-size-4);
-  border-radius: var(--sys-shape-corner-extra-small);
-  white-space: pre-wrap;
-  word-break: break-all;
-  max-width: 80%;
-  box-shadow: var(--sys-elevation-level2);
-}
-
-.overlay-type-TIMESPAN_BREAKDOWN {
-  /* This overlay by default is shown at the bottom of the UI, not the top */
-  top: unset;
-  bottom: 0;
-  height: var(--sys-size-19);
-
-  &.positioned-by-event {
+  .overlay-item {
+    position: absolute;
+    /* The FlameChartView will move these as the FlameChart is drawn */
     top: 0;
-    bottom: unset;
+    left: 0;
   }
-}
 
-.overlay-type-TIMINGS_MARKER {
-  bottom: 0;
-  width: var(--sys-size-1);
-  pointer-events: auto;
-  background-color: var(--marker-color); /* stylelint-disable-line plugin/use_theme_colors */
-}
+  .overlay-type-ENTRY_LABEL {
+    /* keep these above the selected entry overline, else they can become hard to read */
+    z-index: 2;
+    transition: opacity 0.2s;
 
-.overlay-type-BOTTOM_INFO_BAR {
-  top: unset;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: var(--sys-size-14);
-  /* Unlike other overlays, the user can click + interact with this one */
-  pointer-events: auto;
-  /* Ensure this one is always on top of any others */
-  z-index: 5;
-}
+    /* if an overlay is being edited, keep it above the rest so the user is not obstructed */
+    /* also bump the z-index if the label is being hovered, to ensure it appears above any other labels that might obstruct it */
+    &:has([data-user-editing-label]),
+    &:hover {
+      z-index: 4;
+    }
 
-.marker-title {
-  display: flex;
-  justify-content: center;
-  padding: 0 var(--sys-size-3);
-  font-size: var(--sys-typescale-body4-size);
-  color: var(--sys-color-base);
-
-  &:hover {
-    cursor: default;
-    transition: opacity 0.2s ease;
+    /* Added to the selected entry label to bring it forward. Hovered entry's label will still be on top */
+    &.bring-forward {
+      z-index: 3;
+    }
   }
-}
 
-.markers {
-  position: fixed;
-  display: flex;
-  bottom: 0;
-}
+  .overlay-type-COMMENT_PIN {
+    /* This element is an invisible anchor box. The shared comments overlay draws the highlight, pin and popup relative to it. */
+    pointer-events: none;
+    box-sizing: border-box;
+  }
 
-.overlay-popover span {
-  margin-right: var(--sys-size-3);
-}
+  .overlay-type-ENTRY_SELECTED,
+  .overlay-type-ENTRY_OUTLINE {
+    pointer-events: none;
+    border: var(--sys-size-2) solid var(--sys-color-primary);
+    background-color: var(--sys-color-state-ripple-primary);
 
-.overlay-popover span.overlay-popover-time {
-  color: var(--sys-color-green);
-}
+    &.cut-off-top {
+      border-top: none;
+    }
 
-.timeline-flamechart-resizer {
-  flex: var(--sys-size-5) 0 0;
-  background-color: var(--sys-color-surface2);
-  border: var(--sys-size-1) var(--sys-color-divider);
-  border-style: solid none;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: center;
-}
+    &.cut-off-bottom {
+      border-bottom: none;
+    }
 
-.timeline-network-resizer-disabled > .timeline-flamechart-resizer {
-  display: none;
-}
+    &.cut-off-right {
+      border-right: none;
+    }
 
-.timeline-flamechart-resizer::after {
-  content: "...";
-  font-size: var(--sys-typescale-body2-size);
-  margin-bottom: calc(-1 * var(--sys-size-1));
+    &.cut-off-left {
+      border-left: none;
+    }
+  }
+
+  .overlay-type-ENTRY_SELECTED {
+    /* Ensure ENTRY_SELECTED overlays are always displayed on top of ENTRY_OUTLINE overlays */
+    z-index: 1;
+  }
+
+  .overlay-type-ENTRY_OUTLINE {
+    background-color: transparent;
+    border-width: var(--sys-size-1);
+    /* Ensure ENTRY_SELECTED overlays are always displayed on top of ENTRY_OUTLINE overlays */
+    z-index: 0;
+
+    &.outline-reason-ERROR {
+      border-color: var(--sys-color-error-bright);
+    }
+
+    &.outline-reason-INFO {
+      border-color: var(--sys-color-primary);
+    }
+  }
+
+  .overlay-type-CANDY_STRIPED_TIME_RANGE {
+    --red-stripe-width: var(--sys-size-2);
+    --white-stripe-width: var(--sys-size-4);
+
+    background-image:
+      repeating-linear-gradient(
+        315deg,
+        var(--sys-color-error-bright),
+        var(--sys-color-error-bright) var(--red-stripe-width),
+        transparent var(--red-stripe-width),
+        transparent var(--white-stripe-width)
+      );
+    border: var(--sys-size-1) solid var(--sys-color-error-bright);
+
+    &.cut-off-bottom {
+      border-bottom: none;
+    }
+
+    &.cut-off-top {
+      border-top: none;
+    }
+
+    &.cut-off-right {
+      border-right: none;
+    }
+
+    &.cut-off-left {
+      border-left: none;
+    }
+  }
+
+  .overlay-type-ENTRIES_LINK {
+    height: 100%;
+    width: 100%;
+  }
+
+  .overlay-type-TIME_RANGE {
+    top: 0;
+    bottom: 0;
+
+    &.overlap-1 {
+      bottom: var(--sys-size-17);
+    }
+
+    &.overlap-2 {
+      bottom: var(--sys-size-20);
+    }
+  }
+
+  .overlay-type-TIMESTAMP_MARKER {
+    top: 0;
+    bottom: 0;
+    width: var(--sys-size-2);
+    background-color: var(--sys-color-primary);
+    pointer-events: none;
+  }
+
+  .timeline-entry-tooltip-element:not(:empty) {
+    z-index: 2000;
+    position: absolute;
+    contain: content;
+    background-color: var(--sys-color-cdt-base-container);
+    pointer-events: none;
+    padding: var(--sys-size-3) var(--sys-size-4);
+    border-radius: var(--sys-shape-corner-extra-small);
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-width: 80%;
+    box-shadow: var(--sys-elevation-level2);
+  }
+
+  .overlay-type-TIMESPAN_BREAKDOWN {
+    /* This overlay by default is shown at the bottom of the UI, not the top */
+    top: unset;
+    bottom: 0;
+    height: var(--sys-size-19);
+
+    &.positioned-by-event {
+      top: 0;
+      bottom: unset;
+    }
+  }
+
+  .overlay-type-TIMINGS_MARKER {
+    bottom: 0;
+    width: var(--sys-size-1);
+    pointer-events: auto;
+    background-color: var(--marker-color); /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  .overlay-type-BOTTOM_INFO_BAR {
+    top: unset;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--sys-size-14);
+    /* Unlike other overlays, the user can click + interact with this one */
+    pointer-events: auto;
+    /* Ensure this one is always on top of any others */
+    z-index: 5;
+  }
+
+  .marker-title {
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--sys-size-3);
+    font-size: var(--sys-typescale-body4-size);
+    color: var(--sys-color-base);
+
+    &:hover {
+      cursor: default;
+      transition: opacity 0.2s ease;
+    }
+  }
+
+  .markers {
+    position: fixed;
+    display: flex;
+    bottom: 0;
+  }
+
+  .overlay-popover span {
+    margin-right: var(--sys-size-3);
+  }
+
+  .overlay-popover span.overlay-popover-time {
+    color: var(--sys-color-green);
+  }
+
+  .timeline-flamechart-resizer {
+    flex: var(--sys-size-5) 0 0;
+    background-color: var(--sys-color-surface2);
+    border: var(--sys-size-1) var(--sys-color-divider);
+    border-style: solid none;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .timeline-network-resizer-disabled > .timeline-flamechart-resizer {
+    display: none;
+  }
+
+  .timeline-flamechart-resizer::after {
+    content: "...";
+    font-size: var(--sys-typescale-body2-size);
+    margin-bottom: calc(-1 * var(--sys-size-1));
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./timelineFlameChartView.css')} */`;

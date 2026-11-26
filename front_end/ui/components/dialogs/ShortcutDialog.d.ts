@@ -20,6 +20,7 @@ export interface Shortcut {
 export interface ShortcutDialogData {
     shortcuts: Shortcut[];
     open?: boolean;
+    disabled?: boolean;
     customTitle?: Platform.UIString.LocalizedString;
 }
 export declare class ShortcutDialog extends HTMLElement {

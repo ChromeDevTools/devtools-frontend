@@ -1461,6 +1461,10 @@ var ExtensionButton = class {
 var hashIdentifier = (id) => Platform.StringUtilities.hashCode(id).toString(36);
 var cleanIdentifier = (id) => Platform.StringUtilities.sanitizeIdentifier(id) || hashIdentifier(id);
 var SIDEBAR_PANE_DEFAULT_VIEW = (input, _output, target) => {
+  const existingWidget = target.firstElementChild ? UI5.Widget.Widget.get(target.firstElementChild) : void 0;
+  if (existingWidget instanceof ExtensionView && !input.pageURL || existingWidget instanceof ExtensionNotifierView && (Boolean(input.pageURL) || !input.showObjectProperties)) {
+    existingWidget.hideWidget();
+  }
   render5(html5`
     ${input.pageURL ? widget2(ExtensionView, {
     data: {
@@ -1491,7 +1495,7 @@ var SIDEBAR_PANE_DEFAULT_VIEW = (input, _output, target) => {
     container: {
       classes: ["fill"],
       attributes: {
-        style: input.height ? `height: ${input.height}` : void 0
+        style: input.height && CSS.supports("height", input.height) ? `height: ${input.height}` : void 0
       }
     }
   });
@@ -4121,8 +4125,13 @@ var commentThreadWidget_css_default = `/*
     display: flex;
     flex-direction: column;
     gap: var(--sys-size-4);
-    width: 100%;
-    max-height: min(var(--sys-size-32), 50vh);
+    /* Extra room so the focus ring of the editable comment is not clipped by
+       the scroll container; the negative margin keeps the content in place. */
+    box-sizing: border-box;
+    width: calc(100% + 2 * var(--sys-size-2));
+    margin: calc(-1 * var(--sys-size-2));
+    padding: var(--sys-size-2);
+    max-height: calc(min(var(--sys-size-32), 50vh) + 2 * var(--sys-size-2));
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
@@ -4142,6 +4151,22 @@ var commentThreadWidget_css_default = `/*
     line-height: var(--sys-size-9);
     overflow-wrap: break-word;
     white-space: pre-wrap;
+  }
+
+  button.comment-text {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: var(--sys-shape-corner-extra-small);
+    background: none;
+    text-align: start;
+    /* Keep the focus ring visible when focusing scrolls the comment into view. */
+    scroll-margin: var(--sys-size-2);
+
+    &:focus-visible {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    }
   }
 
   .agent-response {
@@ -4291,6 +4316,11 @@ var UIStrings6 = {
    */
   deleteQueuedComment: "Delete queued comment",
   /**
+   * @description Tooltip on the text of a queued comment (a comment saved locally but not yet sent to the agent).
+   * Clicking the text, or pressing Enter or Space while it has focus, opens it for editing.
+   */
+  editQueuedComment: "Edit queued comment",
+  /**
    * @description Alt text for the checkmark icon in the comment thread header indicating that comments have been sent
    * to the agent.
    */
@@ -4327,6 +4357,12 @@ var UIStrings6 = {
    * @example {Ctrl} PH1
    */
   queueCommentsPlaceholder: "{PH1} + \u21B5 to queue comments",
+  /**
+   * @description Accessible description for the Send to agent button, informing screen reader users of the keyboard
+   * shortcut to queue the comment instead of sending it immediately.
+   * @example {Ctrl} PH1
+   */
+  queueCommentAriaDescription: "Press {PH1}+Enter to queue the comment",
   /**
    * @description Banner text shown at the bottom of a comment thread when the element the comment was
    * attached to has been removed and can no longer be found.
@@ -4425,6 +4461,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       ${showCommentInput ? html9`
         <textarea
           ${ref2(input.textAreaRef)}
+          autofocus
           class="devtools-text-input input"
           rows="1"
           aria-label=${i18nString6(UIStrings6.commentInputAriaLabel)}
@@ -4461,6 +4498,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           </devtools-tooltip>
           <devtools-button
             aria-label=${buttonText}
+            .accessibleDescription=${input.isEditing ? void 0 : input.queueCommentDescription}
             .disabled=${!input.commentText.trim()}
             @mousedown=${(event) => {
     event.preventDefault();
@@ -4472,15 +4510,16 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
             ${buttonText}
           </devtools-button>
         </div>
-      ` : html9`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? html9`
-          <div class="comment-text"
-            @click=${() => {
-    input.onSetEditMode(true);
-  }}
-          >
-            ${comment.text}
-          </div>
-        ` : html9`
+      ` : html9`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? input.status === "ACTIVE" ? html9`
+            <button class="comment-text"
+              autofocus
+              title=${i18nString6(UIStrings6.editQueuedComment)}
+              @click=${() => input.onSetEditMode(true)}
+              jslog=${VisualLogging3.action("comments-edit-queued-comment").track({ click: true })}
+            >${comment.text}</button>
+          ` : html9`
+            <div class="comment-text">${comment.text}</div>
+          ` : html9`
           <div class="agent-response">
             <div class="elbow"></div>
             <div class="response-content">
@@ -4570,6 +4609,9 @@ var CommentThreadWidget = class extends UI8.Widget.Widget {
     this.#commentText = commentText;
     this.#isEditing = value;
     this.requestUpdate();
+    if (value) {
+      void this.updateComplete.then(() => this.focus());
+    }
   };
   #handleQueueModifierChange = (pressed) => {
     if (this.#isQueueModifierPressed !== pressed) {
@@ -4598,6 +4640,7 @@ var CommentThreadWidget = class extends UI8.Widget.Widget {
     this.#isEditing = false;
     this.#submit(text, this.onSaveEdit);
     this.requestUpdate();
+    void this.updateComplete.then(() => this.focus());
   };
   #handleCommentTextChange = (event) => {
     const input = event.target;
@@ -4610,6 +4653,7 @@ var CommentThreadWidget = class extends UI8.Widget.Widget {
       comments: this.#comments,
       commentText: this.#commentText,
       placeholder: i18nString6(UIStrings6.queueCommentsPlaceholder, { PH1: Host5.Platform.isMac() ? "\u2318" : "Ctrl" }),
+      queueCommentDescription: i18nString6(UIStrings6.queueCommentAriaDescription, { PH1: Host5.Platform.isMac() ? "Command" : "Ctrl" }),
       isQueueModifierPressed: this.#isQueueModifierPressed,
       elementRemoved: this.#elementRemoved,
       textAreaRef: this.#textAreaRef,
@@ -5636,6 +5680,7 @@ __export(StateChangesStatusBarPills_exports, {
 import * as i18n21 from "../../core/i18n/i18n.js";
 import * as Platform5 from "../../core/platform/platform.js";
 import * as DevToolsState from "../../models/devtools_state/devtools_state.js";
+import * as EmulationModel from "../../models/emulation/emulation.js";
 import * as Buttons5 from "../../ui/components/buttons/buttons.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
 import { Directives as Directives6, html as html12, nothing as nothing8, render as render11 } from "../../ui/lit/lit.js";
@@ -5731,6 +5776,23 @@ var UIStrings9 = {
    * the bottom of DevTools. Clicking the button turns off CPU throttling on the inspected page.
    */
   stopCpuThrottling: "Stop CPU throttling",
+  /**
+   * @description Text of a pill in the status bar at the bottom of DevTools. The pill tells the user
+   * that the browser user agent string is overridden. The placeholder is the user agent preset name
+   * or "Custom".
+   * @example {Googlebot} PH1
+   */
+  userAgent: "User agent ({PH1})",
+  /**
+   * @description Label shown inside the user agent pill in the status bar at the bottom of DevTools
+   * when the overridden user agent string does not match a built-in preset.
+   */
+  customUserAgent: "Custom",
+  /**
+   * @description Tooltip and accessible name of the button in the user agent pill in the status bar
+   * at the bottom of DevTools. Clicking the button restores the default browser user agent.
+   */
+  resetUserAgent: "Reset user agent",
   /**
    * @description Text of a pill in the status bar at the bottom of DevTools. The pill tells the user
    * that the browser cache is disabled while DevTools is open.
@@ -5875,6 +5937,10 @@ function pillTitle(state) {
   switch (state.kind) {
     case DevToolsState.State.StateKind.CPU_THROTTLING:
       return i18nString9(UIStrings9.cpuThrottling, { PH1: cpuThrottlingRateFormatter.format(Number(state.value)) });
+    case DevToolsState.State.StateKind.USER_AGENT: {
+      const preset = EmulationModel.UserAgentGroups.findUserAgentPreset(String(state.value));
+      return i18nString9(UIStrings9.userAgent, { PH1: preset?.title ?? i18nString9(UIStrings9.customUserAgent) });
+    }
     case DevToolsState.State.StateKind.CACHE_DISABLED:
       return i18nString9(UIStrings9.cacheDisabled);
     case DevToolsState.State.StateKind.JAVASCRIPT_DISABLED:
@@ -5887,6 +5953,8 @@ function pillResetTitle(state) {
   switch (state.kind) {
     case DevToolsState.State.StateKind.CPU_THROTTLING:
       return i18nString9(UIStrings9.stopCpuThrottling);
+    case DevToolsState.State.StateKind.USER_AGENT:
+      return i18nString9(UIStrings9.resetUserAgent);
     case DevToolsState.State.StateKind.CACHE_DISABLED:
       return i18nString9(UIStrings9.enableCache);
     case DevToolsState.State.StateKind.JAVASCRIPT_DISABLED:

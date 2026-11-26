@@ -40,7 +40,6 @@ export declare class ElementsBreadcrumbs extends UI.Widget.Widget {
     set selectedNode(selectedNode: SDK.DOMModel.DOMNode | null);
     wasShown(): void;
     willHide(): void;
-    onDetach(): void;
     performUpdate(): void;
 }
 declare global {

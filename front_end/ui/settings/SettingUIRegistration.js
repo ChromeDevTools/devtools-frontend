@@ -1,14 +1,25 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 const registeredSettings = new Map();
+const orderValuesBySettingCategory = new Map();
 export function register(settingDescriptor, settingUIDescriptor) {
     const settingName = settingDescriptor.name;
     if (registeredSettings.has(settingName)) {
         throw new Error(`Duplicate setting name '${settingName}'`);
     }
-    Common.SettingRegistration.registerCategoryOrder(settingUIDescriptor.category, settingUIDescriptor.order);
+    const { category, order } = settingUIDescriptor;
+    if (category && typeof order === 'number') {
+        let orderValues = orderValuesBySettingCategory.get(category);
+        if (!orderValues) {
+            orderValues = new Set();
+            orderValuesBySettingCategory.set(category, orderValues);
+        }
+        if (orderValues.has(order)) {
+            throw new Error(`Duplicate order value '${order}' for settings category '${category}'`);
+        }
+        orderValues.add(order);
+    }
     registeredSettings.set(settingName, { descriptor: settingDescriptor, uiDescriptor: settingUIDescriptor });
 }
 export function getRegisteredSettings() {
@@ -59,9 +70,7 @@ export function resolve(settingDescriptor) {
     return ui;
 }
 export function resetSettings() {
-    for (const { uiDescriptor } of registeredSettings.values()) {
-        Common.SettingRegistration.removeCategoryOrder(uiDescriptor.category, uiDescriptor.order);
-    }
+    orderValuesBySettingCategory.clear();
     registeredSettings.clear();
 }
 //# sourceMappingURL=SettingUIRegistration.js.map

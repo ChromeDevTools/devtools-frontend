@@ -47,7 +47,8 @@
   },
   "files": [
     "../../../../../../front_end/models/emulation/DeviceModeModel.test.ts",
-    "../../../../../../front_end/models/emulation/EmulatedDevices.test.ts"
+    "../../../../../../front_end/models/emulation/EmulatedDevices.test.ts",
+    "../../../../../../front_end/models/emulation/UserAgentGroups.test.ts"
   ],
   "references": [
     {

@@ -410,6 +410,7 @@ export class AdsView extends UI.Widget.Widget {
     #isPolling = false;
     #pollSessionId = 0;
     #view;
+    #isListeningForPrimaryPageChanges = false;
     #adFrames = new Map();
     // Maps an ad frame ID to its resolved owner element, or null if it has none
     // or couldn't be resolved.
@@ -437,13 +438,22 @@ export class AdsView extends UI.Widget.Widget {
     }
     wasShown() {
         super.wasShown();
+        this.#listenForPrimaryPageChanges();
         this.#startPolling();
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
     }
     willHide() {
         this.#stopPolling();
-        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
         super.willHide();
+    }
+    // The backend starts over when the primary page changes, and a change that
+    // the view misses can't be detected later. So the view has to listen while
+    // it has data, even when hidden.
+    #listenForPrimaryPageChanges() {
+        if (this.#isListeningForPrimaryPageChanges) {
+            return;
+        }
+        this.#isListeningForPrimaryPageChanges = true;
+        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
     }
     #startPolling() {
         if (this.#isPolling) {
@@ -468,31 +478,50 @@ export class AdsView extends UI.Widget.Widget {
         if (target) {
             const adsAgent = target.adsAgent();
             if (adsAgent) {
-                const [metricsResponse, scriptsResponse] = await Promise.all([
-                    adsAgent.invoke_getAdMetrics(),
-                    adsAgent.invoke_getAdScripts(),
+                // Handle each response as it arrives, as `getAdScripts` is held back
+                // while the page navigates. The backend only reports changes, so do
+                // that even if polling has stopped in the meantime.
+                await Promise.all([
+                    adsAgent.invoke_getAdMetrics().then(response => this.#onAdMetricsResponse(response, target)),
+                    adsAgent.invoke_getAdScripts().then(response => this.#onAdScriptsResponse(response, target)),
                 ]);
-                if (!this.#isPolling || this.#pollSessionId !== sessionId) {
-                    return;
-                }
-                let needsUpdate = false;
-                if (!metricsResponse.getError()) {
-                    this.#currentMetrics = metricsResponse.metrics;
-                    this.#processAdFrames(metricsResponse.metrics);
-                    needsUpdate = true;
-                }
-                if (!scriptsResponse.getError()) {
-                    this.#processAdScripts(scriptsResponse.newScripts || []);
-                    needsUpdate = true;
-                }
-                if (needsUpdate) {
-                    this.requestUpdate();
-                }
             }
         }
         if (this.#isPolling && this.#pollSessionId === sessionId) {
             this.#pollTimer = window.setTimeout(() => this.#pollMetrics(sessionId), 500);
         }
+    }
+    #onAdMetricsResponse(response, target) {
+        if (response.getError() || !this.#isPrimaryPageTarget(target) || this.#isForPreviousPage(response.metrics)) {
+            return;
+        }
+        this.#currentMetrics = response.metrics;
+        this.#processAdFrames(response.metrics);
+        this.#onDataChanged();
+    }
+    #onAdScriptsResponse(response, target) {
+        if (response.getError() || !this.#isPrimaryPageTarget(target)) {
+            return;
+        }
+        this.#processAdScripts(response.newScripts || []);
+        this.#onDataChanged();
+    }
+    // The primary page can move to another target while a request is in flight,
+    // e.g. when a prerendered page is activated.
+    #isPrimaryPageTarget(target) {
+        return target === SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    }
+    // Right after a page change, the browser can still answer for the previous
+    // page. That shows in an update without the initial origin for a frame that
+    // the view doesn't know, as a frame's first update always has the origin.
+    #isForPreviousPage(metrics) {
+        return (metrics.updateAdFrames || [])
+            .some(frame => frame.initialOrigin === undefined && !this.#adFrames.has(frame.frameId));
+    }
+    #onDataChanged() {
+        // A hidden view may have stopped listening.
+        this.#listenForPrimaryPageChanges();
+        this.requestUpdate();
     }
     #processAdFrames(metrics) {
         // Drop removed frames from the local cache.
@@ -670,6 +699,11 @@ export class AdsView extends UI.Widget.Widget {
         this.#urlToLinkElement.clear();
         this.#reconstructedProvenance.clear();
         this.requestUpdate();
+        if (!this.isShowing()) {
+            // A hidden view without data has nothing left to keep in sync.
+            this.#isListeningForPrimaryPageChanges = false;
+            SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+        }
     }
     performUpdate() {
         const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();

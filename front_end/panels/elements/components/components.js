@@ -2153,15 +2153,12 @@ var ElementsBreadcrumbs = class extends UI8.Widget.Widget {
   wasShown() {
     super.wasShown();
     this.#resizeObserver.observe(this.contentElement);
+    this.#scrollSelectedCrumbIntoView = true;
     this.requestUpdate();
   }
   willHide() {
     this.#resizeObserver.disconnect();
     super.willHide();
-  }
-  onDetach() {
-    super.onDetach();
-    this.#overflowing = false;
   }
   #onCrumbClick(node) {
     this.element.dispatchEvent(new NodeSelectedEvent(node));

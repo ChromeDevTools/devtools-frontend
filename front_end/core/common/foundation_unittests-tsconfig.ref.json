@@ -32,7 +32,6 @@
     "../../../../../../front_end/core/common/ResourceType.test.ts",
     "../../../../../../front_end/core/common/Revealer.test.ts",
     "../../../../../../front_end/core/common/SegmentedRange.test.ts",
-    "../../../../../../front_end/core/common/SettingRegistration.test.ts",
     "../../../../../../front_end/core/common/Settings.test.ts",
     "../../../../../../front_end/core/common/SimpleHistoryManager.test.ts",
     "../../../../../../front_end/core/common/Srcset.test.ts",

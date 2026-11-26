@@ -157,6 +157,7 @@ class SummaryTabWidget extends UI.Widget.VBox {
 }
 const TimelineDetailsPaneBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class TimelineDetailsPane extends TimelineDetailsPaneBase {
+    delegate;
     #summaryTabView;
     #detailsLinkifier = new Components.Linkifier.Linkifier();
     tabbedPane;
@@ -213,8 +214,11 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         });
         return pane;
     }
-    constructor(delegate, summaryTabView = SUMMARY_TAB_VIEW) {
-        super();
+    constructor(delegateOrElement, summaryTabView = SUMMARY_TAB_VIEW) {
+        super(delegateOrElement instanceof HTMLElement ? delegateOrElement : undefined);
+        if (delegateOrElement && !(delegateOrElement instanceof HTMLElement)) {
+            this.delegate = delegateOrElement;
+        }
         this.#summaryTabView = summaryTabView;
         this.registerRequiredCSS(detailsViewStyles);
         this.element.classList.add('timeline-details');
@@ -230,7 +234,9 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         const callTreeView = new CallTreeTimelineTreeView();
         this.appendTab(Tab.CallTree, i18nString(UIStrings.callTree), callTreeView);
         this.rangeDetailViews.set(Tab.CallTree, callTreeView);
-        const eventsView = new EventsTimelineTreeView(delegate);
+        const eventsView = new EventsTimelineTreeView({
+            highlightEvent: event => this.delegate?.highlightEvent(event),
+        });
         this.appendTab(Tab.EventLog, i18nString(UIStrings.eventLog), eventsView);
         this.rangeDetailViews.set(Tab.EventLog, eventsView);
         // Listeners for hover dimming

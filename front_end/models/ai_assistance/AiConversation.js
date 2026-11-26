@@ -4,6 +4,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiUtils from '../ai-utils/ai-utils.js';
 import { AccessibilityAgent } from './agents/AccessibilityAgent.js';
+import { ServerSideLoggingPolicy, } from './agents/AiAgent.js';
 import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
 import { FileAgent } from './agents/FileAgent.js';
 import { NetworkAgent } from './agents/NetworkAgent.js';
@@ -40,6 +41,7 @@ export function generateContextDetailsMarkdown(details) {
     return detailsMarkdown.join('\n\n');
 }
 export class AiConversation {
+    /** Restores a read-only conversation with server-side logging disabled. */
     static fromSerializedConversation(serializedConversation) {
         const history = serializedConversation.history.map(entry => {
             if (entry.type === "side-effect" /* ResponseType.SIDE_EFFECT */) {
@@ -57,6 +59,8 @@ export class AiConversation {
             data: history,
             id: serializedConversation.id,
             isReadOnly: true,
+            // Serialized history does not track prior sensitive tool calls; keep logging off.
+            serverSideLoggingAllowed: false,
         });
     }
     id;
@@ -78,7 +82,7 @@ export class AiConversation {
     #aiHistoryStorage;
     #targetManager;
     #alwaysAllowedTools;
-    #serverSideLoggingAllowed;
+    #serverSideLogging;
     constructor(options) {
         const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiUtils.AiHistoryStorage.AiHistoryStorage.instance(), 
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
@@ -92,7 +96,9 @@ export class AiConversation {
         this.#aiHistoryStorage = aiHistoryStorage;
         this.#targetManager = targetManager;
         this.#alwaysAllowedTools = alwaysAllowedTools;
-        this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
+        // For the duration of the conversation, we don't re-check `hostConfig`.
+        this.#serverSideLogging =
+            new ServerSideLoggingPolicy(serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed());
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.history = this.#reconstructHistory(data);
@@ -101,6 +107,15 @@ export class AiConversation {
     }
     get isReadOnly() {
         return this.#isReadOnly;
+    }
+    /**
+     * Whether server-side logging is allowed for this conversation.
+     *
+     * Reads `hostConfig` once at construction and flips permanently to `false`
+     * when an agent disables logging.
+     */
+    get serverSideLoggingAllowed() {
+        return this.#serverSideLogging.isAllowed();
     }
     static titleForSerialized(serialized) {
         const query = serialized.history.find(item => item.type === "user-query" /* ResponseType.USER_QUERY */)?.query;
@@ -317,7 +332,7 @@ export class AiConversation {
         const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
         const baseOptions = {
             aidaClient: this.#aidaClient,
-            serverSideLoggingAllowed: this.#serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed(),
+            serverSideLogging: this.#serverSideLogging,
             sessionId: this.id,
             changeManager: this.#changeManager,
             performanceRecordAndReload: this.#performanceRecordAndReload,
@@ -490,12 +505,7 @@ export class AiConversation {
         return { origin: undefined };
     };
 }
-/**
- * Checks whether server-side logging is allowed by the global system policy.
- * Note that even if this returns true, individual agents can still dynamically
- * deactivate/activate logging during their execution (e.g., when handling
- * sensitive tools).
- */
+/** Returns whether `hostConfig` allows server-side logging (`true` if unset). */
 function isAiAssistanceServerSideLoggingAllowed() {
     return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }

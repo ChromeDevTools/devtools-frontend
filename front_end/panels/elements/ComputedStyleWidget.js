@@ -39,13 +39,14 @@ import * as ComputedStyleModule from '../../models/computed_style/computed_style
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, nothing, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
 import computedStyleWidgetStyles from './computedStyleWidget.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { categorizePropertyName, DefaultCategoryOrder } from './PropertyNameCategories.js';
 import { Renderer, rendererBase, StringRenderer, URLRenderer } from './PropertyRenderer.js';
 import { StylePropertiesSection } from './StylePropertiesSection.js';
+const { classMap, ref } = Directives;
 const { bindToSetting } = UI.UIUtils;
 const { widget } = UI.Widget;
 const UIStrings = {
@@ -183,7 +184,7 @@ const navigateToSource = (cssProperty, event) => {
     void Common.Revealer.reveal(cssProperty);
     event?.consume(true);
 };
-export const DEFAULT_VIEW = (input, _output, target) => {
+export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `
     <style>${computedStyleWidgetStyles}</style>
@@ -210,7 +211,18 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         </devtools-toolbar>
       </div>
       ` : nothing}
-    ${input.computedStylesTree}
+    <devtools-tree-outline
+      class=${classMap({ 'computed-narrow': input.isNarrow })}
+      .data=${input.treeData}
+      ${ref(el => {
+        if (el instanceof TreeOutline.TreeOutline.TreeOutline) {
+            output.expandGroupLists = () => el.expandRecursively(0);
+        }
+        else {
+            output.expandGroupLists = undefined;
+        }
+    })}
+    ></devtools-tree-outline>
     ${!input.hasMatches ? html `<div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>` : nothing}
   `, target, { container: { classes: ['styles-sidebar-computed-style-widget'] } });
     // clang-format on
@@ -227,9 +239,9 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #nodeStyle = null;
     #matchedStyles = null;
     #propertyTraces = null;
-    showInheritedComputedStylePropertiesSetting;
-    groupComputedStylesSetting;
-    filterRegex = null;
+    #showInheritedComputedStylePropertiesSetting;
+    #groupComputedStylesSetting;
+    #filterRegex = null;
     linkifier;
     imagePreviewPopover;
     /**
@@ -250,10 +262,19 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
      * populated, because an HTML node cannot be in two locations at once.
      */
     #propertyElementsCache = new Map();
-    #computedStylesTree = new TreeOutline.TreeOutline.TreeOutline();
     #treeData;
+    #treeDataDirty = true;
+    #filterDirty = true;
+    #filteredTreeData = {
+        tree: [],
+        compact: true,
+        defaultRenderer: node => html `${node.id}`,
+    };
+    #hasMatches = true;
+    #isNarrow = false;
     #enableNarrowViewResizing = true;
     #view;
+    #viewOutput = {};
     /**
      * TODO(b/407751272): the state here is confusing (3 instance variables relating to filtering).
      */
@@ -263,10 +284,11 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
-        this.showInheritedComputedStylePropertiesSetting =
+        this.#showInheritedComputedStylePropertiesSetting =
             Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
-        this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('group-computed-styles', false);
-        this.filterRegex = null;
+        this.#groupComputedStylesSetting =
+            Common.Settings.Settings.instance().createSetting('group-computed-styles', false);
+        this.#filterRegex = null;
         this.linkifier = new Components.Linkifier.Linkifier(maxLinkLength);
         this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
             const link = event.composedPath()[0];
@@ -278,28 +300,39 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             const liveFeatures = await Components.ImagePreview.loadPrecomputedFeatures(this.#nodeStyle?.node);
             return liveFeatures ?? this.#storedNodeFeatures ?? undefined;
         });
-        this.#updateView({ hasMatches: true });
+        this.requestUpdate();
+    }
+    #onSettingChanged() {
+        this.#treeDataDirty = true;
+        this.requestUpdate();
     }
     wasShown() {
         super.wasShown();
-        this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate, this);
-        this.groupComputedStylesSetting.addChangeListener(this.requestUpdate, this);
+        this.#showInheritedComputedStylePropertiesSetting.addChangeListener(this.#onSettingChanged, this);
+        this.#groupComputedStylesSetting.addChangeListener(this.#onSettingChanged, this);
         // The settings might have changed while the widget was hidden.
-        this.requestUpdate();
+        this.#onSettingChanged();
     }
     willHide() {
         super.willHide();
-        this.showInheritedComputedStylePropertiesSetting.removeChangeListener(this.requestUpdate, this);
-        this.groupComputedStylesSetting.removeChangeListener(this.requestUpdate, this);
+        this.#showInheritedComputedStylePropertiesSetting.removeChangeListener(this.#onSettingChanged, this);
+        this.#groupComputedStylesSetting.removeChangeListener(this.#onSettingChanged, this);
     }
     onResize() {
         const isNarrow = this.#enableNarrowViewResizing && this.contentElement.offsetWidth < 260;
-        this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
+        if (this.#isNarrow === isNarrow) {
+            return;
+        }
+        this.#isNarrow = isNarrow;
+        this.requestUpdate();
     }
     get enableNarrowViewResizing() {
         return this.#enableNarrowViewResizing;
     }
     set enableNarrowViewResizing(enable) {
+        if (this.#enableNarrowViewResizing === enable) {
+            return;
+        }
         this.#enableNarrowViewResizing = enable;
         this.onResize();
     }
@@ -313,49 +346,44 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         return this.#filterIsRegex;
     }
     set filterText(newFilter) {
-        if (typeof newFilter === 'string') {
-            this.#filterText = newFilter;
-            this.#filterIsRegex = false;
+        const nextFilterText = typeof newFilter === 'string' ? newFilter : newFilter.source;
+        const nextFilterIsRegex = typeof newFilter !== 'string';
+        if (this.#filterText === nextFilterText && this.#filterIsRegex === nextFilterIsRegex) {
+            return;
         }
-        else {
-            this.#filterText = newFilter.source;
-            this.#filterIsRegex = true;
-        }
-        this.filterRegex = this.#buildFilterRegex(this.#filterText);
+        this.#filterText = nextFilterText;
+        this.#filterIsRegex = nextFilterIsRegex;
+        this.#filterRegex = this.#buildFilterRegex(this.#filterText);
+        this.#filterDirty = true;
         this.requestUpdate();
     }
     get allowUserControl() {
         return this.#allowUserControl;
     }
     set allowUserControl(inc) {
+        if (this.#allowUserControl === inc) {
+            return;
+        }
         this.#allowUserControl = inc;
+        this.#treeDataDirty = true;
         this.requestUpdate();
-    }
-    /**
-     * @param input.hasMatches Whether any properties matched the current filter (or if any properties exist at all).
-     */
-    #updateView({ hasMatches }) {
-        this.#view({
-            computedStylesTree: this.#computedStylesTree,
-            includeToolbar: this.#allowUserControl,
-            hasMatches,
-            showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
-            groupComputedStylesSetting: this.groupComputedStylesSetting,
-            onFilterChanged: this.onFilterChanged.bind(this),
-            filterText: this.#filterText,
-            filterIsRegex: this.#filterIsRegex,
-            onRegexToggled: this.onRegexToggled.bind(this),
-        }, null, this.contentElement);
     }
     get nodeStyle() {
         return this.#nodeStyle;
     }
     set nodeStyle(nodeStyle) {
+        if (this.#nodeStyle === nodeStyle) {
+            return;
+        }
         this.#nodeStyle = nodeStyle;
+        this.#treeDataDirty = true;
         if (nodeStyle) {
             // Make sure we get the node features before we request an update so we
             // don't run the update before we have the features fetched.
-            void this.#storeNodeFeatures(nodeStyle.node).then(() => this.requestUpdate());
+            void this.#storeNodeFeatures(nodeStyle.node).then(() => {
+                this.#treeDataDirty = true;
+                this.requestUpdate();
+            });
         }
         else {
             this.requestUpdate();
@@ -365,11 +393,19 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         return this.#matchedStyles;
     }
     set matchedStyles(matchedStyles) {
+        if (this.#matchedStyles === matchedStyles) {
+            return;
+        }
         this.#matchedStyles = matchedStyles;
+        this.#treeDataDirty = true;
         this.requestUpdate();
     }
     set propertyTraces(propertyTraces) {
+        if (this.#propertyTraces === propertyTraces) {
+            return;
+        }
         this.#propertyTraces = propertyTraces;
+        this.#treeDataDirty = true;
         this.requestUpdate();
     }
     async #storeNodeFeatures(node) {
@@ -382,26 +418,66 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         }
     }
     #shouldGroupStyles() {
-        return this.#allowUserControl && this.groupComputedStylesSetting.get();
+        return this.#allowUserControl && this.#groupComputedStylesSetting.get();
     }
     #shouldShowAllStyles() {
-        return this.#allowUserControl && this.showInheritedComputedStylePropertiesSetting.get();
+        return this.#allowUserControl && this.#showInheritedComputedStylePropertiesSetting.get();
     }
     async performUpdate() {
         const nodeStyles = this.#nodeStyle;
         const matchedStyles = this.#matchedStyles;
+        let shouldExpandGroups = false;
         if (!nodeStyles || !matchedStyles) {
-            this.#updateView({ hasMatches: false });
-            return;
-        }
-        if (this.#shouldGroupStyles()) {
-            await this.rebuildGroupedList(nodeStyles, matchedStyles);
+            this.#treeData = undefined;
+            this.#filteredTreeData = {
+                tree: [],
+                compact: true,
+                defaultRenderer: node => html `${node.id}`,
+            };
+            this.#hasMatches = false;
+            this.#treeDataDirty = false;
+            this.#filterDirty = false;
         }
         else {
-            await this.rebuildAlphabeticalList(nodeStyles, matchedStyles);
+            const shouldGroup = this.#shouldGroupStyles();
+            if (this.#treeDataDirty || !this.#treeData) {
+                this.#treeDataDirty = false;
+                this.#filterDirty = true;
+                if (shouldGroup) {
+                    this.#rebuildGroupedList(nodeStyles, matchedStyles);
+                }
+                else {
+                    this.#rebuildAlphabeticalList(nodeStyles, matchedStyles);
+                }
+            }
+            if (this.#filterDirty) {
+                this.#filterDirty = false;
+                if (shouldGroup) {
+                    await this.#filterGroupLists();
+                    shouldExpandGroups = true;
+                }
+                else {
+                    this.#filterAlphabeticalList();
+                }
+            }
+        }
+        this.#view({
+            treeData: this.#filteredTreeData,
+            isNarrow: this.#isNarrow,
+            includeToolbar: this.#allowUserControl,
+            hasMatches: this.#hasMatches,
+            showInheritedComputedStylePropertiesSetting: this.#showInheritedComputedStylePropertiesSetting,
+            groupComputedStylesSetting: this.#groupComputedStylesSetting,
+            onFilterChanged: this.#onFilterChanged.bind(this),
+            filterText: this.#filterText,
+            filterIsRegex: this.#filterIsRegex,
+            onRegexToggled: this.#onRegexToggled.bind(this),
+        }, this.#viewOutput, this.contentElement);
+        if (shouldExpandGroups) {
+            await this.#viewOutput.expandGroupLists?.();
         }
     }
-    async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
+    #rebuildAlphabeticalList(nodeStyle, matchedStyles) {
         this.imagePreviewPopover.hide();
         this.linkifier.reset();
         const node = nodeStyle.node;
@@ -414,18 +490,13 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             compact: true,
             defaultRenderer,
         };
-        this.filterAlphabeticalList();
     }
-    async rebuildGroupedList(nodeStyle, matchedStyles) {
+    #rebuildGroupedList(nodeStyle, matchedStyles) {
         this.imagePreviewPopover.hide();
         this.linkifier.reset();
-        if (!nodeStyle || !matchedStyles) {
-            this.#updateView({ hasMatches: false });
-            return;
-        }
         const node = nodeStyle.node;
         const propertyTraces = this.#propertyTraces || new Map();
-        const properties = ComputedStyleModule.ComputedStyleModel.filterComputedStyleProperties(nodeStyle.computedStyle, matchedStyles, { showAll: this.showInheritedComputedStylePropertiesSetting.get(), sort: false });
+        const properties = ComputedStyleModule.ComputedStyleModel.filterComputedStyleProperties(nodeStyle.computedStyle, matchedStyles, { showAll: this.#showInheritedComputedStylePropertiesSetting.get(), sort: false });
         const propertiesByCategory = new Map();
         const tree = [];
         for (const property of properties) {
@@ -437,7 +508,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
                 propertiesByCategory.get(category)?.push(property);
             }
         }
-        this.#computedStylesTree.removeChildren();
         for (const category of DefaultCategoryOrder) {
             const categoryProperties = propertiesByCategory.get(category);
             if (categoryProperties && categoryProperties.length > 0) {
@@ -451,7 +521,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             compact: true,
             defaultRenderer,
         };
-        return await this.filterGroupLists();
     }
     buildTraceNode(property, category) {
         const rule = property.ownerStyle.parentRule;
@@ -538,27 +607,28 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         }
         return new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
     }
-    async onRegexToggled(regexToggled) {
-        this.#filterIsRegex = regexToggled;
-        this.requestUpdate();
+    async #onRegexToggled(isRegex) {
+        if (this.#filterIsRegex === isRegex) {
+            return;
+        }
+        this.#filterIsRegex = isRegex;
         await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
     }
-    async onFilterChanged(newFilterText) {
-        this.#filterText = newFilterText;
-        await this.filterComputedStyles(this.#buildFilterRegex(newFilterText));
-        if (newFilterText && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
-            UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.filterUpdateAriaText, { PH1: newFilterText, PH2: this.#computedStylesTree.data.tree.length }));
+    async #onFilterChanged(filterText) {
+        this.#filterText = filterText;
+        await this.filterComputedStyles(this.#buildFilterRegex(filterText));
+        if (filterText) {
+            UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.filterUpdateAriaText, { PH1: filterText, PH2: this.#filteredTreeData.tree.length }));
         }
     }
     async filterComputedStyles(regex) {
-        this.filterRegex = regex;
-        if (this.groupComputedStylesSetting.get()) {
-            return await this.filterGroupLists();
-        }
-        return this.filterAlphabeticalList();
+        this.#filterRegex = regex;
+        this.#filterDirty = true;
+        this.requestUpdate();
+        await this.updateComplete;
     }
     nodeFilter(node) {
-        const regex = this.filterRegex;
+        const regex = this.#filterRegex;
         const data = node.treeNodeData;
         if (data.tag === 'property') {
             const matched = !regex || regex.test(data.propertyName) || regex.test(data.propertyValue);
@@ -566,19 +636,19 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         }
         return true;
     }
-    filterAlphabeticalList() {
+    #filterAlphabeticalList() {
         if (!this.#treeData) {
             return;
         }
         const tree = this.#treeData.tree.filter(this.nodeFilter.bind(this));
-        this.#computedStylesTree.data = {
+        this.#filteredTreeData = {
             tree,
             defaultRenderer: this.#treeData.defaultRenderer,
             compact: this.#treeData.compact,
         };
-        this.#updateView({ hasMatches: Boolean(tree.length) });
+        this.#hasMatches = Boolean(tree.length);
     }
-    async filterGroupLists() {
+    async #filterGroupLists() {
         if (!this.#treeData) {
             return;
         }
@@ -594,13 +664,12 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
                 tree.push({ id: data.name, treeNodeData: { tag: 'category', name: data.name }, children: async () => filteredChildren });
             }
         }
-        this.#computedStylesTree.data = {
+        this.#filteredTreeData = {
             tree,
             defaultRenderer: this.#treeData.defaultRenderer,
             compact: this.#treeData.compact,
         };
-        await this.#computedStylesTree.expandRecursively(0);
-        this.#updateView({ hasMatches: Boolean(tree.length) });
+        this.#hasMatches = Boolean(tree.length);
     }
 }
 const maxLinkLength = 30;

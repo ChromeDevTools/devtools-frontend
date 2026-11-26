@@ -1626,6 +1626,18 @@ export declare namespace Audits {
         frameId: Page.FrameId;
     }
     /**
+     * Details for issues about a page that declares viewport-fit=cover, receives
+     * a non-zero top safe-area inset (e.g. a device cutout or system status bar),
+     * but does not consume env(safe-area-inset-top) anywhere in its CSS while
+     * having DOM content likely to be occluded by that inset.
+     */
+    interface ViewportFitCoverMissingSafeAreaInsetTopIssueDetails {
+        /**
+         * The frame that triggered the issue.
+         */
+        frameId: Page.FrameId;
+    }
+    /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
@@ -1661,7 +1673,8 @@ export declare namespace Audits {
         SelectivePermissionsInterventionIssue = "SelectivePermissionsInterventionIssue",
         EmailVerificationRequestIssue = "EmailVerificationRequestIssue",
         LazyLoadImageIssue = "LazyLoadImageIssue",
-        WebInstallIssue = "WebInstallIssue"
+        WebInstallIssue = "WebInstallIssue",
+        ViewportFitCoverMissingSafeAreaInsetTopIssue = "ViewportFitCoverMissingSafeAreaInsetTopIssue"
     }
     /**
      * This struct holds a list of optional fields with additional information
@@ -1703,6 +1716,7 @@ export declare namespace Audits {
         emailVerificationRequestIssueDetails?: EmailVerificationRequestIssueDetails;
         lazyLoadImageIssueDetails?: LazyLoadImageIssueDetails;
         webInstallIssueDetails?: WebInstallIssueDetails;
+        viewportFitCoverMissingSafeAreaInsetTopIssueDetails?: ViewportFitCoverMissingSafeAreaInsetTopIssueDetails;
     }
     /**
      * A unique id for a DevTools inspector issue. Allows other entities (e.g.
@@ -6943,9 +6957,6 @@ export declare namespace Emulation {
     }
     interface SetSafeAreaInsetsOverrideRequest {
         insets: SafeAreaInsets;
-    }
-    interface SetVirtualKeyboardGeometryOverrideRequest {
-        keyboardRect?: DOM.Rect;
     }
     const enum SetDeviceMetricsOverrideRequestScrollbarType {
         Overlay = "overlay",

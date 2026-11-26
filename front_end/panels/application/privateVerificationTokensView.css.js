@@ -30,6 +30,10 @@ export default `/*
   flex: none;
 }
 
+.pvt-toolbar devtools-toolbar-input {
+  flex-grow: 0.4;
+}
+
 .table-container {
   display: flex;
   flex-direction: column;

@@ -78,8 +78,13 @@ export default `/*
     display: flex;
     flex-direction: column;
     gap: var(--sys-size-4);
-    width: 100%;
-    max-height: min(var(--sys-size-32), 50vh);
+    /* Extra room so the focus ring of the editable comment is not clipped by
+       the scroll container; the negative margin keeps the content in place. */
+    box-sizing: border-box;
+    width: calc(100% + 2 * var(--sys-size-2));
+    margin: calc(-1 * var(--sys-size-2));
+    padding: var(--sys-size-2);
+    max-height: calc(min(var(--sys-size-32), 50vh) + 2 * var(--sys-size-2));
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
@@ -99,6 +104,22 @@ export default `/*
     line-height: var(--sys-size-9);
     overflow-wrap: break-word;
     white-space: pre-wrap;
+  }
+
+  button.comment-text {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: var(--sys-shape-corner-extra-small);
+    background: none;
+    text-align: start;
+    /* Keep the focus ring visible when focusing scrolls the comment into view. */
+    scroll-margin: var(--sys-size-2);
+
+    &:focus-visible {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    }
   }
 
   .agent-response {

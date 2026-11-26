@@ -35,7 +35,6 @@ export class VersionController {
     #removeSetting(setting) {
         const name = setting.name;
         this.#settings.getRegistry().delete(name);
-        this.#settings.moduleSettings.delete(name);
         setting.storage.remove(name);
     }
     /**

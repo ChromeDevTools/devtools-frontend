@@ -197,9 +197,6 @@ export class SplitWidget extends SplitWidgetBase {
     sidebarWidget() {
         return this.#sidebarWidget;
     }
-    sidebarElement() {
-        return this.#sidebarElement;
-    }
     childWasDetached(widget) {
         if (this.#detaching) {
             return;
@@ -826,7 +823,13 @@ export class SplitWidget extends SplitWidgetBase {
  */
 export class SplitWidgetElement extends WidgetElement {
     static observedAttributes = ['direction', 'sidebar-position', 'sidebar-initial-size', 'show', 'resizer', 'no-splitter'];
-    #resizerObserver = new MutationObserver(() => this.#syncResizers());
+    #resizerObserver = new MutationObserver(records => {
+        if (this.#hasRelevantResizerMutation(records)) {
+            this.#syncResizers();
+        }
+    });
+    #observedResizerTarget = null;
+    #resolvedResizerElements = new Set();
     #hasCustomResizers = false;
     constructor() {
         super();
@@ -865,30 +868,92 @@ export class SplitWidgetElement extends WidgetElement {
     }
     connectedCallback() {
         super.connectedCallback();
-        this.#updateResizerObserver();
         this.#syncResizers();
     }
     disconnectedCallback() {
         super.disconnectedCallback();
-        this.#resizerObserver.disconnect();
+        this.#disconnectResizerObserver();
+        this.#syncResizers();
     }
-    #updateResizerObserver() {
+    #disconnectResizerObserver() {
         this.#resizerObserver.disconnect();
-        if (this.isConnected && this.hasAttribute('resizer')) {
-            this.#resizerObserver.observe(this, {
-                subtree: true,
-                childList: true,
-                attributes: true,
-                attributeFilter: ['id'],
-            });
+        this.#observedResizerTarget = null;
+    }
+    #updateResizerObserver(needsExternalScope) {
+        if (!this.isConnected || !this.hasAttribute('resizer')) {
+            this.#disconnectResizerObserver();
+            return;
         }
+        const target = needsExternalScope ? (this.parentElement?.closest('devtools-split-view') ?? this.getRootNode()) : this;
+        if (this.#observedResizerTarget === target) {
+            return;
+        }
+        this.#resizerObserver.disconnect();
+        this.#observedResizerTarget = target;
+        this.#resizerObserver.observe(target, {
+            subtree: true,
+            childList: true,
+            attributes: true,
+            attributeOldValue: true,
+            attributeFilter: ['id'],
+        });
+    }
+    #hasRelevantResizerMutation(records) {
+        const resizerAttr = this.getAttribute('resizer');
+        if (!resizerAttr) {
+            return false;
+        }
+        const ids = new Set(resizerAttr.split(/\s+/).filter(Boolean));
+        if (ids.size === 0) {
+            return false;
+        }
+        const selector = [...ids].map(id => `#${CSS.escape(id)}`).join(',');
+        const nodeTouchesResizer = (node) => {
+            if (!(node instanceof Element)) {
+                return false;
+            }
+            if ((node.id && ids.has(node.id)) || this.#resolvedResizerElements.has(node)) {
+                return true;
+            }
+            for (const tracked of this.#resolvedResizerElements) {
+                if (node.contains(tracked)) {
+                    return true;
+                }
+            }
+            return Boolean(node.querySelector(selector));
+        };
+        for (const record of records) {
+            if (record.type === 'attributes') {
+                const target = record.target;
+                if ((record.oldValue && ids.has(record.oldValue)) ||
+                    (target instanceof Element &&
+                        ((target.id && ids.has(target.id)) || this.#resolvedResizerElements.has(target)))) {
+                    return true;
+                }
+                continue;
+            }
+            for (const node of record.addedNodes) {
+                if (nodeTouchesResizer(node)) {
+                    return true;
+                }
+            }
+            for (const node of record.removedNodes) {
+                if (nodeTouchesResizer(node)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     #syncResizers(widget = Widget.get(this)) {
         if (!widget) {
+            this.#updateResizerObserver(this.hasAttribute('resizer'));
             return;
         }
-        const resizerAttr = this.getAttribute('resizer');
+        const resizerAttr = this.isConnected ? this.getAttribute('resizer') : null;
         if (resizerAttr === null) {
+            this.#resolvedResizerElements.clear();
+            this.#disconnectResizerObserver();
             if (this.#hasCustomResizers) {
                 this.#hasCustomResizers = false;
                 widget.setCustomResizers(null);
@@ -899,28 +964,35 @@ export class SplitWidgetElement extends WidgetElement {
         const ids = resizerAttr.split(/\s+/).filter(Boolean);
         const root = this.getRootNode();
         const parentSplit = this.parentElement?.closest('devtools-split-view') ?? null;
+        const resolvedMatches = new Set();
         const elements = [];
+        let needsExternalScope = false;
         for (const id of ids) {
             const selector = `#${CSS.escape(id)}`;
             let match = this.querySelector(selector);
             if (match && match.closest('devtools-split-view') !== this) {
                 match = null;
             }
-            if (!match && (root instanceof Document || root instanceof ShadowRoot || root instanceof Element)) {
-                const candidate = root.querySelector(selector);
-                if (candidate && candidate.closest('devtools-split-view') === parentSplit) {
-                    match = candidate;
+            if (!match) {
+                needsExternalScope = true;
+                if (root instanceof Document || root instanceof ShadowRoot || root instanceof Element) {
+                    const candidate = root.querySelector(selector);
+                    if (candidate && candidate.closest('devtools-split-view') === parentSplit) {
+                        match = candidate;
+                    }
                 }
             }
             if (match) {
+                resolvedMatches.add(match);
                 elements.push(match instanceof WidgetElement ? match.resizerElement() : match);
             }
         }
+        this.#resolvedResizerElements = resolvedMatches;
+        this.#updateResizerObserver(needsExternalScope);
         widget.setCustomResizers(elements, this.hasAttribute('no-splitter'));
     }
     attributeChangedCallback(name, _oldValue, newValue) {
         if (name === 'resizer' || name === 'no-splitter') {
-            this.#updateResizerObserver();
             this.#syncResizers();
             return;
         }

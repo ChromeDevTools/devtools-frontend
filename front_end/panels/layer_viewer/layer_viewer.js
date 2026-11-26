@@ -2942,7 +2942,7 @@ var PaintProfilerCommandLogView = class extends UI5.Widget.VBox {
     return this.#log;
   }
   set selectionWindow(window2) {
-    this.#selectionWindow = window2;
+    this.#selectionWindow = window2 ?? { left: 0, right: this.#log.length };
     this.requestUpdate();
   }
   get selectionWindow() {

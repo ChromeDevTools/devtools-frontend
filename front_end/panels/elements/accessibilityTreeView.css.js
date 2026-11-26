@@ -9,9 +9,11 @@ export default `/**
  * found in the LICENSE file.
  */
 
-.accessibility-tree-view-container {
-  height: 100%;
-  overflow: auto;
+@scope to (devtools-widget > *) {
+  .accessibility-tree-view-container {
+    height: 100%;
+    overflow: auto;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./accessibilityTreeView.css')} */`;

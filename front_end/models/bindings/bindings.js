@@ -2343,6 +2343,7 @@ var Audits;
     InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
     InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
     InspectorIssueCode2["WebInstallIssue"] = "WebInstallIssue";
+    InspectorIssueCode2["ViewportFitCoverMissingSafeAreaInsetTopIssue"] = "ViewportFitCoverMissingSafeAreaInsetTopIssue";
   })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
   let GetEncodedResponseRequestEncoding;
   ((GetEncodedResponseRequestEncoding2) => {
@@ -6158,7 +6159,7 @@ var ResourceScriptFile = class {
     if (!this.script) {
       return;
     }
-    const { pluginManager } = DebuggerWorkspaceBinding.instance();
+    const { pluginManager } = this.#resourceScriptMapping.debuggerWorkspaceBinding;
     pluginManager.setDebugInfoURL(this.script, debugInfoURL);
   }
   hasSourceMapURL() {

@@ -283,6 +283,9 @@ export declare class MultitargetNetworkManager extends Common.ObjectWrapper.Obje
     networkConditions(): Conditions;
     private updateNetworkConditions;
     setExtraHTTPHeaders(headers: Protocol.Network.Headers): void;
+    customUserAgent(): string;
+    customUserAgentEnabled(): boolean;
+    setCustomUserAgentEnabled(enabled: boolean): void;
     currentUserAgent(): string;
     private updateUserAgentOverride;
     setUserAgentOverride(userAgent: string, userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata | null): void;
@@ -321,6 +324,18 @@ export declare namespace MultitargetNetworkManager {
         [Events.REQUEST_INTERCEPTED]: string;
         [Events.REQUEST_FULFILLED]: Platform.DevToolsPath.UrlString;
     }
+}
+/**
+ * Passed to `Common.Revealer.reveal` to open and highlight the user
+ * agent setting in the Network Conditions drawer.
+ */
+export declare class RevealableCustomUserAgent {
+}
+/**
+ * Passed to `Common.Revealer.reveal` to open and highlight the
+ * throttling control in the Network panel.
+ */
+export declare class RevealableNetworkThrottling {
 }
 export declare class InterceptedRequest {
     #private;

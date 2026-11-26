@@ -1111,10 +1111,10 @@ var BezierChangedEvent = class _BezierChangedEvent extends Event {
 var ColorMixSwatch_exports = {};
 __export(ColorMixSwatch_exports, {
   ColorMixChangedEvent: () => ColorMixChangedEvent,
-  ColorMixSwatch: () => ColorMixSwatch
+  ColorMixSwatch: () => ColorMixSwatch,
+  serializeColorMix: () => serializeColorMix
 });
 import * as Common2 from "../../../../core/common/common.js";
-import * as Platform3 from "../../../../core/platform/platform.js";
 import * as Lit from "../../../lit/lit.js";
 import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
 
@@ -1133,6 +1133,10 @@ var colorMixSwatch_css_default = `/*
   margin-right: var(--sys-size-1);
   vertical-align: calc(-1 * var(--sys-size-1));
   color: var(--color); /* stylelint-disable-line plugin/use_theme_colors */
+}
+
+.swatch-icon.mix-only {
+  inline-size: 10px;
 }
 
 .swatch {
@@ -1164,7 +1168,7 @@ var colorMixSwatch_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./colorMixSwatch.css")} */`;
 
 // ../../front_end/ui/legacy/components/inline_editor/ColorMixSwatch.ts
-var { html, render, Directives: { ref } } = Lit;
+var { html, render, Directives: { ref, classMap } } = Lit;
 var ColorMixChangedEvent = class _ColorMixChangedEvent extends Event {
   static eventName = "colormixchanged";
   data;
@@ -1173,58 +1177,64 @@ var ColorMixChangedEvent = class _ColorMixChangedEvent extends Event {
     this.data = { text };
   }
 };
+function serializeColorMix(space, items) {
+  return `color-mix(${space ? `${space}, ` : ""}${items.join(", ")})`;
+}
 var ColorMixSwatch = class extends HTMLElement {
   shadow = this.attachShadow({ mode: "open" });
-  colorMixText = "";
-  // color-mix(in srgb, hotpink, white)
-  firstColorText = "";
-  // hotpink
-  secondColorText = "";
-  // white
+  space = "";
+  // in srgb
+  items = [];
+  // hotpink 20%, white
+  colors = [];
+  // hotpink, white
   #icon = null;
   mixedColor() {
     const colorText = this.#icon?.computedStyleMap().get("color")?.toString() ?? null;
     return colorText ? Common2.Color.parse(colorText) : null;
   }
-  setFirstColor(text) {
-    if (this.firstColorText) {
-      this.colorMixText = this.colorMixText.replace(this.firstColorText, text);
-    }
-    this.firstColorText = text;
-    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
+  setColorMix(space, items) {
+    this.space = space;
+    this.items = [...items];
+    this.colors = items.map(() => "");
+    this.dispatchEvent(new ColorMixChangedEvent(this.getText()));
     this.#render();
   }
-  setSecondColor(text) {
-    if (this.secondColorText) {
-      this.colorMixText = Platform3.StringUtilities.replaceLast(this.colorMixText, this.secondColorText, text);
+  setColor(index, text) {
+    if (index < 0 || index >= this.items.length) {
+      return;
     }
-    this.secondColorText = text;
-    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
-    this.#render();
-  }
-  setColorMixText(text) {
-    this.colorMixText = text;
-    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
+    if (this.colors[index]) {
+      this.items[index] = this.items[index].replace(this.colors[index], text);
+    }
+    this.colors[index] = text;
+    this.dispatchEvent(new ColorMixChangedEvent(this.getText()));
     this.#render();
   }
   getText() {
-    return this.colorMixText;
+    if (!this.items.length) {
+      return "";
+    }
+    return serializeColorMix(this.space, this.items);
   }
   #render() {
-    if (!this.colorMixText || !this.firstColorText || !this.secondColorText) {
-      render(this.colorMixText, this.shadow, { host: this });
+    const colorMixText = this.getText();
+    if (!colorMixText || this.colors.some((color) => !color)) {
+      render(colorMixText, this.shadow, { host: this });
       return;
     }
+    const mixOnly = this.colors.length !== 2;
     render(
-      html`<style>${colorMixSwatch_css_default}</style><div class="swatch-icon"
+      html`<style>${colorMixSwatch_css_default}</style><div class=${classMap({ "swatch-icon": true, "mix-only": mixOnly })}
       ${ref((e) => {
         this.#icon = e;
       })}
       jslog=${VisualLogging4.cssColorMix()}
-      style="--color: ${this.colorMixText}">
-        <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.firstColorText}"></span>
-        <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.secondColorText}"></span>
-        <span class="swatch swatch-mix" id="mix-result" style="--color: ${this.colorMixText}"></span></div>`,
+      style="--color: ${colorMixText}">${mixOnly ? html`
+        <span class="swatch" id="mix-result" style="--color: ${colorMixText}"></span>` : html`
+        <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.colors[0]}"></span>
+        <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.colors[1]}"></span>
+        <span class="swatch swatch-mix" id="mix-result" style="--color: ${colorMixText}"></span>`}</div>`,
       this.shadow,
       { host: this }
     );
@@ -1569,7 +1579,7 @@ __export(CSSAngleUtils_exports, {
   parseText: () => parseText,
   roundAngleByUnit: () => roundAngleByUnit
 });
-import * as Platform4 from "../../../../core/platform/platform.js";
+import * as Platform3 from "../../../../core/platform/platform.js";
 import * as Geometry4 from "../../../geometry/geometry.js";
 import * as UI4 from "../../legacy.js";
 var CSSAngleRegex = /(?<value>[+-]?\d*\.?\d+)(?<unit>deg|grad|rad|turn)/;
@@ -1640,7 +1650,7 @@ var roundAngleByUnit = (angle) => {
       roundedValue = Math.round(angle.value * 100) / 100;
       break;
     default:
-      Platform4.assertNever(angle.unit, `Unknown angle unit: ${angle.unit}`);
+      Platform3.assertNever(angle.unit, `Unknown angle unit: ${angle.unit}`);
   }
   return {
     value: roundedValue,
@@ -1876,7 +1886,7 @@ var CSSAngleSwatch = class extends HTMLElement {
 customElements.define("devtools-css-angle-swatch", CSSAngleSwatch);
 
 // ../../front_end/ui/legacy/components/inline_editor/CSSAngle.ts
-import * as Platform5 from "../../../../core/platform/platform.js";
+import * as Platform4 from "../../../../core/platform/platform.js";
 import * as Lit5 from "../../../lit/lit.js";
 
 // gen/front_end/ui/legacy/components/inline_editor/cssAngle.css.js
@@ -1886,26 +1896,28 @@ var cssAngle_css_default = `/*
  * found in the LICENSE file.
  */
 
-.css-angle {
-  display: inline-block;
-  position: relative;
-  outline: none;
-
-  .preview {
+@scope to (devtools-widget > *) {
+  .css-angle {
     display: inline-block;
+    position: relative;
+    outline: none;
+
+    .preview {
+      display: inline-block;
+    }
   }
-}
 
-devtools-css-angle-swatch {
-  display: inline-block;
-  user-select: none;
-}
+  devtools-css-angle-swatch {
+    display: inline-block;
+    user-select: none;
+  }
 
-devtools-css-angle-editor {
-  --override-dial-color: var(--sys-color-neutral-outline);
+  devtools-css-angle-editor {
+    --override-dial-color: var(--sys-color-neutral-outline);
 
-  position: fixed;
-  z-index: 2;
+    position: fixed;
+    z-index: 2;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./cssAngle.css")} */`;
@@ -2054,7 +2066,7 @@ var CSSAngle = class extends HTMLElement {
   }
   onKeydown(event) {
     if (!this.popoverOpen) {
-      if (Platform5.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      if (Platform4.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         this.onMiniIconClick(event);
         event.preventDefault();
       }
@@ -2127,7 +2139,7 @@ __export(CSSShadowEditor_exports, {
 });
 import * as Common4 from "../../../../core/common/common.js";
 import * as i18n5 from "../../../../core/i18n/i18n.js";
-import * as Platform6 from "../../../../core/platform/platform.js";
+import * as Platform5 from "../../../../core/platform/platform.js";
 import * as Geometry5 from "../../../geometry/geometry.js";
 import * as VisualLogging7 from "../../../visual_logging/visual_logging.js";
 import * as UI5 from "../../legacy.js";
@@ -2625,7 +2637,7 @@ var CSSShadowEditor = class extends CSSShadowEditorBase {
     event.consume(true);
     if (shiftX) {
       const offsetX = this.model.offsetX();
-      const newAmount = Platform6.NumberUtilities.clamp(offsetX.amount + shiftX, -maxRange, maxRange);
+      const newAmount = Platform5.NumberUtilities.clamp(offsetX.amount + shiftX, -maxRange, maxRange);
       if (newAmount === offsetX.amount) {
         return;
       }
@@ -2635,7 +2647,7 @@ var CSSShadowEditor = class extends CSSShadowEditorBase {
     }
     if (shiftY) {
       const offsetY = this.model.offsetY();
-      const newAmount = Platform6.NumberUtilities.clamp(offsetY.amount + shiftY, -maxRange, maxRange);
+      const newAmount = Platform5.NumberUtilities.clamp(offsetY.amount + shiftY, -maxRange, maxRange);
       if (newAmount === offsetY.amount) {
         return;
       }
@@ -2688,8 +2700,7 @@ var LinkSwatch_exports = {};
 __export(LinkSwatch_exports, {
   LinkSwatch: () => LinkSwatch
 });
-import * as Platform7 from "../../../../core/platform/platform.js";
-import * as Buttons from "../../../components/buttons/buttons.js";
+import * as Platform6 from "../../../../core/platform/platform.js";
 import * as Lit6 from "../../../lit/lit.js";
 import * as VisualLogging8 from "../../../visual_logging/visual_logging.js";
 
@@ -2700,33 +2711,35 @@ var linkSwatch_css_default = `/*
  * found in the LICENSE file.
  */
 
-.link-swatch-link {
-  display: inline;
-}
+@scope to (devtools-widget > *) {
+  .link-swatch-link {
+    display: inline;
+  }
 
-.link-swatch-link:not(.undefined) {
-  cursor: pointer;
-  text-underline-offset: var(--sys-size-2);
-  color: var(--text-link);
-}
+  .link-swatch-link:not(.undefined) {
+    cursor: pointer;
+    text-underline-offset: var(--sys-size-2);
+    color: var(--text-link);
+  }
 
-.link-swatch-link:hover:not(.undefined) {
-  text-decoration: underline;
-}
+  .link-swatch-link:hover:not(.undefined) {
+    text-decoration: underline;
+  }
 
-.link-swatch-link:focus:not(:focus-visible) {
-  outline: none;
-}
+  .link-swatch-link:focus:not(:focus-visible) {
+    outline: none;
+  }
 
-.link-swatch-link.undefined {
-  opacity: 100%;
-  color: var(--text-disabled);
+  .link-swatch-link.undefined {
+    opacity: 100%;
+    color: var(--text-disabled);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./linkSwatch.css")} */`;
 
 // ../../front_end/ui/legacy/components/inline_editor/LinkSwatch.ts
-var { render: render6, html: html6, nothing, Directives: { ref: ref2, ifDefined, classMap } } = Lit6;
+var { render: render6, html: html6, nothing, Directives: { ref: ref2, ifDefined, classMap: classMap2 } } = Lit6;
 var LinkSwatch = class extends HTMLElement {
   onLinkActivate = () => void 0;
   #linkElement;
@@ -2737,7 +2750,7 @@ var LinkSwatch = class extends HTMLElement {
       if (event instanceof MouseEvent && event.button !== 0) {
         return;
       }
-      if (event instanceof KeyboardEvent && event.key !== Platform7.KeyboardUtilities.ENTER_KEY && event.key !== " ") {
+      if (event instanceof KeyboardEvent && event.key !== Platform6.KeyboardUtilities.ENTER_KEY && event.key !== " ") {
         return;
       }
       data.onLinkActivate(linkText);
@@ -2750,7 +2763,7 @@ var LinkSwatch = class extends HTMLElement {
   }
   #render(data) {
     const { isDefined, text, jslogContext, tooltip } = data;
-    const classes = classMap({
+    const classes = classMap2({
       "link-style": true,
       "text-button": true,
       "link-swatch-link": true,
@@ -2760,7 +2773,6 @@ var LinkSwatch = class extends HTMLElement {
     const title = tooltip && "title" in tooltip && tooltip.title || void 0;
     const tooltipId = tooltip && "tooltipId" in tooltip && tooltip.tooltipId || void 0;
     render6(html6`
-        <style>${Buttons.textButtonStyles}</style>
         <style>${linkSwatch_css_default}</style>
         <button .disabled=${!isDefined} class=${classes} type="button" title=${ifDefined(title)}
                 aria-details=${ifDefined(tooltipId)} @click=${onActivate} @keydown=${onActivate}
@@ -3807,7 +3819,7 @@ __export(SwatchPopoverHelper_exports, {
   SwatchPopoverHelper: () => SwatchPopoverHelper
 });
 import * as Common6 from "../../../../core/common/common.js";
-import * as Platform8 from "../../../../core/platform/platform.js";
+import * as Platform7 from "../../../../core/platform/platform.js";
 import * as VisualLogging10 from "../../../visual_logging/visual_logging.js";
 import * as UI7 from "../../legacy.js";
 
@@ -3950,7 +3962,7 @@ var SwatchPopoverHelper = class extends Common6.ObjectWrapper.ObjectWrapper {
       event.consume(true);
       return;
     }
-    if (event.key === Platform8.KeyboardUtilities.ESCAPE_KEY) {
+    if (event.key === Platform7.KeyboardUtilities.ESCAPE_KEY) {
       this.hide(false);
       event.consume(true);
     }

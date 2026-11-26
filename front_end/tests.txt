@@ -17,7 +17,6 @@ core/common/ResolverBase.test.js
 core/common/ResourceType.test.js
 core/common/Revealer.test.js
 core/common/SegmentedRange.test.js
-core/common/SettingRegistration.test.js
 core/common/Settings.test.js
 core/common/SimpleHistoryManager.test.js
 core/common/Srcset.test.js
@@ -230,11 +229,13 @@ models/cpu_profile/CPUProfileDataModel.test.js
 models/crux-manager/CrUXManager.test.js
 models/devtools_state/StateManager.test.js
 models/devtools_state/providers/CPUThrottlingStateProvider.test.js
+models/devtools_state/providers/NetworkStateProvider.test.js
 models/devtools_state/providers/SettingsStateProvider.test.js
 models/elements/DOMChanges.test.js
 models/elements/StyleChanges.test.js
 models/emulation/DeviceModeModel.test.js
 models/emulation/EmulatedDevices.test.js
+models/emulation/UserAgentGroups.test.js
 models/extensions/ExtensionEndpoint.test.js
 models/extensions/HostUrlPattern.test.js
 models/extensions/LanguageExtensionEndpoint.test.js
@@ -471,6 +472,7 @@ panels/application/preloading/components/UsedPreloadingView.test.js
 panels/autofill/AutofillView.test.js
 panels/browser_debugger/CategorizedBreakpointsSidebarPane.test.js
 panels/browser_debugger/DOMBreakpointsSidebarPane.test.js
+panels/browser_debugger/EventListenerBreakpointsSidebarPane.test.js
 panels/browser_debugger/ObjectEventListenersSidebarPane.test.js
 panels/browser_debugger/XHRBreakpointsSidebarPane.test.js
 panels/browser_debugger/browser_debugger.test.js
@@ -634,6 +636,7 @@ panels/performance_monitor/PerformanceMonitor.test.js
 panels/profiler/HeapDetachedElementsView.test.js
 panels/profiler/HeapProfileView.test.js
 panels/profiler/HeapSnapshotDataGrids.test.js
+panels/profiler/HeapSnapshotGridNodes.test.js
 panels/profiler/HeapSnapshotView.test.js
 panels/profiler/HeapTimelineOverview.test.js
 panels/profiler/IsolateSelector.test.js

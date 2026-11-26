@@ -2491,6 +2491,18 @@
                     ]
                 },
                 {
+                    "id": "ViewportFitCoverMissingSafeAreaInsetTopIssueDetails",
+                    "description": "Details for issues about a page that declares viewport-fit=cover, receives\na non-zero top safe-area inset (e.g. a device cutout or system status bar),\nbut does not consume env(safe-area-inset-top) anywhere in its CSS while\nhaving DOM content likely to be occluded by that inset.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "frameId",
+                            "description": "The frame that triggered the issue.",
+                            "$ref": "Page.FrameId"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -2525,7 +2537,8 @@
                         "SelectivePermissionsInterventionIssue",
                         "EmailVerificationRequestIssue",
                         "LazyLoadImageIssue",
-                        "WebInstallIssue"
+                        "WebInstallIssue",
+                        "ViewportFitCoverMissingSafeAreaInsetTopIssue"
                     ]
                 },
                 {
@@ -2688,6 +2701,11 @@
                             "name": "webInstallIssueDetails",
                             "optional": true,
                             "$ref": "WebInstallIssueDetails"
+                        },
+                        {
+                            "name": "viewportFitCoverMissingSafeAreaInsetTopIssueDetails",
+                            "optional": true,
+                            "$ref": "ViewportFitCoverMissingSafeAreaInsetTopIssueDetails"
                         }
                     ]
                 },
@@ -11488,18 +11506,6 @@
                         {
                             "name": "insets",
                             "$ref": "SafeAreaInsets"
-                        }
-                    ]
-                },
-                {
-                    "name": "setVirtualKeyboardGeometryOverride",
-                    "description": "Overrides virtual keyboard geometry in CSS pixels, relative to the top-level viewport. The\nprovided rect is used for navigator.virtualKeyboard.boundingRect, geometrychange events, and\nenv(keyboard-inset-*) values on the inspected frame. The override applies independently of\nnavigator.virtualKeyboard.overlaysContent so clients can preview overlay geometry without\nmutating page state. Values are rounded to the nearest CSS pixel. Omitting the rect clears the\noverride.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "keyboardRect",
-                            "optional": true,
-                            "$ref": "DOM.Rect"
                         }
                     ]
                 },

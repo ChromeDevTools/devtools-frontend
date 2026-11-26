@@ -223,6 +223,10 @@ export function registerWidgetConfig(element, config) {
         setUpLifecycleTracking(element);
     }
     widgetConfigs.set(element, config);
+    const widget = Widget.get(element);
+    if (element.isConnected && widget && !widget.parentWidget()) {
+        connectWidget(element);
+    }
 }
 export function instantiateWidget(element, widgetConfig) {
     if (!widgetConfig.widgetClass) {
@@ -268,6 +272,23 @@ function detachWidgetWithoutRemovingElementFromDOM(widget) {
         trackerDetachingWidgets.delete(widget);
     }
 }
+function connectWidget(element) {
+    let widget = Widget.get(element);
+    if (!widget) {
+        const config = widgetConfigs.get(element);
+        if (!config) {
+            throw new Error('No widgetConfig defined');
+        }
+        widget = instantiateWidget(element, config);
+    }
+    const parent = (element.parentNode instanceof DocumentFragment) ? element.parentNode : element.parentElementOrShadowHost();
+    if (!parent) {
+        widget.markAsRoot();
+    }
+    else if (!(parent instanceof WidgetElement && parent.controlsChildWidget(element))) {
+        widget.show(parent, undefined, /* suppressOrphanWidgetError= */ true);
+    }
+}
 function setUpLifecycleTracking(element) {
     let tracker;
     if (element instanceof WidgetElement) {
@@ -288,21 +309,7 @@ function setUpLifecycleTracking(element) {
         }
     };
     tracker.onConnect = () => {
-        let widget = Widget.get(element);
-        if (!widget) {
-            const config = widgetConfigs.get(element);
-            if (!config) {
-                throw new Error('No widgetConfig defined');
-            }
-            widget = instantiateWidget(element, config);
-        }
-        const parent = (element.parentNode instanceof DocumentFragment) ? element.parentNode : element.parentElementOrShadowHost();
-        if (!parent) {
-            widget.markAsRoot();
-        }
-        else if (!(parent instanceof WidgetElement && parent.controlsChildWidget(element))) {
-            widget.show(parent, undefined, /* suppressOrphanWidgetError= */ true);
-        }
+        connectWidget(element);
     };
 }
 export class WidgetElement extends HTMLElement {
@@ -639,7 +646,7 @@ export class Widget {
         if (!this.element.parentElement) {
             return false;
         }
-        if (this.#hideOnDetach) {
+        if (this.#hideOnDetach || trackerDetachingWidgets.has(this)) {
             return true;
         }
         for (const child of this.#children) {
@@ -861,7 +868,7 @@ export class Widget {
         //
         // overrideHideOnDetach will override hideOnDetach and the client takes
         // responsibility for the consequences.
-        const removeFromDOM = Boolean(overrideHideOnDetach) || (!trackerDetachingWidgets.has(this) && !this.shouldHideOnDetach());
+        const removeFromDOM = Boolean(overrideHideOnDetach) || !this.shouldHideOnDetach();
         if (this.#visible) {
             this.#hideWidget(removeFromDOM);
         }

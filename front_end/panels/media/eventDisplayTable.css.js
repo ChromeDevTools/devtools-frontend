@@ -9,26 +9,28 @@ export default `/*
  * found in the LICENSE file.
  */
 
-devtools-data-grid.no-border-top-datagrid {
-  /* make sure there is no top border, it ruins the menu view */
-  border-top: 0;
-}
+@scope to (devtools-widget > *) {
+  devtools-data-grid.no-border-top-datagrid {
+    /* make sure there is no top border, it ruins the menu view */
+    border-top: 0;
+  }
 
-devtools-data-grid.event-display-table-contents-table-container {
-  height: 100%;
-}
+  devtools-data-grid.event-display-table-contents-table-container {
+    height: 100%;
+  }
 
-.event-display-table-basic-text-table-entry {
-  line-height: 26px;
-}
+  .event-display-table-basic-text-table-entry {
+    line-height: 26px;
+  }
 
-.event-display-table-contents-json-wrapper > devtools-widget.json-view {
-  overflow: visible;
-}
+  .event-display-table-contents-json-wrapper > devtools-widget.json-view {
+    overflow: visible;
+  }
 
-.data-grid > .data-container > table.data {
-  height: auto;
-  table-layout: auto;
+  .data-grid > .data-container > table.data {
+    height: auto;
+    table-layout: auto;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./eventDisplayTable.css')} */`;

@@ -52,6 +52,7 @@
     "../../../../../../test/e2e/extensions/can-reveal-requests.test.ts",
     "../../../../../../test/e2e/extensions/can-search-in-extension-panel.test.ts",
     "../../../../../../test/e2e/extensions/debugger-language-plugins.test.ts",
+    "../../../../../../test/e2e/extensions/inspected-window-eval.test.ts",
     "../../../../../../test/e2e/extensions/mock-extension.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

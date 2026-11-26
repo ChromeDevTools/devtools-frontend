@@ -406,6 +406,11 @@
       name: "AIPageContentEmitInterestingAria",
       status: "stable",
     },
+    // Emit <label>, <legend>, <caption>, and <figcaption> with kLabel.
+    {
+      name: "AIPageContentIncludeLabel",
+      status: "stable",
+    },
     {
       name: "AIPageContentIncludeMathML",
       status: "stable",
@@ -2836,6 +2841,7 @@
     // Enables Document Policy for DedicatedWorkers.
     {
       name: "DocumentPolicyInDedicatedWorker",
+      origin_trial_feature_name: "JSSelfProfilingInDedicatedWorker",
       status: "experimental",
     },
     {
@@ -2939,6 +2945,12 @@
       name: "EditContextHandleTextOrSelectionUpdateDuringComposition",
       status: "test",
       settable_from_internals: true
+    },
+    {
+      // See https://crbug.com/574145399 and
+      // https://github.com/w3c/edit-context/issues/156
+      name: "EditContextOnDemand",
+      status: "experimental",
     },
     {
       // Update EditContext selectionStart/End before TextUpdateEvent while
@@ -3536,6 +3548,11 @@
       // a Chromium level feature (kFontDataServiceForCSSLocalFonts).
     },
     {
+      // Kill switch for https://crbug.com/589815780.
+      name: "FontFaceCapabilitiesRangeValidation",
+      status: "stable",
+    },
+    {
       // Kill switch for https://crbug.com/579721442.
       name: "FontFallbackMultiplePriorityFonts",
       status: "stable",
@@ -3800,7 +3817,6 @@
     },
     {
       name: "HarfRustShaping",
-      status: "test",
     },
     {
       name: "HasUAVisualTransition",
@@ -4767,6 +4783,11 @@
       status: "stable",
     },
     {
+      // https://github.com/WICG/declarative-partial-updates/blob/main/template-mutation-observer-explainer.md
+      name: "MutationObserverActiveTemplate",
+      status: "experimental",
+    },
+    {
       // Support Nastaliq script. crbug.com/569667449
       name: "NastaliqScript",
       status: "stable",
@@ -5526,6 +5547,7 @@
     {
       // When enabled, dedicated workers can use profiler API
       name: "ProfilerAPIForDedicatedWorker",
+      origin_trial_feature_name: "JSSelfProfilingInDedicatedWorker",
       status: "experimental",
     },
     // Promisify programmatic scroll methods in Element and Window.
@@ -5628,13 +5650,6 @@
       // Defense-in-depth mitigation that strips read-back disallowed (e.g.,
       // cross-origin) content when drawing elements with html-in-canvas.
       name: "ReadBackDisallowedMitigation",
-      status: "stable",
-    },
-    {
-      // getType() on a ClipboardItem triggers the
-      // clipboard read operation, implementing lazy loading for clipboard data.
-      // Chrome status entry - https://chromestatus.com/feature/5203433409871872
-      name: "ReadClipboardDataOnClipboardItemGetType",
       status: "stable",
     },
     {
@@ -5981,6 +5996,13 @@
       status: "stable",
     },
     {
+      // Prevents PositionLeadingFloats from positioning floats inside ruby
+      // columns, and verifies leading float item indices match in
+      // LineBreaker::HandleFloat. https://crbug.com/589800513
+      name: "RubySkipLeadingFloats",
+      status: "stable",
+    },
+    {
       // Allows a soft wrap after a preserved space (e.g. `white-space:
       // pre-wrap`) that is followed by a <ruby>, by ignoring the bidi
       // controls of ruby columns when checking break opportunities.
@@ -6283,6 +6305,12 @@
     {
       // Killswitch M141.
       name: "SelectionHandleWithBottomClipped",
+      status: "stable",
+    },
+    {
+      // Skip pseudo-element inline leaves in AbstractLineBox::PositionForPoint.
+      // See https://crbug.com/589812279
+      name: "SelectionLineSkipPseudoElement",
       status: "stable",
     },
     {
@@ -7170,6 +7198,12 @@
     {
       // https://crbug.com/578671521
       name: "TextEncodingDetectorTldHint",
+      status: "stable",
+    },
+    {
+      // Kill switch for https://crbug.com/589853631.
+      name: "TextEncodingDetectorTldHintStripTrailingDot",
+      depends_on: ["TextEncodingDetectorTldHint"],
       status: "stable",
     },
     {
@@ -8408,6 +8442,13 @@
     {
       // Fixes an issue where Ctrl+Right Arrow skips punctuation before a newline.
       name: "WordSkipSpacesPunctuationFix",
+      status: "stable",
+    },
+    {
+      // Runs worker requestAnimationFrame callbacks directly in the BeginFrame
+      // task so that a microtask checkpoint happens between callbacks, matching
+      // window behavior. Kill switch for https://crbug.com/419327007.
+      name: "WorkerRafRunsInBeginFrameTask",
       status: "stable",
     },
     {

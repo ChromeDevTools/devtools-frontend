@@ -592,7 +592,8 @@ describe('TimelineFlameChartView', function() {
     activeWidgets.push(flameChartView);
     renderElementIntoDOM(flameChartView);
     const input = await view.nextInput;
-    assert.instanceOf(input.detailsSplitWidget, UI.SplitWidget.SplitWidget);
+    assert.instanceOf(input.chartSplitWidget, UI.SplitWidget.SplitWidget);
+    assert.instanceOf(input.detailsView, Timeline.TimelineDetailsView.TimelineDetailsPane);
     assert.isFalse(input.inert);
 
     flameChartView.overlays().dispatchEvent(new Overlays.Overlays.ConsentDialogVisibilityChange(true));

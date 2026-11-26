@@ -91,8 +91,11 @@ interface FlameChartDimmer {
   outline: boolean|{main: number[] | boolean, network: number[]|boolean};
 }
 
+const {widget, widgetRef} = UI.Widget;
+
 export interface ViewInput {
-  detailsSplitWidget: UI.SplitWidget.SplitWidget;
+  chartSplitWidget: UI.SplitWidget.SplitWidget;
+  detailsView: TimelineDetailsPane;
   inert: boolean;
   onKeyDown: (keyInfo: {key: string, altKey: boolean}) => 'handled' | 'stop-propagation' | undefined;
   onSecondaryPointerDown: () => boolean;
@@ -128,7 +131,12 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
   };
   // clang-format off
   render(html`<style>${timelineFlameChartViewStyles}</style>
-    <div ${UI.Widget.widget(UI.Widget.WrapperWidget, {widget: input.detailsSplitWidget})}></div>`,
+    <devtools-split-view class="timeline-details-split" direction="row" sidebar-position="second"
+        name="timeline-panel-details-split-view-state"
+        ${widgetRef(UI.SplitWidget.SplitWidget, split => split.installResizer(input.detailsView.headerElement()))}>
+      <div slot="main" ${widget(UI.Widget.WrapperWidget, {widget: input.chartSplitWidget})}></div>
+      <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, {widget: input.detailsView})}></div>
+    </devtools-split-view>`,
     target, {container});
   // clang-format on
 };
@@ -158,7 +166,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   readonly #splitResizer: HTMLElement;
   readonly #chartSplitWidget: UI.SplitWidget.SplitWidget;
   readonly #countersView: CountersGraph;
-  readonly #detailsSplitWidget: UI.SplitWidget.SplitWidget;
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in Chromium web_tests.
   private readonly detailsView: TimelineDetailsPane;
   readonly #onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<{
@@ -417,13 +424,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#chartSplitWidget.hideDefaultResizer();
     this.#chartSplitWidget.installResizer(this.#countersView.resizerElement());
 
-    // Create top level properties splitter.
-    this.#detailsSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'timeline-panel-details-split-view-state');
-    this.#detailsSplitWidget.element.classList.add('timeline-details-split');
     this.detailsView = new TimelineDetailsPane(delegate);
-    this.#detailsSplitWidget.installResizer(this.detailsView.headerElement());
-    this.#detailsSplitWidget.setMainWidget(this.#chartSplitWidget);
-    this.#detailsSplitWidget.setSidebarWidget(this.detailsView);
 
     // Event listeners for annotations.
     this.#onMainAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
@@ -1532,7 +1533,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
   override performUpdate(): void {
     this.#view({
-      detailsSplitWidget: this.#detailsSplitWidget,
+      chartSplitWidget: this.#chartSplitWidget,
+      detailsView: this.detailsView,
       inert: this.#inert,
       onKeyDown: this.#onKeyDown,
       onSecondaryPointerDown: this.#onSecondaryPointerDown,

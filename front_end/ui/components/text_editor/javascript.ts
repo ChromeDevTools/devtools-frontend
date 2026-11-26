@@ -357,6 +357,33 @@ class PropertyCache {
   }
 }
 
+/**
+ * Returns the source text of an expression that evaluates to `key`, or `null` if there is none: Objects and
+ * symbols can't be named.
+ *
+ * The keys come from the inspected page. Strings are the only keys whose text is page-controlled, so they are
+ * emitted as a string literal. That way a suggestion can never be anything but that one argument.
+ */
+function mapKeyLiteral(key: SDK.RemoteObject.RemoteObject): string|null {
+  const value: unknown = key.value;
+  switch (typeof value) {
+    case 'string':
+      return JSON.stringify(value);
+    case 'number':
+    case 'boolean':
+      return String(value);
+    case 'bigint':
+      return `${value}n`;
+    case 'undefined':
+      // Objects and symbols are remote handles that don't have a `value` either.
+      return key.type === 'undefined' ? 'undefined' : null;
+    case 'object':
+      return value === null ? 'null' : null;
+    default:
+      return null;
+  }
+}
+
 async function maybeCompleteKeysFromMap(objectVariable: string, target?: EvaluationTarget): Promise<CompletionSet> {
   const result = new CompletionSet();
   const context = getExecutionContext();
@@ -371,14 +398,12 @@ async function maybeCompleteKeysFromMap(objectVariable: string, target?: Evaluat
   const properties = SDK.RemoteObject.RemoteArray.objectAsArray(maybeRetrieveKeys);
   const numProperties = properties.length();
   for (let i = 0; i < numProperties; i++) {
-    // The keys come from the inspected page. Only suggest string keys and emit them as a string literal
-    // that evaluates to the key, so the suggestion can never be anything but that one argument.
-    const key: unknown = (await properties.at(i)).value;
-    if (typeof key !== 'string') {
+    const literal = mapKeyLiteral(await properties.at(i));
+    if (literal === null) {
       continue;
     }
     result.add({
-      label: `${JSON.stringify(key)})`,
+      label: `${literal})`,
       type: 'constant',
       boost: i * -1,
     });

@@ -598,11 +598,26 @@ describeWithEnvironment('TextEditor autocompletion', () => {
     assert.isNull(result);
   });
 
-  it('completes Map keys as escaped string literals and skips non-string keys', async () => {
+  it('completes Map keys as literals and skips keys that cannot be written as one', async () => {
     const executionContext = new MockExecutionContext(createTarget());
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+    const keys = [
+      'plain',
+      'quote"inside',
+      'back\\slash',
+      'line\nbreak',
+      42,
+      -1.5,
+      NaN,
+      42n,
+      true,
+      null,
+      undefined,
+      Symbol(),
+      {},
+    ];
     const evaluateStub = sinon.stub(executionContext, 'evaluate').resolves({
-      object: new SDK.RemoteObject.LocalJSONObject(['plain', 'quote"inside', 'back\\slash', 'line\nbreak', 42, {}]),
+      object: new SDK.RemoteObject.LocalJSONObject(keys),
     });
 
     const state = makeState('map.get(', CodeMirror.javascript.javascriptLanguage);
@@ -616,6 +631,13 @@ describeWithEnvironment('TextEditor autocompletion', () => {
       '"quote\\"inside")',
       '"back\\\\slash")',
       '"line\\nbreak")',
+      '42)',
+      '-1.5)',
+      'NaN)',
+      '42n)',
+      'true)',
+      'null)',
+      'undefined)',
     ]);
   });
 

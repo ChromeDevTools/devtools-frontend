@@ -357,12 +357,14 @@ describe('TimelineFlameChartView', function() {
     assert.lengthOf(flameChartView.overlays().overlaysOfType('COMMENT_PIN'), 1);
     assert.lengthOf(flameChartView.overlays().overlaysOfType('ENTRY_SELECTED'), 1);
 
+    await flameChartView.updateComplete;
     const countersSetModelSpy = sinon.spy(Timeline.CountersGraph.CountersGraph.prototype, 'setModel');
     const detailsSetModelSpy = sinon.spy(Timeline.TimelineDetailsView.TimelineDetailsPane.prototype, 'setModel');
     const commentSetTraceSpy =
         sinon.spy(Timeline.TimelineCommentController.TimelineCommentController.prototype, 'setParsedTrace');
 
     flameChartView.setModel(null);
+    await flameChartView.updateComplete;
     assert.isEmpty(flameChartView.overlays().overlaysOfType('TIMINGS_MARKER'));
     assert.isEmpty(flameChartView.overlays().overlaysOfType('COMMENT_PIN'));
     assert.isEmpty(flameChartView.overlays().overlaysOfType('ENTRY_SELECTED'));
@@ -665,7 +667,6 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(flameChartView);
     const input = await view.nextInput;
     assert.instanceOf(input.flameChartsContainer, UI.Widget.VBox);
-    assert.instanceOf(input.countersView, Timeline.CountersGraph.CountersGraph);
     assert.instanceOf(input.detailsView, Timeline.TimelineDetailsView.TimelineDetailsPane);
     assert.isFalse(input.inert);
 
@@ -702,7 +703,8 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(container);
     const input: Timeline.TimelineFlameChartView.ViewInput = {
       flameChartsContainer: new UI.Widget.VBox(),
-      countersView: new Timeline.CountersGraph.CountersGraph(new MockViewDelegate()),
+      delegate: new MockViewDelegate(),
+      countersModel: {parsedTrace: null, events: null},
       detailsView: new Timeline.TimelineDetailsView.TimelineDetailsPane(new MockViewDelegate()),
       showMemoryGraph: true,
       inert: false,
@@ -720,6 +722,24 @@ describe('TimelineFlameChartView', function() {
     Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, showMemoryGraph: false}, undefined,
                                                  container.contentElement);
     assert.strictEqual(countersSplit?.getAttribute('show'), 'main');
+  });
+
+  it('updates countersModel in the view input when the trace model changes', async function() {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    assert.deepEqual((await view.nextInput).countersModel, {parsedTrace: null, events: null});
+
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+    const updated = await view.nextInput;
+    assert.strictEqual(updated.countersModel.parsedTrace, parsedTrace);
+    assert.isArray(updated.countersModel.events);
+
+    flameChartView.setModel(null);
+    assert.deepEqual((await view.nextInput).countersModel, {parsedTrace: null, events: null});
   });
 
   it('cancels entry link annotation creation on Escape keydown', async function() {

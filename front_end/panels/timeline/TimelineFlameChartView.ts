@@ -21,7 +21,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {getAnnotationEntries, getAnnotationWindow} from './AnnotationHelpers.js';
 import type * as TimelineComponents from './components/components.js';
 import * as TimelineInsights from './components/insights/insights.js';
-import {CountersGraph} from './CountersGraph.js';
+import {CountersGraph, type CountersModel} from './CountersGraph.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
@@ -95,7 +95,8 @@ const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
   flameChartsContainer: UI.Widget.VBox;
-  countersView: CountersGraph;
+  delegate: TimelineModeViewDelegate;
+  countersModel: CountersModel;
   detailsView: TimelineDetailsPane;
   showMemoryGraph: boolean;
   inert: boolean;
@@ -106,6 +107,8 @@ export interface ViewInput {
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  let chartSplit: UI.SplitWidget.SplitWidget|undefined;
+  let countersResizer: Element|undefined;
   const container = {
     classes: ['timeline-flamechart'],
     attributes: {jslog: VisualLogging.section('timeline.flame-chart-view'), inert: input.inert},
@@ -139,16 +142,21 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
       <devtools-split-view slot="main" direction="row" sidebar-position="second"
           name="timeline-counters-split-view-state" show=${input.showMemoryGraph ? 'both' : 'main'}
           ${widgetRef(UI.SplitWidget.SplitWidget, split => {
+            chartSplit = split;
             split.hideDefaultResizer();
-            split.installResizer(input.countersView.resizerElement());
           })}>
         <div slot="main" ${widget(UI.Widget.WrapperWidget, {widget: input.flameChartsContainer})}></div>
-        <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, {widget: input.countersView})}></div>
+        <devtools-widget slot="sidebar"
+            ${widget(CountersGraph, {delegate: input.delegate, model: input.countersModel})}
+            ${widgetRef(CountersGraph, counters => { countersResizer = counters.resizerElement(); })}></devtools-widget>
       </devtools-split-view>
       <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, {widget: input.detailsView})}></div>
     </devtools-split-view>`,
     target, {container});
   // clang-format on
+  if (chartSplit && countersResizer) {
+    chartSplit.installResizer(countersResizer);
+  }
 };
 
 const TimelineFlameChartViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
@@ -175,7 +183,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   readonly #networkPane: UI.Widget.VBox;
   readonly #splitResizer: HTMLElement;
   readonly #flameChartsContainer: UI.Widget.VBox;
-  readonly #countersView: CountersGraph;
+  #countersModel: CountersModel = {parsedTrace: null, events: null};
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in Chromium web_tests.
   private readonly detailsView: TimelineDetailsPane;
   readonly #onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<{
@@ -433,8 +441,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#networkSplitWidget.installResizer(this.#splitResizer);
     this.#networkSplitWidget.setMainWidget(this.mainFlameChart);
     this.#networkSplitWidget.setSidebarWidget(this.#networkPane);
-
-    this.#countersView = new CountersGraph(this.#delegate);
 
     this.detailsView = new TimelineDetailsPane(delegate);
 
@@ -1263,7 +1269,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   updateSelectedGroup(flameChart: PerfUI.FlameChart.FlameChart, group: PerfUI.FlameChart.Group|null): void {
-    if (flameChart !== this.mainFlameChart || this.#selectedGroupName === group?.name) {
+    if (flameChart !== this.mainFlameChart || this.#selectedGroupName === (group?.name || null)) {
       return;
     }
     this.#selectedGroupName = group?.name || null;
@@ -1408,7 +1414,10 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   #updateDetailViews(): void {
-    this.#countersView.setModel(this.#parsedTrace, this.#selectedEvents);
+    if (this.#countersModel.parsedTrace !== this.#parsedTrace || this.#countersModel.events !== this.#selectedEvents) {
+      this.#countersModel = {parsedTrace: this.#parsedTrace, events: this.#selectedEvents};
+      this.requestUpdate();
+    }
     void this.detailsView.setModel({
       parsedTrace: this.#parsedTrace,
       selectedEvents: this.#selectedEvents,
@@ -1546,7 +1555,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   override performUpdate(): void {
     this.#view({
       flameChartsContainer: this.#flameChartsContainer,
-      countersView: this.#countersView,
+      delegate: this.#delegate,
+      countersModel: this.#countersModel,
       detailsView: this.detailsView,
       showMemoryGraph: this.#showMemoryGraph,
       inert: this.#inert,

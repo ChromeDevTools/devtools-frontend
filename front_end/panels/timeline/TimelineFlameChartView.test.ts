@@ -592,7 +592,8 @@ describe('TimelineFlameChartView', function() {
     activeWidgets.push(flameChartView);
     renderElementIntoDOM(flameChartView);
     const input = await view.nextInput;
-    assert.instanceOf(input.chartSplitWidget, UI.SplitWidget.SplitWidget);
+    assert.instanceOf(input.flameChartsContainer, UI.Widget.VBox);
+    assert.instanceOf(input.countersView, Timeline.CountersGraph.CountersGraph);
     assert.instanceOf(input.detailsView, Timeline.TimelineDetailsView.TimelineDetailsPane);
     assert.isFalse(input.inert);
 
@@ -621,6 +622,32 @@ describe('TimelineFlameChartView', function() {
     flameChartView.updateCountersGraphToggle(true);
     await flameChartView.updateComplete;
     sinon.assert.callCount(view, callCount);
+  });
+
+  it('renders the counters split view show attribute from showMemoryGraph', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const input: Timeline.TimelineFlameChartView.ViewInput = {
+      flameChartsContainer: new UI.Widget.VBox(),
+      countersView: new Timeline.CountersGraph.CountersGraph(new MockViewDelegate()),
+      detailsView: new Timeline.TimelineDetailsView.TimelineDetailsPane(new MockViewDelegate()),
+      showMemoryGraph: true,
+      inert: false,
+      onKeyDown: () => undefined,
+      onSecondaryPointerDown: () => false,
+      onEntryLinkStartCreating: () => {},
+      onEventReferenceClick: () => {},
+    };
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, undefined, container.contentElement);
+    const countersSplit =
+        container.contentElement.querySelector('devtools-split-view[name="timeline-counters-split-view-state"]');
+    assert.strictEqual(countersSplit?.getAttribute('show'), 'both');
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, showMemoryGraph: false}, undefined,
+                                                 container.contentElement);
+    assert.strictEqual(countersSplit?.getAttribute('show'), 'main');
   });
 
   it('cancels entry link annotation creation on Escape keydown', async function() {

@@ -94,7 +94,8 @@ interface FlameChartDimmer {
 const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
-  chartSplitWidget: UI.SplitWidget.SplitWidget;
+  flameChartsContainer: UI.Widget.VBox;
+  countersView: CountersGraph;
   detailsView: TimelineDetailsPane;
   showMemoryGraph: boolean;
   inert: boolean;
@@ -105,11 +106,6 @@ export interface ViewInput {
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
-  if (input.showMemoryGraph && input.chartSplitWidget.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
-    input.chartSplitWidget.showBoth();
-  } else if (!input.showMemoryGraph && input.chartSplitWidget.showMode() !== UI.SplitWidget.ShowMode.ONLY_MAIN) {
-    input.chartSplitWidget.hideSidebar();
-  }
   const container = {
     classes: ['timeline-flamechart'],
     attributes: {jslog: VisualLogging.section('timeline.flame-chart-view'), inert: input.inert},
@@ -140,7 +136,15 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
     <devtools-split-view class="timeline-details-split" direction="row" sidebar-position="second"
         name="timeline-panel-details-split-view-state"
         ${widgetRef(UI.SplitWidget.SplitWidget, split => split.installResizer(input.detailsView.headerElement()))}>
-      <div slot="main" ${widget(UI.Widget.WrapperWidget, {widget: input.chartSplitWidget})}></div>
+      <devtools-split-view slot="main" direction="row" sidebar-position="second"
+          name="timeline-counters-split-view-state" show=${input.showMemoryGraph ? 'both' : 'main'}
+          ${widgetRef(UI.SplitWidget.SplitWidget, split => {
+            split.hideDefaultResizer();
+            split.installResizer(input.countersView.resizerElement());
+          })}>
+        <div slot="main" ${widget(UI.Widget.WrapperWidget, {widget: input.flameChartsContainer})}></div>
+        <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, {widget: input.countersView})}></div>
+      </devtools-split-view>
       <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, {widget: input.detailsView})}></div>
     </devtools-split-view>`,
     target, {container});
@@ -170,7 +174,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   private readonly networkFlameChart: PerfUI.FlameChart.FlameChart;
   readonly #networkPane: UI.Widget.VBox;
   readonly #splitResizer: HTMLElement;
-  readonly #chartSplitWidget: UI.SplitWidget.SplitWidget;
+  readonly #flameChartsContainer: UI.Widget.VBox;
   readonly #countersView: CountersGraph;
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in Chromium web_tests.
   private readonly detailsView: TimelineDetailsPane;
@@ -278,6 +282,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#parsedTrace = null;
 
     const flameChartsContainer = new UI.Widget.VBox();
+    this.#flameChartsContainer = flameChartsContainer;
     flameChartsContainer.element.classList.add('flame-charts-container');
 
     // Create main and network flamecharts.
@@ -423,13 +428,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#networkSplitWidget.setMainWidget(this.mainFlameChart);
     this.#networkSplitWidget.setSidebarWidget(this.#networkPane);
 
-    // Create counters chart splitter.
-    this.#chartSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'timeline-counters-split-view-state');
     this.#countersView = new CountersGraph(this.#delegate);
-    this.#chartSplitWidget.setMainWidget(flameChartsContainer);
-    this.#chartSplitWidget.setSidebarWidget(this.#countersView);
-    this.#chartSplitWidget.hideDefaultResizer();
-    this.#chartSplitWidget.installResizer(this.#countersView.resizerElement());
 
     this.detailsView = new TimelineDetailsPane(delegate);
 
@@ -1540,7 +1539,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
   override performUpdate(): void {
     this.#view({
-      chartSplitWidget: this.#chartSplitWidget,
+      flameChartsContainer: this.#flameChartsContainer,
+      countersView: this.#countersView,
       detailsView: this.detailsView,
       showMemoryGraph: this.#showMemoryGraph,
       inert: this.#inert,

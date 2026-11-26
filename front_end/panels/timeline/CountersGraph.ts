@@ -59,6 +59,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface CountersModel {
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
+  events: Trace.Types.Events.Event[]|null;
+}
+
 export class CountersGraph extends UI.Widget.VBox {
   delegate?: TimelineModeViewDelegate;
   private readonly calculator: Calculator;
@@ -72,6 +77,7 @@ export class CountersGraph extends UI.Widget.VBox {
   private readonly counterUI: CounterUI[];
   private readonly countersByName: Map<string, Counter>;
   private readonly gpuMemoryCounter: Counter;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #events: Trace.Types.Events.Event[]|null = null;
   currentValuesBar?: HTMLElement;
   private markerXPosition?: number;
@@ -177,7 +183,15 @@ export class CountersGraph extends UI.Widget.VBox {
     }
   }
 
+  set model(data: CountersModel) {
+    if (this.#parsedTrace === data.parsedTrace && this.#events === data.events) {
+      return;
+    }
+    this.setModel(data.parsedTrace, data.events);
+  }
+
   setModel(parsedTrace: Trace.TraceModel.ParsedTrace|null, events: Trace.Types.Events.Event[]|null): void {
+    this.#parsedTrace = parsedTrace;
     this.#events = events;
     if (!events || !parsedTrace) {
       return;

@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {it} from 'mocha';
+import sinon from 'sinon';
 
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
@@ -135,5 +136,24 @@ describeWithEnvironment('CountersGraph', () => {
     assert.strictEqual(countersGraph.element, hostElement);
     assert.strictEqual(countersGraph.element.id, 'memory-graphs-container');
     countersGraph.detach();
+  });
+
+  it('delegates model setter assignments to setModel', async function() {
+    const {countersGraph, parsedTrace} = await renderCountersGraphForMainThread(this);
+    const setModelSpy = sinon.spy(countersGraph, 'setModel');
+    const events: Trace.Types.Events.Event[] = [];
+
+    countersGraph.model = {parsedTrace, events};
+    sinon.assert.calledOnceWithExactly(setModelSpy, parsedTrace, events);
+  });
+
+  it('skips setModel when assigned an unchanged model', async function() {
+    const {countersGraph, parsedTrace} = await renderCountersGraphForMainThread(this);
+    const events: Trace.Types.Events.Event[] = [];
+    countersGraph.model = {parsedTrace, events};
+
+    const setModelSpy = sinon.spy(countersGraph, 'setModel');
+    countersGraph.model = {parsedTrace, events};
+    sinon.assert.notCalled(setModelSpy);
   });
 });

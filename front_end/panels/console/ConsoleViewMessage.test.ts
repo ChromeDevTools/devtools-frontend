@@ -2766,4 +2766,152 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       assert.isNull((await view.nextInput).onInvoke);
     });
   });
+
+  describe('migrated Lit message paths', () => {
+    it('formats network error messages with method, revealable request link, failure, and status', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const url = Platform.DevToolsPath.urlString`https://example.com/api`;
+      const request = SDK.NetworkRequest.NetworkRequest.create('req-1' as Protocol.Network.RequestId, url,
+                                                               Platform.DevToolsPath.EmptyUrlString, null, null, null);
+      request.requestMethod = 'GET';
+      request.failed = true;
+      request.localizedFailDescription = 'net::ERR_FAILED';
+      request.statusCode = 404;
+      request.statusText = 'Not Found';
+      sinon.stub(Logs.NetworkLog.NetworkLog, 'requestForConsoleMessage').returns(request);
+
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Protocol.Log.LogEntrySource.Network,
+          Protocol.Log.LogEntryLevel.Error,
+          'Failed to load resource',
+      );
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const element = message.toMessageElement();
+
+      const textElement = element.querySelector<HTMLElement>('.console-message-text');
+      assert.exists(textElement);
+      assert.strictEqual(textElement.textContent, 'GET https://example.com/api net::ERR_FAILED 404 (Not Found)');
+
+      const link = textElement.querySelector<HTMLElement>('.devtools-link');
+      assert.exists(link);
+      assert.strictEqual(Components.Linkifier.Linkifier.linkInfo(link)?.revealable, request);
+    });
+
+    it('formats non-error network messages by linking the request revealable and other URLs', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const requestUrl = Platform.DevToolsPath.urlString`https://example.com/api`;
+      const otherUrl = Platform.DevToolsPath.urlString`https://other.test/page`;
+      const request = SDK.NetworkRequest.NetworkRequest.create('req-2' as Protocol.Network.RequestId, requestUrl,
+                                                               Platform.DevToolsPath.EmptyUrlString, null, null, null);
+      sinon.stub(Logs.NetworkLog.NetworkLog, 'requestForConsoleMessage').returns(request);
+
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Protocol.Log.LogEntrySource.Network,
+          Protocol.Log.LogEntryLevel.Warning,
+          `Redirected ${requestUrl} to ${otherUrl}`,
+      );
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const element = message.toMessageElement();
+
+      const links = [...element.querySelectorAll<HTMLElement>('.console-message-text .devtools-link')];
+      assert.lengthOf(links, 2);
+      assert.strictEqual(Components.Linkifier.Linkifier.linkInfo(links[0])?.revealable, request);
+      assert.isUndefined(Components.Linkifier.Linkifier.linkInfo(links[1])?.revealable);
+      assert.strictEqual(Components.Linkifier.Linkifier.linkInfo(links[1])?.url, otherUrl);
+    });
+
+    it('renders affected request and issue link icons without a source anchor', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Warning,
+          'Affected resources only',
+          {
+            affectedResources: {
+              requestId: 'req-3' as Protocol.Network.RequestId,
+              issueId: 'issue-3' as Protocol.Audits.IssueId,
+            },
+          },
+      );
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const element = message.toMessageElement();
+
+      const anchor = element.querySelector('.console-message-anchor');
+      assert.exists(anchor);
+      assert.exists(anchor.querySelector('devtools-request-link-icon.resource-links'));
+      assert.exists(anchor.querySelector('devtools-issue-link-icon.resource-links'));
+    });
+
+    it('renders affected request and issue link icons alongside a source anchor', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Warning,
+          'With source anchor',
+          {
+            url: Platform.DevToolsPath.urlString`https://example.com/app.js`,
+            line: 10,
+            affectedResources: {
+              requestId: 'req-4' as Protocol.Network.RequestId,
+              issueId: 'issue-4' as Protocol.Audits.IssueId,
+            },
+          },
+      );
+      const {message, linkifier} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const sourceLink = document.createElement('button');
+      sourceLink.textContent = 'app.js:11';
+      linkifier.linkifyScriptLocation.returns(sourceLink);
+
+      const element = message.toMessageElement();
+
+      const anchor = element.querySelector('.console-message-anchor');
+      assert.exists(anchor);
+      assert.strictEqual(anchor.firstElementChild, sourceLink);
+      assert.strictEqual(sourceLink.tabIndex, -1);
+      assert.exists(anchor.querySelector('devtools-request-link-icon.resource-links'));
+      assert.exists(anchor.querySelector('devtools-issue-link-icon.resource-links'));
+    });
+
+    it('renders ConsoleAPICalledEventType.Clear messages for both preserve-log settings', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const preserveSetting =
+          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor);
+
+      preserveSetting.set(false);
+      const clearedRaw = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          '',
+          {type: Protocol.Runtime.ConsoleAPICalledEventType.Clear},
+      );
+      const clearedElement = createConsoleViewMessageWithStubDeps(clearedRaw).message.toMessageElement();
+      const clearedText = clearedElement.querySelector<HTMLElement>('.console-message-text.console-info');
+      assert.exists(clearedText);
+      assert.strictEqual(clearedText.textContent, 'Console was cleared');
+      assert.include(clearedText.title, 'Clear all messages');
+
+      preserveSetting.set(true);
+      const preventedRaw = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          '',
+          {type: Protocol.Runtime.ConsoleAPICalledEventType.Clear},
+      );
+      const preventedElement = createConsoleViewMessageWithStubDeps(preventedRaw).message.toMessageElement();
+      const preventedText = preventedElement.querySelector<HTMLElement>('.console-message-text.console-info');
+      assert.exists(preventedText);
+      assert.strictEqual(preventedText.textContent, 'console.clear() was prevented due to \'Keep log\'');
+    });
+  });
 });

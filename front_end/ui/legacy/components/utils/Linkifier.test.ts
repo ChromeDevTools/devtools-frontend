@@ -35,6 +35,7 @@ import {
 } from '../../../../testing/ResourceTreeHelpers.js';
 import {stubFrame} from '../../../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../../../testing/TestUniverse.js';
+import {render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import * as Components from './utils.js';
@@ -821,6 +822,24 @@ describeWithEnvironment('Linkifier', () => {
       const link = Components.Linkifier.Linkifier.linkifyRevealable(request, url, url);
       const info = Components.Linkifier.Linkifier.linkInfo(link);
       assert.exists(info);
+      const action =
+          Components.Linkifier.Linkifier.linkActions(info).find(action => action.jslogContext === 'open-in-new-tab');
+      assert.exists(action);
+      await action.handler();
+      sinon.assert.calledOnceWithExactly(stub, url, MAIN_FRAME_ID);
+    });
+
+    it('is derived from the request that a rendered link reveals', async () => {
+      const {target} = setUpEnvironment();
+      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      const request = createRequestOfFrame(getMainFrame(target), url);
+      const container = document.createElement('div');
+      render(Components.Linkifier.Linkifier.renderRevealable(request, url, url), container);
+      const link = container.querySelector<HTMLElement>('.devtools-link');
+      assert.exists(link);
+      const info = Components.Linkifier.Linkifier.linkInfo(link);
+      assert.exists(info);
+      assert.strictEqual(info.revealable, request);
       const action =
           Components.Linkifier.Linkifier.linkActions(info).find(action => action.jslogContext === 'open-in-new-tab');
       assert.exists(action);

@@ -664,6 +664,23 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     return link;
   }
 
+  /** Renders a link that reveals `revealable` when clicked. */
+  static renderRevealable(revealable: Object, text: string, fallbackHref?: Platform.DevToolsPath.UrlString, options: {
+    title?: string,
+    className?: string,
+    jslogContext?: string,
+    onRef?: (el: HTMLElement) => void,
+  } = {}): TemplateResult {
+    return Linkifier.renderLink(text, options.className || '', {
+      maxLength: UI.UIUtils.MaxLengthForDisplayedURLs,
+      href: fallbackHref,
+      title: options.title,
+      jslogContext: options.jslogContext,
+      onRef: options.onRef,
+      revealable,
+    });
+  }
+
   private static renderLink(text: string|HTMLElement, className: string, options: CreateLinkOptions = {}):
       TemplateResult {
     const {maxLength, title, href, preventClick, tabStop, bypassURLTrimming, jslogContext} = options;
@@ -709,6 +726,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
           userMetric: options.userMetric,
           allowPrivileged: options.allowPrivileged,
           initiatorId: options.initiatorId,
+          revealable: options.revealable,
         };
         infoByAnchor.set(link, linkInfo);
       });
@@ -1349,6 +1367,7 @@ interface CreateLinkOptions {
   onRef?: (el: HTMLElement) => void;
   allowPrivileged?: boolean;
   initiatorId?: OpenInNewTabInitiatorIdOrProvider;
+  revealable?: Object;
 }
 
 interface LinkDisplayOptions {

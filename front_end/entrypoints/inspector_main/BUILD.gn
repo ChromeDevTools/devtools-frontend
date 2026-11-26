@@ -91,6 +91,7 @@ ts_library("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
+    "../../core/i18n:bundle",
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",

@@ -8,7 +8,9 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createFakeSetting, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -17,24 +19,132 @@ import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as InspectorMain from './inspector_main.js';
 
-const RENDERING_ENUM_DESCRIPTORS = [
-  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
-  SDK.SDKSettings.emulatedCSSMediaSettingDescriptor,
-  SDK.SDKSettings.emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
-  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersContrastSettingDescriptor,
-  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
-  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor,
-  SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor,
-  SDK.SDKSettings.emulatedCSSMediaFeatureColorGamutSettingDescriptor,
-  SDK.SDKSettings.emulatedVisionDeficiencySettingDescriptor,
-  SDK.SDKSettings.emulatedOSTextScaleSettingDescriptor,
-];
+function option(value: string, label: string) {
+  const text = i18n.i18n.lockedLazyString(label);
+  return {value, title: text, text};
+}
+
+const RENDERING_UI_DESCRIPTORS: Array<{
+  descriptor: Common.Settings.SettingDescriptor<string>,
+  title: string,
+  options: Array<[string, string]>,
+}> =
+    [
+      {
+        descriptor: SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
+        title: 'Emulate CSS media feature prefers-color-scheme',
+        options: [
+          ['', 'No emulation'],
+          ['light', 'prefers-color-scheme: light'],
+          ['dark', 'prefers-color-scheme: dark'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedCSSMediaSettingDescriptor,
+        title: 'Emulate CSS media type',
+        options: [
+          ['', 'No emulation'],
+          ['print', 'print'],
+          ['screen', 'screen'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
+        title: 'Emulate CSS media feature forced-colors',
+        options: [
+          ['', 'No emulation'],
+          ['active', 'forced-colors: active'],
+          ['none', 'forced-colors: none'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedCSSMediaFeaturePrefersContrastSettingDescriptor,
+        title: 'Emulate CSS media feature prefers-contrast',
+        options: [
+          ['', 'No emulation'],
+          ['more', 'prefers-contrast: more'],
+          ['less', 'prefers-contrast: less'],
+          ['custom', 'prefers-contrast: custom'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
+        title: 'Emulate CSS media feature prefers-reduced-motion',
+        options: [
+          ['', 'No emulation'],
+          ['reduce', 'prefers-reduced-motion: reduce'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor,
+        title: 'Emulate CSS media feature prefers-reduced-data',
+        options: [
+          ['', 'No emulation'],
+          ['reduce', 'prefers-reduced-data: reduce'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor,
+        title: 'Emulate CSS media feature prefers-reduced-transparency',
+        options: [
+          ['', 'No emulation'],
+          ['reduce', 'prefers-reduced-transparency: reduce'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedCSSMediaFeatureColorGamutSettingDescriptor,
+        title: 'Emulate CSS media feature color-gamut',
+        options: [
+          ['', 'No emulation'],
+          ['srgb', 'color-gamut: srgb'],
+          ['p3', 'color-gamut: p3'],
+          ['rec2020', 'color-gamut: rec2020'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedVisionDeficiencySettingDescriptor,
+        title: 'Emulate vision deficiencies',
+        options: [
+          ['none', 'No emulation'],
+          ['blurredVision', 'Blurred vision'],
+          ['reducedContrast', 'Reduced contrast'],
+          ['protanopia', 'Protanopia (no red)'],
+          ['deuteranopia', 'Deuteranopia (no green)'],
+          ['tritanopia', 'Tritanopia (no blue)'],
+          ['achromatopsia', 'Achromatopsia (no color)'],
+        ],
+      },
+      {
+        descriptor: SDK.SDKSettings.emulatedOSTextScaleSettingDescriptor,
+        title: 'Emulate OS text scale',
+        options: [
+          ['', 'No emulation'],
+          ['0.85', '85%'],
+          ['1', '100% (default)'],
+          ['1.15', '115%'],
+          ['1.3', '130%'],
+          ['1.5', '150%'],
+          ['1.8', '180%'],
+          ['2', '200%'],
+          ['2.5', '250%'],
+          ['3', '300%'],
+          ['3.5', '350%'],
+        ],
+      },
+    ];
+
+function registerRenderingUIRegistrations(): void {
+  for (const {descriptor, title, options} of RENDERING_UI_DESCRIPTORS) {
+    SettingsUI.SettingUIRegistration.register(descriptor, {
+      title: i18n.i18n.lockedLazyString(title),
+      options: options.map(([value, label]) => option(value, label)),
+    });
+  }
+}
 
 describeWithEnvironment('RenderingOptions', () => {
   beforeEach(() => {
-    for (const descriptor of RENDERING_ENUM_DESCRIPTORS) {
-      SettingsUI.SettingUIRegistration.register(descriptor, {});
-    }
+    registerRenderingUIRegistrations();
     const autoDarkModeSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulateAutoDarkModeSettingDescriptor);
     autoDarkModeSetting.setSettingType(Common.Settings.SettingType.BOOLEAN);
@@ -42,6 +152,22 @@ describeWithEnvironment('RenderingOptions', () => {
   });
 
   describe('RenderingOptionsView', () => {
+    describe('accessibility', () => {
+      it('has no aXe violations', async () => {
+        const widget = new InspectorMain.RenderingOptions.RenderingOptionsView();
+        renderElementIntoDOM(widget);
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        assert.exists(widget.contentElement.querySelector('[title="Paint flashing"]'));
+        assert.exists(widget.contentElement.querySelector('[title="Disable WebP image format"]'));
+        const select = widget.contentElement.querySelector('select');
+        assert.isNotNull(select);
+        assert.isNotEmpty(select.getAttribute('aria-label'));
+        assert.isAbove(select.options.length, 0);
+        assert.isEmpty(await getAxeViolations(widget.element));
+      });
+    });
+
     it('passes resolved settings to the view', async () => {
       const view = createViewFunctionStub(InspectorMain.RenderingOptions.RenderingOptionsView);
       const widget = new InspectorMain.RenderingOptions.RenderingOptionsView(undefined, view);

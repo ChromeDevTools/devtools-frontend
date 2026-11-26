@@ -641,6 +641,39 @@ describe('TimelineFlameChartView', function() {
     assert.isFalse(view.input.onSecondaryPointerDown());
   });
 
+  it('focuses the view when entry link creation starts', async () => {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    await view.nextInput;
+
+    const focusSpy = sinon.spy(flameChartView, 'focus');
+    view.input.onEntryLinkStartCreating();
+    sinon.assert.calledOnce(focusSpy);
+  });
+
+  it('selects and reveals the event on event reference click', async function() {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    await view.nextInput;
+
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+    flameChartView.getMainDataProvider().timelineData();
+
+    const setSelectionSpy = sinon.spy(flameChartView, 'setSelectionAndReveal');
+    const event = flameChartView.getMainDataProvider().eventByIndex(204);
+    assert.exists(event);
+    view.input.onEventReferenceClick(event);
+    sinon.assert.calledOnce(setSelectionSpy);
+  });
+
   it('coalesces overlay updates when main and network flame charts redraw in the same turn', async () => {
     const mockViewDelegate = new MockViewDelegate();
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(

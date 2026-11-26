@@ -96,6 +96,8 @@ export interface ViewInput {
   inert: boolean;
   onKeyDown: (keyInfo: {key: string, altKey: boolean}) => 'handled' | 'stop-propagation' | undefined;
   onSecondaryPointerDown: () => boolean;
+  onEntryLinkStartCreating: () => void;
+  onEventReferenceClick: (event: Trace.Types.Events.Event) => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
@@ -119,6 +121,9 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
           event.stopPropagation();
         }
       },
+      [OverlayComponents.EntriesLinkOverlay.EntryLinkStartCreating.eventName]: input.onEntryLinkStartCreating,
+      [TimelineInsights.EventRef.EventReferenceClick.eventName]: (event: Event) =>
+          input.onEventReferenceClick((event as TimelineInsights.EventRef.EventReferenceClick).event),
     },
   };
   // clang-format off
@@ -395,22 +400,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       }
     });
 
-    this.element.addEventListener(OverlayComponents.EntriesLinkOverlay.EntryLinkStartCreating.eventName, () => {
-      /**
-       * When the user creates an entries link, they click on the arrow icon to
-       * begin creating it. At this point the arrow icon gets deleted. This
-       * causes the focus of the page by default to jump to the entire Timeline
-       * Panel. This is a bit aggressive; and problematic as it means we cannot
-       * use <ESC> to cancel the creation of the entry. So instead we focus the
-       * TimelineFlameChartView instead. This means that the user's <ESC> gets
-       * dealt with in its keydown.
-       * If the user goes ahead and creates the entry, they will end up
-       * focused on whichever target entry they pick, so this only matters for
-       * the case where the user hits <ESC> to cancel.
-       */
-      this.focus();
-    });
-
     this.#networkPane = new UI.Widget.VBox();
     this.#networkPane.setMinimumSize(23, 23);
     this.networkFlameChart.show(this.#networkPane.element);
@@ -507,11 +496,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       const eventRef = (event as Overlays.Overlays.EventReferenceClick);
       const fromTraceEvent = selectionFromEvent(eventRef.event);
       void this.openSelectionDetailsView(fromTraceEvent);
-    });
-
-    // This is for the detail view of layout shift.
-    this.element.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
-      void this.setSelectionAndReveal(selectionFromEvent(event.event));
     });
 
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
@@ -1552,6 +1536,9 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       inert: this.#inert,
       onKeyDown: this.#onKeyDown,
       onSecondaryPointerDown: this.#onSecondaryPointerDown,
+      // Focus this view when link creation deletes the arrow so Escape cancels via keydown.
+      onEntryLinkStartCreating: () => this.focus(),
+      onEventReferenceClick: event => void this.setSelectionAndReveal(selectionFromEvent(event)),
     },
                undefined, this.contentElement);
     if (this.#needsResizeToPreferredHeights) {

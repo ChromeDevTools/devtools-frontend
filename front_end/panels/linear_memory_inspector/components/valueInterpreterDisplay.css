@@ -4,53 +4,50 @@
  * found in the LICENSE file.
  */
 
-:host {
-  flex: auto;
-  display: flex;
-}
+@scope to (devtools-widget > *) {
+  .value-types {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: var(--sys-size-3) var(--sys-size-11);
+    min-height: var(--sys-size-11);
+    overflow: hidden;
+    padding: var(--sys-size-2) var(--sys-size-6);
+    align-items: baseline;
+    justify-content: start;
+  }
 
-.value-types {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  gap: var(--sys-size-3) var(--sys-size-11);
-  min-height: var(--sys-size-11);
-  overflow: hidden;
-  padding: var(--sys-size-2) var(--sys-size-6);
-  align-items: baseline;
-  justify-content: start;
-}
+  .value-type-cell {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: var(--sys-size-11);
+  }
 
-.value-type-cell {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  min-height: var(--sys-size-11);
-}
+  .value-type-value-with-link {
+    display: flex;
+    align-items: center;
+  }
 
-.value-type-value-with-link {
-  display: flex;
-  align-items: center;
-}
+  .value-type-cell-no-mode {
+    grid-column: 1 / 3;
+  }
 
-.value-type-cell-no-mode {
-  grid-column: 1 / 3;
-}
+  .signed-divider {
+    width: var(--sys-size-1);
+    height: var(--sys-size-8);
+    background-color: var(--sys-color-divider);
+    margin: 0 var(--sys-size-3);
+  }
 
-.signed-divider {
-  width: var(--sys-size-1);
-  height: var(--sys-size-8);
-  background-color: var(--sys-color-divider);
-  margin: 0 var(--sys-size-3);
-}
+  .selectable-text {
+    user-select: text;
+  }
 
-.selectable-text {
-  user-select: text;
-}
-
-.selectable-text::selection {
-  background-color: var(--sys-color-tonal-container);
-  color: currentcolor;
+  .selectable-text::selection {
+    background-color: var(--sys-color-tonal-container);
+    color: currentcolor;
+  }
 }

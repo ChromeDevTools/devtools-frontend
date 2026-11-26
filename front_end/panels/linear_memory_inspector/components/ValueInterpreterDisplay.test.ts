@@ -222,7 +222,7 @@ describe('ValueInterpreterDisplay', () => {
     const target = document.createElement('div');
     target.style.width = 'var(--sys-size-30)';
     target.style.height = 'var(--sys-size-30)';
-    renderElementIntoDOM(target);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
 
     // Include in incorrect pointer value at index 0.
     const array = [0xC8, 0xC9, 0xCA, 0XCB];

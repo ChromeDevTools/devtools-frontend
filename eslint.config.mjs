@@ -891,8 +891,6 @@ export default defineConfig([
             'front_end/panels/event_listeners/EventListenersView.ts',
             'front_end/panels/layer_viewer/Layers3DView.ts',
             'front_end/panels/lighthouse/LighthousePanel.ts',
-            'front_end/panels/linear_memory_inspector/components/LinearMemoryNavigator.ts',
-            'front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts',
             'front_end/panels/media/PlayerMessagesView.ts',
             'front_end/panels/network/NetworkPanel.ts',
             'front_end/panels/profiler/HeapProfileView.ts',

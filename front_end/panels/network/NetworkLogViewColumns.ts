@@ -773,6 +773,16 @@ export class NetworkLogViewColumns {
     }
   }
 
+  private async showCustomHeadersDialog(view: NetworkManageCustomHeadersView, jslogContext: string): Promise<void> {
+    const dialog = new UI.Dialog.Dialog(jslogContext);
+    view.show(dialog.contentElement);
+    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    dialog.show(this.networkLogView.element);
+    // The view renders asynchronously; MEASURE_CONTENT only measures on show().
+    await view.updateComplete;
+    dialog.positionContent();
+  }
+
   private manageRequestCustomHeaderDialog(): void {
     const customHeadersRequest = [];
     for (const columnConfig of this.columns) {
@@ -788,10 +798,7 @@ export class NetworkLogViewColumns {
         (oldHeaderId, headerTitle) => Boolean(
             this.changeCustomHeader(`request-header-${oldHeaderId}`, headerTitle, `request-header-${headerTitle}`)),
         headerTitle => Boolean(this.removeCustomHeader(`request-header-${headerTitle}`)));
-    const dialogRequest = new UI.Dialog.Dialog('manage-custom-request-headers');
-    manageCustomHeadersRequest.show(dialogRequest.contentElement);
-    dialogRequest.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    dialogRequest.show(this.networkLogView.element);
+    void this.showCustomHeadersDialog(manageCustomHeadersRequest, 'manage-custom-request-headers');
   }
 
   private manageResponseCustomHeaderDialog(): void {
@@ -810,11 +817,7 @@ export class NetworkLogViewColumns {
         (oldHeaderId, headerTitle) => Boolean(
             this.changeCustomHeader(`response-header-${oldHeaderId}`, headerTitle, `response-header-${headerTitle}`)),
         headerTitle => Boolean(this.removeCustomHeader(`response-header-${headerTitle}`)));
-
-    const dialogResponse = new UI.Dialog.Dialog('manage-custom-response-headers');
-    manageCustomHeadersResponse.show(dialogResponse.contentElement);
-    dialogResponse.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    dialogResponse.show(this.networkLogView.element);
+    void this.showCustomHeadersDialog(manageCustomHeadersResponse, 'manage-custom-response-headers');
   }
 
   private removeCustomHeader(headerId: string): boolean {

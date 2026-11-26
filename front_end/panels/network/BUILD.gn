@@ -178,6 +178,7 @@ devtools_ui_module("unittests") {
     "NetworkDataGridNode.test.ts",
     "NetworkItemView.test.ts",
     "NetworkLogView.test.ts",
+    "NetworkLogViewColumns.test.ts",
     "NetworkManageCustomHeadersView.test.ts",
     "NetworkOverview.test.ts",
     "NetworkPanel.test.ts",

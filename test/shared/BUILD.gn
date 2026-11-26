@@ -32,3 +32,11 @@ node_ts_library("shared") {
     "../conductor:core",
   ]
 }
+
+node_ts_library("unittests") {
+  sources = [ "resultsdb-collector.test.ts" ]
+  ts_deps = [
+    ":resultsdb_collector",
+    "../conductor:core",
+  ]
+}

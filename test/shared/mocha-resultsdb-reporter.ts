@@ -52,8 +52,12 @@ export class ResultsDbReporter extends Mocha.reporters.Base {
     }
 
     runner.on(EVENT_TEST_PASS, this.onTestPass.bind(this));
-    runner.on(EVENT_TEST_FAIL, this.onTestFail.bind(this));
-    runner.on(EVENT_TEST_RETRY, this.onTestFail.bind(this));
+    runner.on(EVENT_TEST_FAIL, (test: Mocha.Test|Mocha.Hook, error: unknown) => {
+      this.onTestFail(test, error, false);
+    });
+    runner.on(EVENT_TEST_RETRY, (test: Mocha.Test|Mocha.Hook, error: unknown) => {
+      this.onTestFail(test, error, true);
+    });
     runner.on(EVENT_TEST_PENDING, this.onTestSkip.bind(this));
 
     runner.once(EVENT_RUN_END, this.epilogue.bind(this));
@@ -73,7 +77,11 @@ export class ResultsDbReporter extends Mocha.reporters.Base {
     });
   }
 
-  private onTestFail(test: Mocha.Test|Mocha.Hook, error: Error|ScreenshotError|unknown): void {
+  private onTestFail(
+      test: Mocha.Test|Mocha.Hook,
+      error: Error|ScreenshotError|unknown,
+      willRetry: boolean,
+      ): void {
     let targetTest: Mocha.Test;
     const isHook = test.type === 'hook';
     if (isHook) {
@@ -94,6 +102,7 @@ export class ResultsDbReporter extends Mocha.reporters.Base {
       hookName: this.maybeHook(test),
       hookTitle: isHook ? test.title : undefined,
       runAttempt: testRetry.currentRetry() + 1,
+      willRetry,
     });
   }
 
@@ -118,6 +127,9 @@ export class ResultsDbReporter extends Mocha.reporters.Base {
 
   override epilogue(): void {
     super.epilogue();
-    this.#collector.finalize(this.failures.length);
+    const {exitCode, expectedFailures} = this.#collector.finalize();
+    if (exitCode !== 0 || expectedFailures > 0) {
+      process.exitCode = exitCode;
+    }
   }
 }

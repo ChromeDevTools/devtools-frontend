@@ -26,6 +26,7 @@ const SCRIPT_TEST_DIRECTORIES = [
   'scripts/ai_assistance',
   'test/ai_evals/report',
   'test/conductor',
+  'test/shared',
 ];
 
 export function loadScriptTests(): string[] {

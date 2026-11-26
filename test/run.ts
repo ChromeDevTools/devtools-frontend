@@ -473,6 +473,7 @@ function main() {
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/ai_assistance')),
     new ScriptTests(path.join(SOURCE_ROOT, 'test/ai_evals/report')),
     new ScriptTests(path.join(SOURCE_ROOT, 'test/conductor')),
+    new ScriptTests(path.join(SOURCE_ROOT, 'test/shared')),
   ];
 
   if (!options['skip-ninja']) {

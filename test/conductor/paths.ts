@@ -116,6 +116,7 @@ export function resolveBuildTestId(spec: string): string {
     'scripts/',
     'test/ai_evals/report/',
     'test/conductor/',
+    'test/shared/',
   ].some(dir => normalizedFile.startsWith(dir));
   if (isScriptTest) {
     const absoluteFile = path.join(SOURCE_ROOT, file);

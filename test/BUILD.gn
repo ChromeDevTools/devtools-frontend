@@ -59,6 +59,7 @@ group("unittests") {
     "../mcp:foundation_unittests",
     "conductor:unittests",
     "shared",
+    "shared:unittests",
     "unit:devtools_node_unit_tests",
     "unit:devtools_unit_tests",
     "unit:karma",

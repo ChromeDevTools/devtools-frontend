@@ -15,6 +15,10 @@ node_ts_library("resultsdb_collector") {
 }
 
 node_ts_library("shared") {
+  # screenshots.ts exposes Puppeteer types in its public API, so dependents read
+  # them when type checking.
+  public_inputs = typescript_puppeteer_types_inputs
+
   sources = [
     "helper.ts",
     "mocha-resultsdb-reporter.ts",

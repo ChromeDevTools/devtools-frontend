@@ -598,6 +598,27 @@ describeWithEnvironment('TextEditor autocompletion', () => {
     assert.isNull(result);
   });
 
+  it('completes Map keys as escaped string literals and skips non-string keys', async () => {
+    const executionContext = new MockExecutionContext(createTarget());
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+    const evaluateStub = sinon.stub(executionContext, 'evaluate').resolves({
+      object: new SDK.RemoteObject.LocalJSONObject(['plain', 'quote"inside', 'back\\slash', 'line\nbreak', 42, {}]),
+    });
+
+    const state = makeState('map.get(', CodeMirror.javascript.javascriptLanguage);
+    const result =
+        await TextEditor.JavaScript.javascriptCompletionSource(new CodeMirror.CompletionContext(state, 8, false));
+
+    assert.isNotNull(result);
+    sinon.assert.calledWithMatch(evaluateStub, {expression: '[...Map.prototype.keys.call(map)]'});
+    assert.deepEqual(result.options.map(option => option.label), [
+      '"plain")',
+      '"quote\\"inside")',
+      '"back\\\\slash")',
+      '"line\\nbreak")',
+    ]);
+  });
+
   it('completes original and synthesized variables from source map scopes and skips unavailable variables',
      async () => {
        updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});

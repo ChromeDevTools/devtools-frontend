@@ -371,8 +371,14 @@ async function maybeCompleteKeysFromMap(objectVariable: string, target?: Evaluat
   const properties = SDK.RemoteObject.RemoteArray.objectAsArray(maybeRetrieveKeys);
   const numProperties = properties.length();
   for (let i = 0; i < numProperties; i++) {
+    // The keys come from the inspected page. Only suggest string keys and emit them as a string literal
+    // that evaluates to the key, so the suggestion can never be anything but that one argument.
+    const key: unknown = (await properties.at(i)).value;
+    if (typeof key !== 'string') {
+      continue;
+    }
     result.add({
-      label: `"${(await properties.at(i)).value}")`,
+      label: `${JSON.stringify(key)})`,
       type: 'constant',
       boost: i * -1,
     });

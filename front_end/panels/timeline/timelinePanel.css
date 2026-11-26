@@ -84,10 +84,6 @@
   top: var(--sys-size-1);
 }
 
-.timeline-details-split {
-  flex: auto;
-}
-
 .timeline.panel .status-pane-container {
   z-index: 1000;
   display: flex;
@@ -170,10 +166,6 @@
   width: 100%;
   overflow: hidden;
   line-height: 18px;
-}
-
-.timeline-flamechart {
-  overflow: hidden;
 }
 
 .timeline-layers-view-properties table {

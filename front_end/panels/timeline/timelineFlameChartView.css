@@ -5,6 +5,15 @@
  */
 
 @scope to (devtools-widget > *) {
+  :scope {
+    overflow: hidden;
+  }
+
+  devtools-split-view,
+  .timeline-details-split {
+    flex: auto;
+  }
+
   .timeline-overlays-container {
     position: absolute;
     inset: 0;

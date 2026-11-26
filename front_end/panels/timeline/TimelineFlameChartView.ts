@@ -96,6 +96,7 @@ const {widget, widgetRef} = UI.Widget;
 export interface ViewInput {
   chartSplitWidget: UI.SplitWidget.SplitWidget;
   detailsView: TimelineDetailsPane;
+  showMemoryGraph: boolean;
   inert: boolean;
   onKeyDown: (keyInfo: {key: string, altKey: boolean}) => 'handled' | 'stop-propagation' | undefined;
   onSecondaryPointerDown: () => boolean;
@@ -104,6 +105,11 @@ export interface ViewInput {
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  if (input.showMemoryGraph && input.chartSplitWidget.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
+    input.chartSplitWidget.showBoth();
+  } else if (!input.showMemoryGraph && input.chartSplitWidget.showMode() !== UI.SplitWidget.ShowMode.ONLY_MAIN) {
+    input.chartSplitWidget.hideSidebar();
+  }
   const container = {
     classes: ['timeline-flamechart'],
     attributes: {jslog: VisualLogging.section('timeline.flame-chart-view'), inert: input.inert},
@@ -256,6 +262,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #networkPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #mainPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #listenersAttached = false;
+  #showMemoryGraph = true;
   #inert = false;
   readonly #view: View;
   readonly #boundOnMainDataChanged = (): void => {
@@ -1535,6 +1542,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#view({
       chartSplitWidget: this.#chartSplitWidget,
       detailsView: this.detailsView,
+      showMemoryGraph: this.#showMemoryGraph,
       inert: this.#inert,
       onKeyDown: this.#onKeyDown,
       onSecondaryPointerDown: this.#onSecondaryPointerDown,
@@ -1549,11 +1557,11 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   updateCountersGraphToggle(showMemoryGraph: boolean): void {
-    if (showMemoryGraph) {
-      this.#chartSplitWidget.showBoth();
-    } else {
-      this.#chartSplitWidget.hideSidebar();
+    if (this.#showMemoryGraph === showMemoryGraph) {
+      return;
     }
+    this.#showMemoryGraph = showMemoryGraph;
+    this.requestUpdate();
   }
 
   zoomEvent(event: Trace.Types.Events.Event): void {

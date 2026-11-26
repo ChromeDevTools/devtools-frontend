@@ -603,6 +603,26 @@ describe('TimelineFlameChartView', function() {
     assert.isFalse((await view.nextInput).inert);
   });
 
+  it('updates showMemoryGraph in the view input when toggled', async () => {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    assert.isTrue((await view.nextInput).showMemoryGraph);
+
+    flameChartView.updateCountersGraphToggle(false);
+    assert.isFalse((await view.nextInput).showMemoryGraph);
+
+    flameChartView.updateCountersGraphToggle(true);
+    assert.isTrue((await view.nextInput).showMemoryGraph);
+
+    const callCount = view.callCount;
+    flameChartView.updateCountersGraphToggle(true);
+    await flameChartView.updateComplete;
+    sinon.assert.callCount(view, callCount);
+  });
+
   it('cancels entry link annotation creation on Escape keydown', async function() {
     const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(

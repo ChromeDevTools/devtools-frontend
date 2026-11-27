@@ -667,7 +667,9 @@ describe('TimelineFlameChartView', function() {
     activeWidgets.push(flameChartView);
     renderElementIntoDOM(flameChartView);
     const input = await view.nextInput;
-    assert.instanceOf(input.flameChartsContainer, UI.Widget.VBox);
+    assert.instanceOf(input.networkSplitWidget, UI.SplitWidget.SplitWidget);
+    assert.isTrue(input.overlaysContainer.classList.contains('timeline-overlays-container'));
+    assert.isTrue(input.tooltipElement.classList.contains('timeline-entry-tooltip-element'));
     assert.isFalse(input.inert);
 
     flameChartView.overlays().dispatchEvent(new Overlays.Overlays.ConsentDialogVisibilityChange(true));
@@ -699,8 +701,14 @@ describe('TimelineFlameChartView', function() {
 
   function createDefaultViewInput(overrides: Partial<Timeline.TimelineFlameChartView.ViewInput> = {}):
       Timeline.TimelineFlameChartView.ViewInput {
+    const overlaysContainer = document.createElement('div');
+    overlaysContainer.classList.add('timeline-overlays-container');
+    const tooltipElement = document.createElement('div');
+    tooltipElement.classList.add('timeline-entry-tooltip-element');
     return {
-      flameChartsContainer: new UI.Widget.VBox(),
+      networkSplitWidget: new UI.SplitWidget.SplitWidget(false, false),
+      overlaysContainer,
+      tooltipElement,
       delegate: new MockViewDelegate(),
       countersModel: {parsedTrace: null, events: null},
       detailsModel: {
@@ -789,6 +797,19 @@ describe('TimelineFlameChartView', function() {
     const payload = {node: null, events: [makeCompleteEvent('ClickEvent', 10, 20)]};
     detailsPane.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineTreeView.Events.TREE_ROW_CLICKED, payload);
     sinon.assert.calledOnceWithExactly(onTreeRowClicked, payload);
+  });
+
+  it('renders flame-charts-container with overlays and tooltip elements in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const input = createDefaultViewInput();
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, {}, container.contentElement);
+    const chartsContainer = container.contentElement.querySelector('.flame-charts-container');
+    assert.exists(chartsContainer);
+    assert.strictEqual(chartsContainer.querySelector('.timeline-overlays-container'), input.overlaysContainer);
+    assert.strictEqual(chartsContainer.querySelector('.timeline-entry-tooltip-element'), input.tooltipElement);
   });
 
   it('updates countersModel in the view input when the trace model changes', async function() {

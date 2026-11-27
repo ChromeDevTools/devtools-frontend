@@ -96,7 +96,9 @@ type TreeRowEvent = TimelineTreeView.EventTypes[TimelineTreeView.Events.TREE_ROW
 const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
-  flameChartsContainer: UI.Widget.VBox;
+  networkSplitWidget: UI.SplitWidget.SplitWidget;
+  overlaysContainer: HTMLElement;
+  tooltipElement: HTMLElement;
   delegate: TimelineModeViewDelegate;
   countersModel: CountersModel;
   detailsModel: TimelineDetailsModel;
@@ -155,7 +157,11 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
             chartSplit = split;
             split.hideDefaultResizer();
           })}>
-        <div slot="main" ${widget(UI.Widget.WrapperWidget, {widget: input.flameChartsContainer})}></div>
+        <div slot="main" class="flame-charts-container vbox flex-auto">
+          <div ${widget(UI.Widget.WrapperWidget, {widget: input.networkSplitWidget})}></div>
+          ${input.overlaysContainer}
+          ${input.tooltipElement}
+        </div>
         <devtools-widget slot="sidebar"
             ${widget(CountersGraph, {delegate: input.delegate, model: input.countersModel})}
             ${widgetRef(CountersGraph, counters => { countersResizer = counters.resizerElement(); })}></devtools-widget>
@@ -201,7 +207,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   private readonly networkFlameChart: PerfUI.FlameChart.FlameChart;
   readonly #networkPane: UI.Widget.VBox;
   readonly #splitResizer: HTMLElement;
-  readonly #flameChartsContainer: UI.Widget.VBox;
   #countersModel: CountersModel = {parsedTrace: null, events: null};
   #detailsModel: TimelineDetailsModel = {
     parsedTrace: null,
@@ -325,19 +330,11 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#delegate = delegate;
     this.#parsedTrace = null;
 
-    const flameChartsContainer = new UI.Widget.VBox();
-    this.#flameChartsContainer = flameChartsContainer;
-    flameChartsContainer.element.classList.add('flame-charts-container');
-
     // Create main and network flamecharts.
     this.#networkSplitWidget = new UI.SplitWidget.SplitWidget(false, false, 'timeline-flamechart-main-view', 150);
-    this.#networkSplitWidget.show(flameChartsContainer.element);
 
     this.#overlaysContainer.classList.add('timeline-overlays-container');
-    flameChartsContainer.element.appendChild(this.#overlaysContainer);
-
     this.#tooltipElement.classList.add('timeline-entry-tooltip-element');
-    flameChartsContainer.element.appendChild(this.#tooltipElement);
 
     this.#mainPersistedGroupConfigSetting =
         Common.Settings.Settings.instance().createSetting<PerfUI.FlameChart.PersistedGroupConfig[]|null>(
@@ -1572,7 +1569,9 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
   override performUpdate(): void {
     this.#view({
-      flameChartsContainer: this.#flameChartsContainer,
+      networkSplitWidget: this.#networkSplitWidget,
+      overlaysContainer: this.#overlaysContainer,
+      tooltipElement: this.#tooltipElement,
       delegate: this.#delegate,
       countersModel: this.#countersModel,
       detailsModel: this.#detailsModel,

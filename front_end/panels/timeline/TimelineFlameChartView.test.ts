@@ -23,8 +23,10 @@ import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {
   allThreadEntriesInTrace,
+  FakeFlameChartProvider,
   makeCompleteEvent,
   microsecondsTraceWindow,
+  MockFlameChartDelegate,
   renderWidgetInVbox,
   setupIgnoreListManagerEnvironment,
 } from '../../testing/TraceHelpers.js';
@@ -667,7 +669,8 @@ describe('TimelineFlameChartView', function() {
     activeWidgets.push(flameChartView);
     renderElementIntoDOM(flameChartView);
     const input = await view.nextInput;
-    assert.instanceOf(input.networkSplitWidget, UI.SplitWidget.SplitWidget);
+    assert.instanceOf(input.mainFlameChart, PerfUI.FlameChart.FlameChart);
+    assert.instanceOf(input.networkPane, UI.Widget.VBox);
     assert.isTrue(input.overlaysContainer.classList.contains('timeline-overlays-container'));
     assert.isTrue(input.tooltipElement.classList.contains('timeline-entry-tooltip-element'));
     assert.isFalse(input.inert);
@@ -706,7 +709,8 @@ describe('TimelineFlameChartView', function() {
     const tooltipElement = document.createElement('div');
     tooltipElement.classList.add('timeline-entry-tooltip-element');
     return {
-      networkSplitWidget: new UI.SplitWidget.SplitWidget(false, false),
+      mainFlameChart: new PerfUI.FlameChart.FlameChart(new FakeFlameChartProvider(), new MockFlameChartDelegate()),
+      networkPane: new UI.Widget.VBox(),
       splitResizer: document.createElement('div'),
       overlaysContainer,
       tooltipElement,
@@ -819,29 +823,36 @@ describe('TimelineFlameChartView', function() {
     activeWidgets.push(container);
     renderElementIntoDOM(container);
     const input = createDefaultViewInput();
-    const setSidebarSizeSpy = sinon.spy(input.networkSplitWidget, 'setSidebarSize');
     const output: Timeline.TimelineFlameChartView.ViewOutput = {};
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, output, container.contentElement);
+    const networkSplit = container.contentElement
+                             .querySelector<UI.Widget.WidgetElement<UI.SplitWidget.SplitWidget>>(
+                                 'devtools-split-view[name="timeline-flamechart-main-view"]')
+                             ?.getWidget();
+    assert.exists(networkSplit);
+    const setSidebarSizeSpy = sinon.spy(networkSplit, 'setSidebarSize');
     assert.exists(output.setNetworkSidebarSize);
     assert.isTrue(output.setNetworkSidebarSize(120));
     sinon.assert.calledOnceWithExactly(setSidebarSizeSpy, 120);
 
-    input.networkSplitWidget.hideSidebar();
+    networkSplit.hideSidebar();
     assert.isFalse(output.setNetworkSidebarSize(80));
   });
 
-  it('toggles networkSplitWidget visibility from showNetworkChart in DEFAULT_VIEW', () => {
+  it('renders the network split view show attribute from showNetworkChart in DEFAULT_VIEW', () => {
     const container = new UI.Widget.Widget();
     activeWidgets.push(container);
     renderElementIntoDOM(container);
     const input = createDefaultViewInput({showNetworkChart: true});
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, {}, container.contentElement);
-    assert.strictEqual(input.networkSplitWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
+    const networkSplit =
+        container.contentElement.querySelector('devtools-split-view[name="timeline-flamechart-main-view"]');
+    assert.strictEqual(networkSplit?.getAttribute('show'), 'both');
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, showNetworkChart: false}, {}, container.contentElement);
-    assert.strictEqual(input.networkSplitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_MAIN);
+    assert.strictEqual(networkSplit?.getAttribute('show'), 'main');
   });
 
   it('updates showNetworkChart in the view input when the model changes', async function() {

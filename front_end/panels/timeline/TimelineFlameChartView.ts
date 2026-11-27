@@ -1,7 +1,6 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -96,7 +95,8 @@ type TreeRowEvent = TimelineTreeView.EventTypes[TimelineTreeView.Events.TREE_ROW
 const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
-  networkSplitWidget: UI.SplitWidget.SplitWidget;
+  mainFlameChart: PerfUI.FlameChart.FlameChart;
+  networkPane: UI.Widget.VBox;
   splitResizer: HTMLElement;
   overlaysContainer: HTMLElement;
   tooltipElement: HTMLElement;
@@ -134,12 +134,6 @@ function configureNetworkSplit(split: UI.SplitWidget.SplitWidget, resizer: Eleme
 }
 
 export const DEFAULT_VIEW: View = (input, output, target): void => {
-  configureNetworkSplit(input.networkSplitWidget, input.splitResizer, output);
-  if (input.showNetworkChart && input.networkSplitWidget.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
-    input.networkSplitWidget.showBoth();
-  } else if (!input.showNetworkChart && input.networkSplitWidget.showMode() !== UI.SplitWidget.ShowMode.ONLY_MAIN) {
-    input.networkSplitWidget.hideSidebar();
-  }
   let detailsSplit: UI.SplitWidget.SplitWidget|undefined;
   let chartSplit: UI.SplitWidget.SplitWidget|undefined;
   let countersResizer: Element|undefined;
@@ -180,7 +174,15 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
             split.hideDefaultResizer();
           })}>
         <div slot="main" class="flame-charts-container vbox flex-auto">
-          <div ${widget(UI.Widget.WrapperWidget, {widget: input.networkSplitWidget})}></div>
+          <devtools-split-view direction="row" sidebar-position="first"
+              name="timeline-flamechart-main-view" sidebar-initial-size="150"
+              show=${input.showNetworkChart ? 'both' : 'main'}
+              ${widgetRef(UI.SplitWidget.SplitWidget, split => {
+                configureNetworkSplit(split, input.splitResizer, output);
+              })}>
+            <div slot="main" ${widget(UI.Widget.WrapperWidget, {widget: input.mainFlameChart})}></div>
+            <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, {widget: input.networkPane})}></div>
+          </devtools-split-view>
           ${input.overlaysContainer}
           ${input.tooltipElement}
         </div>
@@ -219,7 +221,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
    * Defaults to undefined which indicates the user has not searched.
    */
   #searchResults: PerfUI.FlameChart.DataProviderSearchResult[]|undefined = undefined;
-  readonly #networkSplitWidget: UI.SplitWidget.SplitWidget;
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in legacy_test_runner.
   private mainDataProvider: TimelineFlameChartDataProvider;
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in legacy_test_runner.
@@ -352,9 +353,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
     this.#delegate = delegate;
     this.#parsedTrace = null;
-
-    // Create main and network flamecharts.
-    this.#networkSplitWidget = new UI.SplitWidget.SplitWidget(false, false, 'timeline-flamechart-main-view', 150);
 
     this.#overlaysContainer.classList.add('timeline-overlays-container');
     this.#tooltipElement.classList.add('timeline-entry-tooltip-element');
@@ -492,8 +490,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#networkPane.setMinimumSize(23, 23);
     this.networkFlameChart.show(this.#networkPane.element);
     this.#splitResizer = this.#networkPane.element.createChild('div', 'timeline-flamechart-resizer');
-    this.#networkSplitWidget.setMainWidget(this.mainFlameChart);
-    this.#networkSplitWidget.setSidebarWidget(this.#networkPane);
 
     // Event listeners for annotations.
     this.#onMainAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
@@ -1589,7 +1585,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
   override performUpdate(): void {
     this.#view({
-      networkSplitWidget: this.#networkSplitWidget,
+      mainFlameChart: this.mainFlameChart,
+      networkPane: this.#networkPane,
       splitResizer: this.#splitResizer,
       overlaysContainer: this.#overlaysContainer,
       tooltipElement: this.#tooltipElement,

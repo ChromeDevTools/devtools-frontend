@@ -382,8 +382,14 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
     this.#overlays.addEventListener(Overlays.Overlays.ConsentDialogVisibilityChange.eventName, e => {
       // Prevent the performance panel from capturing tab focus while the consent dialog is visible.
-      this.#inert = (e as Overlays.Overlays.ConsentDialogVisibilityChange).isVisible;
-      this.requestUpdate();
+      const isVisible = (e as Overlays.Overlays.ConsentDialogVisibilityChange).isVisible;
+      if (this.#inert === isVisible) {
+        return;
+      }
+      this.#inert = isVisible;
+      // Flush synchronously so inert is toggled before focus shifts into the consent dialog
+      // or back to EntryLabelOverlay when it closes.
+      this.performUpdate();
     });
 
     this.#overlays.addEventListener(Overlays.Overlays.EntryLabelMouseClick.eventName, event => {

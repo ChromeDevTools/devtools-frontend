@@ -16,7 +16,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {assertScreenshot, dispatchClickEvent, doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
+import {registerTestTeardown, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -522,6 +522,78 @@ describe('TimelineFlameChartView', function() {
     sinon.assert.calledOnceWithExactly(labelAnnotationClickedStub, labelAnnotation.entry);
   });
 
+  it('restores focus to the entry label input after closing the AI consent dialog', async function() {
+    updateHostConfig({
+      devToolsAiGeneratedTimelineLabels: {
+        enabled: true,
+      },
+      aidaAvailability: {
+        enabled: true,
+      },
+    });
+    Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false).set(false);
+    registerTestTeardown(() => {
+      while (UI.Dialog.Dialog.hasInstance()) {
+        UI.Dialog.Dialog.getInstance()?.hide();
+      }
+    });
+
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+    const mockViewDelegate = new MockViewDelegate();
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        mockViewDelegate, new CommentManager.CommentManager.CommentManager());
+    activeWidgets.push(flameChartView);
+    flameChartView.updateCountersGraphToggle(false);
+    renderWidgetInVbox(flameChartView, {width: 1500, height: 2000});
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+
+    const entry = allThreadEntriesInTrace(parsedTrace).find(event => {
+      return Trace.Types.Events.isRunTask(event) && event.dur > 5_000 &&
+          AIAssistance.AICallTree.AICallTree.fromEvent(event, parsedTrace) !== null;
+    });
+    assert.isOk(entry);
+
+    const modifications = Timeline.ModificationsManager.ModificationsManager.activeManager();
+    assert.isOk(modifications);
+    const overlay = modifications.createAnnotation({
+      type: 'ENTRY_LABEL',
+      entry,
+      label: '',
+    },
+                                                   {
+                                                     loadedFromFile: false,
+                                                     muteAriaNotifications: false,
+                                                   });
+    flameChartView.addOverlay(overlay);
+    await raf();
+
+    const overlayElement = flameChartView.overlays().elementForOverlay(overlay);
+    assert.isOk(overlayElement);
+    const component = overlayElement.querySelector('devtools-entry-label-overlay');
+    assert.isOk(component?.shadowRoot);
+    const inputField = component.shadowRoot.querySelector<HTMLElement>('.input-field');
+    assert.isOk(inputField);
+    assert.strictEqual(component.shadowRoot.activeElement, inputField);
+
+    const aiButton = component.shadowRoot.querySelector<HTMLElement>('.ai-label-button');
+    assert.isOk(aiButton);
+    dispatchClickEvent(aiButton);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.isTrue(flameChartView.element.hasAttribute('inert'));
+
+    const dialog = UI.Dialog.Dialog.getInstance();
+    assert.isOk(dialog);
+    const cancelButton = dialog.contentElement.querySelector('.right-buttons devtools-button');
+    assert.isOk(cancelButton);
+    dispatchClickEvent(cancelButton);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    assert.isFalse(flameChartView.element.hasAttribute('inert'));
+    assert.strictEqual(component.shadowRoot.activeElement, inputField);
+  });
+
   it('forwards main entry hover events', () => {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
         new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
@@ -598,10 +670,10 @@ describe('TimelineFlameChartView', function() {
     assert.isFalse(input.inert);
 
     flameChartView.overlays().dispatchEvent(new Overlays.Overlays.ConsentDialogVisibilityChange(true));
-    assert.isTrue((await view.nextInput).inert);
+    assert.isTrue(view.input.inert);
 
     flameChartView.overlays().dispatchEvent(new Overlays.Overlays.ConsentDialogVisibilityChange(false));
-    assert.isFalse((await view.nextInput).inert);
+    assert.isFalse(view.input.inert);
   });
 
   it('updates showMemoryGraph in the view input when toggled', async () => {

@@ -724,6 +724,7 @@ describe('TimelineFlameChartView', function() {
       },
       showMemoryGraph: true,
       showNetworkChart: true,
+      isNetworkExpanded: false,
       inert: false,
       onKeyDown: () => undefined,
       onSecondaryPointerDown: () => false,
@@ -853,6 +854,66 @@ describe('TimelineFlameChartView', function() {
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, showNetworkChart: false}, {}, container.contentElement);
     assert.strictEqual(networkSplit?.getAttribute('show'), 'main');
+  });
+
+  it('toggles splitResizer visibility from isNetworkExpanded in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const input = createDefaultViewInput({isNetworkExpanded: false});
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, {}, container.contentElement);
+    assert.isTrue(input.splitResizer.hidden);
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, isNetworkExpanded: true}, {}, container.contentElement);
+    assert.isFalse(input.splitResizer.hidden);
+  });
+
+  it('adds resizer height in setNetworkSidebarSize in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const input = createDefaultViewInput({isNetworkExpanded: true});
+    Object.defineProperty(input.splitResizer, 'clientHeight', {value: 12});
+    const output: Timeline.TimelineFlameChartView.ViewOutput = {};
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, output, container.contentElement);
+    const networkSplit = container.contentElement
+                             .querySelector<UI.Widget.WidgetElement<UI.SplitWidget.SplitWidget>>(
+                                 'devtools-split-view[name="timeline-flamechart-main-view"]')
+                             ?.getWidget();
+    assert.exists(networkSplit);
+    const setSidebarSizeSpy = sinon.spy(networkSplit, 'setSidebarSize');
+    assert.exists(output.setNetworkSidebarSize);
+    assert.isTrue(output.setNetworkSidebarSize(120));
+    sinon.assert.calledOnceWithExactly(setSidebarSizeSpy, 132);
+  });
+
+  it('updates isNetworkExpanded in the view input when resizing to preferred heights', async () => {
+    const setNetworkSidebarSize = sinon.stub().returns(true);
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView, {
+      setNetworkSidebarSize,
+    });
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    assert.isFalse((await view.nextInput).isNetworkExpanded);
+
+    sinon.stub(flameChartView.getNetworkDataProvider(), 'isEmpty').returns(false);
+    const isExpandedStub = sinon.stub(flameChartView.getNetworkDataProvider(), 'isExpanded').returns(true);
+    sinon.stub(flameChartView.getNetworkDataProvider(), 'preferredHeight').returns(60);
+
+    flameChartView.resizeToPreferredHeights();
+    sinon.assert.notCalled(setNetworkSidebarSize);
+    assert.isTrue((await view.nextInput).isNetworkExpanded);
+    sinon.assert.calledOnceWithExactly(setNetworkSidebarSize, 60 + PerfUI.FlameChart.RulerHeight + 2);
+
+    setNetworkSidebarSize.resetHistory();
+    isExpandedStub.returns(false);
+    flameChartView.resizeToPreferredHeights();
+    assert.isFalse((await view.nextInput).isNetworkExpanded);
+    sinon.assert.calledOnceWithExactly(setNetworkSidebarSize, 60 + PerfUI.FlameChart.RulerHeight + 2);
   });
 
   it('updates showNetworkChart in the view input when the model changes', async function() {

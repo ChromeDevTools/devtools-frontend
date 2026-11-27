@@ -105,6 +105,7 @@ export interface ViewInput {
   detailsModel: TimelineDetailsModel;
   showMemoryGraph: boolean;
   showNetworkChart: boolean;
+  isNetworkExpanded: boolean;
   inert: boolean;
   onKeyDown: (keyInfo: {key: string, altKey: boolean}) => 'handled' | 'stop-propagation' | undefined;
   onSecondaryPointerDown: () => boolean;
@@ -121,19 +122,20 @@ export interface ViewOutput {
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-function configureNetworkSplit(split: UI.SplitWidget.SplitWidget, resizer: Element, output: ViewOutput): void {
+function configureNetworkSplit(split: UI.SplitWidget.SplitWidget, resizer: HTMLElement, output: ViewOutput): void {
   split.hideDefaultResizer(true);
   split.installResizer(resizer);
   output.setNetworkSidebarSize = size => {
     if (!split.isShowing() || !split.sidebarIsShowing()) {
       return false;
     }
-    split.setSidebarSize(size);
+    split.setSidebarSize(size + resizer.clientHeight);
     return true;
   };
 }
 
 export const DEFAULT_VIEW: View = (input, output, target): void => {
+  input.splitResizer.hidden = !input.isNetworkExpanded;
   let detailsSplit: UI.SplitWidget.SplitWidget|undefined;
   let chartSplit: UI.SplitWidget.SplitWidget|undefined;
   let countersResizer: Element|undefined;
@@ -333,6 +335,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #listenersAttached = false;
   #showMemoryGraph = true;
   #showNetworkChart = true;
+  #isNetworkExpanded = false;
   #inert = false;
   readonly #view: View;
   readonly #viewOutput: ViewOutput = {};
@@ -1616,6 +1619,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       detailsModel: this.#detailsModel,
       showMemoryGraph: this.#showMemoryGraph,
       showNetworkChart: this.#showNetworkChart,
+      isNetworkExpanded: this.#isNetworkExpanded,
       inert: this.#inert,
       onKeyDown: this.#onKeyDown,
       onSecondaryPointerDown: this.#onSecondaryPointerDown,
@@ -1979,10 +1983,14 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       this.#needsResizeToPreferredHeights = !this.#networkDataProvider.isEmpty();
       return;
     }
-    this.#networkPane.element.classList.toggle('timeline-network-resizer-disabled',
-                                               !this.#networkDataProvider.isExpanded());
-    const size = this.#networkDataProvider.preferredHeight() + this.#splitResizer.clientHeight +
-        PerfUI.FlameChart.RulerHeight + 2;
+    const expanded = this.#networkDataProvider.isExpanded();
+    if (this.#isNetworkExpanded !== expanded) {
+      this.#isNetworkExpanded = expanded;
+      this.#needsResizeToPreferredHeights = true;
+      this.requestUpdate();
+      return;
+    }
+    const size = this.#networkDataProvider.preferredHeight() + PerfUI.FlameChart.RulerHeight + 2;
     this.#needsResizeToPreferredHeights = !this.#viewOutput.setNetworkSidebarSize?.(size);
   }
 

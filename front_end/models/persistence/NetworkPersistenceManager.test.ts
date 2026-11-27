@@ -14,6 +14,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
+import {getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {createTarget} from '../../testing/TargetHelpers.js';
@@ -178,6 +179,199 @@ describe('NetworkPersistenceManager', () => {
     assert.isFalse(actual, 'should not allow override');
     assert.isTrue(saveSpy.notCalled, 'should not attempt to save override');
   });
+
+  it('does not allow overrides for cross-origin resources fetched via a service worker', async () => {
+    const url = urlString`https://victim.example/static/main.js`;
+    const {workspace, networkPersistenceManager} = setUpEnvironment();
+    await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+    const targetManager = Root.DevToolsContext.globalInstance().get(SDK.TargetManager.TargetManager);
+    const target = targetManager.primaryPageTarget();
+    assert.exists(target);
+    new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+
+    const frame = getMainFrame(target);
+    const request = SDK.NetworkRequest.NetworkRequest.create('sw-cross-origin-req' as Protocol.Network.RequestId, url,
+                                                             urlString`https://attacker.example/`, frame.id,
+                                                             'loader-1' as Protocol.Network.LoaderId, null);
+    request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
+    request.mimeType = 'text/javascript';
+    request.fetchedViaServiceWorker = true;
+    frame.addRequest(request);
+
+    const uiSourceCode = workspace.uiSourceCodeForURL(url);
+    assert.exists(uiSourceCode);
+    assert.isFalse(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));
+
+    const saveSpy = sinon.spy(networkPersistenceManager, 'saveUISourceCodeForOverrides');
+    const actual = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+    saveSpy.restore();
+
+    assert.isFalse(actual, 'should not allow override');
+    assert.isTrue(saveSpy.notCalled, 'should not attempt to save override');
+  });
+
+  it('allows overrides for same-origin resources fetched via a service worker', async () => {
+    const url = urlString`https://app.example/static/main.js`;
+    const {workspace, networkPersistenceManager} = setUpEnvironment();
+    await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+    const targetManager = Root.DevToolsContext.globalInstance().get(SDK.TargetManager.TargetManager);
+    const target = targetManager.primaryPageTarget();
+    assert.exists(target);
+    new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+
+    const frame = getMainFrame(target);
+    const request = SDK.NetworkRequest.NetworkRequest.create('sw-same-origin-req' as Protocol.Network.RequestId, url,
+                                                             urlString`https://app.example/`, frame.id,
+                                                             'loader-1' as Protocol.Network.LoaderId, null);
+    request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
+    request.mimeType = 'text/javascript';
+    request.fetchedViaServiceWorker = true;
+    frame.addRequest(request);
+
+    const uiSourceCode = workspace.uiSourceCodeForURL(url);
+    assert.exists(uiSourceCode);
+    assert.isTrue(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));
+  });
+
+  function dispatchNetworkRequest(
+      networkManager: SDK.NetworkManager.NetworkManager,
+      {requestId, url, documentURL, fromServiceWorker, frameId, type = Protocol.Network.ResourceType.Script}: {
+        requestId: string,
+        url: string,
+        documentURL: string,
+        fromServiceWorker: boolean,
+        frameId?: Protocol.Page.FrameId,
+        type?: Protocol.Network.ResourceType,
+      },
+      ): void {
+    networkManager.dispatcher.requestWillBeSent({
+      requestId: requestId as Protocol.Network.RequestId,
+      loaderId: 'loader-1' as Protocol.Network.LoaderId,
+      documentURL,
+      frameId,
+      request: {
+        url,
+        method: 'GET',
+        headers: {},
+        initialPriority: Protocol.Network.ResourcePriority.High,
+        referrerPolicy: Protocol.Network.RequestReferrerPolicy.StrictOriginWhenCrossOrigin,
+      },
+      timestamp: 1,
+      wallTime: 1,
+      initiator: {type: Protocol.Network.InitiatorType.Script},
+      redirectHasExtraInfo: false,
+    });
+    networkManager.dispatcher.responseReceived({
+      requestId: requestId as Protocol.Network.RequestId,
+      loaderId: 'loader-1' as Protocol.Network.LoaderId,
+      timestamp: 2,
+      type,
+      response: {
+        url,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        mimeType: 'text/javascript',
+        charset: 'utf-8',
+        connectionReused: false,
+        connectionId: 0,
+        encodedDataLength: 0,
+        securityState: Protocol.Security.SecurityState.Secure,
+        fromServiceWorker,
+      },
+      hasExtraInfo: false,
+    });
+  }
+
+  it('does not allow overrides when a cross-origin service worker request is followed by a non-service-worker request',
+     async () => {
+       const url = urlString`https://victim.example/static/main.js`;
+       const {workspace, networkPersistenceManager} = setUpEnvironment();
+       await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+       const targetManager = Root.DevToolsContext.globalInstance().get(SDK.TargetManager.TargetManager);
+       const target = targetManager.primaryPageTarget();
+       assert.exists(target);
+       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+       assert.exists(networkManager);
+       new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+       const frame = getMainFrame(target);
+
+       dispatchNetworkRequest(networkManager, {
+         requestId: 'req-sw',
+         url,
+         documentURL: 'https://attacker.example/',
+         fromServiceWorker: true,
+         frameId: frame.id,
+         type: Protocol.Network.ResourceType.Fetch,
+       });
+       dispatchNetworkRequest(networkManager, {
+         requestId: 'req-pass-through',
+         url,
+         documentURL: 'https://attacker.example/',
+         fromServiceWorker: false,
+         frameId: frame.id,
+         type: Protocol.Network.ResourceType.Fetch,
+       });
+
+       // Overwrite the ResourceTreeFrame entry with the non-SW request so only NetworkManager retains the SW request.
+       const passThroughRequest = networkManager.requestForId('req-pass-through');
+       assert.exists(passThroughRequest);
+       frame.addRequest(passThroughRequest);
+
+       const uiSourceCode = workspace.uiSourceCodeForURL(url);
+       assert.exists(uiSourceCode);
+       assert.isFalse(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));
+     });
+
+  it('does not allow overrides for cross-origin service worker scripts on a worker target', async () => {
+    const url = urlString`https://victim.example/static/worker-lib.js`;
+    const {project, uiSourceCode, networkPersistenceManager} =
+        setUpEnvironmentWithUISourceCode(url, Common.ResourceType.resourceTypes.Script);
+    await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+    const workerTarget = createTarget({type: SDK.Target.Type.Worker});
+    assert.isNull(workerTarget.model(SDK.ResourceTreeModel.ResourceTreeModel));
+    const networkManager = workerTarget.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+
+    Bindings.NetworkProject.NetworkProject.setTargetForProject(project, workerTarget);
+    dispatchNetworkRequest(networkManager, {
+      requestId: 'worker-sw-req',
+      url,
+      documentURL: 'https://attacker.example/worker.js',
+      fromServiceWorker: true,
+    });
+
+    assert.isFalse(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));
+  });
+
+  it('does not allow overrides for cross-origin service worker resources when the UISourceCode URL has a fragment',
+     async () => {
+       const requestUrl = urlString`https://victim.example/static/main.js`;
+       const uiSourceCodeUrl = urlString`https://victim.example/static/main.js#v1`;
+       const {project, uiSourceCode, networkPersistenceManager} =
+           setUpEnvironmentWithUISourceCode(uiSourceCodeUrl, Common.ResourceType.resourceTypes.Script);
+       await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+       const targetManager = Root.DevToolsContext.globalInstance().get(SDK.TargetManager.TargetManager);
+       const target = targetManager.primaryPageTarget();
+       assert.exists(target);
+       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+       assert.exists(networkManager);
+
+       Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
+       dispatchNetworkRequest(networkManager, {
+         requestId: 'fragment-sw-req',
+         url: requestUrl,
+         documentURL: 'https://attacker.example/',
+         fromServiceWorker: true,
+       });
+
+       assert.isFalse(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));
+     });
 
   it('does not save override on working copy committed for data URLs', async () => {
     const url = 'data:/../victim.com/script.js';

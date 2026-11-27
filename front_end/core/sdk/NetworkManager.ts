@@ -549,6 +549,10 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return this.dispatcher.requestForURL(url);
   }
 
+  requestsForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest[] {
+    return this.dispatcher.requestsForURL(url);
+  }
+
   requestForId(id: string): NetworkRequest|null {
     return this.dispatcher.requestForId(id);
   }
@@ -937,6 +941,17 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   requestForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest|null {
     return this.#requestsByURL.get(url) || null;
+  }
+
+  requestsForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest[] {
+    const urlWithoutHash = Common.ParsedURL.ParsedURL.urlWithoutHash(url);
+    const result: NetworkRequest[] = [];
+    for (const request of this.#requestsById.values()) {
+      if (Common.ParsedURL.ParsedURL.urlWithoutHash(request.url()) === urlWithoutHash) {
+        result.push(request);
+      }
+    }
+    return result;
   }
 
   requestForLoaderId(loaderId: Protocol.Network.LoaderId): NetworkRequest|null {

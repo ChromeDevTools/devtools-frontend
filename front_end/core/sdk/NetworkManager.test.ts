@@ -3299,6 +3299,18 @@ describe('NetworkDispatcher', () => {
       assert.strictEqual(redirectedRequest.statusText, 'OK');
     });
 
+    it('returns all requests matching a URL ignoring fragments via requestsForURL', () => {
+      networkDispatcher.requestWillBeSent({requestId: 'req-1', request: {url: 'https://example.com/app.js'}} as
+                                          Protocol.Network.RequestWillBeSentEvent);
+      networkDispatcher.requestWillBeSent({requestId: 'req-2', request: {url: 'https://example.com/app.js#v1'}} as
+                                          Protocol.Network.RequestWillBeSentEvent);
+      networkDispatcher.requestWillBeSent({requestId: 'req-other', request: {url: 'https://example.com/other.js'}} as
+                                          Protocol.Network.RequestWillBeSentEvent);
+
+      const matches = networkDispatcher.requestsForURL(urlString`https://example.com/app.js#v2`);
+      assert.deepEqual(matches.map(r => r.requestId()), ['req-1', 'req-2']);
+    });
+
     it('raw headers are processed when response fails', () => {
       networkDispatcher.requestWillBeSent(
           {requestId: 'mockId', request: {url: 'http://example.com'}} as Protocol.Network.RequestWillBeSentEvent);

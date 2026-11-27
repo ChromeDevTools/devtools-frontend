@@ -472,7 +472,38 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(uiSourceCode)) {
       return false;
     }
+    // A service worker can synthesize arbitrary bytes for a cross-origin request URL.
+    // Persisting that response would plant an override for the target origin (b/573265518).
+    if (this.#isCrossOriginServiceWorkerResource(uiSourceCode)) {
+      return false;
+    }
     return true;
+  }
+
+  #isCrossOriginServiceWorkerRequest(request: SDK.NetworkRequest.NetworkRequest|null|undefined): boolean {
+    if (!request?.fetchedViaServiceWorker) {
+      return false;
+    }
+    return !request.requestURLSecurityOrigin().isSameOriginWith(request.initiatorSecurityOrigin());
+  }
+
+  #isCrossOriginServiceWorkerResource(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    const urlWithoutHash =
+        Common.ParsedURL.ParsedURL.urlWithoutHash(uiSourceCode.url()) as Platform.DevToolsPath.UrlString;
+    const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+    const networkManagers = target ? [target.model(SDK.NetworkManager.NetworkManager)].filter(
+                                         (model): model is SDK.NetworkManager.NetworkManager => model !== null) :
+                                     this.#targetManager.models(SDK.NetworkManager.NetworkManager);
+    for (const networkManager of networkManagers) {
+      if (networkManager.requestsForURL(urlWithoutHash)
+              .some(request => this.#isCrossOriginServiceWorkerRequest(request))) {
+        return true;
+      }
+    }
+    const resource = target ?
+        target.model(SDK.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.resourceForURL(urlWithoutHash) ?? null :
+        Bindings.ResourceUtils.resourceForURL(urlWithoutHash);
+    return this.#isCrossOriginServiceWorkerRequest(resource?.request);
   }
 
   /**

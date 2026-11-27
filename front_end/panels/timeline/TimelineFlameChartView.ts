@@ -14,7 +14,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getAnnotationEntries, getAnnotationWindow} from './AnnotationHelpers.js';
@@ -96,8 +96,7 @@ const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
   mainFlameChart: PerfUI.FlameChart.FlameChart;
-  networkPane: UI.Widget.VBox;
-  splitResizer: HTMLElement;
+  networkFlameChart: PerfUI.FlameChart.FlameChart;
   overlaysContainer: HTMLElement;
   tooltipElement: HTMLElement;
   delegate: TimelineModeViewDelegate;
@@ -135,9 +134,9 @@ function configureNetworkSplit(split: UI.SplitWidget.SplitWidget, resizer: HTMLE
 }
 
 export const DEFAULT_VIEW: View = (input, output, target): void => {
-  input.splitResizer.hidden = !input.isNetworkExpanded;
   let detailsSplit: UI.SplitWidget.SplitWidget|undefined;
   let chartSplit: UI.SplitWidget.SplitWidget|undefined;
+  let networkSplit: UI.SplitWidget.SplitWidget|undefined;
   let countersResizer: Element|undefined;
   const container = {
     classes: ['timeline-flamechart'],
@@ -179,11 +178,18 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
           <devtools-split-view direction="row" sidebar-position="first"
               name="timeline-flamechart-main-view" sidebar-initial-size="150"
               show=${input.showNetworkChart ? 'both' : 'main'}
-              ${widgetRef(UI.SplitWidget.SplitWidget, split => {
-                configureNetworkSplit(split, input.splitResizer, output);
-              })}>
+              ${widgetRef(UI.SplitWidget.SplitWidget, split => { networkSplit = split; })}>
             <div slot="main" ${widget(UI.Widget.WrapperWidget, {widget: input.mainFlameChart})}></div>
-            <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, {widget: input.networkPane})}></div>
+            <div slot="sidebar" class="vbox flex-auto"
+                ${widgetRef(UI.Widget.Widget, sidebar => sidebar.setMinimumSize(23, 23))}>
+              <div ${widget(UI.Widget.WrapperWidget, {widget: input.networkFlameChart})}></div>
+              <div class="timeline-flamechart-resizer" ?hidden=${!input.isNetworkExpanded}
+                  ${Directives.ref(el => {
+                    if (networkSplit && el instanceof HTMLElement) {
+                      configureNetworkSplit(networkSplit, el, output);
+                    }
+                  })}></div>
+            </div>
           </devtools-split-view>
           ${input.overlaysContainer}
           ${input.tooltipElement}
@@ -230,8 +236,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #networkDataProvider: TimelineFlameChartNetworkDataProvider;
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in legacy_test_runner.
   private readonly networkFlameChart: PerfUI.FlameChart.FlameChart;
-  readonly #networkPane: UI.Widget.VBox;
-  readonly #splitResizer: HTMLElement;
   #countersModel: CountersModel = {parsedTrace: null, events: null};
   #detailsModel: TimelineDetailsModel = {
     parsedTrace: null,
@@ -488,11 +492,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
         ModificationsManager.activeManager()?.updateAnnotationOverlay(overlay);
       }
     });
-
-    this.#networkPane = new UI.Widget.VBox();
-    this.#networkPane.setMinimumSize(23, 23);
-    this.networkFlameChart.show(this.#networkPane.element);
-    this.#splitResizer = this.#networkPane.element.createChild('div', 'timeline-flamechart-resizer');
 
     // Event listeners for annotations.
     this.#onMainAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
@@ -1610,8 +1609,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   override performUpdate(): void {
     this.#view({
       mainFlameChart: this.mainFlameChart,
-      networkPane: this.#networkPane,
-      splitResizer: this.#splitResizer,
+      networkFlameChart: this.networkFlameChart,
       overlaysContainer: this.#overlaysContainer,
       tooltipElement: this.#tooltipElement,
       delegate: this.#delegate,

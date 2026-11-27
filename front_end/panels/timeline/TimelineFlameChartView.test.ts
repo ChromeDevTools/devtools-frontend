@@ -670,7 +670,7 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(flameChartView);
     const input = await view.nextInput;
     assert.instanceOf(input.mainFlameChart, PerfUI.FlameChart.FlameChart);
-    assert.instanceOf(input.networkPane, UI.Widget.VBox);
+    assert.instanceOf(input.networkFlameChart, PerfUI.FlameChart.FlameChart);
     assert.isTrue(input.overlaysContainer.classList.contains('timeline-overlays-container'));
     assert.isTrue(input.tooltipElement.classList.contains('timeline-entry-tooltip-element'));
     assert.isFalse(input.inert);
@@ -710,8 +710,7 @@ describe('TimelineFlameChartView', function() {
     tooltipElement.classList.add('timeline-entry-tooltip-element');
     return {
       mainFlameChart: new PerfUI.FlameChart.FlameChart(new FakeFlameChartProvider(), new MockFlameChartDelegate()),
-      networkPane: new UI.Widget.VBox(),
-      splitResizer: document.createElement('div'),
+      networkFlameChart: new PerfUI.FlameChart.FlameChart(new FakeFlameChartProvider(), new MockFlameChartDelegate()),
       overlaysContainer,
       tooltipElement,
       delegate: new MockViewDelegate(),
@@ -856,17 +855,34 @@ describe('TimelineFlameChartView', function() {
     assert.strictEqual(networkSplit?.getAttribute('show'), 'main');
   });
 
-  it('toggles splitResizer visibility from isNetworkExpanded in DEFAULT_VIEW', () => {
+  it('renders network resizer hidden state from isNetworkExpanded in DEFAULT_VIEW', () => {
     const container = new UI.Widget.Widget();
     activeWidgets.push(container);
     renderElementIntoDOM(container);
     const input = createDefaultViewInput({isNetworkExpanded: false});
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, {}, container.contentElement);
-    assert.isTrue(input.splitResizer.hidden);
+    const resizer = container.contentElement.querySelector<HTMLElement>('.timeline-flamechart-resizer');
+    assert.exists(resizer);
+    assert.isTrue(resizer.hidden);
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, isNetworkExpanded: true}, {}, container.contentElement);
-    assert.isFalse(input.splitResizer.hidden);
+    assert.isFalse(resizer.hidden);
+  });
+
+  it('sets minimum size on the network sidebar widget in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(createDefaultViewInput(), {}, container.contentElement);
+    const sidebar = container.contentElement.querySelector<HTMLElement>(
+        'devtools-split-view[name="timeline-flamechart-main-view"] > [slot="sidebar"]');
+    assert.exists(sidebar);
+    const sidebarWidget = UI.Widget.Widget.get(sidebar);
+    assert.exists(sidebarWidget);
+    assert.strictEqual(sidebarWidget.constraints().minimum.width, 23);
+    assert.strictEqual(sidebarWidget.constraints().minimum.height, 23);
   });
 
   it('adds resizer height in setNetworkSidebarSize in DEFAULT_VIEW', () => {
@@ -874,10 +890,12 @@ describe('TimelineFlameChartView', function() {
     activeWidgets.push(container);
     renderElementIntoDOM(container);
     const input = createDefaultViewInput({isNetworkExpanded: true});
-    Object.defineProperty(input.splitResizer, 'clientHeight', {value: 12});
     const output: Timeline.TimelineFlameChartView.ViewOutput = {};
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, output, container.contentElement);
+    const resizer = container.contentElement.querySelector<HTMLElement>('.timeline-flamechart-resizer');
+    assert.exists(resizer);
+    Object.defineProperty(resizer, 'clientHeight', {value: 12});
     const networkSplit = container.contentElement
                              .querySelector<UI.Widget.WidgetElement<UI.SplitWidget.SplitWidget>>(
                                  'devtools-split-view[name="timeline-flamechart-main-view"]')

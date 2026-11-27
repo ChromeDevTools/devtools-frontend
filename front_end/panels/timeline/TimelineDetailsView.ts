@@ -98,6 +98,13 @@ function isRangeTab(tab: Tab): tab is RangeTab {
   return tab === Tab.BottomUp || tab === Tab.CallTree || tab === Tab.EventLog;
 }
 
+export interface TimelineDetailsModel {
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
+  selectedEvents: Trace.Types.Events.Event[]|null;
+  eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
+  entityMapper: Trace.EntityMapper.EntityMapper|null;
+}
+
 interface TreeViewModel {
   selectedEvents: Trace.Types.Events.Event[]|null;
   parsedTrace: Trace.TraceModel.ParsedTrace|null;
@@ -264,6 +271,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       {cancel: () => void} = Common.Debouncer.debounce(() => this.updateContentsFromWindow(), 100);
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
+  #modelInput?: TimelineDetailsModel;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #boundsStateWhenHidden?: Readonly<TraceBounds.TraceBounds.TraceWindows<Trace.Types.Timing.Micro>>;
@@ -522,12 +530,18 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     }
   }
 
-  async setModel(data: {
-    parsedTrace: Trace.TraceModel.ParsedTrace|null,
-    selectedEvents: Trace.Types.Events.Event[]|null,
-    eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null,
-    entityMapper: Trace.EntityMapper.EntityMapper|null,
-  }): Promise<void> {
+  set model(data: TimelineDetailsModel) {
+    if (this.#modelInput && this.#modelInput.parsedTrace === data.parsedTrace &&
+        this.#modelInput.selectedEvents === data.selectedEvents &&
+        this.#modelInput.eventToRelatedInsightsMap === data.eventToRelatedInsightsMap &&
+        this.#modelInput.entityMapper === data.entityMapper) {
+      return;
+    }
+    void this.setModel(data);
+  }
+
+  async setModel(data: TimelineDetailsModel): Promise<void> {
+    this.#modelInput = data;
     if (this.#parsedTrace !== data.parsedTrace) {
       // Clear the selector stats view, so the next time the user views it we
       // reconstruct it with the new trace data.

@@ -652,4 +652,35 @@ describe('TimelineDetailsView', function() {
          detailsView.detach();
        }
      });
+
+  it('delegates model setter assignments to setModel', () => {
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane();
+    renderElementIntoDOM(detailsView);
+    const setModelSpy = sinon.spy(detailsView, 'setModel');
+    const model = {
+      parsedTrace: null,
+      selectedEvents: null,
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    };
+
+    detailsView.model = model;
+    sinon.assert.calledOnceWithExactly(setModelSpy, model);
+  });
+
+  it('skips setModel when assigned an unchanged model', () => {
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane();
+    renderElementIntoDOM(detailsView);
+    const model = {
+      parsedTrace: null,
+      selectedEvents: null,
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    };
+    detailsView.model = model;
+
+    const setModelSpy = sinon.spy(detailsView, 'setModel');
+    detailsView.model = {...model};
+    sinon.assert.notCalled(setModelSpy);
+  });
 });

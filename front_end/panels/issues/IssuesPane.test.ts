@@ -122,10 +122,7 @@ describe('IssuesPane', () => {
     issuesManager.addIssue(issuesModel, goodIssue);
     await issuesPane.updateComplete;
 
-    const treeElement = Array.from(issuesPane.contentElement.children)
-                            .find(
-                                (el): el is HTMLElement => Boolean(el.shadowRoot?.querySelector('.issues')),
-                            );
+    const treeElement = issuesPane.contentElement.querySelector('devtools-tree');
     assert.exists(treeElement);
     assert.isFalse(treeElement.hidden);
     const textContent = treeElement.shadowRoot?.textContent ?? '';
@@ -155,5 +152,126 @@ describe('IssuesPane', () => {
     await issuesPane.updateComplete;
 
     assert.exists(issuesPane.contentElement.querySelector('devtools-issue-counter#console-issues-counter'));
+  });
+
+  function addPermissionElementIssue(): void {
+    const target = universe.createTarget();
+    universe.targetManager.setScopeTarget(target);
+    const issuesModel = target.model(SDK.IssuesModel.IssuesModel);
+    assert.exists(issuesModel);
+    const issue = new StubIssue('PermissionElementIssue', [], []);
+    sinon.stub(issue, 'getCategory').returns(IssuesManager.Issue.IssueCategory.PERMISSION_ELEMENT);
+    sinon.stub(issue, 'getDescription').returns({
+      file: 'permissionElementInvalidType.md',
+      substitutions: new Map([['PLACEHOLDER_Type', 'invalid-type']]),
+      links: [],
+    });
+    universe.issuesManager.addIssue(issuesModel, issue);
+  }
+
+  it('toggles autofocus on the issues tree when issues appear', async () => {
+    const issuesPane = new Issues.IssuesPane.IssuesPane();
+    renderElementIntoDOM(issuesPane);
+    await issuesPane.updateComplete;
+    const tree = issuesPane.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    assert.isTrue(tree.hidden);
+    assert.isFalse(tree.hasAttribute('autofocus'));
+
+    addPermissionElementIssue();
+    await issuesPane.updateComplete;
+    assert.isFalse(tree.hidden);
+    assert.isTrue(tree.hasAttribute('autofocus'));
+  });
+
+  it('groups issues under declarative category items when enabled', async () => {
+    const issuesPane = new Issues.IssuesPane.IssuesPane();
+    renderElementIntoDOM(issuesPane);
+    await issuesPane.updateComplete;
+    addPermissionElementIssue();
+    Issues.IssuesPane.getGroupIssuesByCategorySetting().set(true);
+    await issuesPane.updateComplete;
+
+    const tree = issuesPane.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    const categoryItem = tree.getInternalTreeOutlineForTest().rootElement().firstChild();
+    assert.isTrue(categoryItem?.listItemElement.classList.contains('issue-category'));
+    assert.strictEqual(categoryItem?.listItemElement.querySelector('.title')?.textContent, 'Permission element');
+    assert.lengthOf(categoryItem?.children() ?? [], 1);
+    assert.instanceOf(categoryItem?.firstChild(), Issues.IssueView.IssueView);
+    const domCategoryTitles = [
+      ...tree.getInternalTreeOutlineForTest().rootElement().childrenListElement.querySelectorAll(
+          ':scope > li.issue-category .title'),
+    ].map(el => el.textContent);
+    assert.deepEqual(domCategoryTitles, ['Permission element', 'Hidden issues']);
+  });
+
+  it('focuses the first issue on the first IssuesPane.focus() call', async () => {
+    const issuesPane = new Issues.IssuesPane.IssuesPane();
+    renderElementIntoDOM(issuesPane);
+    addPermissionElementIssue();
+    await issuesPane.updateComplete;
+
+    const tree = issuesPane.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    const firstChild = tree.getInternalTreeOutlineForTest().firstChild();
+    assert.exists(firstChild);
+
+    issuesPane.focus();
+
+    assert.isTrue(firstChild.selected);
+    assert.isTrue(firstChild.listItemElement.hasFocus());
+  });
+
+  it('preserves selection on hidden issues row when a later-sorting category is added', async () => {
+    const issuesPane = new Issues.IssuesPane.IssuesPane();
+    renderElementIntoDOM(issuesPane);
+    Issues.IssuesPane.getGroupIssuesByCategorySetting().set(true);
+    const target = universe.createTarget();
+    universe.targetManager.setScopeTarget(target);
+    const issuesModel = target.model(SDK.IssuesModel.IssuesModel);
+    assert.exists(issuesModel);
+
+    const corsIssue = new StubIssue('CorsIssue', [], []);
+    sinon.stub(corsIssue, 'getCategory').returns(IssuesManager.Issue.IssueCategory.CORS);
+    sinon.stub(corsIssue, 'getDescription').returns({
+      file: 'permissionElementInvalidType.md',
+      substitutions: new Map([['PLACEHOLDER_Type', 'cors']]),
+      links: [],
+    });
+    const hiddenIssue = new StubIssue('HiddenIssue', [], []);
+    sinon.stub(hiddenIssue, 'getDescription').returns({
+      file: 'permissionElementInvalidType.md',
+      substitutions: new Map([['PLACEHOLDER_Type', 'hidden']]),
+      links: [],
+    });
+    IssuesManager.IssuesManager.getHideIssueByCodeSetting().set({
+      HiddenIssue: IssuesManager.IssuesManager.IssueStatus.HIDDEN,
+    });
+    universe.issuesManager.addIssue(issuesModel, hiddenIssue);
+    universe.issuesManager.addIssue(issuesModel, corsIssue);
+    await issuesPane.updateComplete;
+
+    const tree = issuesPane.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    const root = tree.getInternalTreeOutlineForTest().rootElement();
+    const hiddenRow = root.lastChild();
+    assert.exists(hiddenRow);
+    assert.isFalse(hiddenRow.hidden);
+    hiddenRow.select();
+    assert.isTrue(hiddenRow.selected);
+
+    const permissionIssue = new StubIssue('PermissionElementIssue', [], []);
+    sinon.stub(permissionIssue, 'getCategory').returns(IssuesManager.Issue.IssueCategory.PERMISSION_ELEMENT);
+    sinon.stub(permissionIssue, 'getDescription').returns({
+      file: 'permissionElementInvalidType.md',
+      substitutions: new Map([['PLACEHOLDER_Type', 'invalid-type']]),
+      links: [],
+    });
+    universe.issuesManager.addIssue(issuesModel, permissionIssue);
+    await issuesPane.updateComplete;
+
+    assert.isTrue(hiddenRow.selected);
+    assert.strictEqual(root.lastChild(), hiddenRow);
   });
 });

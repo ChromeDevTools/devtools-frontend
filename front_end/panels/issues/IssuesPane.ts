@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../ui/legacy/legacy.js';
 
@@ -11,7 +11,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {HiddenIssuesRow} from './HiddenIssuesRow.js';
@@ -112,64 +112,141 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const ISSUES_PANEL_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/issues' as Platform.DevToolsPath.UrlString;
 
+const {repeat} = Directives;
 const {widget} = UI.Widget;
-const {bindToSetting} = UI.UIUtils;
+const {bindToSetting, clonedRef} = UI.UIUtils;
 
-class IssueCategoryView extends UI.TreeOutline.TreeElement {
-  #category: IssuesManager.Issue.IssueCategory;
+const rootBySentinel = new WeakMap<Element, WeakRef<UI.TreeOutline.TreeElement>>();
+const managedRootElements = new WeakMap<UI.TreeOutline.TreeElement, Set<UI.TreeOutline.TreeElement>>();
+const desiredRootElements = new WeakMap<UI.TreeOutline.TreeElement, readonly UI.TreeOutline.TreeElement[]>();
 
-  constructor(category: IssuesManager.Issue.IssueCategory) {
-    super(undefined, undefined, Platform.StringUtilities.toKebabCase(category));
-    this.#category = category;
-
-    this.toggleOnClick = true;
-    this.listItemElement.classList.add('issue-category');
-    this.childrenListElement.classList.add('issue-category-body');
+function applyRootTreeElements(root: UI.TreeOutline.TreeElement): void {
+  const treeElements = desiredRootElements.get(root) ?? [];
+  let managed = managedRootElements.get(root);
+  if (!managed) {
+    managed = new Set();
+    managedRootElements.set(root, managed);
   }
-
-  getCategoryName(): string {
-    switch (this.#category) {
-      case IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY:
-        return i18nString(UIStrings.crossOriginEmbedderPolicy);
-      case IssuesManager.Issue.IssueCategory.MIXED_CONTENT:
-        return i18nString(UIStrings.mixedContent);
-      case IssuesManager.Issue.IssueCategory.COOKIE:
-        return i18nString(UIStrings.samesiteCookie);
-      case IssuesManager.Issue.IssueCategory.HEAVY_AD:
-        return i18nString(UIStrings.heavyAds);
-      case IssuesManager.Issue.IssueCategory.CONTENT_SECURITY_POLICY:
-        return i18nString(UIStrings.contentSecurityPolicy);
-      case IssuesManager.Issue.IssueCategory.LOW_TEXT_CONTRAST:
-        return i18nString(UIStrings.lowTextContrast);
-      case IssuesManager.Issue.IssueCategory.CORS:
-        return i18nString(UIStrings.cors);
-      case IssuesManager.Issue.IssueCategory.QUIRKS_MODE:
-        return i18nString(UIStrings.quirksMode);
-      case IssuesManager.Issue.IssueCategory.GENERIC:
-        return i18nString(UIStrings.generic);
-      case IssuesManager.Issue.IssueCategory.PERMISSION_ELEMENT:
-        return i18nString(UIStrings.permissionElement);
-      case IssuesManager.Issue.IssueCategory.SELECTIVE_PERMISSIONS_INTERVENTION:
-        return i18nString(UIStrings.selectivePermissionsIntervention);
-      case IssuesManager.Issue.IssueCategory.OTHER:
-        return i18nString(UIStrings.other);
+  const nextSet = new Set(treeElements);
+  for (const existing of [...managed]) {
+    if (!nextSet.has(existing)) {
+      if (existing.parent === root) {
+        root.removeChild(existing);
+      }
+      managed.delete(existing);
     }
   }
-
-  override onattach(): void {
-    this.#appendHeader();
+  let insertIndex = 0;
+  for (const child of [...root.children()]) {
+    if (nextSet.has(child)) {
+      continue;
+    }
+    if (root.childAt(insertIndex) !== child) {
+      root.removeChild(child);
+      root.insertChild(child, insertIndex);
+    }
+    insertIndex++;
   }
+  for (let i = 0; i < treeElements.length; ++i) {
+    const child = treeElements[i];
+    managed.add(child);
+    const targetIndex = insertIndex + i;
+    if (root.childAt(targetIndex) !== child) {
+      child.parent?.removeChild(child);
+      root.insertChild(child, targetIndex);
+    }
+  }
+  const treeOutline = root.treeOutline;
+  if (treeOutline && !treeOutline.selectedTreeElement) {
+    const firstChild = treeOutline.firstChild();
+    if (firstChild && !firstChild.hidden) {
+      firstChild.select(/* omitFocus= */ true);
+    }
+  }
+}
 
-  #appendHeader(): void {
-    const header = document.createElement('div');
-    header.classList.add('header');
+function syncCategoryChildren(listItem: Element|undefined, issues: readonly IssueView[]): void {
+  if (!listItem) {
+    return;
+  }
+  const categoryTreeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
+  if (!categoryTreeElement) {
+    return;
+  }
+  categoryTreeElement.childrenListElement.classList.add('issue-category-body');
+  const nextSet = new Set<UI.TreeOutline.TreeElement>(issues);
+  for (const existing of [...categoryTreeElement.children()]) {
+    if (!nextSet.has(existing)) {
+      categoryTreeElement.removeChild(existing);
+    }
+  }
+  for (let i = 0; i < issues.length; ++i) {
+    const child = issues[i];
+    if (categoryTreeElement.childAt(i) !== child) {
+      child.parent?.removeChild(child);
+      categoryTreeElement.insertChild(child, i);
+    }
+  }
+  if (categoryTreeElement.parent) {
+    applyRootTreeElements(categoryTreeElement.parent);
+  }
+}
 
-    const title = document.createElement('div');
-    title.classList.add('title');
-    title.textContent = this.getCategoryName();
-    header.appendChild(title);
+function syncRootTreeElements(
+    listItem: Element|undefined,
+    treeElements: readonly UI.TreeOutline.TreeElement[],
+    ): void {
+  if (!listItem) {
+    return;
+  }
+  let root = rootBySentinel.get(listItem)?.deref();
+  if (!root) {
+    const sentinel = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
+    if (!sentinel?.parent) {
+      return;
+    }
+    root = sentinel.parent;
+    rootBySentinel.set(listItem, new WeakRef(root));
+    root.removeChild(sentinel);
+    if (root.treeOutline instanceof UI.TreeOutline.TreeOutlineInShadow) {
+      // Keep `listItem` rooted in an inert `DocumentFragment` so `clonedRef` continues resolving on re-renders.
+      const inertHolder = document.createElement('template');
+      inertHolder.content.appendChild(listItem);
+      root.treeOutline.shadowRoot.appendChild(inertHolder);
+    }
+  }
+  desiredRootElements.set(root, treeElements);
+  applyRootTreeElements(root);
+}
 
-    this.listItemElement.appendChild(header);
+function getCategoryTitle(category: IssuesManager.Issue.IssueCategory): string {
+  switch (category) {
+    case IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY:
+      return i18nString(UIStrings.crossOriginEmbedderPolicy);
+    case IssuesManager.Issue.IssueCategory.MIXED_CONTENT:
+      return i18nString(UIStrings.mixedContent);
+    case IssuesManager.Issue.IssueCategory.COOKIE:
+      return i18nString(UIStrings.samesiteCookie);
+    case IssuesManager.Issue.IssueCategory.HEAVY_AD:
+      return i18nString(UIStrings.heavyAds);
+    case IssuesManager.Issue.IssueCategory.CONTENT_SECURITY_POLICY:
+      return i18nString(UIStrings.contentSecurityPolicy);
+    case IssuesManager.Issue.IssueCategory.LOW_TEXT_CONTRAST:
+      return i18nString(UIStrings.lowTextContrast);
+    case IssuesManager.Issue.IssueCategory.CORS:
+      return i18nString(UIStrings.cors);
+    case IssuesManager.Issue.IssueCategory.QUIRKS_MODE:
+      return i18nString(UIStrings.quirksMode);
+    case IssuesManager.Issue.IssueCategory.GENERIC:
+      return i18nString(UIStrings.generic);
+    case IssuesManager.Issue.IssueCategory.PERMISSION_ELEMENT:
+      return i18nString(UIStrings.permissionElement);
+    case IssuesManager.Issue.IssueCategory.SELECTIVE_PERMISSIONS_INTERVENTION:
+      return i18nString(UIStrings.selectivePermissionsIntervention);
+    case IssuesManager.Issue.IssueCategory.OTHER:
+      return i18nString(UIStrings.other);
+    default:
+      Platform.assertNever(category, `Unhandled issue category: ${category}`);
   }
 }
 
@@ -177,11 +254,16 @@ export function getGroupIssuesByCategorySetting(): Common.Settings.Setting<boole
   return Common.Settings.Settings.instance().createSetting('group-issues-by-category', false);
 }
 
+interface IssueCategoryItem {
+  category: IssuesManager.Issue.IssueCategory;
+  title: string;
+  issues: IssueView[];
+}
+
 export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
-  #categoryViews: Map<IssuesManager.Issue.IssueCategory, IssueCategoryView>;
   #issueViews: Map<IssuesManager.IssueAggregator.AggregationKey, IssueView>;
+  #issueCategories = new Map<IssueView, IssuesManager.Issue.IssueCategory>();
   #kindViews: Map<IssuesManager.Issue.IssueKind, IssueKindView>;
-  #issuesTree: UI.TreeOutline.TreeOutlineInShadow;
   #hiddenIssuesRow: HiddenIssuesRow;
   #issuesManager: IssuesManager.IssuesManager.IssuesManager;
   #aggregator: IssuesManager.IssueAggregator.IssueAggregator;
@@ -198,7 +280,6 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
   constructor() {
     super({useShadowDom: 'pure'});
 
-    this.#categoryViews = new Map();
     this.#kindViews = new Map();
     this.#issueViews = new Map();
 
@@ -209,14 +290,7 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
       this.#fullUpdate(true);
     });
 
-    this.#issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
-
-    this.#issuesTree.setShowSelectionOnKeyboardFocus(true);
-    this.#issuesTree.contentElement.classList.add('issues');
-    this.#issuesTree.registerRequiredCSS(issuesTreeStyles);
-
     this.#hiddenIssuesRow = new HiddenIssuesRow();
-    this.#issuesTree.appendChild(this.#hiddenIssuesRow);
 
     this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.#issueCounterData = {
@@ -241,7 +315,8 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {
-    return [this.#issuesTree.element];
+    const issuesTree = this.contentElement.querySelector('devtools-tree');
+    return issuesTree ? [issuesTree] : [];
   }
 
   override async performUpdate(): Promise<void> {
@@ -251,6 +326,7 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
     await Promise.allSettled(issuesToUpdate.map(issue => this.#updateIssueView(issue)));
     this.#updateCounts();
 
+    const {categories, treeElements} = this.#buildTreeData();
     // clang-format off
     render(html`
       <style>${issuesPaneStyles}</style>
@@ -270,13 +346,35 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
               .data=${this.#issueCounterData} jslog=${VisualLogging.counter('issues')}></devtools-issue-counter>
         </devtools-toolbar>
       </div>
-      ${this.#issuesTree.element}
+      <devtools-tree ?autofocus=${this.#showTree} show-selection-on-keyboard-focus ?hidden=${!this.#showTree} .template=${html`
+        <style>${issuesTreeStyles}</style>
+        <ul role="tree" class="issues">
+          <li role="treeitem" hidden ${clonedRef(el => syncRootTreeElements(el, treeElements))}></li>
+          ${repeat(categories, category => category.category, category => html`
+            <li role="treeitem"
+                class="issue-category"
+                jslog-context=${Platform.StringUtilities.toKebabCase(category.category)}
+                toggle-on-click
+                ${clonedRef(el => syncCategoryChildren(el, category.issues))}>
+              <div class="header">
+                <div class="title">${category.title}</div>
+              </div>
+              <ul role="group" class="issue-category-body"></ul>
+            </li>`)}
+        </ul>
+      `}></devtools-tree>
       ${this.#showTree ? nothing : widget(UI.EmptyWidget.EmptyWidget, {
         header: this.#noIssuesHeader,
         text: i18nString(UIStrings.issuesPanelDescription),
         link: ISSUES_PANEL_EXPLANATION_URL,
       })}`, this.contentElement, {container: {classes: ['issues-pane'], attributes: {jslog: `${VisualLogging.panel('issues')}`}}});
     // clang-format on
+
+    if (this.#showTree) {
+      // `<devtools-tree>` attaches newly rendered rows from a mutation observer callback, which runs before this
+      // `await` resumes.
+      await Promise.resolve();
+    }
   }
 
   /** Don't call directly. Use `requestUpdate` instead. */
@@ -292,31 +390,48 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
         const markdownDescription =
             await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(description);
         issueView = new IssueView(issue, markdownDescription);
-        const parent = this.#getIssueViewParent(issue);
-        // `appendIssueViewToParent` attaches `issueView` to the tree and synchronously invokes
-        // `IssueView.onattach()`, which renders `MarkdownView` tokens and can throw if an unsupported
-        // token or missing link key is encountered. Since `TreeElement.insertChild()` attaches the
-        // child before calling `onattach()`, we must detach `issueView` if `onattach()` fails.
-        this.appendIssueViewToParent(issueView, parent);
+        this.#issueCategories.set(issueView, issue.getCategory());
+        // `IssueView.createContent()` renders `MarkdownView` tokens and can throw if an unsupported token or missing
+        // link key is encountered. Top-level issue views are only attached to the tree by `<devtools-tree>` after the
+        // next render, so create the content eagerly to handle such errors here.
+        issueView.createContent();
+        this.appendIssueViewToParent(issueView, this.#getIssueViewParent(issue));
         this.#issueViews.set(issue.aggregationKey(), issueView);
       } catch (err) {
         console.error(err);
-        issueView?.parent?.removeChild(issueView);
+        if (issueView) {
+          this.#issueCategories.delete(issueView);
+          issueView.parent?.removeChild(issueView);
+        }
         return;
       }
     } else {
       issueView.setIssue(issue);
+      this.#issueCategories.set(issueView, issue.getCategory());
       const newParent = this.#getIssueViewParent(issue);
-      if (issueView.parent !== newParent &&
-          !(newParent instanceof UI.TreeOutline.TreeOutline && issueView.parent === newParent.rootElement())) {
-        issueView.parent?.removeChild(issueView);
-        this.appendIssueViewToParent(issueView, newParent);
+      const isManagedByView = Boolean(issueView.parent && !(issueView.parent instanceof IssueKindView) &&
+                                      !(issueView.parent instanceof HiddenIssuesRow));
+      const currentParent = isManagedByView ? null : issueView.parent;
+      if (currentParent !== newParent) {
+        if (!newParent) {
+          // The view attaches top-level and category-grouped issue views after the next render.
+          currentParent?.removeChild(issueView);
+        } else {
+          issueView.parent?.removeChild(issueView);
+          this.appendIssueViewToParent(issueView, newParent);
+        }
       }
     }
     issueView.update();
   }
 
-  appendIssueViewToParent(issueView: IssueView, parent: UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement): void {
+  /**
+   * Appends `issueView` to `parent`. Views with `parent === null` are attached to the tree by `DEFAULT_VIEW`.
+   */
+  appendIssueViewToParent(issueView: IssueView, parent: UI.TreeOutline.TreeElement|null): void {
+    if (!parent) {
+      return;
+    }
     parent.appendChild(issueView, (a, b) => {
       if (a instanceof HiddenIssuesRow) {
         return 1;
@@ -330,10 +445,8 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
       console.error('The issues tree should only contain IssueView objects as direct children');
       return 0;
     });
-    if (parent instanceof UI.TreeOutline.TreeElement) {
-      // This is an aggregated view, so we need to update the label for position and size of the treeItem.
-      this.#updateItemPositionAndSize(parent);
-    }
+    // This is an aggregated view, so we need to update the label for position and size of the treeItem.
+    this.#updateItemPositionAndSize(parent);
   }
 
   #updateItemPositionAndSize(parent: UI.TreeOutline.TreeElement): void {
@@ -349,12 +462,14 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
     }
   }
 
-  #getIssueViewParent(issue: IssuesManager.IssueAggregator.AggregatedIssue): UI.TreeOutline.TreeOutline
-      |UI.TreeOutline.TreeElement {
+  /**
+   * Returns the tree element that `issue` is shown under, or `null` if it is rendered declaratively by the view.
+   */
+  #getIssueViewParent(issue: IssuesManager.IssueAggregator.AggregatedIssue): UI.TreeOutline.TreeElement|null {
     if (issue.isHidden()) {
       return this.#hiddenIssuesRow;
     }
-    if (getGroupIssuesByKindSetting().get()) {
+    if (this.#groupByKindSetting.get()) {
       const kind = issue.getKind();
       const view = this.#kindViews.get(kind);
       if (view) {
@@ -362,33 +477,51 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
       }
 
       const newView = new IssueKindView(kind);
-      this.#issuesTree.appendChild(newView, (a, b) => {
-        if (a instanceof IssueKindView && b instanceof IssueKindView) {
-          return issueKindViewSortPriority(a, b);
-        }
-        return 0;
-      });
       this.#kindViews.set(kind, newView);
       return newView;
     }
-    if (getGroupIssuesByCategorySetting().get()) {
-      const category = issue.getCategory();
-      const view = this.#categoryViews.get(category);
-      if (view) {
-        return view;
-      }
+    return null;
+  }
 
-      const newView = new IssueCategoryView(category);
-      this.#issuesTree.appendChild(newView, (a, b) => {
-        if (a instanceof IssueCategoryView && b instanceof IssueCategoryView) {
-          return a.getCategoryName().localeCompare(b.getCategoryName());
+  #buildTreeData(): {categories: IssueCategoryItem[], treeElements: UI.TreeOutline.TreeElement[]} {
+    const categories: IssueCategoryItem[] = [];
+    let treeElements: UI.TreeOutline.TreeElement[] = [];
+    if (this.#groupByKindSetting.get()) {
+      treeElements = [...this.#kindViews.values()].sort(issueKindViewSortPriority);
+    } else if (this.#groupByCategorySetting.get()) {
+      const byCategory = new Map<IssuesManager.Issue.IssueCategory, IssueView[]>();
+      for (const issueView of this.#issueViews.values()) {
+        if (issueView.isForHiddenIssue()) {
+          continue;
         }
-        return 0;
-      });
-      this.#categoryViews.set(category, newView);
-      return newView;
+        const category = this.#issueCategories.get(issueView) ?? IssuesManager.Issue.IssueCategory.OTHER;
+        let list = byCategory.get(category);
+        if (!list) {
+          list = [];
+          byCategory.set(category, list);
+        }
+        list.push(issueView);
+      }
+      for (const [category, issues] of byCategory) {
+        issues.sort((a, b) => a.getIssueTitle().localeCompare(b.getIssueTitle()));
+        for (let i = 0; i < issues.length; i++) {
+          UI.ARIAUtils.setPositionInSet(issues[i].listItemElement, i + 1);
+          UI.ARIAUtils.setSetSize(issues[i].listItemElement, issues.length);
+        }
+        categories.push({
+          category,
+          title: getCategoryTitle(category),
+          issues,
+        });
+      }
+      categories.sort((a, b) => a.title.localeCompare(b.title));
+    } else {
+      treeElements = [...this.#issueViews.values()]
+                         .filter(issueView => !issueView.isForHiddenIssue())
+                         .sort((a, b) => a.getIssueTitle().localeCompare(b.getIssueTitle()));
     }
-    return this.#issuesTree;
+    treeElements.push(this.#hiddenIssuesRow);
+    return {categories, treeElements};
   }
 
   #clearViews<T>(views: Map<T, UI.TreeOutline.TreeElement>, preservedSet?: Set<T>): void {
@@ -396,7 +529,13 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
       if (preservedSet?.has(key)) {
         continue;
       }
-      view.parent?.removeChild(view);
+      // The view detaches top-level tree elements once they are no longer rendered.
+      if (view.parent instanceof IssueKindView || view.parent instanceof HiddenIssuesRow) {
+        view.parent.removeChild(view);
+      }
+      if (view instanceof IssueView) {
+        this.#issueCategories.delete(view);
+      }
       views.delete(key);
     }
   }
@@ -407,7 +546,6 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
 
   #fullUpdate(force: boolean): void {
     this.#dirtyIssues.clear();
-    this.#clearViews(this.#categoryViews, force ? undefined : this.#aggregator.aggregatedIssueCategories());
     this.#clearViews(this.#kindViews, force ? undefined : this.#aggregator.aggregatedIssueKinds());
     this.#clearViews(this.#issueViews, force ? undefined : this.#aggregator.aggregatedIssueCodes());
     if (this.#aggregator) {
@@ -439,15 +577,8 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
       this.#hiddenIssuesRow.hidden = hiddenIssueCount === 0;
       this.#hiddenIssuesRow.update(hiddenIssueCount);
       this.#showTree = true;
-      this.#issuesTree.element.hidden = false;
-      const firstChild = this.#issuesTree.firstChild();
-      if (firstChild) {
-        firstChild.select(/* omitFocus= */ true);
-        this.setDefaultFocusedElement(firstChild.listItemElement);
-      }
     } else {
       this.#showTree = false;
-      this.#issuesTree.element.hidden = true;
       // We alreay know that issesCount is zero here.
       const hasOnlyThirdPartyIssues =
           this.#issuesManager.numberOfAllStoredIssues() - this.#issuesManager.numberOfThirdPartyCookiePhaseoutIssues() >
@@ -466,7 +597,7 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
         this.#hiddenIssuesRow.expand();
         this.#hiddenIssuesRow.reveal();
       }
-      if (getGroupIssuesByKindSetting().get() && !issueView.isForHiddenIssue()) {
+      if (this.#groupByKindSetting.get() && !issueView.isForHiddenIssue()) {
         const kindView = this.#kindViews.get(issueView.getIssueKind());
         kindView?.expand();
         kindView?.reveal();

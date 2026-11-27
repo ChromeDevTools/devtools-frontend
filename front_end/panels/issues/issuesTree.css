@@ -52,6 +52,10 @@
   transition: background-color 200ms;
   border: var(--sys-size-1) solid var(--sys-color-divider);
   border-width: 0 0 var(--sys-size-1);
+
+  & > .tree-element-title {
+    flex: 1;
+  }
 }
 
 .issue-category.hidden-issues.parent.expanded,

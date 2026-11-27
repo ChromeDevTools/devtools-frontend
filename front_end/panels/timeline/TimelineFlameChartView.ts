@@ -91,6 +91,8 @@ interface FlameChartDimmer {
   outline: boolean|{main: number[] | boolean, network: number[]|boolean};
 }
 
+type TreeRowEvent = TimelineTreeView.EventTypes[TimelineTreeView.Events.TREE_ROW_HOVERED];
+
 const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
@@ -297,6 +299,12 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   readonly #boundOnMainDataChanged = (): void => {
     this.mainFlameChart.scheduleUpdate();
   };
+  readonly #onTreeRowHovered = (data: TreeRowEvent): void => {
+    this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, data.events ?? data.node?.events ?? null);
+  };
+  readonly #onTreeRowClicked = (data: TreeRowEvent): void => {
+    this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, data.events ?? data.node?.events ?? null);
+  };
 
   constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager,
               view: View = DEFAULT_VIEW) {
@@ -481,23 +489,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       this.#overlays.toggleAllOverlaysDisplayed(!event.data);
     });
 
-    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, e => {
-      if (e.data.events) {
-        this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, e.data.events);
-        return;
-      }
-      const events = e?.data?.node?.events ?? null;
-      this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, events);
-    });
-
-    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, e => {
-      if (e.data.events) {
-        this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, e.data.events);
-        return;
-      }
-      const events = e?.data?.node?.events ?? null;
-      this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, events);
-    });
+    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, e => this.#onTreeRowHovered(e.data));
+    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, e => this.#onTreeRowClicked(e.data));
 
     /**
      * NOTE: ENTRY_SELECTED, ENTRY_INVOKED and ENTRY_HOVERED are not always super obvious:

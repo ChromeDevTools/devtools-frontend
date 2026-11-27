@@ -185,13 +185,13 @@ export class ListSourcesTool implements
 }
 
 /**
- * Formats a source file name for the `listSources` output.
+ * Formats a source file name for the `listSources` and `searchInSources` outputs.
  *
  * `fullDisplayName()` already strips `https?://` for network files while keeping the host,
  * and decodes URI sequences (`%0D`, `%0A`) into raw `\r` and `\n`. Re-encode carriage returns
- * and newlines so filenames cannot break the line-delimited `id;name` output.
+ * and newlines so filenames cannot break the line-delimited output.
  */
-function formatSourceName(
+export function formatSourceName(
     file: Workspace.UISourceCode.UISourceCode,
     establishedOrigin: SDK.SecurityOrigin.SecurityOrigin,
     ): string {

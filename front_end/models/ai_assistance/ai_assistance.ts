@@ -63,6 +63,7 @@ import * as ListStorageKeys from './tools/ListStorageKeys.js';
 import * as RecordPerformanceTrace from './tools/RecordPerformanceTrace.js';
 import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as RunLighthouse from './tools/RunLighthouse.js';
+import * as SearchInSources from './tools/SearchInSources.js';
 import * as SelectTraceEventByKey from './tools/SelectTraceEventByKey.js';
 import * as SetElementStyles from './tools/SetElementStyles.js';
 import * as Tool from './tools/Tool.js';
@@ -131,6 +132,7 @@ export {
   RequestContext,
   ResolveDevtoolsNodePath,
   RunLighthouse,
+  SearchInSources,
   SelectTraceEventByKey,
   SetElementStyles,
   Skill,

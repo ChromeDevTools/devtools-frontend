@@ -668,7 +668,6 @@ describe('TimelineFlameChartView', function() {
     renderElementIntoDOM(flameChartView);
     const input = await view.nextInput;
     assert.instanceOf(input.flameChartsContainer, UI.Widget.VBox);
-    assert.instanceOf(input.detailsView, Timeline.TimelineDetailsView.TimelineDetailsPane);
     assert.isFalse(input.inert);
 
     flameChartView.overlays().dispatchEvent(new Overlays.Overlays.ConsentDialogVisibilityChange(true));
@@ -698,11 +697,9 @@ describe('TimelineFlameChartView', function() {
     sinon.assert.callCount(view, callCount);
   });
 
-  it('renders the counters split view show attribute from showMemoryGraph', () => {
-    const container = new UI.Widget.Widget();
-    activeWidgets.push(container);
-    renderElementIntoDOM(container);
-    const input: Timeline.TimelineFlameChartView.ViewInput = {
+  function createDefaultViewInput(overrides: Partial<Timeline.TimelineFlameChartView.ViewInput> = {}):
+      Timeline.TimelineFlameChartView.ViewInput {
+    return {
       flameChartsContainer: new UI.Widget.VBox(),
       delegate: new MockViewDelegate(),
       countersModel: {parsedTrace: null, events: null},
@@ -712,14 +709,23 @@ describe('TimelineFlameChartView', function() {
         eventToRelatedInsightsMap: null,
         entityMapper: null,
       },
-      detailsView: new Timeline.TimelineDetailsView.TimelineDetailsPane(new MockViewDelegate()),
       showMemoryGraph: true,
       inert: false,
       onKeyDown: () => undefined,
       onSecondaryPointerDown: () => false,
       onEntryLinkStartCreating: () => {},
       onEventReferenceClick: () => {},
+      onTreeRowHovered: () => {},
+      onTreeRowClicked: () => {},
+      ...overrides,
     };
+  }
+
+  it('renders the counters split view show attribute from showMemoryGraph', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const input = createDefaultViewInput();
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, {}, container.contentElement);
     const countersSplit =
@@ -728,6 +734,61 @@ describe('TimelineFlameChartView', function() {
 
     Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, showMemoryGraph: false}, {}, container.contentElement);
     assert.strictEqual(countersSplit?.getAttribute('show'), 'main');
+  });
+
+  it('renders TimelineDetailsPane declaratively in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const output: Timeline.TimelineFlameChartView.ViewOutput = {};
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(createDefaultViewInput(), output, container.contentElement);
+    const detailsElement =
+        container.contentElement
+            .querySelector<UI.Widget.WidgetElement<Timeline.TimelineDetailsView.TimelineDetailsPane>>(
+                'devtools-widget.timeline-details');
+    assert.instanceOf(detailsElement?.getWidget(), Timeline.TimelineDetailsView.TimelineDetailsPane);
+    assert.isFunction(output.setDetailsSelection);
+    assert.isFunction(output.selectDetailsTab);
+    assert.isFunction(output.revealEventInTreeView);
+  });
+
+  it('forwards TreeRowHovered from TimelineDetailsPane in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const onTreeRowHovered = sinon.stub();
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(createDefaultViewInput({onTreeRowHovered}), {},
+                                                 container.contentElement);
+    const detailsPane = container.contentElement
+                            .querySelector<UI.Widget.WidgetElement<Timeline.TimelineDetailsView.TimelineDetailsPane>>(
+                                'devtools-widget.timeline-details')
+                            ?.getWidget();
+    assert.exists(detailsPane);
+
+    const payload = {node: null, events: [makeCompleteEvent('HoverEvent', 10, 20)]};
+    detailsPane.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineTreeView.Events.TREE_ROW_HOVERED, payload);
+    sinon.assert.calledOnceWithExactly(onTreeRowHovered, payload);
+  });
+
+  it('forwards TreeRowClicked from TimelineDetailsPane in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const onTreeRowClicked = sinon.stub();
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(createDefaultViewInput({onTreeRowClicked}), {},
+                                                 container.contentElement);
+    const detailsPane = container.contentElement
+                            .querySelector<UI.Widget.WidgetElement<Timeline.TimelineDetailsView.TimelineDetailsPane>>(
+                                'devtools-widget.timeline-details')
+                            ?.getWidget();
+    assert.exists(detailsPane);
+
+    const payload = {node: null, events: [makeCompleteEvent('ClickEvent', 10, 20)]};
+    detailsPane.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineTreeView.Events.TREE_ROW_CLICKED, payload);
+    sinon.assert.calledOnceWithExactly(onTreeRowClicked, payload);
   });
 
   it('updates countersModel in the view input when the trace model changes', async function() {

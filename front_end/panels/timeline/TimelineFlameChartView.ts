@@ -45,7 +45,7 @@ import {
   selectionsEqual,
   type TimelineSelection,
 } from './TimelineSelection.js';
-import {AggregatedTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
+import {AggregatedTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
 import * as Utils from './utils/utils.js';
 
@@ -100,13 +100,14 @@ export interface ViewInput {
   delegate: TimelineModeViewDelegate;
   countersModel: CountersModel;
   detailsModel: TimelineDetailsModel;
-  detailsView: TimelineDetailsPane;
   showMemoryGraph: boolean;
   inert: boolean;
   onKeyDown: (keyInfo: {key: string, altKey: boolean}) => 'handled' | 'stop-propagation' | undefined;
   onSecondaryPointerDown: () => boolean;
   onEntryLinkStartCreating: () => void;
   onEventReferenceClick: (event: Trace.Types.Events.Event) => void;
+  onTreeRowHovered: (data: TreeRowEvent) => void;
+  onTreeRowClicked: (data: TreeRowEvent) => void;
 }
 export interface ViewOutput {
   setDetailsSelection?: (selection: TimelineSelection|null) => Promise<void>;
@@ -115,6 +116,7 @@ export interface ViewOutput {
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target): void => {
+  let detailsSplit: UI.SplitWidget.SplitWidget|undefined;
   let chartSplit: UI.SplitWidget.SplitWidget|undefined;
   let countersResizer: Element|undefined;
   const container = {
@@ -146,7 +148,7 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
   render(html`<style>${timelineFlameChartViewStyles}</style>
     <devtools-split-view class="timeline-details-split" direction="row" sidebar-position="second"
         name="timeline-panel-details-split-view-state"
-        ${widgetRef(UI.SplitWidget.SplitWidget, split => split.installResizer(input.detailsView.headerElement()))}>
+        ${widgetRef(UI.SplitWidget.SplitWidget, split => { detailsSplit = split; })}>
       <devtools-split-view slot="main" direction="row" sidebar-position="second"
           name="timeline-counters-split-view-state" show=${input.showMemoryGraph ? 'both' : 'main'}
           ${widgetRef(UI.SplitWidget.SplitWidget, split => {
@@ -158,17 +160,22 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
             ${widget(CountersGraph, {delegate: input.delegate, model: input.countersModel})}
             ${widgetRef(CountersGraph, counters => { countersResizer = counters.resizerElement(); })}></devtools-widget>
       </devtools-split-view>
-      <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, {widget: input.detailsView})}></div>
+      <devtools-widget slot="sidebar"
+          ${widget(TimelineDetailsPane, {delegate: input.delegate, model: input.detailsModel})}
+          ${widgetRef(TimelineDetailsPane, details => {
+            detailsSplit?.installResizer(details.headerElement());
+            output.setDetailsSelection = selection => details.setSelection(selection);
+            output.selectDetailsTab = (tabName, node) => details.selectTab(tabName, node);
+            output.revealEventInTreeView = event => details.revealEventInTreeView(event);
+          })}
+          @TreeRowHovered=${(e: CustomEvent<TreeRowEvent>) => input.onTreeRowHovered(e.detail)}
+          @TreeRowClicked=${(e: CustomEvent<TreeRowEvent>) => input.onTreeRowClicked(e.detail)}></devtools-widget>
     </devtools-split-view>`,
     target, {container});
   // clang-format on
   if (chartSplit && countersResizer) {
     chartSplit.installResizer(countersResizer);
   }
-  input.detailsView.model = input.detailsModel;
-  output.setDetailsSelection = selection => input.detailsView.setSelection(selection);
-  output.selectDetailsTab = (tabName, node) => input.detailsView.selectTab(tabName, node);
-  output.revealEventInTreeView = event => input.detailsView.revealEventInTreeView(event);
 };
 
 const TimelineFlameChartViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
@@ -203,7 +210,11 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     entityMapper: null,
   };
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in Chromium web_tests.
-  private readonly detailsView: TimelineDetailsPane;
+  private get detailsView(): TimelineDetailsPane|undefined {
+    return this.contentElement
+        .querySelector<UI.Widget.WidgetElement<TimelineDetailsPane>>('devtools-widget.timeline-details')
+        ?.getWidget();
+  }
   readonly #onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<{
     entryIndex: number,
     withLinkCreationButton: boolean,
@@ -466,8 +477,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#networkSplitWidget.setMainWidget(this.mainFlameChart);
     this.#networkSplitWidget.setSidebarWidget(this.#networkPane);
 
-    this.detailsView = new TimelineDetailsPane(delegate);
-
     // Event listeners for annotations.
     this.#onMainAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
     this.#onNetworkAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.#networkDataProvider);
@@ -488,9 +497,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.TRACKS_REORDER_STATE_CHANGED, event => {
       this.#overlays.toggleAllOverlaysDisplayed(!event.data);
     });
-
-    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, e => this.#onTreeRowHovered(e.data));
-    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, e => this.#onTreeRowClicked(e.data));
 
     /**
      * NOTE: ENTRY_SELECTED, ENTRY_INVOKED and ENTRY_HOVERED are not always super obvious:
@@ -1570,7 +1576,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       delegate: this.#delegate,
       countersModel: this.#countersModel,
       detailsModel: this.#detailsModel,
-      detailsView: this.detailsView,
       showMemoryGraph: this.#showMemoryGraph,
       inert: this.#inert,
       onKeyDown: this.#onKeyDown,
@@ -1578,6 +1583,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       // Focus this view when link creation deletes the arrow so Escape cancels via keydown.
       onEntryLinkStartCreating: () => this.focus(),
       onEventReferenceClick: event => void this.setSelectionAndReveal(selectionFromEvent(event)),
+      onTreeRowHovered: this.#onTreeRowHovered,
+      onTreeRowClicked: this.#onTreeRowClicked,
     },
                this.#viewOutput, this.contentElement);
     if (this.#needsResizeToPreferredHeights) {

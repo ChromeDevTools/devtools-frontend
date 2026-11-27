@@ -2432,4 +2432,30 @@ describeWithEnvironment('FlameChart', () => {
     sinon.assert.calledOnceWithExactly(preparePopoverSpy, 0);
     assert.strictEqual(chartInstance.getPopoverElementForTest().innerText, 'Entry 0');
   });
+
+  it('offsets the track configuration confirm button only when the vertical scrollbar is visible', () => {
+    class TrackConfigurationProvider extends FakeProvider {
+      override hasTrackConfigurationMode(): boolean {
+        return true;
+      }
+    }
+
+    const provider = new TrackConfigurationProvider();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+    renderWidgetInVbox(chartInstance, {width: 600, height: 400});
+    chartInstance.setWindowTimes(0, 100);
+    chartInstance.update();
+    chartInstance.update();
+    chartInstance.enterTrackConfigurationMode();
+
+    assert.isFalse(chartInstance.verticalScrollBarVisible());
+    const confirmButton = chartInstance.contentElement.querySelector<HTMLElement>('.flame-chart-edit-confirm');
+    assert.isNotNull(confirmButton);
+    assert.strictEqual(window.getComputedStyle(confirmButton).right, '12px');
+
+    chartInstance.alwaysShowVerticalScroll();
+    chartInstance.update();
+    assert.isTrue(chartInstance.verticalScrollBarVisible());
+    assert.strictEqual(window.getComputedStyle(confirmButton).right, '28px');
+  });
 });

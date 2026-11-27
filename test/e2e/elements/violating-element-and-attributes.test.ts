@@ -72,9 +72,37 @@ describe('The elements panel', function() {
      async ({devToolsPage, inspectedPage}) => {
        await inspectedPage.goToResource('elements/select-element-with-text-node-issue.html');
        await expandSelectedNodeRecursively(devToolsPage);
-       const element = await devToolsPage.waitFor('.violating-element');
-       const violatingElement = await element.evaluate(node => node.textContent);
+       const elements = await devToolsPage.waitForMany('.violating-element', 2);
+       const violatingElement = await elements[0].evaluate(node => node.textContent);
        assert.strictEqual(violatingElement, 'div');
+     });
+
+  it('displays squiggly lines and popover on a standalone text node with issue',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('elements/select-element-with-text-node-issue.html');
+       await expandSelectedNodeRecursively(devToolsPage);
+       const elements = await devToolsPage.waitForMany('.violating-element', 2);
+       const violatingText = elements[1];
+       const violatingElement = await violatingText.evaluate(node => node.textContent);
+       assert.strictEqual(violatingElement, 'Stray select text');
+
+       await violatingText.hover();
+       const popupParent = await devToolsPage.waitFor('div.vbox.flex-auto.no-pointer-events');
+       const popupText = await popupParent.evaluate(async node => {
+         if (!node.shadowRoot) {
+           throw new Error('Node shadow root not found.');
+         }
+         const popup = node.shadowRoot.querySelector('div.widget');
+         if (!popup) {
+           throw new Error('Popup not found.');
+         }
+         const span = popup.querySelector('span');
+         if (!span) {
+           throw new Error('Span not found.');
+         }
+         return span.textContent;
+       });
+       assert.strictEqual(popupText, 'Invalid element or text node within <select>');
      });
 
   it('displays multiple issues when hoverring over squiggly line', async ({devToolsPage, inspectedPage}) => {

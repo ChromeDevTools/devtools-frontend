@@ -337,6 +337,98 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('shows issue tooltip when hovering over a violating text node or its entity span', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target);
+      const previousGlassPaneContainer = UI.GlassPane.GlassPane.container(document);
+      let clock: sinon.SinonFakeTimers|undefined;
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'SELECT',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'OPTION',
+            },
+            {
+              nodeId: 3,
+              backendNodeId: 3,
+              nodeName: '#text',
+              nodeValue: 'Stray\u00a0select text',
+            },
+          ],
+        });
+        domTree.expandRoot = true;
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const textNode = rootNode.children()?.[1];
+        assert.exists(textNode);
+        const textNodeTreeElement = requireTreeElement(domTree, textNode);
+        const widget = treeWidgetOf(textNodeTreeElement);
+        assert.exists(widget);
+
+        const accessibilityIssue = new IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue({
+          nodeId: 3 as Protocol.DOM.BackendNodeId,
+          elementAccessibilityIssueReason: Protocol.Audits.ElementAccessibilityIssueReason.DisallowedSelectChild,
+          hasDisallowedAttributes: false,
+        },
+                                                                                                         null);
+        const unsupportedIssue = new IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue({
+          violatedDirective: 'script-src',
+          isReportOnly: false,
+          contentSecurityPolicyViolationType: Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation,
+        },
+                                                                                                         null);
+
+        sinon.stub(widget, 'issues').get(() => [accessibilityIssue, unsupportedIssue]);
+        widget.performUpdate();
+
+        const violatingText = widget.contentElement.querySelector('.webkit-html-text-node');
+        assert.exists(violatingText);
+        assert.isTrue(violatingText.classList.contains('violating-element'));
+
+        UI.GlassPane.GlassPane.setContainer(domTree.element);
+        clock = sinon.useFakeTimers();
+        const createPopoverSpy = sinon.spy(UI.PopoverHelper.PopoverHelper, 'createPopover');
+
+        const getHoveredTargets = [
+          () => widget.contentElement.querySelector('.webkit-html-text-node'),
+          () => widget.contentElement.querySelector('.webkit-html-text-node .webkit-html-entity-value'),
+        ];
+
+        for (const getHoveredTarget of getHoveredTargets) {
+          const hoveredTarget = getHoveredTarget();
+          assert.exists(hoveredTarget);
+          createPopoverSpy.resetHistory();
+          hoveredTarget.dispatchEvent(new MouseEvent('mousemove', {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+          }));
+          await clock.tickAsync(300);
+
+          sinon.assert.calledOnce(createPopoverSpy);
+          const popover = createPopoverSpy.firstCall.returnValue;
+          const items = popover.contentElement.querySelectorAll('.squiggles-content-item');
+          assert.lengthOf(items, 1);
+          assert.include(items[0].textContent, 'Invalid element or text node within <select>');
+
+          domTree.selectDOMNode(null);
+        }
+      } finally {
+        clock?.restore();
+        domTree.detach();
+        if (previousGlassPaneContainer) {
+          UI.GlassPane.GlassPane.setContainer(previousGlassPaneContainer);
+        }
+      }
+    });
+
     it('hides popovers when selectDOMNode, hideImagePreview, and detach are called', () => {
       const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
       domTree.markAsRoot();

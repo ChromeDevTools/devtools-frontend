@@ -1751,6 +1751,75 @@ describeWithEnvironment('DOMTreeElementWidget issue management', () => {
     assert.deepEqual(widget.issues, [issue]);
   });
 
+  it('highlights a standalone text node row for an issue on that text node', async () => {
+    const selectNode = SDK.DOMModel.DOMNode.create(testDomModel, labelNode.ownerDocument, false, {
+      nodeId: 3 as Protocol.DOM.NodeId,
+      backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'SELECT',
+      localName: 'select',
+      nodeValue: '',
+      childNodeCount: 2,
+      children: [
+        {
+          nodeId: 4 as Protocol.DOM.NodeId,
+          backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'OPTION',
+          localName: 'option',
+          nodeValue: '',
+          childNodeCount: 0,
+        },
+        {
+          nodeId: 5 as Protocol.DOM.NodeId,
+          backendNodeId: 5 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.TEXT_NODE,
+          nodeName: '#text',
+          localName: '',
+          nodeValue: 'Stray select text',
+        },
+      ],
+    });
+    const textNode = selectNode.children()?.[1];
+    assert.exists(textNode);
+    (SDK.DOMModel.DeferredDOMNode.prototype.resolvePromise as sinon.SinonStub).resolves(textNode);
+
+    widget.node = textNode;
+    widget.performUpdate();
+    const textElement = widget.contentElement.querySelector('.webkit-html-text-node');
+    assert.exists(textElement);
+    assert.strictEqual(textElement.textContent, 'Stray select text');
+    assert.isFalse(textElement.classList.contains('violating-element'));
+
+    const inspectorIssue = {
+      code: Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
+      details: {
+        elementAccessibilityIssueDetails: {
+          nodeId: 5 as Protocol.DOM.BackendNodeId,
+          elementAccessibilityIssueReason: Protocol.Audits.ElementAccessibilityIssueReason.DisallowedSelectChild,
+          hasDisallowedAttributes: false,
+        },
+      },
+    };
+    const issue = IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue.fromInspectorIssue(
+        mockModel, inspectorIssue)[0];
+    const issueAdded = domIssuesManager.once(IssuesManager.DOMIssuesManager.Events.DOM_ISSUE_ADDED);
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
+                                           {issuesModel: mockModel, issue});
+    assert.strictEqual((await issueAdded).node, textNode);
+
+    assert.isTrue(textElement.classList.contains('violating-element'));
+    assert.deepEqual(widget.issues, [issue]);
+
+    issue.setHidden(true);
+    const issueRemoved = domIssuesManager.once(IssuesManager.DOMIssuesManager.Events.DOM_ISSUE_REMOVED);
+    issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_HIDDEN_STATUS_UPDATED, {issue});
+    assert.strictEqual((await issueRemoved).node, textNode);
+
+    assert.isFalse(textElement.classList.contains('violating-element'));
+    assert.deepEqual(widget.issues, []);
+  });
+
   it('adds attribute-specific issue to tree element and highlights attribute name', async () => {
     const inspectorIssue = {
       code: Protocol.Audits.InspectorIssueCode.GenericIssue,

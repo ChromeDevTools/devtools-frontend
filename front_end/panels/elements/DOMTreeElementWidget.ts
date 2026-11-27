@@ -490,6 +490,13 @@ function formatCandidateLabel(node: SDK.DOMModel.DOMNode): string {
   return label;
 }
 
+function hasNodeIssues(issues?: IssuesManager.Issue.Issue[]): boolean {
+  return Boolean(issues?.some(issue => {
+    const details = getElementIssueDetails(issue);
+    return Boolean(details && !details.attribute);
+  }));
+}
+
 function renderTitle(node: SDK.DOMModel.DOMNode, input: ViewInput): Lit.LitTemplate {
   const {isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, issues} = input;
   const {onHighlightSearchResults, onExpand} = input;
@@ -557,6 +564,10 @@ function renderTitle(node: SDK.DOMModel.DOMNode, input: ViewInput): Lit.LitTempl
     }
 
     case Node.TEXT_NODE: {
+      const textNodeClasses = {
+        'webkit-html-text-node': true,
+        'violating-element': hasNodeIssues(issues),
+      };
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === 'script') {
         const text = node.nodeValue();
         const highlightNode = ref(el => {
@@ -565,7 +576,7 @@ function renderTitle(node: SDK.DOMModel.DOMNode, input: ViewInput): Lit.LitTempl
             void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/javascript').then(onHighlightSearchResults);
           }
         });
-        return html`<span class="webkit-html-text-node webkit-html-js-node" jslog=${
+        return html`<span class=${classMap({...textNodeClasses, 'webkit-html-js-node': true})} jslog=${
             VisualLogging.value('script-text-node').track({change: true, dblclick: true})} ${highlightNode}></span>`;
       }
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === 'style') {
@@ -576,7 +587,7 @@ function renderTitle(node: SDK.DOMModel.DOMNode, input: ViewInput): Lit.LitTempl
             void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/css').then(onHighlightSearchResults);
           }
         });
-        return html`<span class="webkit-html-text-node webkit-html-css-node" jslog=${
+        return html`<span class=${classMap({...textNodeClasses, 'webkit-html-css-node': true})} jslog=${
             VisualLogging.value('css-text-node').track({change: true, dblclick: true})} ${highlightNode}></span>`;
       }
 
@@ -588,7 +599,7 @@ function renderTitle(node: SDK.DOMModel.DOMNode, input: ViewInput): Lit.LitTempl
           Highlighting.highlightRangesWithStyleClass(el, result.entityRanges, 'webkit-html-entity-value');
         }
       });
-      return html`"<span class="webkit-html-text-node" jslog=${VisualLogging.value('text-node').track({
+      return html`"<span class=${classMap(textNodeClasses)} jslog=${VisualLogging.value('text-node').track({
         change: true,
         dblclick: true,
       })} ${animateOn(Boolean(updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${
@@ -873,10 +884,7 @@ function renderTag(node: SDK.DOMModel.DOMNode, tagName: string, isClosingTag: bo
   }
 
   const tagNameClass = isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name';
-  const hasTagIssues = !isClosingTag && Boolean(issues?.some(issue => {
-    const details = getElementIssueDetails(issue);
-    return Boolean(details && !details.attribute);
-  }));
+  const hasTagIssues = !isClosingTag && hasNodeIssues(issues);
   const tagNameClasses = {
     [tagNameClass]: true,
     'violating-element': hasTagIssues,

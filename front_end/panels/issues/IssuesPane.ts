@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../ui/legacy/legacy.js';
 
@@ -254,11 +253,70 @@ export function getGroupIssuesByCategorySetting(): Common.Settings.Setting<boole
   return Common.Settings.Settings.instance().createSetting('group-issues-by-category', false);
 }
 
-interface IssueCategoryItem {
+export interface IssueCategoryItem {
   category: IssuesManager.Issue.IssueCategory;
   title: string;
   issues: IssueView[];
 }
+
+export interface ViewInput {
+  groupByCategorySetting: Common.Settings.Setting<boolean>;
+  groupByKindSetting: Common.Settings.Setting<boolean>;
+  showThirdPartyIssuesSetting: Common.Settings.Setting<boolean>;
+  issueCounterData: IssueCounter.IssueCounter.IssueCounterData;
+  issueCounterTitle: string;
+  showTree: boolean;
+  categories: IssueCategoryItem[];
+  treeElements: UI.TreeOutline.TreeElement[];
+  noIssuesHeader: string;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${issuesPaneStyles}</style>
+    <div class="issues-toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar()}>
+      <devtools-toolbar class="issues-toolbar-left" role="presentation"></devtools-toolbar>
+      <devtools-toolbar class="issues-toolbar-right" role="presentation">
+        <!-- The option to toggle category grouping is hidden for now. -->
+        <devtools-checkbox hidden title=${i18nString(UIStrings.groupDisplayedIssuesUnder)}
+            ${bindToSetting(input.groupByCategorySetting)}>${i18nString(UIStrings.groupByCategory)}</devtools-checkbox>
+        <devtools-checkbox title=${i18nString(UIStrings.groupDisplayedIssuesUnderKind)}
+            ${bindToSetting(input.groupByKindSetting)}>${i18nString(UIStrings.groupByKind)}</devtools-checkbox>
+        <devtools-checkbox title=${i18nString(UIStrings.includeCookieIssuesCausedBy)}
+            ${bindToSetting(input.showThirdPartyIssuesSetting)}>${
+              i18nString(UIStrings.includeThirdpartyCookieIssues)}</devtools-checkbox>
+        <div class="toolbar-divider"></div>
+        <devtools-issue-counter id="console-issues-counter" title=${input.issueCounterTitle}
+            .data=${input.issueCounterData} jslog=${VisualLogging.counter('issues')}></devtools-issue-counter>
+      </devtools-toolbar>
+    </div>
+    <devtools-tree ?autofocus=${input.showTree} show-selection-on-keyboard-focus ?hidden=${!input.showTree} .template=${html`
+      <style>${issuesTreeStyles}</style>
+      <ul role="tree" class="issues">
+        <li role="treeitem" hidden ${clonedRef(el => syncRootTreeElements(el, input.treeElements))}></li>
+        ${repeat(input.categories, category => category.category, category => html`
+          <li role="treeitem"
+              class="issue-category"
+              jslog-context=${Platform.StringUtilities.toKebabCase(category.category)}
+              toggle-on-click
+              ${clonedRef(el => syncCategoryChildren(el, category.issues))}>
+            <div class="header">
+              <div class="title">${category.title}</div>
+            </div>
+            <ul role="group" class="issue-category-body"></ul>
+          </li>`)}
+      </ul>`}>
+    </devtools-tree>
+    ${input.showTree ? nothing : widget(UI.EmptyWidget.EmptyWidget, {
+      header: input.noIssuesHeader,
+      text: i18nString(UIStrings.issuesPanelDescription),
+      link: ISSUES_PANEL_EXPLANATION_URL,
+    })}`, target, {container: {classes: ['issues-pane'], attributes: {jslog: `${VisualLogging.panel('issues')}`}}});
+  // clang-format on
+};
 
 export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
   #issueViews: Map<IssuesManager.IssueAggregator.AggregationKey, IssueView>;
@@ -276,9 +334,11 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
   #issueCounterTitle = '';
   #showTree = false;
   #noIssuesHeader = '';
+  readonly #view: View;
 
-  constructor() {
-    super({useShadowDom: 'pure'});
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: 'pure'});
+    this.#view = view;
 
     this.#kindViews = new Map();
     this.#issueViews = new Map();
@@ -327,48 +387,18 @@ export class IssuesPane extends UI.Widget.VBox<ShadowRoot> {
     this.#updateCounts();
 
     const {categories, treeElements} = this.#buildTreeData();
-    // clang-format off
-    render(html`
-      <style>${issuesPaneStyles}</style>
-      <div class="issues-toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar()}>
-        <devtools-toolbar class="issues-toolbar-left" role="presentation"></devtools-toolbar>
-        <devtools-toolbar class="issues-toolbar-right" role="presentation">
-          <!-- The option to toggle category grouping is hidden for now. -->
-          <devtools-checkbox hidden title=${i18nString(UIStrings.groupDisplayedIssuesUnder)}
-              ${bindToSetting(this.#groupByCategorySetting)}>${i18nString(UIStrings.groupByCategory)}</devtools-checkbox>
-          <devtools-checkbox title=${i18nString(UIStrings.groupDisplayedIssuesUnderKind)}
-              ${bindToSetting(this.#groupByKindSetting)}>${i18nString(UIStrings.groupByKind)}</devtools-checkbox>
-          <devtools-checkbox title=${i18nString(UIStrings.includeCookieIssuesCausedBy)}
-              ${bindToSetting(this.#showThirdPartyIssuesSetting)}>${
-                i18nString(UIStrings.includeThirdpartyCookieIssues)}</devtools-checkbox>
-          <div class="toolbar-divider"></div>
-          <devtools-issue-counter id="console-issues-counter" title=${this.#issueCounterTitle}
-              .data=${this.#issueCounterData} jslog=${VisualLogging.counter('issues')}></devtools-issue-counter>
-        </devtools-toolbar>
-      </div>
-      <devtools-tree ?autofocus=${this.#showTree} show-selection-on-keyboard-focus ?hidden=${!this.#showTree} .template=${html`
-        <style>${issuesTreeStyles}</style>
-        <ul role="tree" class="issues">
-          <li role="treeitem" hidden ${clonedRef(el => syncRootTreeElements(el, treeElements))}></li>
-          ${repeat(categories, category => category.category, category => html`
-            <li role="treeitem"
-                class="issue-category"
-                jslog-context=${Platform.StringUtilities.toKebabCase(category.category)}
-                toggle-on-click
-                ${clonedRef(el => syncCategoryChildren(el, category.issues))}>
-              <div class="header">
-                <div class="title">${category.title}</div>
-              </div>
-              <ul role="group" class="issue-category-body"></ul>
-            </li>`)}
-        </ul>
-      `}></devtools-tree>
-      ${this.#showTree ? nothing : widget(UI.EmptyWidget.EmptyWidget, {
-        header: this.#noIssuesHeader,
-        text: i18nString(UIStrings.issuesPanelDescription),
-        link: ISSUES_PANEL_EXPLANATION_URL,
-      })}`, this.contentElement, {container: {classes: ['issues-pane'], attributes: {jslog: `${VisualLogging.panel('issues')}`}}});
-    // clang-format on
+    const input: ViewInput = {
+      groupByCategorySetting: this.#groupByCategorySetting,
+      groupByKindSetting: this.#groupByKindSetting,
+      showThirdPartyIssuesSetting: this.#showThirdPartyIssuesSetting,
+      issueCounterData: this.#issueCounterData,
+      issueCounterTitle: this.#issueCounterTitle,
+      showTree: this.#showTree,
+      categories,
+      treeElements,
+      noIssuesHeader: this.#noIssuesHeader,
+    };
+    this.#view(input, undefined, this.contentElement);
 
     if (this.#showTree) {
       // `<devtools-tree>` attaches newly rendered rows from a mutation observer callback, which runs before this

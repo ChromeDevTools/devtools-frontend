@@ -12,10 +12,10 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '5e4c4d9449e41d7c8682ef83baf3ab32c6c17c49',
+  'build_revision': '2b122b1db8c7794bffd4690a0b19c32c038bd7ac',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '12617342e24aa09b1bac98a898cdab7643192a93',
+  'buildtools_revision': '0ccd87e325bf0709758fbdfce5e6f180daad649e',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
   'depot_tools_revision': '2e69d2953ddf4a4c671c701773991ff68475db00',
@@ -60,7 +60,7 @@ vars = {
   'non_git_source': 'True',
 
   # CPython 3 CIPD package version for Siso hermetic toolchain.
-  'cpython3_version': 'version:3@3.11.9.chromium.38',
+  'cpython3_version': 'version:3@3.11.9.chromium.39',
 
   # siso CIPD package version
   'siso_version': 'git_revision:3025be9c477069426f08b8235e9545d5b20afd0f',

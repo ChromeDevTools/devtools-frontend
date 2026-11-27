@@ -1042,18 +1042,17 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     if (this.#linkSelectionAnnotation === null) {
       return;
     }
-    // If the link in progress in cleared, make sure it's creation is complete. If not, delete it.
+    // If the link in progress is cleared, make sure its creation is complete. If not, delete it.
     if (deleteCurrentLink || this.#linkSelectionAnnotation.state !== Trace.Types.File.EntriesLinkState.CONNECTED) {
       ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
     }
-    this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(false);
-    this.networkFlameChart.setLinkSelectionAnnotationIsInProgress(false);
-    this.#linkSelectionAnnotation = null;
+    this.#setLinkSelectionAnnotation(null);
   }
 
-  #setLinkSelectionAnnotation(linkSelectionAnnotation: Trace.Types.File.EntriesLinkAnnotation): void {
-    this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(true);
-    this.networkFlameChart.setLinkSelectionAnnotationIsInProgress(true);
+  #setLinkSelectionAnnotation(linkSelectionAnnotation: Trace.Types.File.EntriesLinkAnnotation|null): void {
+    const inProgress = linkSelectionAnnotation !== null;
+    this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(inProgress);
+    this.networkFlameChart.setLinkSelectionAnnotationIsInProgress(inProgress);
     this.#linkSelectionAnnotation = linkSelectionAnnotation;
   }
 
@@ -1323,17 +1322,19 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       return;
     }
 
+    this.#resetTraceState();
     this.#parsedTrace = data.parsedTrace;
     this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
-    for (const dimmer of this.#flameChartDimmers) {
-      dimmer.active = false;
-      dimmer.mainChartIndices = [];
-      dimmer.networkChartIndices = [];
-    }
     this.rebuildDataForTrace({updateType: 'NEW_TRACE'});
   }
 
-  #reset(): void {
+  /**
+   * Clears all trace-scoped fields and interaction state without calling
+   * `ModificationsManager.activeManager()?.removeAnnotation(...)`, because the
+   * active manager may already be reset to `null` on Clear or switched to the
+   * incoming trace on a direct trace switch.
+   */
+  #resetTraceState(): void {
     this.#parsedTrace = null;
     this.#eventToRelatedInsightsMap = null;
     this.#entityMapper = null;
@@ -1343,7 +1344,26 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#activeInsight = null;
     this.#currentInsightOverlays = [];
     this.#markers = [];
-    this.#clearLinkSelectionAnnotation(/* deleteCurrentLink= */ false);
+    this.#timeRangeSelectionAnnotation = null;
+    this.#setLinkSelectionAnnotation(null);
+    for (const dimmer of this.#flameChartDimmers) {
+      dimmer.active = false;
+      dimmer.mainChartIndices = [];
+      dimmer.networkChartIndices = [];
+    }
+    this.#delegate.set3PCheckboxDisabled(false);
+    // Clear stale result indices and cancel pending searches, but keep `#searchRegex`
+    // so `rebuildDataForTrace()` re-applies an open search bar query to the new trace.
+    this.#debouncedUpdateSearchResults.cancel();
+    this.#searchResults = undefined;
+    this.#selectedSearchResult = undefined;
+    if (this.#searchRegex) {
+      this.#searchableView?.updateSearchMatchesCount(0);
+    }
+  }
+
+  #reset(): void {
+    this.#resetTraceState();
     this.mainDataProvider.reset();
     this.#networkDataProvider.reset();
     this.mainFlameChart.enableRuler(true);
@@ -1352,7 +1372,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#overlays.reset();
     this.mainFlameChart.reset();
     this.networkFlameChart.reset();
-    // Must run after clearing the trace and selection fields above, which #updateDetailViews() forwards.
+    // Must run after `#resetTraceState()`, which clears the trace and selection
+    // fields that `#updateDetailViews()` forwards.
     this.#updateDetailViews();
     this.#commentController.setParsedTrace(null);
   }

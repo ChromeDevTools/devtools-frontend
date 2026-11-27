@@ -2385,4 +2385,51 @@ describeWithEnvironment('FlameChart', () => {
     sinon.assert.callCount(drawOverrideSpies[0], 1);
     sinon.assert.callCount(drawOverrideSpies[1], 1);
   });
+
+  it('clears search result popover state on reset', () => {
+    class SearchPopoverProvider extends FakeFlameChartProvider {
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
+        return PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0],
+          entryTotalTimes: [10],
+          entryStartTimes: [10],
+          groups: [{
+            name: 'Test Group' as Platform.UIString.LocalizedString,
+            startLevel: 0,
+            style: defaultGroupStyle,
+            expanded: true,
+          }],
+        });
+      }
+
+      override preparePopoverElement(entryIndex: number): Element|null {
+        const element = document.createElement('div');
+        element.textContent = `Entry ${entryIndex}`;
+        return element;
+      }
+    }
+
+    const provider = new SearchPopoverProvider();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+    renderWidgetInVbox(chartInstance, {width: 400, height: 150});
+    chartInstance.setWindowTimes(0, 100);
+    chartInstance.update();
+
+    chartInstance.showPopoverForSearchResult(0);
+    assert.strictEqual(chartInstance.getPopoverElementForTest().innerText, 'Entry 0');
+
+    const preparePopoverSpy = sinon.spy(provider, 'preparePopoverElement');
+    chartInstance.reset();
+    assert.strictEqual(chartInstance.getPopoverElementForTest().innerText, '');
+
+    chartInstance.setWindowTimes(0, 100);
+    chartInstance.update();
+    sinon.assert.notCalled(preparePopoverSpy);
+    assert.strictEqual(chartInstance.getPopoverElementForTest().innerText, '');
+
+    // Subsequent popovers for the same entry index must not hit a stale cache entry.
+    chartInstance.showPopoverForSearchResult(0);
+    sinon.assert.calledOnceWithExactly(preparePopoverSpy, 0);
+    assert.strictEqual(chartInstance.getPopoverElementForTest().innerText, 'Entry 0');
+  });
 });

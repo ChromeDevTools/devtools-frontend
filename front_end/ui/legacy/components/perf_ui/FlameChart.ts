@@ -4301,6 +4301,13 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     this.highlightedEntryIndex = -1;
     this.selectedEntryIndex = -1;
     this.selectedGroupIndex = -1;
+    this.#searchResultEntryIndex = null;
+    this.#renderPopover(nothing);
+    this.lastPopoverState = {
+      entryIndex: -1,
+      groupIndex: -1,
+      hiddenEntriesPopover: false,
+    };
     this.#persistedGroupConfig = null;
   }
 

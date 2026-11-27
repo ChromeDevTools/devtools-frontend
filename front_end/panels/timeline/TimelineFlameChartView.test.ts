@@ -2049,4 +2049,189 @@ describe('TimelineFlameChartView', function() {
     sinon.assert.calledOnce(updateMatchesSpy);
     flameChartView.detach(/* overrideHideOnDetach= */ true);
   });
+
+  describe('trace state reset', () => {
+    it('clears in-progress annotations when the model is cleared', async function() {
+      const firstTrace =
+          await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz', {withModificationsManager: true});
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+          new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+      activeWidgets.push(flameChartView);
+      renderElementIntoDOM(flameChartView);
+      flameChartView.setModel({parsedTrace: firstTrace, eventToRelatedInsightsMap: new Map()});
+
+      const firstStartMs = Trace.Helpers.Timing.microToMilli(firstTrace.data.Meta.traceBounds.min);
+      flameChartView.updateRangeSelection(firstStartMs, firstStartMs + 10);
+      flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 204);
+      assert.isNotNull(flameChartView.getLinkSelectionAnnotation());
+
+      Timeline.ModificationsManager.ModificationsManager.reset();
+      flameChartView.setModel(null);
+      assert.isNull(flameChartView.getLinkSelectionAnnotation());
+
+      const nextTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+      const nextManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+      assert.isNotNull(nextManager);
+      const removeAnnotationSpy = sinon.spy(nextManager, 'removeAnnotation');
+      const warnSpy = sinon.spy(console, 'warn');
+      const errorSpy = sinon.spy(console, 'error');
+
+      flameChartView.setModel({parsedTrace: nextTrace, eventToRelatedInsightsMap: new Map()});
+      await flameChartView.setSelectionAndReveal(null);
+
+      const nextStartMs = Trace.Helpers.Timing.microToMilli(nextTrace.data.Meta.traceBounds.min);
+      flameChartView.updateRangeSelection(nextStartMs, nextStartMs + 10);
+      const nextAnnotations = nextManager.getAnnotations();
+      assert.lengthOf(nextAnnotations, 1);
+      assert.strictEqual(nextAnnotations[0].type, 'TIME_RANGE');
+      sinon.assert.notCalled(removeAnnotationSpy);
+      sinon.assert.notCalled(warnSpy);
+      sinon.assert.notCalled(errorSpy);
+    });
+
+    it('clears in-progress annotations when switching directly to a new trace', async function() {
+      const firstTrace =
+          await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz', {withModificationsManager: true});
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+          new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+      activeWidgets.push(flameChartView);
+      renderElementIntoDOM(flameChartView);
+      flameChartView.setModel({parsedTrace: firstTrace, eventToRelatedInsightsMap: new Map()});
+
+      const firstStartMs = Trace.Helpers.Timing.microToMilli(firstTrace.data.Meta.traceBounds.min);
+      flameChartView.updateRangeSelection(firstStartMs, firstStartMs + 10);
+      flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 204);
+      assert.isNotNull(flameChartView.getLinkSelectionAnnotation());
+
+      const nextTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+      const nextManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+      assert.isNotNull(nextManager);
+      const removeAnnotationSpy = sinon.spy(nextManager, 'removeAnnotation');
+      const warnSpy = sinon.spy(console, 'warn');
+      const errorSpy = sinon.spy(console, 'error');
+
+      flameChartView.setModel({parsedTrace: nextTrace, eventToRelatedInsightsMap: new Map()});
+      assert.isNull(flameChartView.getLinkSelectionAnnotation());
+
+      const nextStartMs = Trace.Helpers.Timing.microToMilli(nextTrace.data.Meta.traceBounds.min);
+      flameChartView.updateRangeSelection(nextStartMs, nextStartMs + 10);
+      const nextAnnotations = nextManager.getAnnotations();
+      assert.lengthOf(nextAnnotations, 1);
+      assert.strictEqual(nextAnnotations[0].type, 'TIME_RANGE');
+      sinon.assert.notCalled(removeAnnotationSpy);
+      sinon.assert.notCalled(warnSpy);
+      sinon.assert.notCalled(errorSpy);
+    });
+
+    it('re-enables the 3P checkbox when the model is cleared while dimmed', async function() {
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+      const mockViewDelegate = new MockViewDelegate();
+      const set3PCheckboxDisabledSpy = sinon.spy(mockViewDelegate, 'set3PCheckboxDisabled');
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+          mockViewDelegate, new CommentManager.CommentManager.CommentManager());
+      activeWidgets.push(flameChartView);
+      renderElementIntoDOM(flameChartView);
+      const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
+      flameChartView.setSearchableView(searchableView);
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+
+      const searchConfig = new UI.SearchableView.SearchConfig('app.js', false, false, false);
+      flameChartView.performSearch(searchConfig, /* shouldJump= */ true);
+      sinon.assert.calledWith(set3PCheckboxDisabledSpy, true);
+
+      set3PCheckboxDisabledSpy.resetHistory();
+      Timeline.ModificationsManager.ModificationsManager.reset();
+      flameChartView.setModel(null);
+      sinon.assert.calledOnceWithExactly(set3PCheckboxDisabledSpy, false);
+    });
+
+    it('clears the search result popover when switching directly to a new trace', async function() {
+      const firstTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+          new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+      activeWidgets.push(flameChartView);
+      renderElementIntoDOM(flameChartView);
+      const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
+      flameChartView.setSearchableView(searchableView);
+      flameChartView.setModel({parsedTrace: firstTrace, eventToRelatedInsightsMap: new Map()});
+
+      const searchConfig = new UI.SearchableView.SearchConfig('app.js', false, false, false);
+      flameChartView.performSearch(searchConfig, /* shouldJump= */ true);
+      assert.isNotEmpty(flameChartView.getMainFlameChart().getPopoverElementForTest().innerText);
+
+      const nextTrace =
+          await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz', {withModificationsManager: true});
+      const preparePopoverSpy = sinon.spy(flameChartView.getMainDataProvider(), 'preparePopoverElement');
+
+      flameChartView.setModel({parsedTrace: nextTrace, eventToRelatedInsightsMap: new Map()});
+      flameChartView.getMainFlameChart().update();
+      flameChartView.getNetworkFlameChart().update();
+
+      sinon.assert.notCalled(preparePopoverSpy);
+      assert.strictEqual(flameChartView.getMainFlameChart().getPopoverElementForTest().innerText, '');
+    });
+
+    it('resets searchable view match state when switching directly to a trace with the same match count',
+       async function() {
+         const firstTrace =
+             await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+         const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+             new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+         const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
+         activeWidgets.push(flameChartView, searchableView);
+         renderElementIntoDOM(searchableView);
+         flameChartView.show(searchableView.element);
+         flameChartView.setSearchableView(searchableView);
+         flameChartView.setModel({parsedTrace: firstTrace, eventToRelatedInsightsMap: new Map()});
+
+         searchableView.showSearchField();
+         const searchInput = searchableView.contentElement.querySelector<HTMLInputElement>('#search-input-field');
+         assert.isNotNull(searchInput);
+         searchInput.value = 'app.js';
+         searchInput.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
+
+         const matchesCount = flameChartView.getSearchResults()?.length ?? 0;
+         assert.isAbove(matchesCount, 1);
+         const matchesElement = searchableView.contentElement.querySelector<HTMLElement>('.search-results-matches');
+         assert.isNotNull(matchesElement);
+         assert.strictEqual(matchesElement.textContent?.trim(), `1 of ${matchesCount}`);
+
+         const secondTrace: Trace.TraceModel.ParsedTrace = {...firstTrace};
+         flameChartView.setModel({parsedTrace: secondTrace, eventToRelatedInsightsMap: new Map()});
+         assert.strictEqual(matchesElement.textContent?.trim(), `${matchesCount} matches`);
+       });
+
+    it('resets searchable view match state when the model is cleared', async function() {
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+          new MockViewDelegate(), new CommentManager.CommentManager.CommentManager());
+      const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
+      activeWidgets.push(flameChartView, searchableView);
+      renderElementIntoDOM(searchableView);
+      flameChartView.show(searchableView.element);
+      flameChartView.setSearchableView(searchableView);
+      flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+
+      searchableView.showSearchField();
+      const searchInput = searchableView.contentElement.querySelector<HTMLInputElement>('#search-input-field');
+      assert.isNotNull(searchInput);
+      searchInput.value = 'app.js';
+      searchInput.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
+
+      const matchesCount = flameChartView.getSearchResults()?.length ?? 0;
+      assert.isAbove(matchesCount, 1);
+      const matchesElement = searchableView.contentElement.querySelector<HTMLElement>('.search-results-matches');
+      assert.isNotNull(matchesElement);
+      assert.strictEqual(matchesElement.textContent?.trim(), `1 of ${matchesCount}`);
+
+      Timeline.ModificationsManager.ModificationsManager.reset();
+      flameChartView.setModel(null);
+      assert.strictEqual(matchesElement.textContent?.trim(), '0 of 0');
+    });
+  });
 });

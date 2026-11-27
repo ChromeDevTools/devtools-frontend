@@ -29,6 +29,7 @@ import {expectCall, expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -174,10 +175,26 @@ describeWithEnvironment('ConsoleView', () => {
     await consoleView.getScheduledRefreshPromiseForTest();
   });
 
-  it('invokes onCancel when PROGRESS_VIEW receives a canceled event', () => {
+  it('invokes onCancel when TOOLBAR_VIEW progress receives a canceled event', () => {
     const target = document.createElement('div');
     const onCancel = sinon.spy();
-    Console.ConsoleView.PROGRESS_VIEW({title: 'Searching', worked: 1, totalWork: 10, onCancel}, undefined, target);
+    const showSettingsPaneSetting = Common.Settings.Settings.instance().createSetting('test-console-settings', false);
+    Console.ConsoleView.TOOLBAR_VIEW({
+      isSidebarOpen: false,
+      onToggleSidebar: () => {},
+      allCollapsed: false,
+      onToggleCollapseAll: () => {},
+      contextSelectorToolbarItem: new UI.Toolbar.ToolbarText('top'),
+      textFilterUI: new UI.Toolbar.ToolbarFilter(),
+      levelMenuButton: new UI.Toolbar.ToolbarMenuButton(() => {}),
+      progress: {title: 'Searching', worked: 1, totalWork: 10, onCancel},
+      issueCounterData: {issuesManager: universe.issuesManager},
+      issueCounterTitle: '',
+      hiddenByFilterCount: 0,
+      showSettingsPaneSetting,
+      filteredMessagesCount: 0,
+    },
+                                     undefined, target);
     const indicator = target.querySelector('devtools-progress');
     assert.exists(indicator);
 
@@ -1912,6 +1929,143 @@ describeWithEnvironment('ConsoleView', () => {
 
       sinon.assert.notCalled(requestUpdateSpy);
       assert.strictEqual(consoleView.itemCount(), 0);
+    });
+
+    it('skips performUpdate after dispose even when ActionRegistry has been reset', async () => {
+      consoleView.requestUpdate();
+      consoleView.dispose();
+      UI.ActionRegistry.ActionRegistry.reset();
+      assert.doesNotThrow(() => consoleView.performUpdate());
+      await UI.Widget.Widget.allUpdatesComplete;
+    });
+  });
+
+  describe('main toolbar and live status', () => {
+    it('toggles the sidebar, announces via LiveAnnouncer, and shows the level-override info icon', async () => {
+      const alertStub = sinon.stub(UI.ARIAUtils.LiveAnnouncer, 'alert');
+      renderElementIntoDOM(consoleView);
+      await consoleView.updateComplete;
+
+      const sidebarButton =
+          consoleView.element.querySelector<Buttons.Button.Button>('devtools-button[jslog*="console-sidebar"]');
+      const levelsInfoIcon = consoleView.element.querySelector<HTMLElement>('.console-sidebar-levels-info');
+      assert.exists(sidebarButton);
+      assert.exists(levelsInfoIcon);
+      assert.strictEqual(sidebarButton.title, 'Show Console sidebar');
+      assert.isTrue(levelsInfoIcon.hidden);
+
+      sidebarButton.click();
+      await consoleView.updateComplete;
+
+      sinon.assert.calledOnceWithExactly(alertStub, 'Console sidebar shown');
+      assert.strictEqual(sidebarButton.title, 'Hide Console sidebar');
+      assert.strictEqual(sidebarButton.iconName, 'left-panel-close');
+      assert.isFalse(levelsInfoIcon.hidden);
+
+      sidebarButton.click();
+      await consoleView.updateComplete;
+
+      sinon.assert.calledTwice(alertStub);
+      sinon.assert.calledWithExactly(alertStub.secondCall, 'Console sidebar hidden');
+      assert.strictEqual(sidebarButton.title, 'Show Console sidebar');
+      assert.strictEqual(sidebarButton.iconName, 'left-panel-open');
+      assert.isTrue(levelsInfoIcon.hidden);
+    });
+
+    it('toggles the collapse-all button icon and title for console groups', async () => {
+      const target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+      assert.exists(consoleModel);
+      renderElementIntoDOM(consoleView);
+
+      addMessage(consoleModel, target, 'group', Protocol.Runtime.ConsoleAPICalledEventType.StartGroup,
+                 Protocol.Log.LogEntryLevel.Info);
+      addMessage(consoleModel, target, 'inside', Protocol.Runtime.ConsoleAPICalledEventType.Log,
+                 Protocol.Log.LogEntryLevel.Info);
+      addMessage(consoleModel, target, '', Protocol.Runtime.ConsoleAPICalledEventType.EndGroup,
+                 Protocol.Log.LogEntryLevel.Info);
+      await consoleView.getScheduledRefreshPromiseForTest();
+      await consoleView.updateComplete;
+
+      const collapseButton =
+          consoleView.element.querySelector<Buttons.Button.Button>('devtools-button[title="Collapse all"]');
+      assert.exists(collapseButton);
+      assert.strictEqual(collapseButton.iconName, 'compress');
+
+      collapseButton.click();
+      await consoleView.updateComplete;
+
+      assert.strictEqual(collapseButton.title, 'Expand all');
+      assert.strictEqual(collapseButton.iconName, 'expand');
+
+      collapseButton.click();
+      await consoleView.updateComplete;
+
+      assert.strictEqual(collapseButton.title, 'Collapse all');
+      assert.strictEqual(collapseButton.iconName, 'compress');
+    });
+
+    it('updates hidden-by-filter status text and live message-count aria-label', async () => {
+      const target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+      assert.exists(consoleModel);
+      renderElementIntoDOM(consoleView);
+
+      addMessage(consoleModel, target, 'visible message', Protocol.Runtime.ConsoleAPICalledEventType.Log,
+                 Protocol.Log.LogEntryLevel.Info);
+      addMessage(consoleModel, target, 'filtered out', Protocol.Runtime.ConsoleAPICalledEventType.Log,
+                 Protocol.Log.LogEntryLevel.Info);
+      await consoleView.getScheduledRefreshPromiseForTest();
+      await consoleView.updateComplete;
+
+      const hiddenStatus = consoleView.element.querySelector<HTMLElement>('.console-main-toolbar .toolbar-text.dimmed');
+      const messageCount = consoleView.element.querySelector<HTMLElement>('.message-count');
+      assert.exists(hiddenStatus);
+      assert.exists(messageCount);
+      assert.isTrue(hiddenStatus.hidden);
+      assert.strictEqual(messageCount.getAttribute('aria-label'), '2 messages in console');
+
+      const filterInput = consoleView.element.querySelector<HTMLElement>('.console-main-toolbar .toolbar-input-prompt');
+      assert.exists(filterInput);
+      filterInput.textContent = 'visible';
+      filterInput.dispatchEvent(new Event('input', {bubbles: true}));
+      await consoleView.getScheduledRefreshPromiseForTest();
+      await consoleView.updateComplete;
+
+      assert.isFalse(hiddenStatus.hidden);
+      assert.strictEqual(hiddenStatus.textContent.trim(), '1 hidden');
+      assert.strictEqual(messageCount.getAttribute('aria-label'), '1 messages in console');
+    });
+
+    it('updates issue counter title and data and skips redundant updates when unchanged', async () => {
+      renderElementIntoDOM(consoleView);
+      await consoleView.getScheduledRefreshPromiseForTest();
+      await consoleView.updateComplete;
+
+      const issueCounter = consoleView.element.querySelector<HTMLElement>('#console-issues-counter');
+      assert.exists(issueCounter);
+      assert.include(issueCounter.title, 'Click to go to the Issues tab');
+
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout', 'Date']});
+      try {
+        const requestUpdateSpy = sinon.spy(consoleView, 'requestUpdate');
+        universe.issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
+        await clock.tickAsync(100);
+        await consoleView.updateComplete;
+        sinon.assert.notCalled(requestUpdateSpy);
+
+        sinon.stub(universe.issuesManager, 'numberOfIssues').returns(2);
+        universe.issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
+        await clock.tickAsync(100);
+        await consoleView.updateComplete;
+
+        sinon.assert.calledOnce(requestUpdateSpy);
+        assert.include(issueCounter.title, 'Click to view');
+      } finally {
+        clock.restore();
+      }
     });
   });
 });

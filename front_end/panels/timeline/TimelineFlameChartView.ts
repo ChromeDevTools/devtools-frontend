@@ -97,6 +97,7 @@ const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
   networkSplitWidget: UI.SplitWidget.SplitWidget;
+  splitResizer: HTMLElement;
   overlaysContainer: HTMLElement;
   tooltipElement: HTMLElement;
   delegate: TimelineModeViewDelegate;
@@ -115,9 +116,24 @@ export interface ViewOutput {
   setDetailsSelection?: (selection: TimelineSelection|null) => Promise<void>;
   selectDetailsTab?: (tabName: Tab, node: Trace.Extras.TraceTree.Node|null) => void;
   revealEventInTreeView?: (event: Trace.Types.Events.Event|null) => void;
+  setNetworkSidebarSize?: (size: number) => boolean;
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+function configureNetworkSplit(split: UI.SplitWidget.SplitWidget, resizer: Element, output: ViewOutput): void {
+  split.hideDefaultResizer(true);
+  split.installResizer(resizer);
+  output.setNetworkSidebarSize = size => {
+    if (!split.isShowing() || !split.sidebarIsShowing()) {
+      return false;
+    }
+    split.setSidebarSize(size);
+    return true;
+  };
+}
+
 export const DEFAULT_VIEW: View = (input, output, target): void => {
+  configureNetworkSplit(input.networkSplitWidget, input.splitResizer, output);
   let detailsSplit: UI.SplitWidget.SplitWidget|undefined;
   let chartSplit: UI.SplitWidget.SplitWidget|undefined;
   let countersResizer: Element|undefined;
@@ -469,8 +485,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#networkPane.setMinimumSize(23, 23);
     this.networkFlameChart.show(this.#networkPane.element);
     this.#splitResizer = this.#networkPane.element.createChild('div', 'timeline-flamechart-resizer');
-    this.#networkSplitWidget.hideDefaultResizer(true);
-    this.#networkSplitWidget.installResizer(this.#splitResizer);
     this.#networkSplitWidget.setMainWidget(this.mainFlameChart);
     this.#networkSplitWidget.setSidebarWidget(this.#networkPane);
 
@@ -1570,6 +1584,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   override performUpdate(): void {
     this.#view({
       networkSplitWidget: this.#networkSplitWidget,
+      splitResizer: this.#splitResizer,
       overlaysContainer: this.#overlaysContainer,
       tooltipElement: this.#tooltipElement,
       delegate: this.#delegate,
@@ -1935,15 +1950,15 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   resizeToPreferredHeights(): void {
-    if (!this.isShowing() || !this.#networkSplitWidget.isShowing()) {
-      this.#needsResizeToPreferredHeights = true;
+    if (!this.isShowing() || this.#networkDataProvider.isEmpty()) {
+      this.#needsResizeToPreferredHeights = !this.#networkDataProvider.isEmpty();
       return;
     }
-    this.#needsResizeToPreferredHeights = false;
     this.#networkPane.element.classList.toggle('timeline-network-resizer-disabled',
                                                !this.#networkDataProvider.isExpanded());
-    this.#networkSplitWidget.setSidebarSize(this.#networkDataProvider.preferredHeight() +
-                                            this.#splitResizer.clientHeight + PerfUI.FlameChart.RulerHeight + 2);
+    const size = this.#networkDataProvider.preferredHeight() + this.#splitResizer.clientHeight +
+        PerfUI.FlameChart.RulerHeight + 2;
+    this.#needsResizeToPreferredHeights = !this.#viewOutput.setNetworkSidebarSize?.(size);
   }
 
   setSearchableView(searchableView: UI.SearchableView.SearchableView): void {

@@ -707,6 +707,7 @@ describe('TimelineFlameChartView', function() {
     tooltipElement.classList.add('timeline-entry-tooltip-element');
     return {
       networkSplitWidget: new UI.SplitWidget.SplitWidget(false, false),
+      splitResizer: document.createElement('div'),
       overlaysContainer,
       tooltipElement,
       delegate: new MockViewDelegate(),
@@ -810,6 +811,23 @@ describe('TimelineFlameChartView', function() {
     assert.exists(chartsContainer);
     assert.strictEqual(chartsContainer.querySelector('.timeline-overlays-container'), input.overlaysContainer);
     assert.strictEqual(chartsContainer.querySelector('.timeline-entry-tooltip-element'), input.tooltipElement);
+  });
+
+  it('wires setNetworkSidebarSize in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const input = createDefaultViewInput();
+    const setSidebarSizeSpy = sinon.spy(input.networkSplitWidget, 'setSidebarSize');
+    const output: Timeline.TimelineFlameChartView.ViewOutput = {};
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, output, container.contentElement);
+    assert.exists(output.setNetworkSidebarSize);
+    assert.isTrue(output.setNetworkSidebarSize(120));
+    sinon.assert.calledOnceWithExactly(setSidebarSizeSpy, 120);
+
+    input.networkSplitWidget.hideSidebar();
+    assert.isFalse(output.setNetworkSidebarSize(80));
   });
 
   it('updates countersModel in the view input when the trace model changes', async function() {
@@ -974,6 +992,26 @@ describe('TimelineFlameChartView', function() {
     flameChartView.getMainDataProvider().dispatchEventToListeners(
         Timeline.TimelineFlameChartDataProvider.Events.FLAME_CHART_ITEM_HOVERED, event);
     sinon.assert.calledOnceWithExactly(revealEventInTreeView, event);
+  });
+
+  it('routes network split sizing through ViewOutput', async function() {
+    const setNetworkSidebarSize = sinon.stub().returns(true);
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView, {
+      setNetworkSidebarSize,
+    });
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    await view.nextInput;
+
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+
+    setNetworkSidebarSize.resetHistory();
+    flameChartView.resizeToPreferredHeights();
+    sinon.assert.calledOnce(setNetworkSidebarSize);
   });
 
   it('coalesces overlay updates when main and network flame charts redraw in the same turn', async () => {

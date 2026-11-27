@@ -258,6 +258,7 @@ export const enum ToolName {
   SELECT_TRACE_EVENT_BY_KEY = 'selectTraceEventByKey',
   LIST_SOURCES = 'listSources',
   GET_SOURCE_CONTENT = 'getSourceContent',
+  SEARCH_IN_SOURCES = 'searchInSources',
   GET_TRACE_MAIN_THREAD_SUMMARY = 'getTraceMainThreadSummary',
   GET_TRACE_NETWORK_SUMMARY = 'getTraceNetworkSummary',
   RUN_LIGHTHOUSE = 'runLighthouse',

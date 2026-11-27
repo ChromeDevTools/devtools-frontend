@@ -2,18 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Bindings from '../../bindings/bindings.js';
 import type * as Workspace from '../../workspace/workspace.js';
+import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
 
 import {formatSourceName, ListSourcesTool} from './ListSources.js';
 import {
+  type BaseToolCapability,
   type DataHandlerResult,
+  type DataTool,
   type OriginLockCapability,
   type OriginLockState,
+  PermissionPrompt,
   resolveOriginFromLock,
+  type ToolArgs,
   type ToolErrorResult,
+  ToolName,
 } from './Tool.js';
 
 const MAX_TOTAL_MATCHES = 50;
@@ -21,6 +30,132 @@ const MAX_MATCHES_PER_FILE = 5;
 const MAX_CONCURRENT_FILE_SEARCHES = 20;
 const PREVIEW_PREFIX_LENGTH = 40;
 const PREVIEW_MAX_LENGTH = 120;
+const TITLE_QUERY_MAX_LENGTH = 40;
+
+const UIStringsNotTranslate = {
+  searchingWorkspaceSources: 'Searching workspace sources',
+} as const;
+
+const lockedString = i18n.i18n.lockedString;
+
+export interface SearchInSourcesArgs extends ToolArgs {
+  query: string;
+  id?: number|null;
+  caseSensitive?: boolean|null;
+}
+
+/**
+ * A tool that searches readable text source files in the workspace (or a single file by ID)
+ * for a literal single-line substring, returning grouped `line;offset;preview` matches with
+ * 0-based character offsets aligned to `getSourceContent`.
+ */
+export class SearchInSourcesTool implements
+    DataTool<SearchInSourcesArgs, string, BaseToolCapability&OriginLockCapability> {
+  readonly name: ToolName = ToolName.SEARCH_IN_SOURCES;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
+  readonly description: string =
+      'Searches readable text source files in the workspace (or a single file when id is provided) for a literal ' +
+      'single-line substring. Returns grouped line;offset;preview matches with numeric file IDs and 0-based ' +
+      'character offsets suitable for passing directly to getSourceContent.';
+
+  readonly parameters: Host.AidaClient.FunctionObjectParam<keyof SearchInSourcesArgs> = {
+    type: Host.AidaClient.ParametersTypes.OBJECT,
+    description: '',
+    properties: {
+      query: {
+        type: Host.AidaClient.ParametersTypes.STRING,
+        description: 'Literal single-line substring to search for.',
+        nullable: false,
+      },
+      id: {
+        type: Host.AidaClient.ParametersTypes.INTEGER,
+        description: 'Optional numeric ID of a single source file (from # Selected file, listSources, ' +
+            'or searchInSources) to search instead of the entire workspace.',
+        nullable: true,
+      },
+      caseSensitive: {
+        type: Host.AidaClient.ParametersTypes.BOOLEAN,
+        description: 'Whether the search is case-sensitive. Defaults to false (case-insensitive).',
+        nullable: true,
+      },
+    },
+    required: ['query'],
+  };
+
+  displayInfoFromArgs(args: SearchInSourcesArgs): {
+    title: string,
+    action: string,
+  } {
+    const parts = [`query: ${JSON.stringify(args.query)}`];
+    if (args.id !== undefined && args.id !== null) {
+      parts.push(`id: ${args.id}`);
+    }
+    if (args.caseSensitive !== undefined && args.caseSensitive !== null) {
+      parts.push(`caseSensitive: ${args.caseSensitive}`);
+    }
+    const action = `searchInSources({${parts.join(', ')}})`;
+
+    if (!args.query) {
+      return {
+        title: lockedString(UIStringsNotTranslate.searchingWorkspaceSources),
+        action,
+      };
+    }
+
+    const shortQuery = Platform.StringUtilities.trimEndWithMaxLength(args.query, TITLE_QUERY_MAX_LENGTH);
+    // Direct map lookup skips the origin lock; this title is local UI only and handler() enforces the lock.
+    const fileName = args.id !== undefined && args.id !== null ?
+        ListSourcesTool.idToUiSourceCode.get(args.id)?.displayName() :
+        undefined;
+    const title = fileName ? lockedString(`Searching ${fileName} for "${shortQuery}"`) :
+                             lockedString(`Searching sources for "${shortQuery}"`);
+    return {title, action};
+  }
+
+  async handler(
+      args: SearchInSourcesArgs,
+      context: BaseToolCapability&OriginLockCapability,
+      options?: FunctionHandlerOptions,
+      ): Promise<DataHandlerResult<string>> {
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
+    if ('error' in originResult) {
+      return originResult;
+    }
+
+    if (!args.query) {
+      return {error: 'Query must be a non-empty string.'};
+    }
+    if (args.query.includes('\n') || args.query.includes('\r')) {
+      return {error: 'Query must be a single line.'};
+    }
+    if (options?.signal?.aborted) {
+      return {error: 'Aborted'};
+    }
+
+    const caseSensitive = Boolean(args.caseSensitive);
+    if (args.id !== undefined && args.id !== null) {
+      return await searchSingleSource({
+        id: args.id,
+        query: args.query,
+        caseSensitive,
+        context,
+        originLock,
+        establishedOrigin: originResult.origin,
+        signal: options?.signal,
+      });
+    }
+
+    return await searchWorkspaceSources({
+      query: args.query,
+      caseSensitive,
+      context,
+      originLock,
+      establishedOrigin: originResult.origin,
+      signal: options?.signal,
+    });
+  }
+}
 
 export interface SearchSingleSourceOptions {
   id: number;

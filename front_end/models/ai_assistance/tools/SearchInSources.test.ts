@@ -560,4 +560,113 @@ describe('SearchInSources helpers', () => {
                   'Cross-origin access blocked due to navigation.');
     sinon.assert.notCalled(loadBSpy);
   });
+
+  describe('SearchInSourcesTool', () => {
+    let tool: AiAssistance.SearchInSources.SearchInSourcesTool;
+
+    beforeEach(() => {
+      tool = new AiAssistance.SearchInSources.SearchInSourcesTool();
+    });
+
+    it('rejects uninitialized, navigation-blocked, and opaque origin locks', async () => {
+      assertIsError(await tool.handler({query: 'foo'}, originContext({status: 'UNINITIALIZED'})),
+                    'No origin established for this conversation.');
+      assertIsError(await tool.handler({query: 'foo'}, originContext({status: 'BLOCKED_BY_NAVIGATION'})),
+                    'Cross-origin access blocked due to navigation.');
+      const opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.create('about:blank');
+      assertIsError(
+          await tool.handler({query: 'foo'}, originContext({status: 'ESTABLISHED_ORIGIN', origin: opaqueOrigin})),
+          'No origin available or not allowed.');
+    });
+
+    it('rejects empty and multi-line queries', async () => {
+      assertIsError(await tool.handler({query: ''}, originContext()), 'Query must be a non-empty string.');
+      assertIsError(await tool.handler({query: 'foo\nbar'}, originContext()), 'Query must be a single line.');
+      assertIsError(await tool.handler({query: 'foo\rbar'}, originContext()), 'Query must be a single line.');
+    });
+
+    it('halts immediately when abort signal is already aborted', async () => {
+      const {uiSourceCodes} =
+          createWorkspaceSources([{url: urlString`https://example.com/app.js`, content: 'const target = 1;'}]);
+      const searchSpy = sinon.spy(uiSourceCodes[0], 'searchInContent');
+      const loadSpy = sinon.spy(uiSourceCodes[0], 'requestContentData');
+
+      const controller = new AbortController();
+      controller.abort();
+
+      assertIsError(await tool.handler({query: 'target'}, originContext(), {signal: controller.signal}), 'Aborted');
+      sinon.assert.notCalled(searchSpy);
+      sinon.assert.notCalled(loadSpy);
+    });
+
+    it('handles explicit null id and caseSensitive values from model calls', async () => {
+      createWorkspaceSources([{url: urlString`https://example.com/app.js`, content: 'const CHECKOUT = true;'}]);
+      const args: AiAssistance.SearchInSources.SearchInSourcesArgs = {
+        query: 'checkout',
+        id: null,
+        caseSensitive: null,
+      };
+      assert.deepEqual(tool.displayInfoFromArgs(args), {
+        title: 'Searching sources for "checkout"',
+        action: 'searchInSources({query: "checkout"})',
+      });
+
+      const response = await tool.handler(args, originContext());
+      assertIsResult(response);
+      assert.include(response.result, '1;6;const CHECKOUT = true;');
+    });
+
+    it('rejects id 0 without scanning workspace', async () => {
+      const {uiSourceCodes} = createWorkspaceSources([
+        {url: urlString`https://example.com/a.js`, content: 'const target = "a";'},
+      ]);
+      const searchSpy = sinon.spy(uiSourceCodes[0], 'searchInContent');
+      assertIsError(await tool.handler({query: 'target', id: 0}, originContext()), 'Unable to find file.');
+      sinon.assert.notCalled(searchSpy);
+    });
+
+    it('dispatches single-file search for numeric ids', async () => {
+      const {uiSourceCodes} = createWorkspaceSources([
+        {url: urlString`https://example.com/a.js`, content: 'const target = "a";'},
+        {url: urlString`https://example.com/b.js`, content: 'const target = "b";'},
+      ]);
+      const idB = registerSourceOrFail(uiSourceCodes[1]);
+      const singleResponse = await tool.handler({query: 'target', id: idB}, originContext());
+      assertIsResult(singleResponse);
+      assert.strictEqual(singleResponse.result,
+                         ['line;offset;preview', `# ${idB};/b.js`, '1;6;const target = "b";'].join('\n'));
+    });
+
+    it('formats workspace and single-file titles and actions in displayInfoFromArgs', () => {
+      const {uiSourceCodes} =
+          createWorkspaceSources([{url: urlString`https://example.com/app.js`, content: 'const x = 1;'}]);
+      const id = registerSourceOrFail(uiSourceCodes[0]);
+
+      assert.deepEqual(tool.displayInfoFromArgs({query: 'foo'}), {
+        title: 'Searching sources for "foo"',
+        action: 'searchInSources({query: "foo"})',
+      });
+      assert.deepEqual(tool.displayInfoFromArgs({query: 'foo', id}), {
+        title: 'Searching app.js for "foo"',
+        action: `searchInSources({query: "foo", id: ${id}})`,
+      });
+      assert.deepEqual(tool.displayInfoFromArgs({query: 'foo', id: 999}), {
+        title: 'Searching sources for "foo"',
+        action: 'searchInSources({query: "foo", id: 999})',
+      });
+      assert.deepEqual(tool.displayInfoFromArgs({query: 'foo', caseSensitive: true}), {
+        title: 'Searching sources for "foo"',
+        action: 'searchInSources({query: "foo", caseSensitive: true})',
+      });
+      const longQuery = 'a'.repeat(50);
+      assert.deepEqual(tool.displayInfoFromArgs({query: longQuery}), {
+        title: `Searching sources for "${'a'.repeat(39)}…"`,
+        action: `searchInSources({query: "${longQuery}"})`,
+      });
+      assert.deepEqual(tool.displayInfoFromArgs({query: ''}), {
+        title: 'Searching workspace sources',
+        action: 'searchInSources({query: ""})',
+      });
+    });
+  });
 });

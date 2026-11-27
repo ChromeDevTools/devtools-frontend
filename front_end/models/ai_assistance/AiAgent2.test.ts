@@ -2037,7 +2037,7 @@ describe('AiAgent2', () => {
       const responses = await Array.fromAsync(agent.run('question', {selected: fileContext}));
 
       const declarations = getFunctionDeclarations(aidaClient, 0).map(d => d.name);
-      assert.includeMembers(declarations, ['listSources', 'getSourceContent']);
+      assert.includeMembers(declarations, ['listSources', 'getSourceContent', 'searchInSources']);
 
       const contextEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT);
       assert.lengthOf(contextEvents, 1);

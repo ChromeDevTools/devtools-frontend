@@ -52,6 +52,13 @@ describe('ToolRegistry', () => {
     assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_TRACE_RESOURCE_CONTENT);
   });
 
+  it('can retrieve searchInSources tool by name', () => {
+    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.SEARCH_IN_SOURCES);
+    assert.exists(tool);
+    assert.instanceOf(tool, AiAssistance.SearchInSources.SearchInSourcesTool);
+    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.SEARCH_IN_SOURCES);
+  });
+
   it('returns undefined for non-existent tools', () => {
     const tool = AiAssistance.ToolRegistry.ToolRegistry.get('nonExistentTool');
     assert.isUndefined(tool);
@@ -122,6 +129,7 @@ describe('ToolRegistry', () => {
         AiAssistance.Tool.ToolName.RECORD_PERFORMANCE_TRACE,
         AiAssistance.Tool.ToolName.RESOLVE_DEVTOOLS_NODE_PATH,
         AiAssistance.Tool.ToolName.RUN_LIGHTHOUSE,
+        AiAssistance.Tool.ToolName.SEARCH_IN_SOURCES,
         AiAssistance.Tool.ToolName.SELECT_TRACE_EVENT_BY_KEY,
         AiAssistance.Tool.ToolName.SET_ELEMENT_STYLES,
       ].sort();

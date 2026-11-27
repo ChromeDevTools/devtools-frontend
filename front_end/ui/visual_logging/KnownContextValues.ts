@@ -3874,6 +3874,7 @@ export const knownContextValues: Set<string> = new Set([
   'search-in-anonymous-and-content-scripts',
   'search-in-anonymous-and-content-scripts-true',
   'search-in-folder',
+  'search-in-sources',
   'search-match',
   'search.clear',
   'search.refresh',

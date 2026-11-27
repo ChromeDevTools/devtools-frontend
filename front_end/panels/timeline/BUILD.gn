@@ -256,4 +256,6 @@ devtools_ui_module("unittests") {
     "./components:bundle",
     "./overlays:bundle",
   ]
+
+  deps = [ ":css_files" ]
 }

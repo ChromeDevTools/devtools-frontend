@@ -8,11 +8,15 @@ import sinon from 'sinon';
 
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
-import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {microsecondsTraceWindow} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
+// The css file isn't exported by the bundle, so we need to import it directly.
+import timelinePanelStyles from './timelinePanel.css.js';
 
 class FakeTimelineModeViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
   element = document.createElement('div');
@@ -28,7 +32,10 @@ class FakeTimelineModeViewDelegate implements Timeline.TimelinePanel.TimelineMod
   }
 }
 
-async function renderCountersGraphForMainThread(context: Mocha.Context): Promise<{
+async function renderCountersGraphForMainThread(
+    context: Mocha.Context,
+    size?: {width: number, height: number},
+    ): Promise<{
   countersGraph: Timeline.CountersGraph.CountersGraph,
   parsedTrace: Trace.TraceModel.ParsedTrace,
 }> {
@@ -38,7 +45,12 @@ async function renderCountersGraphForMainThread(context: Mocha.Context): Promise
   // Dispatch the bounds change event so the counters graph knows the min/max
   // time for the current trace
   TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(parsedTrace.data.Meta.traceBounds);
-  renderElementIntoDOM(countersGraph);
+  renderElementIntoDOM(countersGraph, {
+    width: size?.width,
+    height: size?.height,
+    extraStyles: [timelinePanelStyles],
+    includeCommonStyles: true,
+  });
 
   // This is the PID + TID for the main thread for web-dev-with-commit.
   const pid = Trace.Types.Events.ProcessID(90829);
@@ -55,7 +67,7 @@ describeWithEnvironment('CountersGraph', () => {
   it('shows the counters and the ranges in the toolbar', async function() {
     const {countersGraph} = await renderCountersGraphForMainThread(this);
     const checkboxes = countersGraph.element.querySelectorAll('devtools-checkbox');
-    const userVisibleLabels = Array.from(checkboxes, checkbox => checkbox.getLabelText());
+    const userVisibleLabels = Array.from(checkboxes, checkbox => checkbox.textContent?.trim());
     assert.deepEqual(userVisibleLabels, [
       'JS heap [704 kB – 5.5 MB]',
       'Documents [3 – 14]',
@@ -74,13 +86,17 @@ describeWithEnvironment('CountersGraph', () => {
     ]);
   });
 
-  it('clears the ranges when the counter graph is reset', async function() {
+  it('clears the ranges and shows empty state when the counter graph is reset', async function() {
     const {countersGraph, parsedTrace} = await renderCountersGraphForMainThread(this);
+    const noEventsFound = countersGraph.element.querySelector<HTMLElement>('.no-events-found');
+    assert.exists(noEventsFound);
+    assert.isTrue(noEventsFound.hasAttribute('hidden'));
+
     const checkboxes = countersGraph.element.querySelectorAll('devtools-checkbox');
     // Setting the model to have an empty set of events is enough to reset the existing view
     countersGraph.setModel(parsedTrace, []);
-    await raf();
-    const userVisibleLabels = Array.from(checkboxes, checkbox => checkbox.getLabelText());
+    await countersGraph.updateComplete;
+    const userVisibleLabels = Array.from(checkboxes, checkbox => checkbox.textContent?.trim());
 
     // No ranges after the label
     assert.deepEqual(userVisibleLabels, [
@@ -90,6 +106,102 @@ describeWithEnvironment('CountersGraph', () => {
       'Listeners',
       'GPU memory',
     ]);
+    assert.isFalse(noEventsFound.hasAttribute('hidden'));
+  });
+
+  it('renders grid dividers for the visible trace window', async function() {
+    const {countersGraph} = await renderCountersGraphForMainThread(this, {width: 800, height: 200});
+    countersGraph.onResize();
+    await countersGraph.updateComplete;
+
+    const dividers = countersGraph.element.querySelectorAll<HTMLElement>('.resources-dividers .resources-divider');
+    assert.isAbove(dividers.length, 0);
+    for (const divider of dividers) {
+      assert.match(divider.style.left, /%$/);
+    }
+  });
+
+  it('shows hover markers and counter values on mouse move without recalculating X/Y arrays', async function() {
+    const {countersGraph} = await renderCountersGraphForMainThread(this, {width: 800, height: 200});
+    countersGraph.onResize();
+    await countersGraph.updateComplete;
+
+    const calculateXValuesSpy = sinon.spy(Timeline.CountersGraph.Counter.prototype, 'calculateXValues');
+    const calculateYValuesSpy = sinon.spy(Timeline.CountersGraph.CounterUI.prototype, 'calculateYValues');
+
+    const canvasContainer = countersGraph.element.querySelector<HTMLElement>('#memory-graphs-canvas-container');
+    assert.exists(canvasContainer);
+    const rect = canvasContainer.getBoundingClientRect();
+    canvasContainer.dispatchEvent(new MouseEvent('mousemove', {clientX: rect.left + 100}));
+    await countersGraph.updateComplete;
+
+    sinon.assert.notCalled(calculateXValuesSpy);
+    sinon.assert.notCalled(calculateYValuesSpy);
+
+    const markers = countersGraph.element.querySelectorAll<HTMLElement>('.memory-counter-marker');
+    assert.lengthOf(markers, 5);
+    assert.isFalse(markers[0].hasAttribute('hidden'));
+    assert.strictEqual(markers[0].style.left, '100px');
+    assert.isTrue(markers[4].hasAttribute('hidden'));
+
+    const values = countersGraph.element.querySelectorAll<HTMLElement>('#counter-values-bar .memory-counter-value');
+    assert.lengthOf(values, 5);
+    assert.match(values[0].textContent ?? '', /^JS heap: /);
+    assert.strictEqual(values[4].textContent, '');
+
+    canvasContainer.dispatchEvent(new MouseEvent('mouseleave'));
+    await countersGraph.updateComplete;
+
+    for (const marker of markers) {
+      assert.isTrue(marker.hasAttribute('hidden'));
+    }
+    for (const value of values) {
+      assert.strictEqual(value.textContent, '');
+    }
+  });
+
+  it('redraws and hides counter values when a checkbox emits change', async function() {
+    const {countersGraph} = await renderCountersGraphForMainThread(this, {width: 800, height: 200});
+    countersGraph.onResize();
+    await countersGraph.updateComplete;
+
+    const drawSpy = sinon.spy(countersGraph, 'draw');
+    const jsHeapCheckbox = countersGraph.element.querySelector<UI.UIUtils.CheckboxLabel>('devtools-checkbox');
+    assert.exists(jsHeapCheckbox);
+    assert.isTrue(jsHeapCheckbox.checked);
+
+    const jsHeapValue = countersGraph.element.querySelector<HTMLElement>('#counter-values-bar .memory-counter-value');
+    assert.exists(jsHeapValue);
+    assert.isFalse(jsHeapValue.hasAttribute('hidden'));
+
+    jsHeapCheckbox.checked = false;
+    jsHeapCheckbox.dispatchEvent(new Event('change'));
+    await countersGraph.updateComplete;
+
+    sinon.assert.calledOnce(drawSpy);
+    assert.isTrue(jsHeapValue.hasAttribute('hidden'));
+
+    jsHeapCheckbox.checked = true;
+    jsHeapCheckbox.dispatchEvent(new Event('change'));
+    await countersGraph.updateComplete;
+    assert.isFalse(jsHeapValue.hasAttribute('hidden'));
+  });
+
+  it('renders the counters graph screenshot', async function() {
+    const {countersGraph, parsedTrace} = await renderCountersGraphForMainThread(this, {width: 800, height: 220});
+    const {min} = parsedTrace.data.Meta.traceBounds;
+    const interestingRange = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(700));
+    const max = Trace.Types.Timing.Micro(min + interestingRange);
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(microsecondsTraceWindow(min, max));
+    countersGraph.onResize();
+    await countersGraph.updateComplete;
+    const canvasContainer = countersGraph.element.querySelector<HTMLElement>('#memory-graphs-canvas-container');
+    assert.exists(canvasContainer);
+    const rect = canvasContainer.getBoundingClientRect();
+    canvasContainer.dispatchEvent(new MouseEvent('mousemove', {clientX: rect.left + 200}));
+    await countersGraph.updateComplete;
+    await raf();
+    await assertScreenshot('timeline/counters_graph.png');
   });
 
   it('computes position in Calculator', () => {
@@ -130,9 +242,11 @@ describeWithEnvironment('CountersGraph', () => {
     assert.strictEqual(counter.x[2], 200);
   });
 
-  it('accepts an optional host element in its constructor', () => {
+  it('accepts an optional host element in its constructor', async () => {
     const hostElement = document.createElement('devtools-widget');
     const countersGraph = new Timeline.CountersGraph.CountersGraph(hostElement);
+    renderElementIntoDOM(countersGraph);
+    await countersGraph.updateComplete;
     assert.strictEqual(countersGraph.element, hostElement);
     assert.strictEqual(countersGraph.element.id, 'memory-graphs-container');
     countersGraph.detach();

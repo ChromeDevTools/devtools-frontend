@@ -5397,6 +5397,206 @@ describeWithEnvironment('AI Assistance Panel', () => {
       });
     });
   });
+
+  describe('multimodal input gating', () => {
+    beforeEach(async () => {
+      await enableAllFeatureAndSetting();
+    });
+
+    const v2GatingCases = [
+      {
+        title: 'disables multimodal input in V2 default first-run config without multimodal flags',
+        devToolsFreestyler: undefined,
+        expectedMultimodalInputEnabled: false,
+        expectedUploadImageInputEnabled: false,
+      },
+      {
+        title: 'disables multimodal input in V2 when upload flag is set without base multimodal flag',
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: false,
+          multimodalUploadInput: true,
+        },
+        expectedMultimodalInputEnabled: false,
+        expectedUploadImageInputEnabled: false,
+      },
+      {
+        title: 'enables screenshot input only in V2 when upload flag is disabled and no element is selected',
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+          multimodalUploadInput: false,
+        },
+        expectedMultimodalInputEnabled: true,
+        expectedUploadImageInputEnabled: false,
+      },
+    ];
+
+    for (const {
+           title,
+           devToolsFreestyler,
+           expectedMultimodalInputEnabled,
+           expectedUploadImageInputEnabled,
+         } of v2GatingCases) {
+      it(title, async () => {
+        viewManagerIsViewVisibleStub.returns(false);
+        updateHostConfig({
+          devToolsAiV2Architecture: {enabled: true},
+          devToolsFreestyler,
+        });
+
+        const {view} = await createAiAssistancePanel();
+
+        assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.strictEqual(view.input.props.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.NONE);
+        assert.strictEqual(view.input.props.multimodalInputEnabled, expectedMultimodalInputEnabled);
+        assert.strictEqual(view.input.props.uploadImageInputEnabled, expectedUploadImageInputEnabled);
+      });
+    }
+
+    it('enables screenshot and upload input in V2 without selected element and on non-styling context', async () => {
+      viewManagerIsViewVisibleStub.returns(false);
+      updateHostConfig({
+        devToolsAiV2Architecture: {enabled: true},
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+          multimodalUploadInput: true,
+        },
+      });
+
+      const {view} = await createAiAssistancePanel();
+
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(view.input.props.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.NONE);
+      assert.isTrue(view.input.props.multimodalInputEnabled);
+      assert.isTrue(view.input.props.uploadImageInputEnabled);
+
+      viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'network');
+      const networkRequest = createNetworkRequest({
+        url: urlString`https://example.com`,
+        documentURL: urlString`https://example.com`,
+      });
+      UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
+
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(nextInput.props.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK);
+      assert.isTrue(nextInput.props.multimodalInputEnabled);
+      assert.isTrue(nextInput.props.uploadImageInputEnabled);
+    });
+
+    it('preserves V1 gating for non-styling versus styling conversations', async () => {
+      updateHostConfig({
+        devToolsAiV2Architecture: {enabled: false},
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+          multimodalUploadInput: true,
+        },
+      });
+
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('drjones.network-floating-button');
+
+      const networkInput = await view.nextInput;
+      assert(networkInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(
+          networkInput.props.conversationType,
+          AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK,
+      );
+      assert.isFalse(networkInput.props.multimodalInputEnabled);
+      assert.isFalse(networkInput.props.uploadImageInputEnabled);
+
+      void panel.handleAction('freestyler.elements-floating-button');
+
+      const stylingInput = await view.nextInput;
+      assert(stylingInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(
+          stylingInput.props.conversationType,
+          AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
+      );
+      assert.isTrue(stylingInput.props.multimodalInputEnabled);
+      assert.isTrue(stylingInput.props.uploadImageInputEnabled);
+    });
+
+    const imageInput = {
+      inlineData: {data: 'imageinputbytes', mimeType: 'image/jpeg'},
+    };
+    const uploadDisabledSubmitCases = [
+      {
+        title: 'drops uploaded image on submit when multimodalUploadInput is disabled',
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE,
+        expectedAnswer: 'Answer without uploaded image',
+        expectedMessageImageInput: undefined,
+        expectedHasInlineDataPart: false,
+      },
+      {
+        title: 'includes screenshot on submit when multimodalUploadInput is disabled',
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.SCREENSHOT,
+        expectedAnswer: 'Answer with screenshot',
+        expectedMessageImageInput: imageInput,
+        expectedHasInlineDataPart: true,
+      },
+    ];
+
+    for (const {
+           title,
+           inputType,
+           expectedAnswer,
+           expectedMessageImageInput,
+           expectedHasInlineDataPart,
+         } of uploadDisabledSubmitCases) {
+      it(title, async () => {
+        viewManagerIsViewVisibleStub.returns(false);
+        updateHostConfig({
+          devToolsAiV2Architecture: {enabled: true},
+          devToolsFreestyler: {
+            enabled: true,
+            multimodal: true,
+            multimodalUploadInput: false,
+          },
+        });
+        const aidaClient = mockAidaClient([
+          [{explanation: expectedAnswer}],
+        ]);
+        const {view} = await createAiAssistancePanel({aidaClient});
+
+        assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        view.input.props.onTextSubmit(
+            'question',
+            imageInput,
+            inputType,
+        );
+
+        const nextInput = await waitForLoadingToFinish(view);
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.deepEqual(nextInput.props.messages.map(stripId), [
+          {
+            entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER,
+            text: 'question',
+            imageInput: expectedMessageImageInput,
+          },
+          {
+            parts: [
+              {
+                type: 'answer',
+                text: expectedAnswer,
+              },
+            ],
+            entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+            rpcId: undefined,
+          },
+        ]);
+        const request = aidaClient.doConversation.getCall(0).args[0];
+        assert.isOk(request.current_message);
+        assert.strictEqual(
+            request.current_message.parts.some(part => 'inlineData' in part),
+            expectedHasInlineDataPart,
+        );
+      });
+    }
+  });
 });
 
 describe('AiAssistancePanel.ActionDelegate', () => {

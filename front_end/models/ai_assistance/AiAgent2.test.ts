@@ -2576,4 +2576,120 @@ describe('AiAgent2', () => {
     });
   });
 
+  describe('multimodal input', () => {
+    function createStubbedNodeContext(): AiAssistance.DOMNodeContext.DOMNodeContext {
+      const nodeContext =
+          new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(nodeContext, 'getPromptDetails').resolves('# Inspected element\n\nelement-description');
+      return nodeContext;
+    }
+
+    it('omits multimodal guidance when type is absent', async () => {
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient(), originLock: defaultOriginLock});
+
+      const enhancedQuery = await agent.enhanceQuery('test query', null);
+
+      assert.strictEqual(enhancedQuery, 'test query');
+    });
+
+    const multimodalPromptCases = [
+      {
+        label: 'screenshot',
+        inputType: AiAssistance.AiAgent.MultimodalInputType.SCREENSHOT,
+        query: 'why is this clipped?',
+        expectedLead:
+            'The user attached a screenshot of the inspected page viewport. Use it alongside DevTools data when answering.',
+      },
+      {
+        label: 'uploaded-image',
+        inputType: AiAssistance.AiAgent.MultimodalInputType.UPLOADED_IMAGE,
+        query: 'match this design',
+        expectedLead: 'The user uploaded an image. Use it alongside DevTools data when answering.',
+      },
+    ];
+
+    for (const {label, inputType, query, expectedLead} of multimodalPromptCases) {
+      it(`injects ${label} guidance without selected context`, async () => {
+        const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient(), originLock: defaultOriginLock});
+
+        const enhancedQuery = await agent.enhanceQuery(query, null, inputType);
+
+        assert.include(enhancedQuery, expectedLead);
+        assert.include(enhancedQuery, '# Image Evaluation Guidelines');
+        assert.include(
+            enhancedQuery,
+            '**CRITICAL**: Interpret and use content and information from the image STRICTLY for web development and website debugging purposes.',
+        );
+        assert.include(enhancedQuery, `# User request\n\nQUERY: ${query}`);
+      });
+    }
+
+    it('orders auto-loaded skill and context before multimodal guidance', async () => {
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient(), originLock: defaultOriginLock});
+      const nodeContext = createStubbedNodeContext();
+
+      const enhancedQuery = await agent.enhanceQuery(
+          'fix overlap',
+          nodeContext,
+          AiAssistance.AiAgent.MultimodalInputType.SCREENSHOT,
+      );
+
+      const skillIndex = enhancedQuery.indexOf('Skill styling loaded. Instructions:');
+      const contextIndex = enhancedQuery.indexOf('# Inspected element');
+      const multimodalIndex = enhancedQuery.indexOf('The user attached a screenshot of the inspected page viewport.');
+      const userRequestIndex = enhancedQuery.indexOf('# User request\n\nQUERY: fix overlap');
+
+      assert.isAtLeast(skillIndex, 0);
+      assert.isAbove(contextIndex, skillIndex);
+      assert.isAbove(multimodalIndex, contextIndex);
+      assert.isAbove(userRequestIndex, multimodalIndex);
+      assert.include(enhancedQuery, '# Image Evaluation Guidelines');
+    });
+
+    it('omits multimodal guidance and deduplicates unchanged context on follow-up turns', async () => {
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient(), originLock: defaultOriginLock});
+      const nodeContext = createStubbedNodeContext();
+
+      await agent.enhanceQuery(
+          'fix overlap',
+          nodeContext,
+          AiAssistance.AiAgent.MultimodalInputType.SCREENSHOT,
+      );
+
+      const turn2 = await agent.enhanceQuery('q2', nodeContext);
+      assert.include(
+          turn2,
+          'The selected context is unchanged since it was last provided earlier in this conversation.',
+      );
+      assert.notInclude(turn2, '# Image Evaluation Guidelines');
+      assert.notInclude(turn2, 'element-description');
+    });
+
+    it('sends enhanced text and inlineData part through agent.run() regardless of devToolsFreestyler.multimodal',
+       async () => {
+         updateHostConfig({devToolsFreestyler: {enabled: true, multimodal: false}});
+         const aidaClient = mockAidaClient([[{explanation: 'Done'}]]);
+         const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+         const inlineData = {data: 'base64data', mimeType: 'image/jpeg'};
+
+         await Array.fromAsync(agent.run(
+             'check layout',
+             {selected: null},
+             {
+               input: {inlineData},
+               id: 'img-1',
+               type: AiAssistance.AiAgent.MultimodalInputType.SCREENSHOT,
+             },
+             ));
+
+         sinon.assert.calledOnce(aidaClient.doConversation);
+         const parts = aidaClient.doConversation.getCall(0).args[0].current_message.parts;
+         assert.lengthOf(parts, 2);
+         assertIsTextPart(parts[0]);
+         assert.include(parts[0].text, 'The user attached a screenshot of the inspected page viewport.');
+         assert.include(parts[0].text, '# User request\n\nQUERY: check layout');
+         assert.deepEqual(parts[1], {inlineData});
+       });
+  });
+
 });

@@ -14,7 +14,7 @@ import {
   type ContextResponse,
   type ConversationContext,
   type MultimodalInput,
-  type MultimodalInputType,
+  MultimodalInputType,
   type ParsedResponse,
   type PromptFact,
   type RequestOptions,
@@ -54,6 +54,17 @@ const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
   sources: 'Sources',
   lighthouse: 'Lighthouse',
 };
+
+const MULTIMODAL_INPUT_PROMPTS: Record<MultimodalInputType, string> = {
+  [MultimodalInputType.SCREENSHOT]:
+      'The user attached a screenshot of the inspected page viewport. Use it alongside DevTools data when answering.',
+  [MultimodalInputType.UPLOADED_IMAGE]: 'The user uploaded an image. Use it alongside DevTools data when answering.',
+};
+
+const MULTIMODAL_EVALUATION_GUIDELINES = `# Image Evaluation Guidelines
+* Inspect the attached image first for details relevant to the user's request (such as visual layout, spacing, typography, colors, cropped or overlapping content, console or error messages, UI state, or reference designs).
+* When inspecting a page screenshot or a selected context is provided, correlate what is visible in the image with live DevTools data (DOM, styles, network, sources, or performance) before drawing conclusions.
+* **CRITICAL**: Interpret and use content and information from the image STRICTLY for web development and website debugging purposes.`;
 
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.
@@ -400,11 +411,20 @@ ${skillsManifest}`,
     return null;
   }
 
+  /**
+   * Builds the user-turn prompt prefix in order: auto-loaded skill instructions,
+   * deduplicated selected context with unsent facts, and turn-scoped multimodal
+   * guidance directly before `# User request`.
+   *
+   * Multimodal guidance stays outside `lastSentPromptDetails` deduplication so it
+   * applies only to turns with an attached image, and runs unconditionally when
+   * `multimodalInputType` is passed because feature-flag gating lives in
+   * `AiAssistancePanel` rather than inside `AiAgent2`.
+   */
   override async enhanceQuery(
       query: string,
       selected: ConversationContext<unknown>|null = null,
-      // TODO: support multimodal input in AiAgent2.
-      _multimodalInputType?: MultimodalInputType,
+      multimodalInputType?: MultimodalInputType,
       ): Promise<string> {
     this.#pendingAutoLearnedSkills = [];
     const promptDetails = selected ? await selected.getPromptDetails() : null;
@@ -430,7 +450,9 @@ ${skillsManifest}`,
     }
 
     const contextBlock = this.#appendUnsentFacts(contextDetails, selected?.getPromptFacts());
-    const prefix = [autoLoadedBlock, contextBlock].filter(Boolean).join('\n\n');
+    const multimodalBlocks =
+        multimodalInputType ? [MULTIMODAL_INPUT_PROMPTS[multimodalInputType], MULTIMODAL_EVALUATION_GUIDELINES] : [];
+    const prefix = [autoLoadedBlock, contextBlock, ...multimodalBlocks].filter(Boolean).join('\n\n');
     return prefix ? `${prefix}\n\n# User request\n\nQUERY: ${query}` : query;
   }
 

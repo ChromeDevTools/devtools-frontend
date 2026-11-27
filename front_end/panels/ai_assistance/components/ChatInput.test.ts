@@ -170,53 +170,210 @@ describeWithEnvironment('ChatInput', () => {
       assert.isUndefined(view.input.imageInput);
     });
 
+    function createImageTransferEvents(): {paste: ClipboardEvent, dragOver: DragEvent, drop: DragEvent} {
+      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      return {
+        paste: new ClipboardEvent('paste', {
+          clipboardData: dataTransfer,
+          cancelable: true,
+        }),
+        dragOver: new DragEvent('dragover', {
+          dataTransfer,
+          cancelable: true,
+        }),
+        drop: new DragEvent('drop', {
+          dataTransfer,
+          cancelable: true,
+        }),
+      };
+    }
+
     it('handles image paste from clipboard', async () => {
       const [view, component] = createComponent();
       component.conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
+      component.multimodalInputEnabled = true;
+      component.uploadImageInputEnabled = true;
 
-      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      const clipboardEvent = new ClipboardEvent('paste', {
-        clipboardData: dataTransfer,
-      });
+      const {paste} = createImageTransferEvents();
 
       const nextInput = view.nextInput;
-      view.input.onImagePaste(clipboardEvent);
+      view.input.onImagePaste(paste);
       await nextInput;
 
-      assert.exists(view.input.imageInput);
-      assert.isFalse(view.input.imageInput.isLoading);
-      assert.strictEqual(view.input.imageInput.data, 'dGVzdA==');
-      assert.strictEqual(view.input.imageInput.mimeType, 'image/jpeg');
-      assert.strictEqual(view.input.imageInput.inputType, AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE);
+      assert.isTrue(paste.defaultPrevented);
+      assert.deepEqual(view.input.imageInput, {
+        isLoading: false,
+        data: 'dGVzdA==',
+        mimeType: 'image/jpeg',
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE,
+      });
     });
 
     it('handles drag-and-drop image upload', async () => {
-      const [view] = createComponent();
+      const [view, component] = createComponent();
+      component.multimodalInputEnabled = true;
+      component.uploadImageInputEnabled = true;
 
-      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      const dragOverEvent = new DragEvent('dragover', {
-        dataTransfer,
-      });
-      const dropEvent = new DragEvent('drop', {
-        dataTransfer,
-      });
+      const {dragOver, drop} = createImageTransferEvents();
 
-      view.input.onImageDragOver(dragOverEvent);
-      dragOverEvent.preventDefault();
+      view.input.onImageDragOver(dragOver);
+      assert.isTrue(dragOver.defaultPrevented);
       const nextInput = view.nextInput;
-      view.input.onImageDrop(dropEvent);
-      dropEvent.preventDefault();
+      view.input.onImageDrop(drop);
       await nextInput;
 
-      assert.exists(view.input.imageInput);
-      assert.isFalse(view.input.imageInput.isLoading);
-      assert.strictEqual(view.input.imageInput.data, 'dGVzdA==');
-      assert.strictEqual(view.input.imageInput.mimeType, 'image/jpeg');
-      assert.strictEqual(view.input.imageInput.inputType, AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE);
+      assert.isTrue(drop.defaultPrevented);
+      assert.deepEqual(view.input.imageInput, {
+        isLoading: false,
+        data: 'dGVzdA==',
+        mimeType: 'image/jpeg',
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE,
+      });
+    });
+
+    it('accepts paste on non-styling conversation when upload is enabled', async () => {
+      const [view, component] = createComponent();
+      component.conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.NONE;
+      component.multimodalInputEnabled = true;
+      component.uploadImageInputEnabled = true;
+
+      const {paste} = createImageTransferEvents();
+
+      const pasteNextInput = view.nextInput;
+      view.input.onImagePaste(paste);
+      const pasteInput = await pasteNextInput;
+
+      assert.isTrue(paste.defaultPrevented);
+      assert.deepEqual(pasteInput.imageInput, {
+        isLoading: false,
+        data: 'dGVzdA==',
+        mimeType: 'image/jpeg',
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE,
+      });
+    });
+
+    it('accepts drop on non-styling conversation when upload is enabled', async () => {
+      const [view, component] = createComponent();
+      component.conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.NONE;
+      component.multimodalInputEnabled = true;
+      component.uploadImageInputEnabled = true;
+
+      const {dragOver, drop} = createImageTransferEvents();
+
+      view.input.onImageDragOver(dragOver);
+      assert.isTrue(dragOver.defaultPrevented);
+
+      const dropNextInput = view.nextInput;
+      view.input.onImageDrop(drop);
+      const dropInput = await dropNextInput;
+
+      assert.isTrue(drop.defaultPrevented);
+      assert.deepEqual(dropInput.imageInput, {
+        isLoading: false,
+        data: 'dGVzdA==',
+        mimeType: 'image/jpeg',
+        inputType: AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE,
+      });
+    });
+
+    const ignoredImageTransferCases = [
+      {
+        reason: 'uploadImageInputEnabled is false',
+        multimodalInputEnabled: true,
+        uploadImageInputEnabled: false,
+        blockedByCrossOrigin: false,
+        isTextInputDisabled: false,
+      },
+      {
+        reason: 'multimodalInputEnabled is false',
+        multimodalInputEnabled: false,
+        uploadImageInputEnabled: true,
+        blockedByCrossOrigin: false,
+        isTextInputDisabled: false,
+      },
+      {
+        reason: 'default first-run flags are false',
+        multimodalInputEnabled: false,
+        uploadImageInputEnabled: false,
+        blockedByCrossOrigin: false,
+        isTextInputDisabled: false,
+      },
+      {
+        reason: 'blockedByCrossOrigin is true',
+        multimodalInputEnabled: true,
+        uploadImageInputEnabled: true,
+        blockedByCrossOrigin: true,
+        isTextInputDisabled: false,
+      },
+      {
+        reason: 'isTextInputDisabled is true',
+        multimodalInputEnabled: true,
+        uploadImageInputEnabled: true,
+        blockedByCrossOrigin: false,
+        isTextInputDisabled: true,
+      },
+    ];
+
+    for (const {
+           reason,
+           multimodalInputEnabled,
+           uploadImageInputEnabled,
+           blockedByCrossOrigin,
+           isTextInputDisabled,
+         } of ignoredImageTransferCases) {
+      it(`ignores paste and drop when ${reason}`, () => {
+        const [view, component] = createComponent();
+        component.conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
+        component.multimodalInputEnabled = multimodalInputEnabled;
+        component.uploadImageInputEnabled = uploadImageInputEnabled;
+        component.blockedByCrossOrigin = blockedByCrossOrigin;
+        component.isTextInputDisabled = isTextInputDisabled;
+
+        const {paste, dragOver, drop} = createImageTransferEvents();
+        view.input.onImagePaste(paste);
+        view.input.onImageDragOver(dragOver);
+        view.input.onImageDrop(drop);
+
+        assert.isFalse(paste.defaultPrevented);
+        assert.isFalse(dragOver.defaultPrevented);
+        assert.isFalse(drop.defaultPrevented);
+        assert.isUndefined(view.input.imageInput);
+      });
+    }
+
+    it('ignores paste and drop while an image is already loading', async () => {
+      const clock = sinon.useFakeTimers();
+      const deferred = Promise.withResolvers<{data: string, mimeType: string}>();
+      const compressStub = sinon.stub().returns(deferred.promise);
+      AiAssistance.ImageResize.setCompressImplementationForTest(compressStub);
+
+      const [view, component] = createComponent();
+      component.multimodalInputEnabled = true;
+      component.uploadImageInputEnabled = true;
+
+      const {paste: initialPaste} = createImageTransferEvents();
+      view.input.onImagePaste(initialPaste);
+      assert.isTrue(initialPaste.defaultPrevented);
+      sinon.assert.calledOnce(compressStub);
+
+      await clock.tickAsync(100);
+      assert.deepEqual(view.input.imageInput, {isLoading: true});
+
+      const {paste, dragOver, drop} = createImageTransferEvents();
+      view.input.onImagePaste(paste);
+      view.input.onImageDragOver(dragOver);
+      view.input.onImageDrop(drop);
+
+      assert.isFalse(paste.defaultPrevented);
+      assert.isFalse(dragOver.defaultPrevented);
+      assert.isFalse(drop.defaultPrevented);
+      sinon.assert.calledOnce(compressStub);
+
+      const nextInput = view.nextInput;
+      deferred.resolve({data: 'dGVzdA==', mimeType: 'image/jpeg'});
+      await nextInput;
     });
 
     it('should clear image input on primary page change', async () => {

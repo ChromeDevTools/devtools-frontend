@@ -620,8 +620,22 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
     });
   }
 
+  /**
+   * Returns whether image upload via clipboard paste or drag-and-drop is
+   * currently permitted. Mirrors the enabled state of the Add image button.
+   */
+  #canUploadImage(): boolean {
+    if (!this.multimodalInputEnabled || !this.uploadImageInputEnabled) {
+      return false;
+    }
+    if (this.blockedByCrossOrigin || this.isTextInputDisabled) {
+      return false;
+    }
+    return !this.#imageInput?.isLoading;
+  }
+
   #handleImageDataTransferEvent(dataTransfer: DataTransfer|null, event: Event): void {
-    if (this.conversationType !== AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING) {
+    if (!this.#canUploadImage()) {
       return;
     }
 
@@ -644,7 +658,7 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
   };
 
   #handleImageDragOver = (event: DragEvent): void => {
-    if (this.conversationType !== AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING) {
+    if (!this.#canUploadImage()) {
       return;
     }
 

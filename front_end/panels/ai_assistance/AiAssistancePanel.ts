@@ -663,6 +663,29 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     };
   }
 
+  /**
+   * Checks whether multimodal input is enabled for the active conversation.
+   *
+   * Requires the shared `devToolsFreestyler.multimodal` flag and a supported
+   * conversation (any conversation type in V2, or `ConversationType.STYLING`
+   * in V1). When `inputType` is `MultimodalInputType.UPLOADED_IMAGE`,
+   * `devToolsFreestyler.multimodalUploadInput` must also be enabled.
+   */
+  #isMultimodalInputEnabled(inputType?: AiAssistanceModel.AiAgent.MultimodalInputType): boolean {
+    if (!this.#conversation || !Root.Runtime.hostConfig.devToolsFreestyler?.multimodal) {
+      return false;
+    }
+    const conversationSupported = AiAssistanceModel.AiUtils.isAiV2Enabled() ||
+        this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
+    if (!conversationSupported) {
+      return false;
+    }
+    if (inputType === AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE) {
+      return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
+    }
+    return true;
+  }
+
   async #getPanelViewInput(): Promise<PanelViewInput> {
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
 
@@ -709,8 +732,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
           // TODO(b/587704208): Re-enable the written feedback form once supported.
           canShowFreeFormFeedback: false,
-          multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
-              this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
+          multimodalInputEnabled: this.#isMultimodalInputEnabled(),
           isTextInputDisabled: this.#isTextInputDisabled(),
           emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
@@ -720,8 +742,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             this.#textInputValue = text;
           },
           onExportConversation: this.#onExportConversationClick.bind(this),
-          uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
-              this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
+          uploadImageInputEnabled:
+              this.#isMultimodalInputEnabled(AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE),
           markdownRenderer,
           conversationMarkdown: conversation.getConversationMarkdown(),
           generateConversationSummary: async (markdown: string) => {
@@ -1807,7 +1829,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     let multimodalInput: AiAssistanceModel.AiAgent.MultimodalInput|undefined;
-    if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
+    if (imageInput && multimodalInputType && this.#isMultimodalInputEnabled(multimodalInputType)) {
       multimodalInput = {
         input: imageInput,
         id: crypto.randomUUID(),
@@ -2259,13 +2281,4 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
     return false;
   }
-}
-
-function isAiAssistanceMultimodalUploadInputEnabled(): boolean {
-  return isAiAssistanceMultimodalInputEnabled() &&
-      Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
-}
-
-function isAiAssistanceMultimodalInputEnabled(): boolean {
-  return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
 }

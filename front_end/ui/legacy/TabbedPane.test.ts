@@ -443,6 +443,44 @@ describeWithEnvironment('TabbedPaneElement', () => {
     assert.isFalse(widget.tabIsEnabled('tab2'));
   });
 
+  it('continues to update tabs when attributes change after being reparented in the DOM', async () => {
+    const container = document.createElement('div');
+    const parent1 = document.createElement('div');
+    const parent2 = document.createElement('div');
+    container.append(parent1, parent2);
+    renderElementIntoDOM(container);
+    render(html`
+      <devtools-tabbed-pane>
+        <div id="tab1" label="Tab 1">Content 1</div>
+        <div id="tab2" label="Tab 2">Content 2</div>
+      </devtools-tabbed-pane>
+    `,
+           parent1);
+
+    const tabbedPaneElement = parent1.querySelector('devtools-tabbed-pane');
+    assert.exists(tabbedPaneElement);
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    await raf();
+
+    assert.strictEqual(widget.tabs[0].title, 'Tab 1');
+    assert.strictEqual(widget.selectedTabId, 'tab1');
+
+    widget.show(parent2);
+    await raf();
+
+    const tab1 = tabbedPaneElement.querySelector('#tab1');
+    const tab2 = tabbedPaneElement.querySelector('#tab2');
+    assert.exists(tab1);
+    assert.exists(tab2);
+    tab1.setAttribute('label', 'Updated Tab 1 after reparent');
+    tab2.setAttribute('selected', '');
+
+    await raf();
+
+    assert.strictEqual(widget.tabs[0].title, 'Updated Tab 1 after reparent');
+    assert.strictEqual(widget.selectedTabId, 'tab2');
+  });
+
   it('updates tabs when children are added or removed', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);

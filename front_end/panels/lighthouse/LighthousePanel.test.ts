@@ -276,4 +276,68 @@ describeWithEnvironment('LighthousePanel', () => {
     assert.strictEqual(document.activeElement, topbarUrl);
     instance.detach();
   });
+
+  it('can re-select and detach a cached report containing DOM node links', async () => {
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const nodeId = 42 as Protocol.DOM.NodeId;
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = nodeId;
+    sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(nodeId);
+    sinon.stub(domModel, 'nodeForId').withArgs(nodeId).returns(node);
+
+    const firstReport = {
+      ...LH_REPORT.lhr,
+      audits: {
+        'node-audit': {
+          id: 'node-audit',
+          title: 'Node Audit',
+          description: 'Audit with a DOM node',
+          scoreDisplayMode: 'binary',
+          score: 0,
+          details: {
+            type: 'list',
+            items: [{type: 'node', path: '1,HTML,1,BODY', snippet: '<body>'}],
+          },
+        },
+      },
+      categories: {_: {auditRefs: [{id: 'node-audit', weight: 1}], id: ''}},
+    } as unknown as LighthouseModel.ReporterTypes.ReportJSON;
+    (protocolService.collectLighthouseResults as sinon.SinonStub).resolves({
+      lhr: firstReport,
+    } as unknown as LighthouseModel.ReporterTypes.RunnerResult);
+
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+    renderElementIntoDOM(instance);
+
+    await instance.handleCompleteRun();
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+    assert.isNotNull(instance.contentElement.querySelector('.lh-node devtools-widget'));
+
+    const secondReport = {
+      ...LH_REPORT.lhr,
+      fetchTime: 100,
+    } as unknown as LighthouseModel.ReporterTypes.ReportJSON;
+    (protocolService.collectLighthouseResults as sinon.SinonStub).resolves({
+      lhr: secondReport,
+    } as unknown as LighthouseModel.ReporterTypes.RunnerResult);
+
+    await instance.handleCompleteRun();
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    instance.selectReport(firstReport);
+    instance.selectReport(secondReport);
+
+    const context = UI.Context.Context.instance();
+    assert.strictEqual(context.flavor(Lighthouse.LighthousePanel.ActiveLighthouseReport)?.report, secondReport);
+
+    instance.selectReport(firstReport);
+    const clearButton = instance.element.querySelector<HTMLElement>('[aria-label="Clear all"]');
+    assert.exists(clearButton);
+    clearButton.click();
+    assert.isNull(context.flavor(Lighthouse.LighthousePanel.ActiveLighthouseReport));
+    instance.detach();
+  });
 });

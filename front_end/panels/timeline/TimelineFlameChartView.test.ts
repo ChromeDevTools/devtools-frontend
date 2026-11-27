@@ -706,6 +706,12 @@ describe('TimelineFlameChartView', function() {
       flameChartsContainer: new UI.Widget.VBox(),
       delegate: new MockViewDelegate(),
       countersModel: {parsedTrace: null, events: null},
+      detailsModel: {
+        parsedTrace: null,
+        selectedEvents: null,
+        eventToRelatedInsightsMap: null,
+        entityMapper: null,
+      },
       detailsView: new Timeline.TimelineDetailsView.TimelineDetailsPane(new MockViewDelegate()),
       showMemoryGraph: true,
       inert: false,
@@ -740,6 +746,36 @@ describe('TimelineFlameChartView', function() {
 
     flameChartView.setModel(null);
     assert.deepEqual((await view.nextInput).countersModel, {parsedTrace: null, events: null});
+  });
+
+  it('updates detailsModel in the view input when the trace model changes', async function() {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    assert.deepEqual((await view.nextInput).detailsModel, {
+      parsedTrace: null,
+      selectedEvents: null,
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    });
+
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const eventToRelatedInsightsMap = new Map();
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap});
+    const updated = await view.nextInput;
+    assert.strictEqual(updated.detailsModel.parsedTrace, parsedTrace);
+    assert.strictEqual(updated.detailsModel.eventToRelatedInsightsMap, eventToRelatedInsightsMap);
+    assert.isArray(updated.detailsModel.selectedEvents);
+
+    flameChartView.setModel(null);
+    assert.deepEqual((await view.nextInput).detailsModel, {
+      parsedTrace: null,
+      selectedEvents: null,
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    });
   });
 
   it('cancels entry link annotation creation on Escape keydown', async function() {

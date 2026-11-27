@@ -27,7 +27,7 @@ import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineCommentController} from './TimelineCommentController.js';
-import {type Tab, TimelineDetailsPane} from './TimelineDetailsView.js';
+import {type Tab, type TimelineDetailsModel, TimelineDetailsPane} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {
   Events as TimelineFlameChartDataProviderEvents,
@@ -97,6 +97,7 @@ export interface ViewInput {
   flameChartsContainer: UI.Widget.VBox;
   delegate: TimelineModeViewDelegate;
   countersModel: CountersModel;
+  detailsModel: TimelineDetailsModel;
   detailsView: TimelineDetailsPane;
   showMemoryGraph: boolean;
   inert: boolean;
@@ -162,6 +163,7 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
   if (chartSplit && countersResizer) {
     chartSplit.installResizer(countersResizer);
   }
+  input.detailsView.model = input.detailsModel;
   output.setDetailsSelection = selection => input.detailsView.setSelection(selection);
   output.selectDetailsTab = (tabName, node) => input.detailsView.selectTab(tabName, node);
   output.revealEventInTreeView = event => input.detailsView.revealEventInTreeView(event);
@@ -192,6 +194,12 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   readonly #splitResizer: HTMLElement;
   readonly #flameChartsContainer: UI.Widget.VBox;
   #countersModel: CountersModel = {parsedTrace: null, events: null};
+  #detailsModel: TimelineDetailsModel = {
+    parsedTrace: null,
+    selectedEvents: null,
+    eventToRelatedInsightsMap: null,
+    entityMapper: null,
+  };
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in Chromium web_tests.
   private readonly detailsView: TimelineDetailsPane;
   readonly #onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<{
@@ -1424,14 +1432,17 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #updateDetailViews(): void {
     if (this.#countersModel.parsedTrace !== this.#parsedTrace || this.#countersModel.events !== this.#selectedEvents) {
       this.#countersModel = {parsedTrace: this.#parsedTrace, events: this.#selectedEvents};
-      this.requestUpdate();
+    } else if (this.#detailsModel.eventToRelatedInsightsMap === this.#eventToRelatedInsightsMap &&
+               this.#detailsModel.entityMapper === this.#entityMapper) {
+      return;
     }
-    void this.detailsView.setModel({
+    this.#detailsModel = {
       parsedTrace: this.#parsedTrace,
       selectedEvents: this.#selectedEvents,
       eventToRelatedInsightsMap: this.#eventToRelatedInsightsMap,
       entityMapper: this.#entityMapper,
-    });
+    };
+    this.requestUpdate();
   }
 
   #updateFlameCharts(): void {
@@ -1565,6 +1576,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       flameChartsContainer: this.#flameChartsContainer,
       delegate: this.#delegate,
       countersModel: this.#countersModel,
+      detailsModel: this.#detailsModel,
       detailsView: this.detailsView,
       showMemoryGraph: this.#showMemoryGraph,
       inert: this.#inert,

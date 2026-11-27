@@ -642,12 +642,17 @@
       public: true,
     },
     {
-      name: "AlignZoomToCenter",
-      status: "stable",
+      // Restricts the `align` presentational hint to the HTML elements the
+      // spec lists, so unknown and custom elements, and generic hosts like
+      // <span>, no longer map `align` to `text-align`. Off by default so the
+      // existing behavior ships while
+      // kHTMLAlignAttributeNonSpecListedElement measures real usage; finch
+      // flips this on later. https://crbug.com/41441191
+      name: "AlignAttributeOnlyForSpecListedElements",
     },
     {
-      name: "AllowContentInitiatedDataUrlNavigations",
-      base_feature: "none",
+      name: "AlignZoomToCenter",
+      status: "stable",
     },
     {
       name: "AllowPreloadingWithCSPMetaTag",
@@ -3197,7 +3202,7 @@
     {
       name: "FedCmActiveModeMultipleIdentityProviders",
       depends_on: ["FedCmMultipleIdentityProviders"],
-      status: "experimental",
+      status: "test",
       base_feature: "none",
       public: true,
     },
@@ -5501,6 +5506,16 @@
     },
     {
       name: "PreserveHtmlEquivalentTagsInTypingStyle",
+      status: "stable",
+    },
+    {
+      // When enabled, a range selection whose endpoint has no visible position
+      // but is itself editable keeps its raw position during selection
+      // canonicalization instead of collapsing to a caret. This keeps
+      // cut/copy/delete working when a contenteditable=false element is the
+      // first or last child of an editable root.
+      // Kill switch for https://crbug.com/40780668
+      name: "PreserveSelectionAcrossNonEditableIsland",
       status: "stable",
     },
     {
@@ -8043,8 +8058,7 @@
       implied_by: [
         "WebMCPContinuations",
         "WebMCPDeclarativeFileInput",
-        "WebMCPFormAssociatedCustomElements",
-        "WebMCPWaitForToolsUntil"
+        "WebMCPFormAssociatedCustomElements"
       ],
       status: "experimental",
     },
@@ -8066,12 +8080,6 @@
       status: "experimental",
     },
     {
-      // `document.modelContext.waitForToolsUntil()`, which lets a document
-      // signal that it is still registering tools.
-      name: "WebMCPWaitForToolsUntil",
-      status: "experimental",
-    },
-    {
       name: "WebNFC",
       public: true,
       status: {"Android": "stable", "iOS": "stable", "default": "test"},
@@ -8079,13 +8087,6 @@
     },
     {
       name: "WebOTP",
-      public: true,
-      status: "stable",
-      base_feature: "none",
-    },
-    {
-      name: "WebOTPAssertionFeaturePolicy",
-      depends_on: ["WebOTP"],
       public: true,
       status: "stable",
       base_feature: "none",

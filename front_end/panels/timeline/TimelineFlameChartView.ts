@@ -104,6 +104,7 @@ export interface ViewInput {
   countersModel: CountersModel;
   detailsModel: TimelineDetailsModel;
   showMemoryGraph: boolean;
+  showNetworkChart: boolean;
   inert: boolean;
   onKeyDown: (keyInfo: {key: string, altKey: boolean}) => 'handled' | 'stop-propagation' | undefined;
   onSecondaryPointerDown: () => boolean;
@@ -134,6 +135,11 @@ function configureNetworkSplit(split: UI.SplitWidget.SplitWidget, resizer: Eleme
 
 export const DEFAULT_VIEW: View = (input, output, target): void => {
   configureNetworkSplit(input.networkSplitWidget, input.splitResizer, output);
+  if (input.showNetworkChart && input.networkSplitWidget.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
+    input.networkSplitWidget.showBoth();
+  } else if (!input.showNetworkChart && input.networkSplitWidget.showMode() !== UI.SplitWidget.ShowMode.ONLY_MAIN) {
+    input.networkSplitWidget.hideSidebar();
+  }
   let detailsSplit: UI.SplitWidget.SplitWidget|undefined;
   let chartSplit: UI.SplitWidget.SplitWidget|undefined;
   let countersResizer: Element|undefined;
@@ -325,6 +331,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #mainPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #listenersAttached = false;
   #showMemoryGraph = true;
+  #showNetworkChart = true;
   #inert = false;
   readonly #view: View;
   readonly #viewOutput: ViewOutput = {};
@@ -1344,7 +1351,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.mainDataProvider.reset();
     this.#networkDataProvider.reset();
     this.mainFlameChart.enableRuler(true);
-    this.#networkSplitWidget.hideSidebar();
+    this.#showNetworkChart = false;
+    this.requestUpdate();
     this.#overlays.reset();
     this.mainFlameChart.reset();
     this.networkFlameChart.reset();
@@ -1373,14 +1381,12 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     // Populate networkDataProvider before isEmpty() and resizeToPreferredHeights() compute the split-widget layout.
     this.mainDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
     this.#networkDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
-    if (this.#networkDataProvider.isEmpty()) {
-      this.mainFlameChart.enableRuler(true);
-      this.#networkSplitWidget.hideSidebar();
-    } else {
-      this.mainFlameChart.enableRuler(false);
-      this.#networkSplitWidget.showBoth();
+    this.#showNetworkChart = !this.#networkDataProvider.isEmpty();
+    this.mainFlameChart.enableRuler(!this.#showNetworkChart);
+    if (this.#showNetworkChart) {
       this.resizeToPreferredHeights();
     }
+    this.requestUpdate();
     this.#overlays.reset();
     this.mainFlameChart.reset();
     this.networkFlameChart.reset();
@@ -1591,6 +1597,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       countersModel: this.#countersModel,
       detailsModel: this.#detailsModel,
       showMemoryGraph: this.#showMemoryGraph,
+      showNetworkChart: this.#showNetworkChart,
       inert: this.#inert,
       onKeyDown: this.#onKeyDown,
       onSecondaryPointerDown: this.#onSecondaryPointerDown,

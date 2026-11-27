@@ -719,6 +719,7 @@ describe('TimelineFlameChartView', function() {
         entityMapper: null,
       },
       showMemoryGraph: true,
+      showNetworkChart: true,
       inert: false,
       onKeyDown: () => undefined,
       onSecondaryPointerDown: () => false,
@@ -828,6 +829,38 @@ describe('TimelineFlameChartView', function() {
 
     input.networkSplitWidget.hideSidebar();
     assert.isFalse(output.setNetworkSidebarSize(80));
+  });
+
+  it('toggles networkSplitWidget visibility from showNetworkChart in DEFAULT_VIEW', () => {
+    const container = new UI.Widget.Widget();
+    activeWidgets.push(container);
+    renderElementIntoDOM(container);
+    const input = createDefaultViewInput({showNetworkChart: true});
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, {}, container.contentElement);
+    assert.strictEqual(input.networkSplitWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
+
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, showNetworkChart: false}, {}, container.contentElement);
+    assert.strictEqual(input.networkSplitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_MAIN);
+  });
+
+  it('updates showNetworkChart in the view input when the model changes', async function() {
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView);
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    assert.isTrue((await view.nextInput).showNetworkChart);
+
+    flameChartView.setModel(null);
+    assert.isFalse((await view.nextInput).showNetworkChart);
+
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    flameChartView.setModel({parsedTrace, eventToRelatedInsightsMap: new Map()});
+    assert.isTrue((await view.nextInput).showNetworkChart);
+
+    flameChartView.setModel(null);
+    assert.isFalse((await view.nextInput).showNetworkChart);
   });
 
   it('updates countersModel in the view input when the trace model changes', async function() {

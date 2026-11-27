@@ -105,8 +105,13 @@ export interface ViewInput {
   onEntryLinkStartCreating: () => void;
   onEventReferenceClick: (event: Trace.Types.Events.Event) => void;
 }
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
-export const DEFAULT_VIEW: View = (input, _output, target): void => {
+export interface ViewOutput {
+  setDetailsSelection?: (selection: TimelineSelection|null) => Promise<void>;
+  selectDetailsTab?: (tabName: Tab, node: Trace.Extras.TraceTree.Node|null) => void;
+  revealEventInTreeView?: (event: Trace.Types.Events.Event|null) => void;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target): void => {
   let chartSplit: UI.SplitWidget.SplitWidget|undefined;
   let countersResizer: Element|undefined;
   const container = {
@@ -157,6 +162,9 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
   if (chartSplit && countersResizer) {
     chartSplit.installResizer(countersResizer);
   }
+  output.setDetailsSelection = selection => input.detailsView.setSelection(selection);
+  output.selectDetailsTab = (tabName, node) => input.detailsView.selectTab(tabName, node);
+  output.revealEventInTreeView = event => input.detailsView.revealEventInTreeView(event);
 };
 
 const TimelineFlameChartViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
@@ -277,6 +285,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #showMemoryGraph = true;
   #inert = false;
   readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
   readonly #boundOnMainDataChanged = (): void => {
     this.mainFlameChart.scheduleUpdate();
   };
@@ -313,9 +322,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
     this.mainDataProvider = new TimelineFlameChartDataProvider();
     this.mainDataProvider.setPersistedGroupConfigSetting(this.#mainPersistedGroupConfigSetting);
-    this.mainDataProvider.addEventListener(
-        TimelineFlameChartDataProviderEvents.FLAME_CHART_ITEM_HOVERED,
-        e => this.detailsView.revealEventInTreeView(e.data));
+    this.mainDataProvider.addEventListener(TimelineFlameChartDataProviderEvents.FLAME_CHART_ITEM_HOVERED,
+                                           e => this.#viewOutput.revealEventInTreeView?.(e.data));
 
     this.mainFlameChart = new PerfUI.FlameChart.FlameChart(this.mainDataProvider, this, {
       // The TimelineOverlays are used for selected elements
@@ -1566,7 +1574,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       onEntryLinkStartCreating: () => this.focus(),
       onEventReferenceClick: event => void this.setSelectionAndReveal(selectionFromEvent(event)),
     },
-               undefined, this.contentElement);
+               this.#viewOutput, this.contentElement);
     if (this.#needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }
@@ -1655,9 +1663,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#networkDataProvider.buildFlowForInitiator(networkIndex);
     this.networkFlameChart.setSelectedEntry(networkIndex);
 
-    if (this.detailsView) {
-      await this.detailsView.setSelection(selection);
-    }
+    await this.#viewOutput.setDetailsSelection?.(selection);
 
     // Create the entry selected overlay if the selection represents a trace event
     if (selectionIsEvent(selection)) {
@@ -1701,9 +1707,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   // their entry with a new UI. Because of that, their entries can no longer be "selected" in the timings track,
   // so if clicked, we only open their details view.
   async openSelectionDetailsView(selection: TimelineSelection|null): Promise<void> {
-    if (this.detailsView) {
-      await this.detailsView.setSelection(selection);
-    }
+    await this.#viewOutput.setDetailsSelection?.(selection);
   }
 
   /**
@@ -2097,7 +2101,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   selectDetailsViewTab(tabName: Tab, node: Trace.Extras.TraceTree.Node|null): void {
-    this.detailsView.selectTab(tabName, node);
+    this.#viewOutput.selectDetailsTab?.(tabName, node);
   }
 }
 

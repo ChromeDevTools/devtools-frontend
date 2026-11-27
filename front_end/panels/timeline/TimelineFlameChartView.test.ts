@@ -23,6 +23,7 @@ import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {
   allThreadEntriesInTrace,
+  makeCompleteEvent,
   microsecondsTraceWindow,
   renderWidgetInVbox,
   setupIgnoreListManagerEnvironment,
@@ -714,13 +715,12 @@ describe('TimelineFlameChartView', function() {
       onEventReferenceClick: () => {},
     };
 
-    Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, undefined, container.contentElement);
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW(input, {}, container.contentElement);
     const countersSplit =
         container.contentElement.querySelector('devtools-split-view[name="timeline-counters-split-view-state"]');
     assert.strictEqual(countersSplit?.getAttribute('show'), 'both');
 
-    Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, showMemoryGraph: false}, undefined,
-                                                 container.contentElement);
+    Timeline.TimelineFlameChartView.DEFAULT_VIEW({...input, showMemoryGraph: false}, {}, container.contentElement);
     assert.strictEqual(countersSplit?.getAttribute('show'), 'main');
   });
 
@@ -812,6 +812,50 @@ describe('TimelineFlameChartView', function() {
     assert.exists(event);
     view.input.onEventReferenceClick(event);
     sinon.assert.calledOnce(setSelectionSpy);
+  });
+
+  it('routes openSelectionDetailsView through ViewOutput', async () => {
+    const setDetailsSelection = sinon.stub().resolves();
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView, {setDetailsSelection});
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    await view.nextInput;
+
+    const selection = Timeline.TimelineSelection.selectionFromRangeMilliSeconds(Trace.Types.Timing.Milli(10),
+                                                                                Trace.Types.Timing.Milli(20));
+    await flameChartView.openSelectionDetailsView(selection);
+    sinon.assert.calledOnceWithExactly(setDetailsSelection, selection);
+  });
+
+  it('routes selectDetailsViewTab through ViewOutput', async () => {
+    const selectDetailsTab = sinon.stub();
+    const view = createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView, {selectDetailsTab});
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    await view.nextInput;
+
+    flameChartView.selectDetailsViewTab(Timeline.TimelineDetailsView.Tab.BottomUp, null);
+    sinon.assert.calledOnceWithExactly(selectDetailsTab, Timeline.TimelineDetailsView.Tab.BottomUp, null);
+  });
+
+  it('routes hovered flame chart item to revealEventInTreeView via ViewOutput', async () => {
+    const revealEventInTreeView = sinon.stub();
+    const view =
+        createViewFunctionStub(Timeline.TimelineFlameChartView.TimelineFlameChartView, {revealEventInTreeView});
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(
+        new MockViewDelegate(), new CommentManager.CommentManager.CommentManager(), view);
+    activeWidgets.push(flameChartView);
+    renderElementIntoDOM(flameChartView);
+    await view.nextInput;
+
+    const event = makeCompleteEvent('TestEvent', 10, 20);
+    flameChartView.getMainDataProvider().dispatchEventToListeners(
+        Timeline.TimelineFlameChartDataProvider.Events.FLAME_CHART_ITEM_HOVERED, event);
+    sinon.assert.calledOnceWithExactly(revealEventInTreeView, event);
   });
 
   it('coalesces overlay updates when main and network flame charts redraw in the same turn', async () => {

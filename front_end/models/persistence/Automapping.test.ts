@@ -1367,4 +1367,205 @@ describe('Automapping', () => {
       clock.restore();
     }
   });
+
+  describe('content validation for non-text files', () => {
+    function setupFileAndNetworkPair(options: {
+      url: Platform.DevToolsPath.UrlString,
+      fsMimeType: string,
+      networkMimeType: string,
+      fsContent?: string,
+      fsContentData?: TextUtils.ContentData.ContentData,
+      fsReportedMimeType?: string,
+      networkContent?: string,
+      networkContentData?: TextUtils.ContentData.ContentData,
+      networkResourceType?: Common.ResourceType.ResourceType,
+    }) {
+      const target = backend.universe.createTarget({type: SDK.Target.Type.FRAME});
+      const {uiSourceCode: fileSystemSource, project: fsProject} = createFileSystemUISourceCode({
+        url: options.url,
+        content: options.fsContent ?? '',
+        fileSystemPath: 'file:///var/www',
+        mimeType: options.fsMimeType,
+        autoMapping: true,
+        universe: backend.universe,
+      });
+      if (options.fsReportedMimeType) {
+        sinon.stub(fileSystemSource, 'mimeType').returns(options.fsReportedMimeType);
+      }
+      const fsRequestContent = options.fsContentData ?
+          sinon.stub(fsProject, 'requestFileContent').resolves(options.fsContentData) :
+          sinon.spy(fileSystemSource, 'requestContentData');
+
+      const {
+        project: networkProject,
+        uiSourceCodes: [networkSource],
+      } = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: options.url,
+            mimeType: options.networkMimeType,
+            content: options.networkContent ?? '',
+            resourceType: options.networkResourceType,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        projectId: 'network-project',
+        target,
+        universe: backend.universe,
+      });
+      const networkRequestContent = options.networkContentData ?
+          sinon.stub(networkProject, 'requestFileContent').resolves(options.networkContentData) :
+          sinon.spy(networkProject, 'requestFileContent');
+
+      return {fileSystemSource, networkSource, fsRequestContent, networkRequestContent};
+    }
+
+    it('does not bind a stylesheet UISourceCode to a non-text image file and does not request content', async () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+      const {fileSystemSource, networkSource, fsRequestContent, networkRequestContent} = setupFileAndNetworkPair({
+        url: urlString`file:///var/www/logo.png`,
+        fsMimeType: 'image/png',
+        fsContent: 'iVBORw0KGgo=',
+        networkMimeType: 'text/css',
+        networkContent: 'body {}',
+        networkResourceType: Common.ResourceType.resourceTypes.Stylesheet,
+      });
+
+      await clock.tickAsync(200);
+
+      sinon.assert.notCalled(fsRequestContent);
+      sinon.assert.notCalled(networkRequestContent);
+      assert.isNull(backend.universe.persistence.binding(networkSource));
+      assert.isNull(backend.universe.persistence.binding(fileSystemSource));
+    });
+
+    it('does not bind a stylesheet UISourceCode to a non-text binary file and does not request content', async () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+      // IsolatedFileSystem classifies BinaryExtensions (e.g. .zip) as Other
+      // while mimeFromPath falls back to 'text/plain' for unknown MIME types.
+      const {fileSystemSource, networkSource, fsRequestContent, networkRequestContent} = setupFileAndNetworkPair({
+        url: urlString`file:///var/www/release.zip`,
+        fsMimeType: 'application/octet-stream',
+        fsContent: 'PK',
+        fsReportedMimeType: 'text/plain',
+        networkMimeType: 'text/css',
+        networkContent: 'body {}',
+        networkResourceType: Common.ResourceType.resourceTypes.Stylesheet,
+      });
+
+      await clock.tickAsync(200);
+
+      sinon.assert.notCalled(fsRequestContent);
+      sinon.assert.notCalled(networkRequestContent);
+      assert.isNull(backend.universe.persistence.binding(networkSource));
+      assert.isNull(backend.universe.persistence.binding(fileSystemSource));
+    });
+
+    it('binds a text document UISourceCode to an SVG image file when content matches', async () => {
+      const svgContent = '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
+      const bindingCreatedPromise = backend.universe.persistence.once(Persistence.Persistence.Events.BindingCreated);
+      const {fileSystemSource, networkSource, fsRequestContent} = setupFileAndNetworkPair({
+        url: urlString`file:///var/www/icon.svg`,
+        fsMimeType: 'image/svg+xml',
+        fsContent: svgContent,
+        networkMimeType: 'image/svg+xml',
+        networkContent: svgContent,
+        networkResourceType: Common.ResourceType.resourceTypes.Document,
+      });
+
+      const binding = await bindingCreatedPromise;
+      assert.strictEqual(binding.network, networkSource);
+      assert.strictEqual(binding.fileSystem, fileSystemSource);
+      sinon.assert.calledOnce(fsRequestContent);
+    });
+
+    it('does not bind a text UISourceCode to a base64-encoded binary file even when raw strings match', async () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+      const {fileSystemSource, networkSource, fsRequestContent} = setupFileAndNetworkPair({
+        url: urlString`file:///var/www/report.pdf`,
+        fsMimeType: 'text/plain',
+        fsContentData: new TextUtils.ContentData.ContentData('JVBERi0=', /* isBase64 */ true, 'application/pdf'),
+        networkMimeType: 'text/css',
+        networkContent: 'JVBERi0=',
+        networkResourceType: Common.ResourceType.resourceTypes.Stylesheet,
+      });
+
+      await clock.tickAsync(200);
+
+      sinon.assert.calledOnce(fsRequestContent);
+      assert.isNull(backend.universe.persistence.binding(networkSource));
+      assert.isNull(backend.universe.persistence.binding(fileSystemSource));
+    });
+
+    it('does not bind a base64 text UISourceCode to a base64 binary file even when base64 matches', async () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+      const {fileSystemSource, networkSource, fsRequestContent, networkRequestContent} = setupFileAndNetworkPair({
+        url: urlString`file:///var/www/module.wasm`,
+        fsMimeType: 'text/plain',
+        fsContentData: new TextUtils.ContentData.ContentData('AGFzbQE=', /* isBase64 */ true, 'application/wasm'),
+        networkMimeType: 'text/javascript',
+        networkContentData: new TextUtils.ContentData.ContentData('AGFzbQE=', /* isBase64 */ true, 'application/wasm'),
+        networkResourceType: Common.ResourceType.resourceTypes.Script,
+      });
+
+      await clock.tickAsync(200);
+
+      sinon.assert.calledOnce(fsRequestContent);
+      sinon.assert.called(networkRequestContent);
+      assert.isNull(backend.universe.persistence.binding(networkSource));
+      assert.isNull(backend.universe.persistence.binding(fileSystemSource));
+    });
+
+    it('does not bind a whitespace text UISourceCode to an empty text file', async () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+      const {fileSystemSource, networkSource, fsRequestContent} = setupFileAndNetworkPair({
+        url: urlString`file:///var/www/.env`,
+        fsMimeType: 'text/plain',
+        fsContent: '',
+        networkMimeType: 'text/css',
+        networkContent: '\n',
+        networkResourceType: Common.ResourceType.resourceTypes.Stylesheet,
+      });
+
+      await clock.tickAsync(200);
+
+      sinon.assert.called(fsRequestContent);
+      assert.isNull(backend.universe.persistence.binding(networkSource));
+      assert.isNull(backend.universe.persistence.binding(fileSystemSource));
+    });
+
+    it('binds a base64 non-text UISourceCode to a text-typed file with matching base64 content', async () => {
+      const bindingCreatedPromise = backend.universe.persistence.once(Persistence.Persistence.Events.BindingCreated);
+      const {fileSystemSource, networkSource, fsRequestContent, networkRequestContent} = setupFileAndNetworkPair({
+        url: urlString`file:///var/www/font.woff2`,
+        fsMimeType: 'text/plain',
+        fsContentData: new TextUtils.ContentData.ContentData('d09GMg==', /* isBase64 */ true, 'font/woff2'),
+        networkMimeType: 'font/woff2',
+        networkContentData: new TextUtils.ContentData.ContentData('d09GMg==', /* isBase64 */ true, 'font/woff2'),
+        networkResourceType: Common.ResourceType.resourceTypes.Font,
+      });
+
+      const binding = await bindingCreatedPromise;
+      sinon.assert.calledOnce(fsRequestContent);
+      sinon.assert.calledOnce(networkRequestContent);
+      assert.strictEqual(binding.network, networkSource);
+      assert.strictEqual(binding.fileSystem, fileSystemSource);
+    });
+
+    it('binds a non-text UISourceCode to a non-text file without content validation', async () => {
+      const bindingCreatedPromise = backend.universe.persistence.once(Persistence.Persistence.Events.BindingCreated);
+      const {fileSystemSource, networkSource, fsRequestContent} = setupFileAndNetworkPair({
+        url: urlString`file:///var/www/logo.png`,
+        fsMimeType: 'image/png',
+        fsContent: 'iVBORw0KGgo=',
+        networkMimeType: 'image/png',
+        networkContent: 'different',
+      });
+
+      const binding = await bindingCreatedPromise;
+      assert.strictEqual(binding.network, networkSource);
+      assert.strictEqual(binding.fileSystem, fileSystemSource);
+      sinon.assert.notCalled(fsRequestContent);
+    });
+  });
 });

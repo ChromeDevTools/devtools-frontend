@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
 import {JavascriptExecutor, MAX_OBSERVATION_BYTE_LENGTH} from '../agents/ExecuteJavascript.js';
 import {MAX_SERIALIZED_ELEMENT_UIDS} from '../EvaluateAction.js';
@@ -18,6 +19,7 @@ import {
   type OriginLockCapability,
   type PageExecutionCapability,
   PermissionPrompt,
+  resolveOriginFromLock,
   type StyleMutationCapability,
   type ToolArgs,
   ToolName,
@@ -227,6 +229,60 @@ function describeSizeLimitViolations(code: string): string[] {
   return violations;
 }
 
+/**
+ * Validates the conversation's origin lock and resolves the DOM node used for
+ * JavaScript execution, returning a model-facing error with stop-retry guidance
+ * when execution is not permitted.
+ */
+function resolveExecutionNode(
+    context: PageExecutionCapability&OriginLockCapability,
+    ): {node: SDK.DOMModel.DOMNode}|{
+  error: string,
+}
+{
+  // Validate the origin lock before looking up the execution node so
+  // lock-level failures (such as navigation blocks) are reported directly
+  // instead of a missing-node error, and so `establishedOrigin` is available
+  // when no node exists.
+  const originLock = context.getOriginLock();
+  const originResult = resolveOriginFromLock(originLock);
+  if ('error' in originResult) {
+    return {
+      error: `Error: ${originResult.error} Do not retry executeJavaScript; ask the user to start a new chat.`,
+    };
+  }
+  const establishedOrigin = originResult.origin;
+
+  const executionNode = context.getExecutionContextNode();
+  if (!executionNode) {
+    return {
+      error: `Error: Could not find the context node for execution. This conversation is locked to ${
+          establishedOrigin
+              .siteId()}; if the inspected page is on a different origin (for example from a selected cross-origin file in Sources), do not retry executeJavaScript and ask the user to start a new chat on the page's origin.`,
+    };
+  }
+
+  const nodeOrigin = executionNode.securityOrigin();
+  if (!nodeOrigin || nodeOrigin.isOpaque()) {
+    return {
+      error:
+          'Error: Cannot execute JavaScript on a target with no valid security origin (for example a detached or sandboxed node). Do not retry executeJavaScript.',
+    };
+  }
+  if (!isOriginAllowedByLock(originLock, nodeOrigin)) {
+    // Intentionally omit `nodeOrigin` from the error to avoid disclosing a
+    // cross-origin target's origin to the model; only the already-established
+    // conversation origin is surfaced.
+    return {
+      error: `Error: Cannot execute JavaScript on cross-origin target. This conversation is locked to ${
+          establishedOrigin
+              .siteId()} (for example from a selected cross-origin item or an earlier page). Do not retry executeJavaScript; ask the user to start a new chat on the inspected page's origin (and remove any cross-origin context item if one is selected).`,
+    };
+  }
+
+  return {node: executionNode};
+}
+
 export interface ExecuteJavaScriptArgs extends ToolArgs {
   code: string;
   explanation: string;
@@ -334,14 +390,11 @@ const data = {
       context: BaseToolCapability&PageExecutionCapability&StyleMutationCapability&OriginLockCapability,
       options?: FunctionHandlerOptions,
       ): Promise<DataHandlerResult<unknown>> {
-    const executionNode = context.getExecutionContextNode();
-    if (!executionNode) {
-      return {error: 'Error: Could not find the context node for execution.'};
+    const executionNodeResult = resolveExecutionNode(context);
+    if ('error' in executionNodeResult) {
+      return executionNodeResult;
     }
-
-    if (!isOriginAllowedByLock(context.getOriginLock(), executionNode.securityOrigin())) {
-      return {error: 'Error: Cannot execute JavaScript on cross-origin target.'};
-    }
+    const executionNode = executionNodeResult.node;
 
     const isV2Architecture = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled;
     if (isV2Architecture) {

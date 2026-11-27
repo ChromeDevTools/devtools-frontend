@@ -126,14 +126,15 @@ describe('ExecuteJavaScriptTool', () => {
 
   it('returns error when execution context node is missing', async () => {
     const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+    const mockExecJs = sinon.stub();
     const context = {
       getExecutionContextNode: () => null,
-      execJs: sinon.stub(),
+      execJs: mockExecJs,
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
       createExtensionScope: sinon.stub(),
       getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
         status: 'ESTABLISHED_ORIGIN',
-        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://cdn.example.net'),
       }),
     };
 
@@ -145,7 +146,10 @@ describe('ExecuteJavaScriptTool', () => {
                                         context);
 
     assertIsError(response);
-    assert.strictEqual(response.error, 'Error: Could not find the context node for execution.');
+    assert.match(response.error, /^Error: Could not find the context node for execution\./);
+    assert.include(response.error, 'https://cdn.example.net');
+    assert.include(response.error, 'do not retry executeJavaScript');
+    sinon.assert.notCalled(mockExecJs);
   });
 
   it('returns error when user denies execution', async () => {
@@ -892,7 +896,11 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
   });
 
   describe('origin locking', () => {
-    function createContext(originLock: AiAssistance.Tool.OriginLockState) {
+    function createContext(
+        originLock: AiAssistance.Tool.OriginLockState,
+        executionNode: SDK.DOMModel.DOMNode|null = element,
+    ) {
+      const getExecutionContextNode = sinon.stub().returns(executionNode);
       const mockExecJs = sinon.stub().resolves('{"success": true}');
       const mockScope = {
         install: sinon.stub().resolves(),
@@ -900,12 +908,13 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
       };
       return {
         context: {
-          getExecutionContextNode: () => element,
+          getExecutionContextNode,
           execJs: mockExecJs,
           changeManager: new AiAssistance.ChangeManager.ChangeManager(),
           createExtensionScope: sinon.stub().returns(mockScope),
           getOriginLock: () => originLock,
         },
+        getExecutionContextNode,
         mockExecJs,
       };
     }
@@ -937,7 +946,11 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
 
       const response = await tool.handler(defaultArgs, context);
 
-      assertIsError(response, 'Error: Cannot execute JavaScript on cross-origin target.');
+      assertIsError(response);
+      assert.match(response.error, /^Error: Cannot execute JavaScript on cross-origin target\./);
+      assert.include(response.error, 'https://victim.example');
+      assert.notInclude(response.error, 'attacker.example');
+      assert.include(response.error, 'Do not retry executeJavaScript');
       sinon.assert.notCalled(mockExecJs);
     });
 
@@ -949,7 +962,10 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
 
       const response = await tool.handler(defaultArgs, context);
 
-      assertIsError(response, 'Error: Cannot execute JavaScript on cross-origin target.');
+      assertIsError(response);
+      assert.include(response.error, 'no valid security origin');
+      assert.include(response.error, 'Do not retry executeJavaScript');
+      assert.notInclude(response.error, 'cross-origin');
       sinon.assert.notCalled(mockExecJs);
     });
 
@@ -961,38 +977,55 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
 
       const response = await tool.handler(defaultArgs, context);
 
-      assertIsError(response, 'Error: Cannot execute JavaScript on cross-origin target.');
+      assertIsError(response);
+      assert.include(response.error, 'no valid security origin');
+      assert.include(response.error, 'Do not retry executeJavaScript');
+      assert.notInclude(response.error, 'cross-origin');
       sinon.assert.notCalled(mockExecJs);
     });
 
     it('returns error when origin lock is not established', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
-      const {context, mockExecJs} = createContext({status: 'UNINITIALIZED'});
+      const {context, getExecutionContextNode, mockExecJs} = createContext({status: 'UNINITIALIZED'}, null);
 
       const response = await tool.handler(defaultArgs, context);
 
-      assertIsError(response, 'Error: Cannot execute JavaScript on cross-origin target.');
+      assertIsError(
+          response,
+          'Error: No origin established for this conversation. Do not retry executeJavaScript; ask the user to start a new chat.',
+      );
+      sinon.assert.notCalled(getExecutionContextNode);
       sinon.assert.notCalled(mockExecJs);
     });
 
     it('returns error when cross-origin navigation occurred', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
-      const {context, mockExecJs} = createContext({status: 'BLOCKED_BY_NAVIGATION'});
+      const {context, getExecutionContextNode, mockExecJs} = createContext({status: 'BLOCKED_BY_NAVIGATION'}, null);
 
       const response = await tool.handler(defaultArgs, context);
 
-      assertIsError(response, 'Error: Cannot execute JavaScript on cross-origin target.');
+      assertIsError(
+          response,
+          'Error: Cross-origin access blocked due to navigation. Do not retry executeJavaScript; ask the user to start a new chat.',
+      );
+      sinon.assert.notCalled(getExecutionContextNode);
       sinon.assert.notCalled(mockExecJs);
     });
 
     it('returns error when established origin is opaque', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
-      const {context, mockExecJs} =
-          createContext({status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()});
+      const {context, getExecutionContextNode, mockExecJs} = createContext(
+          {status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()},
+          null,
+      );
 
       const response = await tool.handler(defaultArgs, context);
 
-      assertIsError(response, 'Error: Cannot execute JavaScript on cross-origin target.');
+      assertIsError(
+          response,
+          'Error: No origin available or not allowed. Do not retry executeJavaScript; ask the user to start a new chat.',
+      );
+      sinon.assert.notCalled(getExecutionContextNode);
       sinon.assert.notCalled(mockExecJs);
     });
   });

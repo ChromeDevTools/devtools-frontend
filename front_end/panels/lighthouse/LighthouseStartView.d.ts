@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -13,11 +14,7 @@ export declare class StartView extends UI.Widget.Widget {
     private startButton;
     private helpText?;
     private warningText?;
-    private checkboxes;
-    changeFormMode?: (mode: string) => void;
     constructor(controller: LighthouseController, panel: LighthousePanel);
-    private populateRuntimeSettingAsRadio;
-    private populateFormControls;
     private render;
     private populateStartButton;
     refresh(): void;

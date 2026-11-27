@@ -24,13 +24,13 @@
   ],
   "references": [
     {
+      "path": "resultsdb_collector-tsconfig.ref.json"
+    },
+    {
       "path": "../../front_end/testing/mocha_helpers-tsconfig.ref.json"
     },
     {
-      "path": "../../front_end/testing/test_id_generation-tsconfig.ref.json"
-    },
-    {
-      "path": "../conductor/implementation-tsconfig.ref.json"
+      "path": "../conductor/core-tsconfig.ref.json"
     }
   ]
 }

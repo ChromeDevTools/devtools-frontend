@@ -557,6 +557,7 @@ panels/elements/components/StylePropertyEditor.test.js
 panels/emulation/AdvancedApp.test.js
 panels/emulation/DeviceModeToolbar.test.js
 panels/emulation/DeviceModeView.test.js
+panels/emulation/InspectedPagePlaceholder.test.js
 panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js
@@ -607,6 +608,7 @@ panels/network/NetworkConfigView.test.js
 panels/network/NetworkDataGridNode.test.js
 panels/network/NetworkItemView.test.js
 panels/network/NetworkLogView.test.js
+panels/network/NetworkLogViewColumns.test.js
 panels/network/NetworkManageCustomHeadersView.test.js
 panels/network/NetworkOverview.test.js
 panels/network/NetworkPanel.test.js
@@ -743,6 +745,7 @@ panels/timeline/TimelineMiniMap.test.js
 panels/timeline/TimelinePaintProfilerView.test.js
 panels/timeline/TimelinePanel.test.js
 panels/timeline/TimelineSelection.test.js
+panels/timeline/TimelineSelectorStatsView.test.js
 panels/timeline/TimelineTreeView.test.js
 panels/timeline/TimelineUIUtils.test.js
 panels/timeline/TraceSnapshotSerializer.test.js
@@ -777,6 +780,7 @@ panels/timeline/components/insights/NetworkDependencyTree.test.js
 panels/timeline/components/insights/NodeLink.test.js
 panels/timeline/components/insights/Table.test.js
 panels/timeline/overlays/OverlaysImpl.test.js
+panels/timeline/overlays/components/EntriesLinkOverlay.test.js
 panels/timeline/overlays/components/TimeRangeOverlay.test.js
 panels/timeline/overlays/components/TimespanBreakdownOverlay.test.js
 panels/timeline/track_appenders/AnimationsTrackAppender.test.js

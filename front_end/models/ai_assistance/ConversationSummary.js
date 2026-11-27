@@ -105,12 +105,10 @@ color: red;
  */
 export class ConversationSummary {
     #aidaClient;
-    #serverSideLoggingEnabled;
     constructor(options) {
         this.#aidaClient = options.aidaClient;
-        this.#serverSideLoggingEnabled = options.serverSideLoggingEnabled ?? false;
     }
-    async summarizeConversation(conversation) {
+    async summarizeConversation(conversation, serverSideLoggingEnabled = false) {
         const enhancedQuery = `Summarize the following conversation:\n\n${conversation}`;
         // TODO(b/491772868): tidy up userTier & feature flags in the backend.
         const temperature = Root.Runtime.hostConfig.devToolsFreestyler?.temperature;
@@ -124,7 +122,7 @@ export class ConversationSummary {
             temperature,
             modelId,
             userTier,
-            serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+            serverSideLoggingEnabled,
         });
         if (!resultText) {
             throw new Error('Failed to summarize conversation');

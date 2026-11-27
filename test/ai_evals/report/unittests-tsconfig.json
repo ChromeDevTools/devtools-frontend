@@ -49,6 +49,7 @@
   "files": [
     "../../../../../../test/ai_evals/report/eval-logger.test.ts",
     "../../../../../../test/ai_evals/report/eval-task-recorder.test.ts",
+    "../../../../../../test/ai_evals/report/grading-loader.test.ts",
     "../../../../../../test/ai_evals/report/report-helpers.test.ts",
     "../../../../../../test/ai_evals/report/scorer.test.ts",
     "../../../../../../test/ai_evals/report/trajectory-builder.test.ts",

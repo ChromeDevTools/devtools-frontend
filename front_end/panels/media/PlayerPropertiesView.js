@@ -475,8 +475,8 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
         return this.#properties;
     }
     onProperty(property) {
-        if (!(property.name in this.#properties)) {
-            throw new Error(`Player property '${property.name}' not supported.`);
+        if (!Object.hasOwn(this.#properties, property.name)) {
+            return;
         }
         this.#properties[property.name].data = property.value;
         this.requestUpdate();

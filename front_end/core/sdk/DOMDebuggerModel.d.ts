@@ -104,7 +104,7 @@ export declare class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
 }
 export declare class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     #private;
-    constructor(targetManager?: TargetManager);
+    constructor(targetManager: TargetManager);
     initialize(): void;
     static instance(opts?: {
         forceNew: boolean | null;

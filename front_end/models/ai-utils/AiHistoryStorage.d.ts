@@ -30,7 +30,7 @@ export interface EventTypes {
 }
 export declare class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor(settings?: Common.Settings.Settings, maxStorageSize?: number);
+    constructor(settings: Common.Settings.Settings, maxStorageSize?: number);
     clearForTest(): void;
     addRecentPrompt(prompt: string): Promise<void>;
     getRecentPrompts(): string[];

@@ -56,7 +56,7 @@
   ],
   "references": [
     {
-      "path": "implementation-tsconfig.ref.json"
+      "path": "core-tsconfig.ref.json"
     }
   ]
 }

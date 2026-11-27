@@ -57,6 +57,9 @@
   ],
   "references": [
     {
+      "path": "../../conductor/core-tsconfig.ref.json"
+    },
+    {
       "path": "../../conductor/implementation-tsconfig.ref.json"
     },
     {

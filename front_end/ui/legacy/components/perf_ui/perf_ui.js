@@ -12,6 +12,7 @@ __export(ChartViewport_exports, {
 import * as Common2 from "../../../../core/common/common.js";
 import * as Platform3 from "../../../../core/platform/platform.js";
 import * as RenderCoordinator from "../../../components/render_coordinator/render_coordinator.js";
+import { Directives, html as html2, render as render2 } from "../../../lit/lit.js";
 import * as SettingsUI from "../../../settings/settings.js";
 import * as UI3 from "../../legacy.js";
 
@@ -69,18 +70,6 @@ var chartViewport_css_default = `/*
   background-color: var(--color-scrollbar-other-hover); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.chart-viewport-selection-overlay {
-  position: absolute;
-  z-index: 100;
-  background-color: var(--sys-color-state-ripple-primary);
-  border-color: var(--sys-color-primary);
-  border-width: 0 var(--sys-size-1);
-  border-style: solid;
-  pointer-events: none;
-  top: 0;
-  bottom: 0;
-  text-align: center;
-}
 
 /*# sourceURL=${import.meta.resolve("./chartViewport.css")} */`;
 
@@ -4037,17 +4026,16 @@ function calculatePopoverOffset(options) {
 }
 
 // ../../front_end/ui/legacy/components/perf_ui/ChartViewport.ts
+var { classMap, ref, styleMap } = Directives;
 var ChartViewport = class extends UI3.Widget.VBox {
   delegate;
-  viewportElement;
   #alwaysShowVerticalScroll;
+  #verticalScrollVisible = true;
+  #cursorVisible = false;
+  #cursorPosition = null;
   rangeSelectionEnabled;
-  vScrollElement;
-  vScrollContent;
-  selectionOverlay;
-  cursorElement;
   #isDragging;
-  totalHeight;
+  totalHeight = 0;
   offsetHeight;
   scrollTop;
   rangeSelectionStart;
@@ -4073,47 +4061,104 @@ var ChartViewport = class extends UI3.Widget.VBox {
    */
   #animState = null;
   #config;
+  #viewportElement;
+  #vScrollElement;
   constructor(delegate, config) {
     super();
     this.#config = config;
-    this.registerRequiredCSS(chartViewport_css_default);
     this.delegate = delegate;
-    this.viewportElement = this.contentElement.createChild("div", "fill");
-    this.viewportElement.addEventListener("mousemove", this.updateCursorPosition.bind(this), false);
-    this.viewportElement.addEventListener("mouseout", this.onMouseOut.bind(this), false);
-    this.viewportElement.addEventListener("wheel", this.onMouseWheel.bind(this), false);
-    this.viewportElement.addEventListener("keydown", this.onChartKeyDown.bind(this), false);
-    this.viewportElement.addEventListener("keyup", this.onChartKeyUp.bind(this), false);
-    UI3.UIUtils.installDragHandle(
-      this.viewportElement,
-      this.startDragging.bind(this),
-      this.dragging.bind(this),
-      this.endDragging.bind(this),
-      "-webkit-grabbing",
-      null
-    );
-    UI3.UIUtils.installDragHandle(
-      this.viewportElement,
-      this.startRangeSelection.bind(this),
-      this.rangeSelectionDragging.bind(this),
-      this.endRangeSelection.bind(this),
-      "text",
-      null
-    );
     this.#alwaysShowVerticalScroll = false;
     this.rangeSelectionEnabled = true;
-    this.vScrollElement = this.contentElement.createChild("div", "chart-viewport-v-scroll");
-    this.vScrollContent = this.vScrollElement.createChild("div");
-    this.vScrollElement.addEventListener("scroll", this.onScroll.bind(this), false);
-    this.selectionOverlay = this.contentElement.createChild("div", "chart-viewport-selection-overlay hidden");
-    this.cursorElement = this.contentElement.createChild("div", "chart-cursor-element hidden");
+    this.#renderNow();
+    const viewportElement = this.#viewportElement;
+    if (viewportElement) {
+      viewportElement.addEventListener("wheel", this.onMouseWheel.bind(this), false);
+      viewportElement.addEventListener("keydown", this.onChartKeyDown.bind(this), false);
+      viewportElement.addEventListener("keyup", this.onChartKeyUp.bind(this), false);
+      UI3.UIUtils.installDragHandle(
+        viewportElement,
+        this.startDragging.bind(this),
+        this.dragging.bind(this),
+        this.endDragging.bind(this),
+        "-webkit-grabbing",
+        null
+      );
+      UI3.UIUtils.installDragHandle(
+        viewportElement,
+        this.startRangeSelection.bind(this),
+        this.rangeSelectionDragging.bind(this),
+        this.endRangeSelection.bind(this),
+        "text",
+        null
+      );
+    }
     this.reset();
     this.rangeSelectionStart = null;
     this.rangeSelectionEnd = null;
   }
+  /**
+   * The canvas host of the chart. Callers add their own content (such as the
+   * FlameChart canvas) to it.
+   */
+  get viewportElement() {
+    const viewportElement = this.#viewportElement;
+    if (!viewportElement) {
+      throw new Error("The ChartViewport view did not provide a viewport element");
+    }
+    return viewportElement;
+  }
+  performUpdate() {
+    render2(html2`
+      <style>${chartViewport_css_default}</style>
+      <div
+        class="fill"
+        @mousemove=${(e) => this.#onMouseMove(e)}
+        @mouseout=${() => this.#onMouseOut()}
+        ${ref((el) => {
+      this.#viewportElement = el instanceof HTMLElement ? el : void 0;
+    })}></div>
+      <div
+        class=${classMap({ "chart-viewport-v-scroll": true, "always-show-scrollbar": this.#alwaysShowVerticalScroll })}
+        ?hidden=${!this.#verticalScrollVisible}
+        @scroll=${(e) => {
+      if (e.currentTarget instanceof HTMLElement) {
+        this.#onScroll(e.currentTarget.scrollTop);
+      }
+    }}
+        ${ref((el) => {
+      this.#vScrollElement = el instanceof HTMLElement ? el : void 0;
+    })}>
+        <div style=${styleMap({ height: `${this.totalHeight}px` })}></div>
+      </div>
+      <div
+        class="chart-cursor-element"
+        ?hidden=${!this.#cursorVisible}
+        style=${styleMap({ left: this.#cursorPosition === null ? void 0 : `${this.#cursorPosition}px` })}></div>
+    `, this.contentElement);
+  }
+  /**
+   * Renders synchronously. This is used instead of `requestUpdate()` when the
+   * caller reads the layout right after the change: the scrollbar position in
+   * `updateContentElementSize()`, or the scroll range when it sets `scrollTop`.
+   */
+  #renderNow() {
+    this.performUpdate();
+  }
+  #getScrollTop() {
+    return this.#vScrollElement?.scrollTop ?? 0;
+  }
+  #setScrollTop(scrollTop) {
+    if (this.#vScrollElement) {
+      this.#vScrollElement.scrollTop = scrollTop;
+    }
+  }
   alwaysShowVerticalScroll() {
+    if (this.#alwaysShowVerticalScroll) {
+      return;
+    }
     this.#alwaysShowVerticalScroll = true;
-    this.vScrollElement.classList.add("always-show-scrollbar");
+    this.updateScrollBar();
+    this.requestUpdate();
   }
   disableRangeSelection() {
     this.rangeSelectionEnabled = false;
@@ -4124,17 +4169,18 @@ var ChartViewport = class extends UI3.Widget.VBox {
     return this.#isDragging;
   }
   elementsToRestoreScrollPositionsFor() {
-    return [this.vScrollElement];
+    return this.#vScrollElement ? [this.#vScrollElement] : [];
   }
   verticalScrollBarVisible() {
-    return !this.vScrollElement.classList.contains("hidden");
+    return this.#verticalScrollVisible;
   }
   updateScrollBar() {
     const showScroll = this.#alwaysShowVerticalScroll || this.totalHeight > this.offsetHeight;
-    if (this.vScrollElement.classList.contains("hidden") !== showScroll) {
+    if (this.#verticalScrollVisible === showScroll) {
       return;
     }
-    this.vScrollElement.classList.toggle("hidden", !showScroll);
+    this.#verticalScrollVisible = showScroll;
+    this.#renderNow();
     this.updateContentElementSize();
   }
   onResize() {
@@ -4143,7 +4189,7 @@ var ChartViewport = class extends UI3.Widget.VBox {
     this.scheduleUpdate();
   }
   reset() {
-    this.vScrollElement.scrollTop = 0;
+    this.#setScrollTop(0);
     this.scrollTop = 0;
     this.rangeSelectionStart = null;
     this.rangeSelectionEnd = null;
@@ -4162,7 +4208,7 @@ var ChartViewport = class extends UI3.Widget.VBox {
     this.updateContentElementSize();
   }
   updateContentElementSize() {
-    let offsetWidth = this.vScrollElement.offsetLeft;
+    let offsetWidth = this.#vScrollElement?.offsetLeft ?? 0;
     if (!offsetWidth) {
       offsetWidth = this.contentElement.offsetWidth;
     }
@@ -4172,14 +4218,14 @@ var ChartViewport = class extends UI3.Widget.VBox {
   }
   setContentHeight(totalHeight) {
     this.totalHeight = totalHeight;
-    this.vScrollContent.style.height = totalHeight + "px";
+    this.#renderNow();
     this.updateScrollBar();
     this.updateContentElementSize();
     if (this.scrollTop + this.offsetHeight <= totalHeight) {
       return;
     }
     this.scrollTop = Math.max(0, totalHeight - this.offsetHeight);
-    this.vScrollElement.scrollTop = this.scrollTop;
+    this.#setScrollTop(this.scrollTop);
   }
   /**
    * @param centered If true, scrolls offset to where it is centered on the chart,
@@ -4189,14 +4235,14 @@ var ChartViewport = class extends UI3.Widget.VBox {
     height = height || 0;
     if (centered) {
       const halfPadding = Math.floor(this.offsetHeight / 2);
-      if (this.vScrollElement.scrollTop > offset) {
-        this.vScrollElement.scrollTop = offset - (height + halfPadding);
+      if (this.#getScrollTop() > offset) {
+        this.#setScrollTop(offset - (height + halfPadding));
       }
-    } else if (this.vScrollElement.scrollTop > offset) {
-      this.vScrollElement.scrollTop = offset;
+    } else if (this.#getScrollTop() > offset) {
+      this.#setScrollTop(offset);
     }
-    if (this.vScrollElement.scrollTop < offset - this.offsetHeight + height) {
-      this.vScrollElement.scrollTop = offset - this.offsetHeight + height;
+    if (this.#getScrollTop() < offset - this.offsetHeight + height) {
+      this.#setScrollTop(offset - this.offsetHeight + height);
     }
   }
   scrollOffset() {
@@ -4229,7 +4275,7 @@ var ChartViewport = class extends UI3.Widget.VBox {
     const zoomDelta = Math.pow(1.2, (wheelEvent.deltaY || wheelEvent.deltaX) * 1 / 53) - 1;
     if (navigation === "classic") {
       if (wheelEvent.shiftKey) {
-        this.vScrollElement.scrollTop += panDelta;
+        this.#setScrollTop(this.#getScrollTop() + panDelta);
       } else if (Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {
         this.handleHorizontalPanGesture(
           wheelEvent.deltaX,
@@ -4256,7 +4302,7 @@ var ChartViewport = class extends UI3.Widget.VBox {
       } else if (isCtrlOrCmd) {
         this.handleZoomGesture(zoomDelta);
       } else {
-        this.vScrollElement.scrollTop += panDelta;
+        this.#setScrollTop(this.#getScrollTop() + panDelta);
       }
     }
     wheelEvent.consume(true);
@@ -4268,7 +4314,7 @@ var ChartViewport = class extends UI3.Widget.VBox {
     this.#isDragging = true;
     this.dragStartPointX = event.pageX;
     this.dragStartPointY = event.pageY;
-    this.dragStartScrollTop = this.vScrollElement.scrollTop;
+    this.dragStartScrollTop = this.#getScrollTop();
     this.viewportElement.style.cursor = "";
     return true;
   }
@@ -4277,7 +4323,7 @@ var ChartViewport = class extends UI3.Widget.VBox {
     this.dragStartPointX = event.pageX;
     this.handleHorizontalPanGesture(pixelShift);
     const pixelScroll = this.dragStartPointY - event.pageY;
-    this.vScrollElement.scrollTop = this.dragStartScrollTop + pixelScroll;
+    this.#setScrollTop(this.dragStartScrollTop + pixelScroll);
   }
   endDragging() {
     this.#isDragging = false;
@@ -4296,7 +4342,6 @@ var ChartViewport = class extends UI3.Widget.VBox {
     this.selectionStartX = null;
   }
   hideRangeSelection() {
-    this.selectionOverlay.classList.add("hidden");
     this.rangeSelectionStart = null;
     this.rangeSelectionEnd = null;
   }
@@ -4327,22 +4372,18 @@ var ChartViewport = class extends UI3.Widget.VBox {
     const end = this.pixelToTime(x);
     this.setRangeSelection(start, end);
   }
-  onScroll() {
-    this.scrollTop = this.vScrollElement.scrollTop;
+  #onScroll(scrollTop) {
+    this.scrollTop = scrollTop;
     this.scheduleUpdate();
   }
-  onMouseOut() {
+  #onMouseOut() {
     this.lastMouseOffsetX = -1;
-    this.showCursor(false);
+    this.#showCursor(false);
   }
-  updateCursorPosition(e) {
-    const mouseEvent = e;
-    this.lastMouseOffsetX = mouseEvent.offsetX;
-    const shouldShowCursor = this.#config.enableCursorElement && mouseEvent.shiftKey && !mouseEvent.metaKey;
-    this.showCursor(shouldShowCursor);
-    if (shouldShowCursor) {
-      this.cursorElement.style.left = mouseEvent.offsetX + "px";
-    }
+  #onMouseMove({ offsetX, shiftKey, metaKey }) {
+    this.lastMouseOffsetX = offsetX;
+    const shouldShowCursor = this.#config.enableCursorElement && shiftKey && !metaKey;
+    this.#showCursor(shouldShowCursor, shouldShowCursor ? offsetX : this.#cursorPosition);
   }
   pixelToTime(x) {
     return this.pixelToTimeOffset(x) + this.visibleLeftTime;
@@ -4358,15 +4399,22 @@ var ChartViewport = class extends UI3.Widget.VBox {
   timeToPixel() {
     return this.offsetWidth / (this.visibleRightTime - this.visibleLeftTime);
   }
-  showCursor(visible) {
-    this.cursorElement.classList.toggle("hidden", !visible || this.#isDragging);
+  #showCursor(visible, position = this.#cursorPosition) {
+    const cursorVisible = this.#config.enableCursorElement && visible && !this.#isDragging;
+    if (this.#cursorVisible === cursorVisible && this.#cursorPosition === position) {
+      return;
+    }
+    this.#cursorVisible = cursorVisible;
+    this.#cursorPosition = position;
+    this.requestUpdate();
   }
   onChartKeyDown(keyboardEvent) {
-    this.showCursor(keyboardEvent.shiftKey);
+    const position = this.lastMouseOffsetX !== void 0 && this.lastMouseOffsetX >= 0 ? this.lastMouseOffsetX : this.#cursorPosition;
+    this.#showCursor(keyboardEvent.shiftKey, position);
     this.handleZoomPanScrollKeys(keyboardEvent);
   }
   onChartKeyUp(keyboardEvent) {
-    this.showCursor(keyboardEvent.shiftKey);
+    this.#showCursor(keyboardEvent.shiftKey);
   }
   handleZoomPanScrollKeys(keyboardEvent) {
     if (UI3.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(keyboardEvent) && !keyboardEvent.shiftKey) {
@@ -4402,12 +4450,12 @@ var ChartViewport = class extends UI3.Widget.VBox {
         break;
       case "ArrowUp":
         if (keyboardEvent.shiftKey) {
-          this.vScrollElement.scrollTop -= scrollOffset;
+          this.#setScrollTop(this.#getScrollTop() - scrollOffset);
         }
         break;
       case "ArrowDown":
         if (keyboardEvent.shiftKey) {
-          this.vScrollElement.scrollTop += scrollOffset;
+          this.#setScrollTop(this.#getScrollTop() + scrollOffset);
         }
         break;
       case "ArrowLeft":
@@ -8858,7 +8906,7 @@ __export(PieChart_exports, {
   PieChart: () => PieChart
 });
 import * as i18n11 from "../../../../core/i18n/i18n.js";
-import { html as html2, render as render2, svg } from "../../../lit/lit.js";
+import { html as html3, render as render3, svg } from "../../../lit/lit.js";
 import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/pieChart.css.js
@@ -9006,7 +9054,7 @@ var PieChart = class extends HTMLElement {
   }
   render() {
     this.lastAngle = -Math.PI / 2;
-    const output = html2`
+    const output = html3`
       <style>${pieChart_css_default}</style>
       <div class="root" role="group" @keydown=${this.onKeyDown} aria-label=${this.chartName}
           jslog=${VisualLogging4.pieChart().track({ keydown: "ArrowUp|ArrowDown" })}>
@@ -9039,11 +9087,11 @@ var PieChart = class extends HTMLElement {
             </div>
           </div>
         </div>
-        ${this.showLegend ? html2`
+        ${this.showLegend ? html3`
         <div class="pie-chart-legend" jslog=${VisualLogging4.section("legend")}>
           ${this.slices.map((slice, index) => {
       const selected = this.sliceSelected === index;
-      return html2`
+      return html3`
               <div class="pie-chart-legend-row ${selected ? "selected" : ""}"
                   jslog=${VisualLogging4.pieChartSlice().track({ click: true })}
                   @click=${this.onSliceClicked(index)} tabIndex=${selected ? "0" : "-1"}>
@@ -9063,7 +9111,7 @@ var PieChart = class extends HTMLElement {
         ` : ""}
       </div>
     `;
-    render2(output, this.shadow, { host: this });
+    render3(output, this.shadow, { host: this });
   }
   onSliceClicked(index) {
     return () => {
@@ -9240,7 +9288,7 @@ __export(TimelineOverviewPane_exports, {
 import * as Common5 from "../../../../core/common/common.js";
 import * as Trace4 from "../../../../models/trace/trace.js";
 import * as TraceBounds from "../../../../services/trace_bounds/trace_bounds.js";
-import { Directives, html as html3, nothing as nothing2, render as render3 } from "../../../lit/lit.js";
+import { Directives as Directives2, html as html4, nothing as nothing2, render as render4 } from "../../../lit/lit.js";
 import * as VisualLogging5 from "../../../visual_logging/visual_logging.js";
 import * as UI6 from "../../legacy.js";
 import * as ThemeSupport7 from "../../theme_support/theme_support.js";
@@ -9272,7 +9320,7 @@ var timelineOverviewInfo_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineOverviewInfo.css")} */`;
 
 // ../../front_end/ui/legacy/components/perf_ui/TimelineOverviewPane.ts
-var { ref, styleMap } = Directives;
+var { ref: ref2, styleMap: styleMap2 } = Directives2;
 var BRACKET_TRIANGLE_SIZE = 5;
 function bracketPoints({ left, right }) {
   const size = BRACKET_TRIANGLE_SIZE;
@@ -9302,7 +9350,7 @@ var renderOverviewGridView = (input, output, target) => {
     const offsetLeftRelativeToCursorArea = event.target.getBoundingClientRect().left - event.currentTarget.getBoundingClientRect().left;
     input.onCursorMove(event.offsetX + offsetLeftRelativeToCursorArea);
   };
-  render3(html3`
+  render4(html4`
     <div
       class="overview-grid-cursor-area"
       @pointerdown=${onPointerDown}
@@ -9310,16 +9358,16 @@ var renderOverviewGridView = (input, output, target) => {
       @pointercancel=${onPointerUp}
       @pointermove=${onPointerMove}
       @pointerleave=${input.onCursorLeave}
-      ${ref((element) => {
+      ${ref2((element) => {
     output.cursorAreaLeft = element instanceof HTMLElement ? () => element.getBoundingClientRect().left : void 0;
   })}></div>
     <div
       class="overview-grid-cursor-position"
-      style=${styleMap({
+      style=${styleMap2({
     left: `${input.cursorPosition}px`,
     visibility: input.cursorVisible ? "visible" : "hidden"
   })}
-      ${ref((element) => {
+      ${ref2((element) => {
     output.cursorAnchorBox = element instanceof HTMLElement ? () => element.boxInWindow() : void 0;
   })}></div>
   `, target, {
@@ -9333,7 +9381,7 @@ var renderOverviewGridView = (input, output, target) => {
 var DEFAULT_VIEW = (input, output, target) => {
   const { highlight } = input;
   const overviewGridElement = input.overviewGrid.element;
-  render3(html3`
+  render4(html4`
     ${overviewGridElement}
     <svg class="timeline-minimap-dim-highlight-svg" ?hidden=${!highlight}>
       <defs>
@@ -9357,7 +9405,7 @@ var DEFAULT_VIEW = (input, output, target) => {
   renderOverviewInfoView(input, output, input.overviewInfo.contentRoot);
 };
 var renderOverviewInfoView = (input, _output, target) => {
-  render3(html3`<div class="overview-info">${input.overviewInfoElements}</div>`, target);
+  render4(html4`<div class="overview-info">${input.overviewInfoElements}</div>`, target);
 };
 var TimelineOverviewPaneBase = Common5.ObjectWrapper.eventMixin(
   UI6.Widget.VBox

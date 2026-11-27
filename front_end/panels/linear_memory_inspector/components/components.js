@@ -342,61 +342,63 @@ var linearMemoryNavigator_css_default = `/*
  * found in the LICENSE file.
  */
 
-.navigator {
-  min-height: var(--sys-size-11);
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  overflow: hidden;
-  align-items: center;
-  background-color: var(--sys-color-cdt-base-container);
-  color: var(--sys-color-on-surface);
-}
+@scope to (devtools-widget > *) {
+  .navigator {
+    min-height: var(--sys-size-11);
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    overflow: hidden;
+    align-items: center;
+    background-color: var(--sys-color-cdt-base-container);
+    color: var(--sys-color-on-surface);
+  }
 
-.navigator-item {
-  display: flex;
-  white-space: nowrap;
-  overflow: hidden;
-}
+  .navigator-item {
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
-.address-input {
-  height: var(--sys-size-11);
-  padding: 0 var(--sys-size-5);
-  margin: 0 var(--sys-size-3);
-  text-align: center;
-  align-items: center;
-  outline: none;
-  color: var(--sys-color-on-surface);
-  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-  border-radius: var(--sys-shape-corner-extra-small);
-  background: transparent;
-}
+  .address-input {
+    height: var(--sys-size-11);
+    padding: 0 var(--sys-size-5);
+    margin: 0 var(--sys-size-3);
+    text-align: center;
+    align-items: center;
+    outline: none;
+    color: var(--sys-color-on-surface);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    border-radius: var(--sys-shape-corner-extra-small);
+    background: transparent;
+  }
 
-.address-input.invalid {
-  color: var(--sys-color-error);
-}
+  .address-input.invalid {
+    color: var(--sys-color-error);
+  }
 
-.navigator-button {
-  display: flex;
-  background: transparent;
-  overflow: hidden;
-  border: none;
-  padding: 0;
-  outline: none;
-  justify-content: center;
-  align-items: center;
-}
+  .navigator-button {
+    display: flex;
+    background: transparent;
+    overflow: hidden;
+    border: none;
+    padding: 0;
+    outline: none;
+    justify-content: center;
+    align-items: center;
+  }
 
-.navigator-button:disabled devtools-icon {
-  opacity: 50%;
-}
+  .navigator-button:disabled devtools-icon {
+    opacity: 50%;
+  }
 
-.navigator-button:enabled:hover devtools-icon {
-  color: var(--icon-default-hover);
-}
+  .navigator-button:enabled:hover devtools-icon {
+    color: var(--icon-default-hover);
+  }
 
-.navigator-button:enabled:focus devtools-icon {
-  color: var(--icon-default-hover);
+  .navigator-button:enabled:focus devtools-icon {
+    color: var(--icon-default-hover);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./linearMemoryNavigator.css")} */`;
@@ -729,55 +731,52 @@ var valueInterpreterDisplay_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  flex: auto;
-  display: flex;
-}
+@scope to (devtools-widget > *) {
+  .value-types {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: var(--sys-size-3) var(--sys-size-11);
+    min-height: var(--sys-size-11);
+    overflow: hidden;
+    padding: var(--sys-size-2) var(--sys-size-6);
+    align-items: baseline;
+    justify-content: start;
+  }
 
-.value-types {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  gap: var(--sys-size-3) var(--sys-size-11);
-  min-height: var(--sys-size-11);
-  overflow: hidden;
-  padding: var(--sys-size-2) var(--sys-size-6);
-  align-items: baseline;
-  justify-content: start;
-}
+  .value-type-cell {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: var(--sys-size-11);
+  }
 
-.value-type-cell {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  min-height: var(--sys-size-11);
-}
+  .value-type-value-with-link {
+    display: flex;
+    align-items: center;
+  }
 
-.value-type-value-with-link {
-  display: flex;
-  align-items: center;
-}
+  .value-type-cell-no-mode {
+    grid-column: 1 / 3;
+  }
 
-.value-type-cell-no-mode {
-  grid-column: 1 / 3;
-}
+  .signed-divider {
+    width: var(--sys-size-1);
+    height: var(--sys-size-8);
+    background-color: var(--sys-color-divider);
+    margin: 0 var(--sys-size-3);
+  }
 
-.signed-divider {
-  width: var(--sys-size-1);
-  height: var(--sys-size-8);
-  background-color: var(--sys-color-divider);
-  margin: 0 var(--sys-size-3);
-}
+  .selectable-text {
+    user-select: text;
+  }
 
-.selectable-text {
-  user-select: text;
-}
-
-.selectable-text::selection {
-  background-color: var(--sys-color-tonal-container);
-  color: currentcolor;
+  .selectable-text::selection {
+    background-color: var(--sys-color-tonal-container);
+    color: currentcolor;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./valueInterpreterDisplay.css")} */`;
@@ -1013,7 +1012,6 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   const parseSigned = parse.bind(void 0, true);
   const parseUnsigned = parse.bind(void 0, false);
   render3(html3`
-      <style>${UI3.inspectorCommonStyles}</style>
       <style>${valueInterpreterDisplay_css_default}</style>
       <div class="value-types">
         ${input.valueTypes.map((type) => {

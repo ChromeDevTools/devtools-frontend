@@ -16,6 +16,7 @@
     "../../../../../../front_end/panels/emulation/AdvancedApp.test.ts",
     "../../../../../../front_end/panels/emulation/DeviceModeToolbar.test.ts",
     "../../../../../../front_end/panels/emulation/DeviceModeView.test.ts",
+    "../../../../../../front_end/panels/emulation/InspectedPagePlaceholder.test.ts",
     "../../../../../../front_end/panels/emulation/MediaQueryInspector.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

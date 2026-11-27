@@ -48,6 +48,109 @@ const NETWORK_TOOLS_HINT = 'To inspect the page\'s network requests, load the `n
 const ISOLATED_WORLD_REFERENCE_ERROR_PATTERN = /^Error: (?:executing the line .* failed with the following error:\n)?[\w$]+ is not defined$/;
 const ISOLATED_WORLD_HINT = 'JavaScript run by this tool executes in an isolated world: it shares the page DOM, while globals, framework instances, and customElements defined by page scripts cannot be read. If this identifier is defined by page scripts, do not assume it is missing; inspect DOM attributes, <script> tags, or loaded sources instead.';
 /**
+ * Recovery hint appended when an `executeJavaScript` snippet returns
+ * `'undefined'` without assigning a top-level `data` variable.
+ */
+const MISSING_TOP_LEVEL_DATA_HINT = 'No top-level `data` variable was assigned. Assign a top-level `data` variable directly (use top-level `await` instead of `.then()` or an IIFE; do not rely on inner `return` statements, bare expressions, or `data` declared inside a block).';
+/**
+ * Matches a column-zero top-level `data` declaration or assignment after common
+ * leading indentation is stripped.
+ *
+ * Excludes equality comparisons (`data == x`, `data === x`) and arrow
+ * parameters (`data => ...`) via `(?![=>])`, while matching both single-line
+ * and multiline assignments such as `const data =\n  value;`.
+ */
+const TOP_LEVEL_DATA_ASSIGNMENT_PATTERN = /^(?:(?:const|let|var)\s+)?data\s*=(?![=>])/;
+/**
+ * Matches a hoisted, uninitialized top-level `let data;` or `var data;`
+ * declaration at column zero after common leading indentation is stripped.
+ */
+const TOP_LEVEL_DATA_DECL_PATTERN = /^(?:let|var)\s+data\b/;
+/**
+ * Matches a `data = ...` assignment anywhere on a line, excluding property
+ * writes such as `textNode.data = ...`, equality comparisons (`==`, `===`),
+ * and arrow parameters (`data => ...`).
+ *
+ * After `TOP_LEVEL_DATA_ASSIGNMENT_PATTERN` returns `false`, any match here is
+ * nested (not at column zero): paired with `TOP_LEVEL_DATA_DECL_PATTERN`, it
+ * recognizes hoisted `let`/`var data;` assigned inside a branch; without a
+ * top-level declaration, it catches un-awaited async IIFEs or blocks assigning
+ * bare `data = ...`.
+ */
+const DATA_ASSIGNMENT_PATTERN = /(?:^|[^\w$.])data\s*=(?![=>])/;
+/**
+ * Matches a `const`, `let`, or `var` declaration of `data` that does not start
+ * at column zero of normalized lines.
+ *
+ * Requiring a leading character (`^.+`) isolates declarations nested inside
+ * blocks, callbacks, or IIFEs (such as `  const data = $0.id;`) from a hoisted
+ * column-zero `let data;` or `var data;`.
+ */
+const NESTED_DATA_DECL_PATTERN = /^.+\b(?:const|let|var)\s+data\b/;
+/**
+ * Matches `return <value>` statements inside inner wrappers such as IIFEs or
+ * callbacks where a returned value does not populate `data`.
+ *
+ * Top-level `return <value>` actually returns `<value>` from
+ * `JavascriptExecutor#generateObservation()`. Requires a statement boundary
+ * (`^`, `;`, `{`, or `)`) before `return` so string literals such as
+ * `'click to return home'` are ignored, and uses horizontal whitespace `[ \t]+`
+ * so semicolon-less bare guards (`if (!el)\n  return\nel.click();`) never
+ * match across newlines. As a regex-only trade-off, approved mutations using
+ * block-bodied callbacks with `return <expr>` (such as
+ * `.filter(el => { return ...; })`) can still match.
+ */
+const VALUE_RETURN_PATTERN = /(?:^|[;{)])[ \t]*return[ \t]+[^;}\s]/;
+/**
+ * Matches `.then(` promise chains such as `doWork().then(r => ...)`.
+ *
+ * `JavascriptExecutor#generateObservation()` does not await unreturned promise
+ * chains, so callbacks that assign `data` inside `.then(...)` leave the outer
+ * `data` parameter `undefined` when the wrapper returns.
+ */
+const PROMISE_THEN_PATTERN = /\.then\s*\(/;
+/**
+ * Determines whether an `'undefined'` observation should include
+ * `MISSING_TOP_LEVEL_DATA_HINT`.
+ *
+ * @param code Raw JavaScript snippet passed to `executeJavaScript`.
+ * @param userApproved Whether the user explicitly approved execution after V8
+ *     flagged side effects (`PermissionPrompt.ALLOW_ONCE`). Needed to separate
+ *     intentional void mutations (such as `$0.click()`, where `userApproved` is
+ *     `true` and returning `'undefined'` is expected) from read-only bare
+ *     expressions (such as `document.title`, where `userApproved` is `false`
+ *     because V8 proved zero mutations occurred under `throwOnSideEffect`).
+ */
+function shouldHintMissingTopLevelData(code, userApproved) {
+    // Strip shared outer indentation so column zero represents top-level statements.
+    const nonBlankLines = code.split('\n').filter(line => /\S/.test(line));
+    const minIndent = nonBlankLines.reduce((min, line) => Math.min(min, line.search(/\S/)), Infinity);
+    const normalizedLines = nonBlankLines.map(line => line.slice(minIndent));
+    // Top-level `data` was explicitly assigned (e.g. `const data = el?.id`), so
+    // `undefined` is an expected value rather than a missing assignment.
+    if (normalizedLines.some(line => TOP_LEVEL_DATA_ASSIGNMENT_PATTERN.test(line))) {
+        return false;
+    }
+    // Block-scoped `data` declarations, inner `return <value>` statements, and
+    // un-awaited `.then()` chains all leave the outer `data` parameter unset.
+    const hasNestedOrIgnoredReturn = normalizedLines.some(line => NESTED_DATA_DECL_PATTERN.test(line) || VALUE_RETURN_PATTERN.test(line) || PROMISE_THEN_PATTERN.test(line));
+    if (hasNestedOrIgnoredReturn) {
+        return true;
+    }
+    // Because column-zero assignments already returned above, any `data = ...`
+    // match here is nested. Skip the hint only when `let`/`var data;` was hoisted
+    // at top level (e.g. conditional branch assignment); otherwise hint to catch
+    // un-awaited async IIFEs writing bare `data = ...`.
+    const hasDataAssignment = normalizedLines.some(line => DATA_ASSIGNMENT_PATTERN.test(line));
+    if (hasDataAssignment) {
+        return !normalizedLines.some(line => TOP_LEVEL_DATA_DECL_PATTERN.test(line));
+    }
+    // No `data` assignment or ignored-return pattern was found. Hint only when
+    // `!userApproved` (read-only execution); keep user-approved void mutations
+    // hint-free.
+    return !userApproved;
+}
+/**
  * Returns one message per size limit that the code exceeds. Each message states
  * the actual value, the limit, and how to fix it, so the model can correct
  * every problem in a single retry.
@@ -118,6 +221,7 @@ export class ExecuteJavaScriptTool {
 
 * To return data, define a top-level \`data\` variable and populate it with data you want to get. JSON-serializable objects and DOM \`Element\` objects (directly or inside objects/arrays) can be assigned to \`data\`. Serialized DOM \`Element\` objects are prefixed with \`(uid=<backendNodeId>)\` (for example \`(uid=15) <div id="card">...</div>\`, up to ${MAX_SERIALIZED_ELEMENT_UIDS} elements per call), whose numeric \`uid\` can be passed to tools accepting numeric element \`uid\`s. Serialized output must not exceed ${MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
 * $0 refers to the currently selected DOM node (or document body if none selected).
+* **CRITICAL** Top-level \`await\` works directly; never wrap code in an IIFE (such as \`(async () => { ... })()\`), rely on inner \`return\` statements, end with a bare expression, or declare \`data\` only inside an \`if\` block or function.
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Variables from previous function calls are not available in subsequent calls.
@@ -190,6 +294,9 @@ const data = {
             }
             if (ISOLATED_WORLD_REFERENCE_ERROR_PATTERN.test(result.result)) {
                 return { ...result, result: `${result.result}\n${ISOLATED_WORLD_HINT}` };
+            }
+            if (result.result === 'undefined' && shouldHintMissingTopLevelData(params.code, Boolean(options?.approved))) {
+                return { ...result, result: `${result.result}\n${MISSING_TOP_LEVEL_DATA_HINT}` };
             }
         }
         return result;

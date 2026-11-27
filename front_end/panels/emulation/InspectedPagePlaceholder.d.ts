@@ -1,14 +1,16 @@
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
-declare const InspectedPagePlaceholderBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
+export type View = (input: undefined, output: undefined, target: HTMLElement | DocumentFragment) => void;
+export declare const DEFAULT_VIEW: View;
+declare const InspectedPagePlaceholderBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget<ShadowRoot>>;
 export declare class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
     #private;
-    constructor();
+    constructor(element?: HTMLElement, view?: View);
     static instance(opts?: {
         forceNew: boolean | null;
     }): InspectedPagePlaceholder;
-    restoreMinimumSize(): void;
-    clearMinimumSize(): void;
+    wasShown(): void;
+    performUpdate(): void;
     update(force?: boolean): void;
 }
 export declare const enum Events {

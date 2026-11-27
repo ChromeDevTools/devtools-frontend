@@ -24,6 +24,9 @@
       "path": "../../front_end/testing/test_id_generation-tsconfig.ref.json"
     },
     {
+      "path": "../conductor/core-tsconfig.ref.json"
+    },
+    {
       "path": "../conductor/implementation-tsconfig.ref.json"
     },
     {

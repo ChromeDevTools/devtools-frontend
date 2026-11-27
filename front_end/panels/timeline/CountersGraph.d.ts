@@ -3,6 +3,10 @@ import * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { TimelineModeViewDelegate } from './TimelinePanel.js';
+export interface CountersModel {
+    parsedTrace: Trace.TraceModel.ParsedTrace | null;
+    events: Trace.Types.Events.Event[] | null;
+}
 export declare class CountersGraph extends UI.Widget.VBox {
     #private;
     delegate?: TimelineModeViewDelegate;
@@ -21,6 +25,7 @@ export declare class CountersGraph extends UI.Widget.VBox {
     private markerXPosition?;
     constructor(delegate: TimelineModeViewDelegate);
     constructor(element?: HTMLElement);
+    set model(data: CountersModel);
     setModel(parsedTrace: Trace.TraceModel.ParsedTrace | null, events: Trace.Types.Events.Event[] | null): void;
     private createCurrentValuesBar;
     private createCounter;

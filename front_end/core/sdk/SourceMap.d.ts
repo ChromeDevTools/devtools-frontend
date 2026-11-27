@@ -84,6 +84,7 @@ export declare class SourceMapEntry {
     constructor(lineNumber: number, columnNumber: number, sourceIndex?: number, sourceURL?: Platform.DevToolsPath.UrlString, sourceLineNumber?: number, sourceColumnNumber?: number, name?: string, isRangeMapping?: boolean);
     static compare(entry1: SourceMapEntry, entry2: SourceMapEntry): number;
 }
+export declare const UNBOUNDED: number;
 export declare const enum SourceMapProvenance {
     CDP = "cdp",
     EXTENSION = "extension",

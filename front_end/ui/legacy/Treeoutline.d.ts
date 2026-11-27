@@ -299,6 +299,7 @@ export declare class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     getInternalTreeOutlineForTest(): TreeOutlineInShadow;
     flushPendingUpdatesForTesting(): void;
     focus(): void;
+    protected onChange(mutationList: MutationRecord[]): void;
     protected updateNode(node: Node, attributeName: string | null): void;
     protected addNodes(nodes: NodeList | Node[]): void;
     protected removeNodes(nodes: NodeList | Node[]): void;

@@ -63,7 +63,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const DEFAULT_VIEW = (input, _output, target) => {
     const { deviceBoundSessionUsages } = input;
     render(html `
-      <style>${UI.inspectorCommonStyles}</style>
       <style>${requestDeviceBoundSessionsViewStyles}</style>
       <div class="request-device-bound-sessions-view">
         ${deviceBoundSessionUsages.length > 0 ? html `

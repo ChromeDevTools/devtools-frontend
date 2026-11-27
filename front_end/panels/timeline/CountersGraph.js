@@ -65,6 +65,7 @@ export class CountersGraph extends UI.Widget.VBox {
     counterUI;
     countersByName;
     gpuMemoryCounter;
+    #parsedTrace = null;
     #events = null;
     currentValuesBar;
     markerXPosition;
@@ -126,7 +127,14 @@ export class CountersGraph extends UI.Widget.VBox {
             this.requestUpdate();
         }
     }
+    set model(data) {
+        if (this.#parsedTrace === data.parsedTrace && this.#events === data.events) {
+            return;
+        }
+        this.setModel(data.parsedTrace, data.events);
+    }
     setModel(parsedTrace, events) {
+        this.#parsedTrace = parsedTrace;
         this.#events = events;
         if (!events || !parsedTrace) {
             return;

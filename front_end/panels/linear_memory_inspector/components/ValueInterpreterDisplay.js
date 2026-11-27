@@ -45,7 +45,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html `
-      <style>${UI.inspectorCommonStyles}</style>
       <style>${valueInterpreterDisplayStyles}</style>
       <div class="value-types">
         ${input.valueTypes.map(type => {

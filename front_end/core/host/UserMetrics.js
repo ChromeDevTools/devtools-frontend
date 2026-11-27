@@ -119,15 +119,6 @@ export class UserMetrics {
             InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SyncSetting" /* EnumeratedHistogram.SyncSetting */, settingValue, SyncSetting.MAX_VALUE);
         });
     }
-    recordingToggled(value) {
-        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingToggled" /* EnumeratedHistogram.RecordingToggled */, value, RecordingToggled.MAX_VALUE);
-    }
-    recordingReplayFinished(value) {
-        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingReplayFinished" /* EnumeratedHistogram.RecordingReplayFinished */, value, RecordingReplayFinished.MAX_VALUE);
-    }
-    recordingReplayStarted(value) {
-        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingReplayStarted" /* EnumeratedHistogram.RecordingReplayStarted */, value, RecordingReplayStarted.MAX_VALUE);
-    }
     lighthouseModeRun(type) {
         InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.LighthouseModeRun" /* EnumeratedHistogram.LighthouseModeRun */, type, LighthouseModeRun.MAX_VALUE);
     }
@@ -288,15 +279,6 @@ export const DeveloperResourceLoaded = createDynamicEnumProxy('DeveloperResource
 export const DeveloperResourceScheme = createDynamicEnumProxy('DeveloperResourceScheme', Enums.DeveloperResourceScheme);
 export const Language = createDynamicEnumProxy('Language', Enums.Language);
 export const SyncSetting = createDynamicEnumProxy('SyncSetting', Enums.SyncSetting);
-export const RecordingToggled = createDynamicEnumProxy('RecordingToggled', Enums.RecordingToggled);
-export const RecordingAssertion = createDynamicEnumProxy('RecordingAssertion', Enums.RecordingAssertion);
-export const RecordingReplayFinished = createDynamicEnumProxy('RecordingReplayFinished', Enums.RecordingReplayFinished);
-export const RecordingReplaySpeed = createDynamicEnumProxy('RecordingReplaySpeed', Enums.RecordingReplaySpeed);
-export const RecordingReplayStarted = createDynamicEnumProxy('RecordingReplayStarted', Enums.RecordingReplayStarted);
-export const RecordingEdited = createDynamicEnumProxy('RecordingEdited', Enums.RecordingEdited);
-export const RecordingExported = createDynamicEnumProxy('RecordingExported', Enums.RecordingExported);
-export const RecordingCodeToggled = createDynamicEnumProxy('RecordingCodeToggled', Enums.RecordingCodeToggled);
-export const RecordingCopiedToClipboard = createDynamicEnumProxy('RecordingCopiedToClipboard', Enums.RecordingCopiedToClipboard);
 export const ManifestSectionCodes = createDynamicEnumProxy('ManifestSectionCodes', Enums.ManifestSectionCodes);
 export const LighthouseModeRun = createDynamicEnumProxy('LighthouseModeRun', Enums.LighthouseModeRun);
 export const LighthouseCategoryUsed = createDynamicEnumProxy('LighthouseCategoryUsed', Enums.LighthouseCategoryUsed);

@@ -9,8 +9,10 @@ export default `/*
  * found in the LICENSE file.
  */
 
-devtools-data-grid {
-  flex: auto;
+@scope to (devtools-widget > *) {
+  devtools-data-grid {
+    flex: auto;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./timelineSelectorStatsView.css')} */`;

@@ -130,6 +130,7 @@
     "package/lib/puppeteer/common/GetQueryHandler.d.ts",
     "package/lib/puppeteer/common/HandleIterator.d.ts",
     "package/lib/puppeteer/common/LazyArg.d.ts",
+    "package/lib/puppeteer/common/MouseStateTracker.d.ts",
     "package/lib/puppeteer/common/NetworkManagerEvents.d.ts",
     "package/lib/puppeteer/common/PDFOptions.d.ts",
     "package/lib/puppeteer/common/PQueryHandler.d.ts",

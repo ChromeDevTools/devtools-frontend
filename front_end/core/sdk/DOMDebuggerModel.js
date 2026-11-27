@@ -408,8 +408,7 @@ export class DOMDebuggerManager {
     #cspViolationsToBreakOn = [];
     #eventListenerBreakpoints = [];
     #targetManager;
-    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    constructor(targetManager = TargetManager.instance()) {
+    constructor(targetManager) {
         this.#targetManager = targetManager;
         this.#xhrBreakpointsSetting = this.#targetManager.settings.createLocalSetting('xhr-breakpoints', []);
         for (const breakpoint of this.#xhrBreakpointsSetting.get()) {

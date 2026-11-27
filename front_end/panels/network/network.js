@@ -3899,14 +3899,16 @@ var requestDeviceBoundSessionsView_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-.request-device-bound-sessions-view {
-  margin: var(--sys-size-9);
-  overflow-y: auto;
-  scroll-behavior: smooth;
-}
+@scope to (devtools-widget > *) {
+  .request-device-bound-sessions-view {
+    margin: var(--sys-size-9);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
 
-.device-bound-session-grid-wrapper devtools-data-grid {
-  display: block;
+  .device-bound-session-grid-wrapper devtools-data-grid {
+    display: block;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./requestDeviceBoundSessionsView.css")} */`;
@@ -3968,7 +3970,6 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   const { deviceBoundSessionUsages } = input;
   render3(
     html3`
-      <style>${UI3.inspectorCommonStyles}</style>
       <style>${requestDeviceBoundSessionsView_css_default}</style>
       <div class="request-device-bound-sessions-view">
         ${deviceBoundSessionUsages.length > 0 ? html3`
@@ -8566,34 +8567,36 @@ var networkWaterfallColumn_css_default = `/*
  * found in the LICENSE file.
  */
 
-.network-waterfall-v-scroll {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  overflow-x: hidden;
-  margin-top: 31px;
-  z-index: 200;
-}
+@scope to (devtools-widget > *) {
+  .network-waterfall-v-scroll {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    margin-top: 31px;
+    z-index: 200;
 
-.theme-with-dark-background .network-waterfall-v-scroll {
-  /**
-  * Waterfall scrollbars are implemented as overflowing elements on top of the
-  * scrollable content. The actual content is a viewport without scrollbars.
-  * When using a dark theme, we should inform Blink that the content is dark,
-  * so that the native scrollbars are colored accordingly.
-  */
-  /* stylelint-disable-next-line plugin/use_theme_colors */
-  background: rgb(0 0 0 / 1%);
-}
+    .theme-with-dark-background & {
+      /**
+      * Waterfall scrollbars are implemented as overflowing elements on top of the
+      * scrollable content. The actual content is a viewport without scrollbars.
+      * When using a dark theme, we should inform Blink that the content is dark,
+      * so that the native scrollbars are colored accordingly.
+      */
+      /* stylelint-disable-next-line plugin/use_theme_colors */
+      background: rgb(0 0 0 / 1%);
+    }
+  }
 
-.network-waterfall-v-scroll.small {
-  margin-top: var(--sys-size-11);
-}
+  .network-waterfall-v-scroll.small {
+    margin-top: var(--sys-size-11);
+  }
 
-.network-waterfall-v-scroll-content {
-  width: 15px;
-  pointer-events: none;
+  .network-waterfall-v-scroll-content {
+    width: 15px;
+    pointer-events: none;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./networkWaterfallColumn.css")} */`;
@@ -8625,246 +8628,248 @@ var networkTimingTable_css_default = `/*
  * found in the LICENSE file.
  */
 
-.network-timing-table {
-  width: var(--sys-size-32);
-  border-spacing: 0;
-  padding-left: var(--sys-size-6);
-  padding-right: var(--sys-size-6);
-  line-height: initial;
-  table-layout: fixed;
-}
-
-.network-timing-start th span.network-timing-hidden-header {
-  height: var(--sys-size-1);
-  width: var(--sys-size-1);
-  position: absolute;
-  overflow: hidden;
-}
-
-.network-timing-table-header td,
-.network-timing-footer td {
-  border-top: var(--sys-size-5) solid transparent;
-}
-
-.network-timing-table-header td {
-  color: var(--sys-color-token-subtle);
-}
-
-.network-timing-table td {
-  padding: var(--sys-size-3) 0;
-}
-
-.network-timing-table-header td:last-child {
-  text-align: right;
-}
-
-.network-timing-footer td:last-child {
-  font-weight: bold;
-  text-align: right;
-}
-
-table.network-timing-table > tr:not(.network-timing-table-header, .network-timing-footer) > td:first-child {
-  padding-left: var(--sys-size-6);
-}
-
-.network-timing-table col.labels {
-  width: var(--sys-size-23);
-}
-
-.network-timing-table col.duration {
-  width: var(--sys-size-19);
-}
-
-.network-timing-table td.caution {
-  font-weight: bold;
-  color: var(--issue-color-yellow);
-  padding: var(--sys-size-2) 0;
-}
-
-.network-timing-table hr.break {
-  background-color: var(--sys-color-divider);
-  border: none;
-  height: var(--sys-size-1);
-}
-
-.network-timing-row {
-  position: relative;
-  height: var(--sys-size-7);
-}
-
-.network-timing-bar {
-  position: absolute;
-  min-width: var(--sys-size-1);
-  inset: 0 attr(data-right %) 0 attr(data-left %);
-}
-
-.network-timing-bar-title {
-  color: var(--sys-color-on-surface);
-  white-space: nowrap;
-  text-align: right;
-}
-
-.network-timing-bar.queueing,
-.network-timing-bar.total {
-  border: var(--sys-size-1) solid var(--sys-color-token-subtle);
-}
-
-.network-timing-bar.blocking {
-  background-color: var(--network-waterfall-blocking); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
-.network-timing-bar.proxy {
-  background-color: var(--override-network-overview-proxy);
-}
-
-.network-timing-bar.dns {
-  background-color: var(--sys-color-cyan);
-}
-
-.network-timing-bar.connecting,
-.network-timing-bar.serviceworker,
-.network-timing-bar.serviceworker-preparation,
-.network-timing-bar.serviceworker-routerevaluation,
-.network-timing-bar.serviceworker-cachelookup {
-  background-color: var(--network-overview-service-worker); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
-.network-timing-bar.ssl {
-  background-color: var(--network-overview-ssl); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
-.network-timing-bar.serviceworker-respondwith {
-  background-color: var(--network-overview-service-worker-respond-with); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
-.network-fetch-timing-bar-clickable::before {
-  user-select: none;
-  mask-image: var(--image-file-triangle-right);
-  float: left;
-  width: var(--sys-size-7);
-  height: var(--sys-size-7);
-  margin-right: var(--sys-size-2);
-  content: "";
-  position: relative;
-  background-color: var(--icon-default);
-  transition: transform 200ms;
-}
-
-.network-fetch-timing-bar-clickable {
-  position: relative;
-  left: calc(-1 * var(--sys-size-6));
-}
-
-tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
-tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
-  display: none;
-}
-
-tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
-tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
-  display: block;
-}
-
-.network-fetch-timing-bar-clickable:focus-visible {
-  background-color: var(--sys-color-state-focus-highlight);
-}
-
-.network-fetch-timing-bar-clickable[aria-expanded="true"]::before {
-  transform: rotate(90deg);
-}
-
-.network-fetch-timing-bar-details-collapsed {
-  display: none;
-}
-
-.network-fetch-timing-bar-details,
-.router-evaluation-timing-bar-details {
-  padding-left: var(--sys-size-5);
-  width: fit-content;
-}
-
-.network-fetch-details-treeitem {
-  width: max-content;
-}
-
-.network-timing-bar.sending {
-  background-color: var(--override-network-overview-sending);
-}
-
-.network-timing-bar.waiting {
-  background-color: var(--network-overview-waiting); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
-td.throttled {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--sys-size-3);
-  color: var(--sys-color-yellow);
-
-  devtools-icon {
-    color: var(--sys-color-yellow);
+@scope to (devtools-widget > *) {
+  .network-timing-table {
+    width: var(--sys-size-32);
+    border-spacing: 0;
+    padding-left: var(--sys-size-6);
+    padding-right: var(--sys-size-6);
+    line-height: initial;
+    table-layout: fixed;
   }
-}
 
-.network-timing-bar.receiving,
-.network-timing-bar.receiving-push {
-  background-color: var(--network-overview-receiving); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
-.network-timing-bar.push {
-  background-color: var(--network-overview-push); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
-.server-timing-row:nth-child(even) {
-  background: var(--sys-color-surface1);
-}
-
-.network-timing-bar.server-timing {
-  background-color: attr(data-background type(<color>), var(--sys-color-neutral-container));
-}
-
-tr.synthetic {
-  font-style: italic;
-}
-
-.network-timing-table td.network-timing-metric {
-  white-space: nowrap;
-  max-width: var(--sys-size-22);
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-}
-
-.network-timing-bar.proxy,
-.network-timing-bar.dns,
-.network-timing-bar.ssl,
-.network-timing-bar.connecting,
-.network-timing-bar.blocking {
-  height: var(--sys-size-5);
-  margin: auto;
-}
-
-@media (forced-colors: active) {
-  .network-timing-bar.blocking,
-  .network-timing-bar.proxy,
-  .network-timing-bar.dns,
-  .network-timing-bar.connecting,
-  .network-timing-bar.serviceworker,
-  .network-timing-bar.serviceworker-preparation,
-  .network-timing-bar.ssl,
-  .network-timing-bar.sending,
-  .network-timing-bar.waiting,
-  .network-timing-bar.receiving,
-  .network-timing-bar.receiving-push,
-  .network-timing-bar.push,
-  .network-timing-bar.server-timing {
-    forced-color-adjust: none;
+  .network-timing-start th span.network-timing-hidden-header {
+    height: var(--sys-size-1);
+    width: var(--sys-size-1);
+    position: absolute;
+    overflow: hidden;
   }
 
   .network-timing-table-header td,
   .network-timing-footer td {
-    forced-color-adjust: none;
-    color: ButtonText;
+    border-top: var(--sys-size-5) solid transparent;
+  }
+
+  .network-timing-table-header td {
+    color: var(--sys-color-token-subtle);
+  }
+
+  .network-timing-table td {
+    padding: var(--sys-size-3) 0;
+  }
+
+  .network-timing-table-header td:last-child {
+    text-align: right;
+  }
+
+  .network-timing-footer td:last-child {
+    font-weight: bold;
+    text-align: right;
+  }
+
+  table.network-timing-table > tr:not(.network-timing-table-header, .network-timing-footer) > td:first-child {
+    padding-left: var(--sys-size-6);
+  }
+
+  .network-timing-table col.labels {
+    width: var(--sys-size-23);
+  }
+
+  .network-timing-table col.duration {
+    width: var(--sys-size-19);
+  }
+
+  .network-timing-table td.caution {
+    font-weight: bold;
+    color: var(--issue-color-yellow);
+    padding: var(--sys-size-2) 0;
+  }
+
+  .network-timing-table hr.break {
+    background-color: var(--sys-color-divider);
+    border: none;
+    height: var(--sys-size-1);
+  }
+
+  .network-timing-row {
+    position: relative;
+    height: var(--sys-size-7);
+  }
+
+  .network-timing-bar {
+    position: absolute;
+    min-width: var(--sys-size-1);
+    inset: 0 attr(data-right %) 0 attr(data-left %);
+  }
+
+  .network-timing-bar-title {
+    color: var(--sys-color-on-surface);
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .network-timing-bar.queueing,
+  .network-timing-bar.total {
+    border: var(--sys-size-1) solid var(--sys-color-token-subtle);
+  }
+
+  .network-timing-bar.blocking {
+    background-color: var(--network-waterfall-blocking); /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  .network-timing-bar.proxy {
+    background-color: var(--override-network-overview-proxy);
+  }
+
+  .network-timing-bar.dns {
+    background-color: var(--sys-color-cyan);
+  }
+
+  .network-timing-bar.connecting,
+  .network-timing-bar.serviceworker,
+  .network-timing-bar.serviceworker-preparation,
+  .network-timing-bar.serviceworker-routerevaluation,
+  .network-timing-bar.serviceworker-cachelookup {
+    background-color: var(--network-overview-service-worker); /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  .network-timing-bar.ssl {
+    background-color: var(--network-overview-ssl); /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  .network-timing-bar.serviceworker-respondwith {
+    background-color: var(--network-overview-service-worker-respond-with); /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  .network-fetch-timing-bar-clickable::before {
+    user-select: none;
+    mask-image: var(--image-file-triangle-right);
+    float: left;
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    margin-right: var(--sys-size-2);
+    content: "";
+    position: relative;
+    background-color: var(--icon-default);
+    transition: transform 200ms;
+  }
+
+  .network-fetch-timing-bar-clickable {
+    position: relative;
+    left: calc(-1 * var(--sys-size-6));
+  }
+
+  tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
+  tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
+    display: none;
+  }
+
+  tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
+  tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fetch-timing-bar-details {
+    display: block;
+  }
+
+  .network-fetch-timing-bar-clickable:focus-visible {
+    background-color: var(--sys-color-state-focus-highlight);
+  }
+
+  .network-fetch-timing-bar-clickable[aria-expanded="true"]::before {
+    transform: rotate(90deg);
+  }
+
+  .network-fetch-timing-bar-details-collapsed {
+    display: none;
+  }
+
+  .network-fetch-timing-bar-details,
+  .router-evaluation-timing-bar-details {
+    padding-left: var(--sys-size-5);
+    width: fit-content;
+  }
+
+  .network-fetch-details-treeitem {
+    width: max-content;
+  }
+
+  .network-timing-bar.sending {
+    background-color: var(--override-network-overview-sending);
+  }
+
+  .network-timing-bar.waiting {
+    background-color: var(--network-overview-waiting); /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  td.throttled {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sys-size-3);
+    color: var(--sys-color-yellow);
+
+    devtools-icon {
+      color: var(--sys-color-yellow);
+    }
+  }
+
+  .network-timing-bar.receiving,
+  .network-timing-bar.receiving-push {
+    background-color: var(--network-overview-receiving); /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  .network-timing-bar.push {
+    background-color: var(--network-overview-push); /* stylelint-disable-line plugin/use_theme_colors */
+  }
+
+  .server-timing-row:nth-child(even) {
+    background: var(--sys-color-surface1);
+  }
+
+  .network-timing-bar.server-timing {
+    background-color: attr(data-background type(<color>), var(--sys-color-neutral-container));
+  }
+
+  tr.synthetic {
+    font-style: italic;
+  }
+
+  .network-timing-table td.network-timing-metric {
+    white-space: nowrap;
+    max-width: var(--sys-size-22);
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .network-timing-bar.proxy,
+  .network-timing-bar.dns,
+  .network-timing-bar.ssl,
+  .network-timing-bar.connecting,
+  .network-timing-bar.blocking {
+    height: var(--sys-size-5);
+    margin: auto;
+  }
+
+  @media (forced-colors: active) {
+    .network-timing-bar.blocking,
+    .network-timing-bar.proxy,
+    .network-timing-bar.dns,
+    .network-timing-bar.connecting,
+    .network-timing-bar.serviceworker,
+    .network-timing-bar.serviceworker-preparation,
+    .network-timing-bar.ssl,
+    .network-timing-bar.sending,
+    .network-timing-bar.waiting,
+    .network-timing-bar.receiving,
+    .network-timing-bar.receiving-push,
+    .network-timing-bar.push,
+    .network-timing-bar.server-timing {
+      forced-color-adjust: none;
+    }
+
+    .network-timing-table-header td,
+    .network-timing-footer td {
+      forced-color-adjust: none;
+      color: ButtonText;
+    }
   }
 }
 
@@ -11039,6 +11044,14 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       this.sortHandler();
     }
   }
+  async showCustomHeadersDialog(view, jslogContext) {
+    const dialog = new UI13.Dialog.Dialog(jslogContext);
+    view.show(dialog.contentElement);
+    dialog.setSizeBehavior(UI13.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    dialog.show(this.networkLogView.element);
+    await view.updateComplete;
+    dialog.positionContent();
+  }
   manageRequestCustomHeaderDialog() {
     const customHeadersRequest = [];
     for (const columnConfig of this.columns) {
@@ -11055,10 +11068,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       ),
       (headerTitle) => Boolean(this.removeCustomHeader(`request-header-${headerTitle}`))
     );
-    const dialogRequest = new UI13.Dialog.Dialog("manage-custom-request-headers");
-    manageCustomHeadersRequest.show(dialogRequest.contentElement);
-    dialogRequest.setSizeBehavior(UI13.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    dialogRequest.show(this.networkLogView.element);
+    void this.showCustomHeadersDialog(manageCustomHeadersRequest, "manage-custom-request-headers");
   }
   manageResponseCustomHeaderDialog() {
     const customHeadersResponse = [];
@@ -11076,10 +11086,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       ),
       (headerTitle) => Boolean(this.removeCustomHeader(`response-header-${headerTitle}`))
     );
-    const dialogResponse = new UI13.Dialog.Dialog("manage-custom-response-headers");
-    manageCustomHeadersResponse.show(dialogResponse.contentElement);
-    dialogResponse.setSizeBehavior(UI13.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    dialogResponse.show(this.networkLogView.element);
+    void this.showCustomHeadersDialog(manageCustomHeadersResponse, "manage-custom-response-headers");
   }
   removeCustomHeader(headerId) {
     headerId = headerId.toLowerCase();
@@ -16502,26 +16509,28 @@ var requestPayloadView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.request-payload-view {
-  user-select: text;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    user-select: text;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+  }
 
-.raw-payload-section {
-  flex: 1 1 auto;
-  min-height: var(--sys-size-25);
-  display: flex;
-  flex-direction: column;
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-}
+  .raw-payload-section {
+    flex: 1 1 auto;
+    min-height: var(--sys-size-25);
+    display: flex;
+    flex-direction: column;
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 
-.request-payload-tree {
-  display: block;
-  flex-grow: 1;
-  overflow-y: auto;
-  margin: 0;
+  .request-payload-tree {
+    display: block;
+    flex-grow: 1;
+    overflow-y: auto;
+    margin: 0;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./requestPayloadView.css")} */`;
@@ -16801,7 +16810,7 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
   #viewQueryParamSource = false;
   #refreshFormDataPromiseForTest = Promise.resolve();
   constructor(target, view = DEFAULT_VIEW14) {
-    super();
+    super(target);
     this.#view = view;
   }
   set request(request) {

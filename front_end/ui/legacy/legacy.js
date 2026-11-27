@@ -25784,6 +25784,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
   static observedAttributes = ["navigation-variant", "hide-overflow", "dense", "show-selection-on-keyboard-focus", "disclosure-class"];
   #treeOutline = new TreeOutlineInShadow(void 0, this, true);
   #syncedTreeClasses = /* @__PURE__ */ new Set();
+  #treeNodesWithTitleChildMutations = /* @__PURE__ */ new Set();
   constructor() {
     super();
     this.#treeOutline.contentElement.removeAttribute("jslog");
@@ -25870,6 +25871,20 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     const expanded = treeElement ? treeElement.expanded : hasBooleanAttribute(subtreeRoot.parentElement, "open");
     return treeElement ? { expanded, treeElement, classes: subtreeRoot.classList, attributes: subtreeRoot.attributes } : null;
   }
+  onChange(mutationList) {
+    this.#treeNodesWithTitleChildMutations.clear();
+    for (const mutation of mutationList) {
+      if (mutation.type !== "childList" || !(mutation.target instanceof HTMLLIElement) || mutation.target.role !== "treeitem") {
+        continue;
+      }
+      const hasNonGroupChild = [...mutation.addedNodes, ...mutation.removedNodes].some(
+        (node) => !(node instanceof HTMLUListElement && node.role === "group") && node.nodeType !== Node.COMMENT_NODE
+      );
+      if (hasNonGroupChild) {
+        this.#treeNodesWithTitleChildMutations.add(mutation.target);
+      }
+    }
+  }
   updateNode(node, attributeName) {
     if (node instanceof HTMLUListElement && node.role === "tree") {
       if (attributeName === null || attributeName === "class") {
@@ -25906,10 +25921,13 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       if (attributeName === "selected" && hasBooleanAttribute(treeNode, "selected")) {
         treeElement.revealAndSelect(!this.hasFocus());
       }
+      if (attributeName === "toggle-on-click") {
+        treeElement.toggleOnClick = hasBooleanAttribute(treeNode, "toggle-on-click");
+      }
+      if (attributeName === null && this.#treeNodesWithTitleChildMutations.has(treeNode)) {
+        treeElement.refreshSoon();
+      }
       return;
-    }
-    if (node === treeNode && attributeName === "toggle-on-click") {
-      treeElement.toggleOnClick = hasBooleanAttribute(treeNode, "toggle-on-click");
     }
     treeElement.refreshSoon();
   }

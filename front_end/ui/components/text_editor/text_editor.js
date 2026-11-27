@@ -3922,6 +3922,24 @@ var PropertyCache = class _PropertyCache {
     return cache;
   }
 };
+function mapKeyLiteral(key) {
+  const value = key.value;
+  switch (typeof value) {
+    case "string":
+      return JSON.stringify(value);
+    case "number":
+    case "boolean":
+      return String(value);
+    case "bigint":
+      return `${value}n`;
+    case "undefined":
+      return key.type === "undefined" ? "undefined" : null;
+    case "object":
+      return value === null ? "null" : null;
+    default:
+      return null;
+  }
+}
 async function maybeCompleteKeysFromMap(objectVariable, target) {
   const result = new CompletionSet();
   const context = getExecutionContext();
@@ -3942,8 +3960,12 @@ async function maybeCompleteKeysFromMap(objectVariable, target) {
   const properties = SDK2.RemoteObject.RemoteArray.objectAsArray(maybeRetrieveKeys);
   const numProperties = properties.length();
   for (let i = 0; i < numProperties; i++) {
+    const literal = mapKeyLiteral(await properties.at(i));
+    if (literal === null) {
+      continue;
+    }
     result.add({
-      label: `"${(await properties.at(i)).value}")`,
+      label: `${literal})`,
       type: "constant",
       boost: i * -1
     });

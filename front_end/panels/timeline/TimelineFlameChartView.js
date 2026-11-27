@@ -13,6 +13,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { getAnnotationEntries, getAnnotationWindow } from './AnnotationHelpers.js';
 import * as TimelineInsights from './components/insights/insights.js';
@@ -59,6 +60,50 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS = {
 // Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
 // on top of each other.
 const TIMESTAMP_THRESHOLD_MS = Trace.Types.Timing.Micro(10);
+const { widget, widgetRef } = UI.Widget;
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const container = {
+        classes: ['timeline-flamechart'],
+        attributes: { jslog: VisualLogging.section('timeline.flame-chart-view'), inert: input.inert },
+        listeners: {
+            keydown: (event) => {
+                const { key, altKey } = event;
+                const result = input.onKeyDown({ key, altKey });
+                if (result) {
+                    event.stopPropagation();
+                }
+                if (result === 'handled') {
+                    event.preventDefault();
+                }
+            },
+            pointerdown: (event) => {
+                // buttons === 2 indicates a right click.
+                if (event.buttons === 2 && input.onSecondaryPointerDown()) {
+                    event.stopPropagation();
+                }
+            },
+            [OverlayComponents.EntriesLinkOverlay.EntryLinkStartCreating.eventName]: input.onEntryLinkStartCreating,
+            [TimelineInsights.EventRef.EventReferenceClick.eventName]: (event) => input.onEventReferenceClick(event.event),
+        },
+    };
+    // clang-format off
+    render(html `<style>${timelineFlameChartViewStyles}</style>
+    <devtools-split-view class="timeline-details-split" direction="row" sidebar-position="second"
+        name="timeline-panel-details-split-view-state"
+        ${widgetRef(UI.SplitWidget.SplitWidget, split => split.installResizer(input.detailsView.headerElement()))}>
+      <devtools-split-view slot="main" direction="row" sidebar-position="second"
+          name="timeline-counters-split-view-state" show=${input.showMemoryGraph ? 'both' : 'main'}
+          ${widgetRef(UI.SplitWidget.SplitWidget, split => {
+        split.hideDefaultResizer();
+        split.installResizer(input.countersView.resizerElement());
+    })}>
+        <div slot="main" ${widget(UI.Widget.WrapperWidget, { widget: input.flameChartsContainer })}></div>
+        <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, { widget: input.countersView })}></div>
+      </devtools-split-view>
+      <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, { widget: input.detailsView })}></div>
+    </devtools-split-view>`, target, { container });
+    // clang-format on
+};
 const TimelineFlameChartViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     #delegate;
@@ -77,9 +122,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     networkFlameChart;
     #networkPane;
     #splitResizer;
-    #chartSplitWidget;
+    #flameChartsContainer;
     #countersView;
-    #detailsSplitWidget;
     // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in Chromium web_tests.
     detailsView;
     #onMainAddEntryLabelAnnotation;
@@ -152,16 +196,19 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     #networkPersistedGroupConfigSetting;
     #mainPersistedGroupConfigSetting;
     #listenersAttached = false;
+    #showMemoryGraph = true;
+    #inert = false;
+    #view;
     #boundOnMainDataChanged = () => {
         this.mainFlameChart.scheduleUpdate();
     };
-    constructor(delegate, commentManager) {
-        super({ jslog: `${VisualLogging.section('timeline.flame-chart-view')}` });
-        this.registerRequiredCSS(timelineFlameChartViewStyles);
-        this.element.classList.add('timeline-flamechart');
+    constructor(delegate, commentManager, view = DEFAULT_VIEW) {
+        super();
+        this.#view = view;
         this.#delegate = delegate;
         this.#parsedTrace = null;
         const flameChartsContainer = new UI.Widget.VBox();
+        this.#flameChartsContainer = flameChartsContainer;
         flameChartsContainer.element.classList.add('flame-charts-container');
         // Create main and network flamecharts.
         this.#networkSplitWidget = new UI.SplitWidget.SplitWidget(false, false, 'timeline-flamechart-main-view', 150);
@@ -242,16 +289,9 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             },
         });
         this.#overlays.addEventListener(Overlays.Overlays.ConsentDialogVisibilityChange.eventName, e => {
-            const event = e;
-            if (event.isVisible) {
-                // If the dialog is visible, we do not want anything in the performance
-                // panel capturing tab focus.
-                // https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert
-                this.element.setAttribute('inert', 'inert');
-            }
-            else {
-                this.element.removeAttribute('inert');
-            }
+            // Prevent the performance panel from capturing tab focus while the consent dialog is visible.
+            this.#inert = e.isVisible;
+            this.requestUpdate();
         });
         this.#overlays.addEventListener(Overlays.Overlays.EntryLabelMouseClick.eventName, event => {
             const { overlay } = event;
@@ -281,21 +321,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
                 ModificationsManager.activeManager()?.updateAnnotationOverlay(overlay);
             }
         });
-        this.element.addEventListener(OverlayComponents.EntriesLinkOverlay.EntryLinkStartCreating.eventName, () => {
-            /**
-             * When the user creates an entries link, they click on the arrow icon to
-             * begin creating it. At this point the arrow icon gets deleted. This
-             * causes the focus of the page by default to jump to the entire Timeline
-             * Panel. This is a bit aggressive; and problematic as it means we cannot
-             * use <ESC> to cancel the creation of the entry. So instead we focus the
-             * TimelineFlameChartView instead. This means that the user's <ESC> gets
-             * dealt with in its keydown.
-             * If the user goes ahead and creates the entry, they will end up
-             * focused on whichever target entry they pick, so this only matters for
-             * the case where the user hits <ESC> to cancel.
-             */
-            this.focus();
-        });
         this.#networkPane = new UI.Widget.VBox();
         this.#networkPane.setMinimumSize(23, 23);
         this.networkFlameChart.show(this.#networkPane.element);
@@ -304,21 +329,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.#networkSplitWidget.installResizer(this.#splitResizer);
         this.#networkSplitWidget.setMainWidget(this.mainFlameChart);
         this.#networkSplitWidget.setSidebarWidget(this.#networkPane);
-        // Create counters chart splitter.
-        this.#chartSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'timeline-counters-split-view-state');
         this.#countersView = new CountersGraph(this.#delegate);
-        this.#chartSplitWidget.setMainWidget(flameChartsContainer);
-        this.#chartSplitWidget.setSidebarWidget(this.#countersView);
-        this.#chartSplitWidget.hideDefaultResizer();
-        this.#chartSplitWidget.installResizer(this.#countersView.resizerElement());
-        // Create top level properties splitter.
-        this.#detailsSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'timeline-panel-details-split-view-state');
-        this.#detailsSplitWidget.element.classList.add('timeline-details-split');
         this.detailsView = new TimelineDetailsPane(delegate);
-        this.#detailsSplitWidget.installResizer(this.detailsView.headerElement());
-        this.#detailsSplitWidget.setMainWidget(this.#chartSplitWidget);
-        this.#detailsSplitWidget.setSidebarWidget(this.detailsView);
-        this.#detailsSplitWidget.show(this.element);
         // Event listeners for annotations.
         this.#onMainAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
         this.#onNetworkAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.#networkDataProvider);
@@ -376,12 +388,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             const fromTraceEvent = selectionFromEvent(eventRef.event);
             void this.openSelectionDetailsView(fromTraceEvent);
         });
-        // This is for the detail view of layout shift.
-        this.element.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
-            void this.setSelectionAndReveal(selectionFromEvent(event.event));
-        });
-        this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
-        this.element.addEventListener('pointerdown', this.#pointerDownHandler.bind(this));
         this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
         this.#selectedEvents = null;
         this.#groupBySetting = Common.Settings.Settings.instance().createSetting('timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
@@ -396,6 +402,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             overlays: this.#overlays,
             eventsSerializer: this.#eventsSerializer,
         }, commentManager);
+        this.requestUpdate();
     }
     #attachListeners() {
         if (this.#listenersAttached) {
@@ -780,17 +787,17 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             this.addTimestampMarkerOverlay(timeInMicroSeconds);
         }
     }
-    #pointerDownHandler(event) {
+    #onSecondaryPointerDown = () => {
         /**
          * If the user is in the middle of creating an entry link annotation and
          * right clicks, let's take that as a sign to exit and cancel.
-         * (buttons === 2 indicates a right click)
          */
-        if (event.buttons === 2 && this.#linkSelectionAnnotation) {
-            this.#clearLinkSelectionAnnotation(true);
-            event.stopPropagation();
+        if (!this.#linkSelectionAnnotation) {
+            return false;
         }
-    }
+        this.#clearLinkSelectionAnnotation(true);
+        return true;
+    };
     #clearLinkSelectionAnnotation(deleteCurrentLink) {
         if (this.#linkSelectionAnnotation === null) {
             return;
@@ -895,7 +902,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             }
         }
     }
-    #keydownHandler(event) {
+    #onKeyDown = (event) => {
+        let result;
         // `CREATION_NOT_STARTED` is only true in the state when both empty label and button to create connection are
         // created at the same time. If any key is typed in that state, it means that the label is in focus and the key
         // is typed into the label. This tells us that the user chose to create the
@@ -905,7 +913,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             this.#clearLinkSelectionAnnotation(true);
             // We have dealt with the keypress as the user is typing into the label, so do not let it propagate up.
             // This also ensures that if the user uses "Escape" they don't toggle the DevTools drawer.
-            event.stopPropagation();
+            result = 'stop-propagation';
         }
         /**
          * If the user is in the middle of creating an entry link and hits Esc,
@@ -913,16 +921,14 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
          */
         if (event.key === 'Escape' && this.#linkSelectionAnnotation) {
             this.#clearLinkSelectionAnnotation(true);
-            event.stopPropagation();
-            event.preventDefault();
+            result = 'handled';
         }
         const eventHandledByKeyboardTimeRange = this.#handleTimeRangeKeyboardCreation(event);
         if (eventHandledByKeyboardTimeRange) {
-            event.preventDefault();
-            event.stopPropagation();
-            return;
+            return 'handled';
         }
-    }
+        return result;
+    };
     forceAnimationsForTest() {
         this.#checkReducedMotion = false;
     }
@@ -1241,13 +1247,29 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         }
         this.#updateFlameCharts();
     }
+    performUpdate() {
+        this.#view({
+            flameChartsContainer: this.#flameChartsContainer,
+            countersView: this.#countersView,
+            detailsView: this.detailsView,
+            showMemoryGraph: this.#showMemoryGraph,
+            inert: this.#inert,
+            onKeyDown: this.#onKeyDown,
+            onSecondaryPointerDown: this.#onSecondaryPointerDown,
+            // Focus this view when link creation deletes the arrow so Escape cancels via keydown.
+            onEntryLinkStartCreating: () => this.focus(),
+            onEventReferenceClick: event => void this.setSelectionAndReveal(selectionFromEvent(event)),
+        }, undefined, this.contentElement);
+        if (this.#needsResizeToPreferredHeights) {
+            this.resizeToPreferredHeights();
+        }
+    }
     updateCountersGraphToggle(showMemoryGraph) {
-        if (showMemoryGraph) {
-            this.#chartSplitWidget.showBoth();
+        if (this.#showMemoryGraph === showMemoryGraph) {
+            return;
         }
-        else {
-            this.#chartSplitWidget.hideSidebar();
-        }
+        this.#showMemoryGraph = showMemoryGraph;
+        this.requestUpdate();
     }
     zoomEvent(event) {
         const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
@@ -1531,7 +1553,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.#clearLinkSelectionAnnotation(false);
     }
     resizeToPreferredHeights() {
-        if (!this.isShowing()) {
+        if (!this.isShowing() || !this.#networkSplitWidget.isShowing()) {
             this.#needsResizeToPreferredHeights = true;
             return;
         }

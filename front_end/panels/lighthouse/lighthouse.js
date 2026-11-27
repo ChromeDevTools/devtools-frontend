@@ -4755,11 +4755,11 @@ __export(LighthouseStartView_exports, {
   getToolbarDropdownInput: () => getToolbarDropdownInput,
   renderSettingsToolbarInto: () => renderSettingsToolbarInto
 });
+import "../../ui/kit/kit.js";
 import "../../ui/legacy/legacy.js";
 import * as i18n6 from "../../core/i18n/i18n.js";
 import * as Platform2 from "../../core/platform/platform.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
-import { Link } from "../../ui/kit/kit.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html3, nothing as nothing2, render as render3 } from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
@@ -5046,6 +5046,7 @@ var RadioSetting = class extends UI4.Widget.Widget {
 // ../../front_end/panels/lighthouse/LighthouseStartView.ts
 var { ifDefined: ifDefined2 } = Directives2;
 var { bindToSetting } = UI5.UIUtils;
+var { widget: widget2 } = UI5.Widget;
 var UIStrings3 = {
   /**
    * @description Text displayed as the title of a panel that can be used to audit a web page with Lighthouse.
@@ -5082,7 +5083,32 @@ var UIStrings3 = {
 };
 var str_3 = i18n6.i18n.registerUIStrings("panels/lighthouse/LighthouseStartView.ts", UIStrings3);
 var i18nString3 = i18n6.i18n.getLocalizedString.bind(void 0, str_3);
-var renderStartView = (_input, output, target) => {
+function renderLearnMoreLink(url, style) {
+  return html3`<devtools-link class="lighthouse-learn-more devtools-link" style=${ifDefined2(style)}
+      href=${url} jslogcontext="learn-more">${i18nString3(UIStrings3.learnMore)}</devtools-link>`;
+}
+function renderRuntimeSettingAsRadio(input) {
+  return html3`
+    <div class="lighthouse-form-section-label">
+      ${input.label}
+      ${input.learnMore ? renderLearnMoreLink(input.learnMore) : nothing2}
+    </div>
+    ${widget2(RadioSetting, {
+    options: input.options,
+    setting: input.setting,
+    description: input.description,
+    label: input.label
+  })}`;
+}
+function renderCategories(categories) {
+  return html3`${categories.map((category) => html3`
+    <div class="vbox lighthouse-launcher-row">
+      <devtools-checkbox title=${category.description} data-lh-category=${category.configID}
+          ?disabled=${!category.supported} ?indeterminate=${!category.supported}
+          ${bindToSetting(category.setting)}>${category.title}</devtools-checkbox>
+    </div>`)}`;
+}
+var renderStartView = (input, output, target) => {
   render3(
     html3`
       <form class="lighthouse-start-view">
@@ -5101,32 +5127,23 @@ var renderStartView = (_input, output, target) => {
         ></div>
         <div class="lighthouse-options hbox">
           <div class="lighthouse-form-section">
-            <div
-              class="lighthouse-form-elements"
-              ${Directives2.ref((e) => {
-      output.modeFormElements = e;
-    })}
-            ></div>
+            <div class="lighthouse-form-elements">
+              ${renderRuntimeSettingAsRadio(input.modeSetting)}
+            </div>
           </div>
           <div class="lighthouse-form-section">
-            <div
-              class="lighthouse-form-elements"
-              ${Directives2.ref((e) => {
-      output.deviceTypeFormElements = e;
-    })}
-            ></div>
+            <div class="lighthouse-form-elements">
+              ${renderRuntimeSettingAsRadio(input.deviceTypeSetting)}
+            </div>
           </div>
           <div class="lighthouse-form-categories">
             <fieldset class="lighthouse-form-section lighthouse-form-categories-fieldset">
               <legend class="lighthouse-form-section-label">
                 ${i18nString3(UIStrings3.categories)}
               </legend>
-              <div
-                class="lighthouse-form-elements"
-                ${Directives2.ref((e) => {
-      output.categoriesFormElements = e;
-    })}
-              ></div>
+              <div class="lighthouse-form-elements">
+                ${renderCategories(input.categories)}
+              </div>
             </fieldset>
           </div>
         </div>
@@ -5141,16 +5158,34 @@ var renderStartView = (_input, output, target) => {
     target
   );
 };
-function renderLearnMoreLink(url, style) {
-  return html3`<devtools-link class="lighthouse-learn-more devtools-link" style=${ifDefined2(style)}
-      href=${url} jslogcontext="learn-more">${i18nString3(UIStrings3.learnMore)}</devtools-link>`;
-}
 function getRuntimeSetting(settingName) {
   const runtimeSetting = getRuntimeSettings().find((item3) => item3.setting.name === settingName);
   if (!runtimeSetting) {
     throw new Error(`${settingName} is not a runtime setting`);
   }
   return runtimeSetting;
+}
+function getSetting(settingName, label) {
+  const runtimeSetting = getRuntimeSetting(settingName);
+  if (!runtimeSetting.options) {
+    throw new Error(`${settingName} is not a setting with options`);
+  }
+  return {
+    label,
+    setting: runtimeSetting.setting,
+    description: runtimeSetting.description(),
+    options: runtimeSetting.options,
+    learnMore: runtimeSetting.learnMore
+  };
+}
+function getCategory(preset, mode) {
+  return {
+    configID: preset.configID,
+    setting: preset.setting,
+    title: preset.title(),
+    description: preset.description(),
+    supported: preset.supportedModes.includes(mode)
+  };
 }
 var StartView = class extends UI5.Widget.Widget {
   controller;
@@ -5160,8 +5195,6 @@ var StartView = class extends UI5.Widget.Widget {
   startButton;
   helpText;
   warningText;
-  checkboxes = [];
-  changeFormMode;
   constructor(controller, panel) {
     super({ useShadowDom: true });
     this.registerRequiredCSS(lighthouseStartView_css_default);
@@ -5170,65 +5203,21 @@ var StartView = class extends UI5.Widget.Widget {
     this.#renderSettingsToolbar();
     this.render();
   }
-  populateRuntimeSettingAsRadio(settingName, label, parentElement) {
-    const runtimeSetting = getRuntimeSettings().find((item3) => item3.setting.name === settingName);
-    if (!runtimeSetting?.options) {
-      throw new Error(`${settingName} is not a setting with options`);
-    }
-    const labelEl = document.createElement("div");
-    labelEl.classList.add("lighthouse-form-section-label");
-    labelEl.textContent = label;
-    if (runtimeSetting.learnMore) {
-      const link = Link.create(runtimeSetting.learnMore, i18nString3(UIStrings3.learnMore), "lighthouse-learn-more", "learn-more");
-      labelEl.append(link);
-    }
-    parentElement.appendChild(labelEl);
-    const control = new RadioSetting();
-    control.options = runtimeSetting.options;
-    control.setting = runtimeSetting.setting;
-    control.description = runtimeSetting.description();
-    control.label = label;
-    control.show(parentElement);
-  }
-  populateFormControls(deviceTypeFormElements, categoryFormElements, mode) {
-    this.populateRuntimeSettingAsRadio("lighthouse.device-type", i18nString3(UIStrings3.device), deviceTypeFormElements);
-    this.checkboxes = [];
-    for (const preset of getPresets()) {
-      const checkbox = new UI5.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description(), preset.title());
-      const row = categoryFormElements.createChild("div", "vbox lighthouse-launcher-row");
-      row.appendChild(checkbox.element);
-      checkbox.element.setAttribute("data-lh-category", preset.configID);
-      this.checkboxes.push({ preset, checkbox });
-      if (mode && !preset.supportedModes.includes(mode)) {
-        checkbox.setEnabled(false);
-        checkbox.setIndeterminate(true);
-      }
-    }
-  }
-  render() {
-    const { mode } = this.controller.getFlags();
-    const output = {
-      helpText: void 0,
-      warningText: void 0,
-      modeFormElements: void 0,
-      deviceTypeFormElements: void 0,
-      categoriesFormElements: void 0
-    };
+  #renderForm(mode) {
+    const output = {};
     renderStartView(
-      {},
+      {
+        modeSetting: getSetting("lighthouse.mode", i18nString3(UIStrings3.mode)),
+        deviceTypeSetting: getSetting("lighthouse.device-type", i18nString3(UIStrings3.device)),
+        categories: getPresets().map((preset) => getCategory(preset, mode))
+      },
       output,
       this.contentElement
     );
     this.helpText = output.helpText;
     this.warningText = output.warningText;
-    const modeFormElements = output.modeFormElements;
-    const deviceTypeFormElements = output.deviceTypeFormElements;
-    const categoriesFormElements = output.categoriesFormElements;
-    if (!modeFormElements || !deviceTypeFormElements || !categoriesFormElements) {
-      throw new Error("Required elements not found in template");
-    }
-    this.populateRuntimeSettingAsRadio("lighthouse.mode", i18nString3(UIStrings3.mode), modeFormElements);
-    this.populateFormControls(deviceTypeFormElements, categoriesFormElements, mode);
+  }
+  render() {
     this.refresh();
   }
   populateStartButton(mode) {
@@ -5263,16 +5252,8 @@ var StartView = class extends UI5.Widget.Widget {
   }
   refresh() {
     const { mode } = this.controller.getFlags();
+    this.#renderForm(mode);
     this.populateStartButton(mode);
-    for (const { checkbox, preset } of this.checkboxes) {
-      if (preset.supportedModes.includes(mode)) {
-        checkbox.setEnabled(true);
-        checkbox.setIndeterminate(false);
-      } else {
-        checkbox.setEnabled(false);
-        checkbox.setIndeterminate(true);
-      }
-    }
     this.onResize();
   }
   onResize() {

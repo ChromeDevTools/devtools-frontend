@@ -9,26 +9,28 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.request-payload-view {
-  user-select: text;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    user-select: text;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+  }
 
-.raw-payload-section {
-  flex: 1 1 auto;
-  min-height: var(--sys-size-25);
-  display: flex;
-  flex-direction: column;
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-}
+  .raw-payload-section {
+    flex: 1 1 auto;
+    min-height: var(--sys-size-25);
+    display: flex;
+    flex-direction: column;
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 
-.request-payload-tree {
-  display: block;
-  flex-grow: 1;
-  overflow-y: auto;
-  margin: 0;
+  .request-payload-tree {
+    display: block;
+    flex-grow: 1;
+    overflow-y: auto;
+    margin: 0;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./requestPayloadView.css')} */`;

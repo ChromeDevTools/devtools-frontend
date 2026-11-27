@@ -4,8 +4,9 @@ import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as TimelineComponents from './components/components.js';
+import { CountersGraph } from './CountersGraph.js';
 import * as Overlays from './overlays/overlays.js';
-import { type Tab } from './TimelineDetailsView.js';
+import { type Tab, TimelineDetailsPane } from './TimelineDetailsView.js';
 import { TimelineFlameChartDataProvider } from './TimelineFlameChartDataProvider.js';
 import { TimelineFlameChartNetworkDataProvider } from './TimelineFlameChartNetworkDataProvider.js';
 import type { TimelineModeViewDelegate } from './TimelinePanel.js';
@@ -18,6 +19,22 @@ import type { TimelineMarkerStyle } from './TimelineUIUtils.js';
  * will render [Nav][FCP][DCL][LCP] everytime.
  */
 export declare const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>>;
+export interface ViewInput {
+    flameChartsContainer: UI.Widget.VBox;
+    countersView: CountersGraph;
+    detailsView: TimelineDetailsPane;
+    showMemoryGraph: boolean;
+    inert: boolean;
+    onKeyDown: (keyInfo: {
+        key: string;
+        altKey: boolean;
+    }) => 'handled' | 'stop-propagation' | undefined;
+    onSecondaryPointerDown: () => boolean;
+    onEntryLinkStartCreating: () => void;
+    onEventReferenceClick: (event: Trace.Types.Events.Event) => void;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 declare const TimelineFlameChartViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class TimelineFlameChartView extends TimelineFlameChartViewBase implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
     #private;
@@ -25,7 +42,7 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     private readonly mainFlameChart;
     private readonly networkFlameChart;
     private readonly detailsView;
-    constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager);
+    constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager, view?: View);
     containingElement(): HTMLElement;
     dimThirdPartiesIfRequired(): void;
     setMarkers(parsedTrace: Trace.TraceModel.ParsedTrace | null): void;
@@ -83,6 +100,7 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     willHide(): void;
     onDetach(): void;
     wasShown(): void;
+    performUpdate(): void;
     updateCountersGraphToggle(showMemoryGraph: boolean): void;
     zoomEvent(event: Trace.Types.Events.Event): void;
     revealEvent(event: Trace.Types.Events.Event): void;

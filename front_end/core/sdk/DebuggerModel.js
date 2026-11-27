@@ -613,10 +613,7 @@ export class DebuggerModel extends SDKModel {
         this.resetDebuggerPausedDetails();
         this.dispatchEventToListeners(Events.DebuggerResumed, this);
     }
-    parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURLComment, hasSyntaxError, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
+    parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURLComment, hasSyntaxError, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
         const knownScript = this.#scripts.get(scriptId);
         if (knownScript) {
             return knownScript;

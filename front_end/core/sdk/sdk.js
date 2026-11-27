@@ -22043,6 +22043,7 @@ __export(SourceMap_exports, {
   SourceMapEntry: () => SourceMapEntry,
   SourceMapProvenance: () => SourceMapProvenance,
   TokenIterator: () => TokenIterator,
+  UNBOUNDED: () => UNBOUNDED,
   parseSourceMap: () => parseSourceMap
 });
 import * as ScopesCodec from "../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
@@ -23139,6 +23140,7 @@ var SourceMapEntry = class {
     return entry1.columnNumber - entry2.columnNumber;
   }
 };
+var UNBOUNDED = 2 ** 31 - 1;
 var SourceMapProvenance = /* @__PURE__ */ ((SourceMapProvenance2) => {
   SourceMapProvenance2["CDP"] = "cdp";
   SourceMapProvenance2["EXTENSION"] = "extension";
@@ -23152,6 +23154,7 @@ var SourceMap = class _SourceMap {
   #sourceMappingURL;
   #baseURL;
   #mappings = null;
+  #hasRangeMappings = false;
   #sourceInfos = [];
   #sourceInfoByURL = /* @__PURE__ */ new Map();
   #script;
@@ -23299,8 +23302,8 @@ var SourceMap = class _SourceMap {
     if (!sourceURL) {
       return null;
     }
-    const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
-    const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
+    const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : UNBOUNDED;
+    const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : UNBOUNDED;
     const range = new TextUtils15.TextRange.TextRange(
       mappings[startIndex].lineNumber,
       mappings[startIndex].columnNumber,
@@ -23328,10 +23331,72 @@ var SourceMap = class _SourceMap {
     if (!endReverseIndex) {
       return null;
     }
-    const endSourceLine = endReverseIndex < reverseMappings.length ? mappings[reverseMappings[endReverseIndex]].sourceLineNumber : 2 ** 31 - 1;
-    const endSourceColumn = endReverseIndex < reverseMappings.length ? mappings[reverseMappings[endReverseIndex]].sourceColumnNumber : 2 ** 31 - 1;
+    const endSourceLine = endReverseIndex < reverseMappings.length ? mappings[reverseMappings[endReverseIndex]].sourceLineNumber : UNBOUNDED;
+    const endSourceColumn = endReverseIndex < reverseMappings.length ? mappings[reverseMappings[endReverseIndex]].sourceColumnNumber : UNBOUNDED;
     const sourceRange = new TextUtils15.TextRange.TextRange(startSourceLine, startSourceColumn, endSourceLine, endSourceColumn);
     return { range, sourceRange, sourceURL };
+  }
+  /**
+   * @returns the range mappings of {@link sourceURL} that cover the given original position,
+   *          ordered by their start position.
+   */
+  #findCoveringRangeMappings(sourceURL, lineNumber, columnNumber) {
+    this.#ensureSourceMapProcessed();
+    const records = this.#sourceInfoByURL.get(sourceURL)?.rangeMappings;
+    if (!records) {
+      return [];
+    }
+    let index = Platform7.ArrayUtilities.upperBound(
+      records,
+      void 0,
+      (_, record) => comparePositions3(lineNumber, columnNumber, record.startLine, record.startColumn)
+    );
+    const covering = [];
+    while (index > 0) {
+      const record = records[--index];
+      if (comparePositions3(lineNumber, columnNumber, record.maxEndLine, record.maxEndColumn) >= 0) {
+        break;
+      }
+      if (comparePositions3(lineNumber, columnNumber, record.endLine, record.endColumn) < 0) {
+        covering.unshift(record);
+      }
+    }
+    return covering;
+  }
+  /**
+   * @returns the entry describing the given original position within the range mapping, which
+   *          is the range mapping's own entry if the position is exactly where it starts, and
+   *          a synthesized one otherwise.
+   */
+  #reverseEntryForRangeMapping(record, lineNumber, columnNumber) {
+    const entry = this.mappings()[record.mappingIndex];
+    if (entry.sourceLineNumber === lineNumber && entry.sourceColumnNumber === columnNumber) {
+      return entry;
+    }
+    const generated = interpolateGeneratedPosition(entry, lineNumber, columnNumber);
+    return new SourceMapEntry(
+      generated.lineNumber,
+      generated.columnNumber,
+      entry.sourceIndex,
+      entry.sourceURL,
+      lineNumber,
+      columnNumber,
+      void 0,
+      true
+    );
+  }
+  /**
+   * @returns the indices of the reverse mappings to report for the given original position,
+   *          given the range mappings that cover it. Once a range mapping maps the position
+   *          exactly, entries that merely precede it are no longer equivalent to it, and the
+   *          range mappings themselves are reported separately.
+   */
+  #filterReverseIndices(indices, lineNumber, columnNumber) {
+    const mappings = this.mappings();
+    return indices.filter((index) => {
+      const entry = mappings[index];
+      return !entry.isRangeMapping && entry.sourceLineNumber === lineNumber && entry.sourceColumnNumber === columnNumber;
+    });
   }
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
@@ -23371,15 +23436,26 @@ var SourceMap = class _SourceMap {
   }
   findReverseEntries(sourceURL, lineNumber, columnNumber, filterContiguous = false) {
     const mappings = this.mappings();
+    const covering = this.#findCoveringRangeMappings(sourceURL, lineNumber, columnNumber);
     let indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
+    if (covering.length > 0) {
+      indices = this.#filterReverseIndices(indices, lineNumber, columnNumber);
+    }
     if (filterContiguous) {
       indices = indices.filter((index, i) => i === 0 || index !== indices[i - 1] + 1);
     }
-    return indices.map((i) => mappings[i]);
+    return [
+      ...indices.map((i) => mappings[i]),
+      ...covering.map((record) => this.#reverseEntryForRangeMapping(record, lineNumber, columnNumber))
+    ];
   }
   findReverseRanges(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
-    const indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
+    const covering = this.#findCoveringRangeMappings(sourceURL, lineNumber, columnNumber);
+    let indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
+    if (covering.length > 0) {
+      indices = this.#filterReverseIndices(indices, lineNumber, columnNumber);
+    }
     const ranges = [];
     for (let i = 0; i < indices.length; ++i) {
       const startIndex = indices[i];
@@ -23390,9 +23466,16 @@ var SourceMap = class _SourceMap {
       }
       const startLine = mappings[startIndex].lineNumber;
       const startColumn = mappings[startIndex].columnNumber;
-      const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
-      const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
+      const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : UNBOUNDED;
+      const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : UNBOUNDED;
       ranges.push(new TextUtils15.TextRange.TextRange(startLine, startColumn, endLine, endColumn));
+    }
+    for (const record of covering) {
+      const { lineNumber: line, columnNumber: column } = interpolateGeneratedPosition(mappings[record.mappingIndex], lineNumber, columnNumber);
+      ranges.push(new TextUtils15.TextRange.TextRange(line, column, line, column + 1));
+    }
+    if (covering.length > 0) {
+      ranges.sort(TextUtils15.TextRange.TextRange.comparator);
     }
     return ranges;
   }
@@ -23433,6 +23516,9 @@ var SourceMap = class _SourceMap {
       }
       this.mappings().sort(SourceMapEntry.compare);
       this.#computeReverseMappings(this.#mappings);
+      if (this.#hasRangeMappings) {
+        this.#computeRangeMappingRecords(this.#mappings);
+      }
     }
     if (!_SourceMap.retainRawSourceMaps) {
       this.#json = null;
@@ -23464,6 +23550,55 @@ var SourceMap = class _SourceMap {
       const a = mappings[indexA];
       const b = mappings[indexB];
       return a.sourceLineNumber - b.sourceLineNumber || a.sourceColumnNumber - b.sourceColumnNumber || a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
+    }
+  }
+  /**
+   * Builds, per source, the {@link RangeMappingRecord}s of the range mappings covering that
+   * source, ordered by original start position. Expects `mappings` to be sorted by generated
+   * position, since a range mapping extends until the next generated entry.
+   */
+  #computeRangeMappingRecords(mappings) {
+    const rangeMappingsPerUrl = /* @__PURE__ */ new Map();
+    for (let i = 0; i < mappings.length; i++) {
+      const entry = mappings[i];
+      const entryUrl = entry?.sourceURL;
+      if (!entryUrl || !entry.isRangeMapping) {
+        continue;
+      }
+      const next = mappings[i + 1];
+      const end = next ? interpolateOriginalPosition(entry, next.lineNumber, next.columnNumber) : { lineNumber: UNBOUNDED, columnNumber: UNBOUNDED };
+      let records = rangeMappingsPerUrl.get(entryUrl);
+      if (!records) {
+        records = [];
+        rangeMappingsPerUrl.set(entryUrl, records);
+      }
+      records.push({
+        mappingIndex: i,
+        startLine: entry.sourceLineNumber,
+        startColumn: entry.sourceColumnNumber,
+        endLine: end.lineNumber,
+        endColumn: end.columnNumber,
+        maxEndLine: end.lineNumber,
+        maxEndColumn: end.columnNumber
+      });
+    }
+    for (const [url, records] of rangeMappingsPerUrl.entries()) {
+      const info = this.#sourceInfoByURL.get(url);
+      if (!info) {
+        continue;
+      }
+      records.sort((a, b) => comparePositions3(a.startLine, a.startColumn, b.startLine, b.startColumn));
+      let maxEndLine = -1;
+      let maxEndColumn = -1;
+      for (const record of records) {
+        if (comparePositions3(record.endLine, record.endColumn, maxEndLine, maxEndColumn) > 0) {
+          maxEndLine = record.endLine;
+          maxEndColumn = record.endColumn;
+        }
+        record.maxEndLine = maxEndLine;
+        record.maxEndColumn = maxEndColumn;
+      }
+      info.rangeMappings = records;
     }
   }
   #eachSection(callback) {
@@ -23500,7 +23635,8 @@ var SourceMap = class _SourceMap {
         sourceURL: url,
         content: source ?? null,
         ignoreListHint: ignoreList.has(i),
-        reverseMappings: null
+        reverseMappings: null,
+        rangeMappings: null
       };
       this.#sourceInfos.push(sourceInfo);
       if (!this.#sourceInfoByURL.has(url)) {
@@ -23622,6 +23758,7 @@ var SourceMap = class _SourceMap {
           continue;
         }
         mappings[mappingIndex] = asRangeMapping(mappings[mappingIndex]);
+        this.#hasRangeMappings = true;
       }
     }
   }
@@ -23809,6 +23946,9 @@ var SourceMap = class _SourceMap {
     return this.hasEncodedScopeInfo() ? this.#scopesInfo?.artificialFunctionRanges() ?? [] : [];
   }
 };
+function comparePositions3(lineA, columnA, lineB, columnB) {
+  return lineA - lineB || columnA - columnB;
+}
 function asRangeMapping(entry) {
   return new SourceMapEntry(
     entry.lineNumber,
@@ -43677,8 +43817,7 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
   #cspViolationsToBreakOn = [];
   #eventListenerBreakpoints = [];
   #targetManager;
-  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-  constructor(targetManager = TargetManager.instance()) {
+  constructor(targetManager) {
     this.#targetManager = targetManager;
     this.#xhrBreakpointsSetting = this.#targetManager.settings.createLocalSetting("xhr-breakpoints", []);
     for (const breakpoint of this.#xhrBreakpointsSetting.get()) {
@@ -44225,8 +44364,7 @@ var EventListenerBreakpoint = class extends CategorizedBreakpoint {
 var EventBreakpointsManager = class _EventBreakpointsManager {
   #eventListenerBreakpoints = [];
   #targetManager;
-  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-  constructor(targetManager = TargetManager.instance()) {
+  constructor(targetManager) {
     this.#targetManager = targetManager;
     this.#createInstrumentationBreakpoints("auction-worklet" /* AUCTION_WORKLET */, [
       "beforeBidderWorkletBiddingStart" /* BEFORE_BIDDER_WORKLET_BIDDING_START */,

@@ -41,6 +41,7 @@
     "../../../../../../front_end/panels/timeline/TimelinePaintProfilerView.test.ts",
     "../../../../../../front_end/panels/timeline/TimelinePanel.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineSelection.test.ts",
+    "../../../../../../front_end/panels/timeline/TimelineSelectorStatsView.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineTreeView.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineUIUtils.test.ts",
     "../../../../../../front_end/panels/timeline/TraceSnapshotHarness.ts",

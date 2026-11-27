@@ -62,6 +62,9 @@
       "path": "../../../front_end/core/root/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../conductor/core-tsconfig.ref.json"
+    },
+    {
       "path": "../../conductor/implementation-tsconfig.ref.json"
     }
   ]

@@ -10,7 +10,7 @@ __export(AdvancedApp_exports, {
   AdvancedApp: () => AdvancedApp,
   AdvancedAppProvider: () => AdvancedAppProvider,
   DEFAULT_TOOLBOX_VIEW: () => DEFAULT_TOOLBOX_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW4
+  DEFAULT_VIEW: () => DEFAULT_VIEW5
 });
 import * as Host3 from "../../core/host/host.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
@@ -41,9 +41,9 @@ var advancedApp_css_default = `/*
 var DeviceModeView_exports = {};
 __export(DeviceModeView_exports, {
   ActionDelegate: () => ActionDelegate,
-  DEFAULT_DEVICE_MODE_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_DEVICE_MODE_VIEW: () => DEFAULT_VIEW4,
   DEFAULT_RULER_VIEW: () => DEFAULT_RULER_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   DeviceModeView: () => DeviceModeView,
   Ruler: () => Ruler,
   RulerEvents: () => RulerEvents
@@ -57,7 +57,7 @@ import * as EmulationModel2 from "../../models/emulation/emulation.js";
 import * as Snackbars from "../../ui/components/snackbars/snackbars.js";
 import * as Geometry from "../../ui/geometry/geometry.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html3, nothing as nothing2, render as render3 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html4, nothing as nothing2, render as render4 } from "../../ui/lit/lit.js";
 import * as SettingsUI2 from "../../ui/settings/settings.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
@@ -1473,11 +1473,13 @@ devtools-toolbar.device-mode-toolbar-options {
 // ../../front_end/panels/emulation/InspectedPagePlaceholder.ts
 var InspectedPagePlaceholder_exports = {};
 __export(InspectedPagePlaceholder_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   Events: () => Events,
   InspectedPagePlaceholder: () => InspectedPagePlaceholder
 });
 import * as Common2 from "../../core/common/common.js";
 import * as UI2 from "../../ui/legacy/legacy.js";
+import { html as html2, render as render2 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/emulation/inspectedPagePlaceholder.css.js
 var inspectedPagePlaceholder_css_default = `/*
@@ -1493,15 +1495,25 @@ var inspectedPagePlaceholder_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./inspectedPagePlaceholder.css")} */`;
 
 // ../../front_end/panels/emulation/InspectedPagePlaceholder.ts
+var DEFAULT_VIEW2 = (_input, _output, target) => {
+  render2(
+    html2`
+    <style>${inspectedPagePlaceholder_css_default}</style>
+    <slot></slot>`,
+    target
+  );
+};
 var inspectedPagePlaceholderInstance;
 var InspectedPagePlaceholderBase = Common2.ObjectWrapper.eventMixin(
   UI2.Widget.Widget
 );
 var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
-  constructor() {
-    super({ useShadowDom: true });
-    this.registerRequiredCSS(inspectedPagePlaceholder_css_default);
-    this.restoreMinimumSize();
+  #view;
+  #needsUpdate = true;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: "pure" });
+    this.#view = view;
+    this.setMinimumSize(150, 150);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
@@ -1510,11 +1522,15 @@ var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends Inspected
     }
     return inspectedPagePlaceholderInstance;
   }
-  restoreMinimumSize() {
-    this.setMinimumSize(150, 150);
+  wasShown() {
+    super.wasShown();
+    if (this.#needsUpdate) {
+      this.requestUpdate();
+    }
   }
-  clearMinimumSize() {
-    this.setMinimumSize(1, 1);
+  performUpdate() {
+    this.#needsUpdate = false;
+    this.#view(void 0, void 0, this.contentElement);
   }
   #dipPageRect() {
     const zoomFactor = UI2.ZoomManager.ZoomManager.instance().zoomFactor();
@@ -1553,7 +1569,7 @@ var Events = /* @__PURE__ */ ((Events2) => {
 // ../../front_end/panels/emulation/MediaQueryInspector.ts
 var MediaQueryInspector_exports = {};
 __export(MediaQueryInspector_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   MediaQueryInspector: () => MediaQueryInspector,
   MediaQueryUIModel: () => MediaQueryUIModel,
   Section: () => Section
@@ -1564,7 +1580,7 @@ import * as Platform2 from "../../core/platform/platform.js";
 import * as SDK from "../../core/sdk/sdk.js";
 import * as Bindings from "../../models/bindings/bindings.js";
 import * as UI3 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html2, nothing, render as render2 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html3, nothing, render as render3 } from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/emulation/mediaQueryInspector.css.js
@@ -1710,17 +1726,17 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("panels/emulation/MediaQueryInspector.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var { classMap } = Directives2;
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   const createBarClassMap = (marker) => ({
     "media-inspector-bar": true,
     "media-inspector-marker-inactive": !marker.active
   });
-  render2(html2`
+  render3(html3`
     <style>${mediaQueryInspector_css_default}</style>
     <div class='media-inspector-view'>
-    ${input.markers.entries().map(([section, markers]) => html2`
+    ${input.markers.entries().map(([section, markers]) => html3`
       <div class='media-inspector-marker-container'>
-        ${markers.map((marker) => html2`
+        ${markers.map((marker) => html3`
           <div
               class=${classMap(createBarClassMap(marker))}
               @click=${() => input.onMediaQueryClicked(marker.model)}
@@ -1734,7 +1750,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     </div>`, target, { container: { attributes: { jslog: `${VisualLogging2.mediaInspectorView().track({ click: true })}` } } });
 };
 function renderMaxSection(zoomFactor, model) {
-  return html2`
+  return html3`
     <div class='media-inspector-marker-spacer'></div>
     <div
         class='media-inspector-marker media-inspector-marker-max-width'
@@ -1749,7 +1765,7 @@ function renderMaxSection(zoomFactor, model) {
 }
 function renderMinMaxSection(zoomFactor, model) {
   const width = (model.maxWidthValue(zoomFactor) - model.minWidthValue(zoomFactor)) * 0.5;
-  return html2`
+  return html3`
     <div class='media-inspector-marker-spacer'></div>
     <div
         class='media-inspector-marker media-inspector-marker-min-max-width'
@@ -1772,7 +1788,7 @@ function renderMinMaxSection(zoomFactor, model) {
   `;
 }
 function renderMinSection(zoomFactor, model) {
-  return html2`
+  return html3`
     <div
         class='media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-left'
         title=${model.mediaText()}
@@ -1798,7 +1814,7 @@ function renderLabel(expression, atLeft, leftAlign) {
     "media-inspector-label-left": leftAlign,
     "media-inspector-label-right": !leftAlign
   };
-  return html2`
+  return html3`
     <div class=${classMap(containerClassMap)}>
       <span class=${classMap(labelClassMap)}>${expression.value()}${expression.unit()}</span>
     </div>
@@ -1814,7 +1830,7 @@ var MediaQueryInspector = class extends UI3.Widget.Widget {
   #scale;
   #cssModel;
   #cachedQueryModels;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: "pure" });
     this.#view = view;
     this.#scale = 1;
@@ -2251,7 +2267,7 @@ function resizerRef(resizer, onConnect) {
     }
   };
 }
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const sizes = [320, 375, 425, 768, 1024, 1440, 2560];
   const titles = [
     i18nString3(UIStrings3.mobileS),
@@ -2262,10 +2278,10 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     i18nString3(UIStrings3.laptopL),
     "4K"
   ];
-  render3(
-    html3`
+  render4(
+    html4`
     <style>${deviceModeView_css_default}</style>
-    ${input.showDeviceMode ? html3`${UI4.Widget.widget(DeviceModeToolbar, { model: input.model })}
+    ${input.showDeviceMode ? html4`${UI4.Widget.widget(DeviceModeToolbar, { model: input.model })}
     <div class=${classMap2({
       "device-mode-content-clip": true,
       vbox: true,
@@ -2273,7 +2289,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     })}>
       <div class="device-mode-presets-container" jslog=${VisualLogging3.responsivePresets()}>
         <div class="device-mode-presets-container-inner">
-          ${sizes.map((size, idx) => html3`
+          ${sizes.map((size, idx) => html4`
             <div class="fill device-mode-preset-bar-outer">
               <div class="device-mode-preset-bar"
                    style="width: ${size * input.scale}px;"
@@ -2345,7 +2361,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             ${widget2(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry.Size(1, 1) })}
           </div>
         </div>
-        ${input.showRulers ? html3`
+        ${input.showRulers ? html4`
           <devtools-widget class="device-mode-ruler-top device-mode-ruler"
               style=${styleMap({ left: `${input.cachedCssScreenRect?.left ?? 0}px`, top: `${input.cachedCssScreenRect?.top ?? 0}px` })}
               ${UI4.Widget.widget(Ruler, {
@@ -2411,7 +2427,7 @@ var DeviceModeView = class _DeviceModeView extends UI4.Widget.VBox {
   #showDeviceModeSetting;
   #view;
   #viewOutput = {};
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.setMinimumSize(150, 150);
@@ -2691,7 +2707,7 @@ var DEFAULT_RULER_VIEW = (input, output, target) => {
     const isLarge = !(i % 10);
     const isMedium = !(i % 5);
     const offset = i ? `${5 * i * input.scale / zoomFactor}px` : void 0;
-    markers.push(html3`
+    markers.push(html4`
       <div
         class=${classMap2({
       "device-mode-ruler-marker": true,
@@ -2699,12 +2715,12 @@ var DEFAULT_RULER_VIEW = (input, output, target) => {
       "device-mode-ruler-marker-medium": isMedium && !isLarge
     })}
         style=${styleMap(input.horizontal ? { left: offset } : { top: offset })}>
-          ${i && !(i % 20) ? html3`<div class="device-mode-ruler-text" @click=${() => input.onMarkerClick(i * 5)}>${i * 5}</div>` : nothing2}
+          ${i && !(i % 20) ? html4`<div class="device-mode-ruler-text" @click=${() => input.onMarkerClick(i * 5)}>${i * 5}</div>` : nothing2}
       </div>
     `);
   }
-  render3(
-    html3`
+  render4(
+    html4`
     <div class="device-mode-ruler-content">
       <div class="device-mode-ruler-inner">
         ${markers}
@@ -2887,13 +2903,13 @@ function getQuadBoundingBox(quad) {
 }
 
 // ../../front_end/panels/emulation/AdvancedApp.ts
-var { html: html4, render: render4 } = Lit;
+var { html: html5, render: render5 } = Lit;
 var { widget: widget3, widgetRef } = UI5.Widget;
 var appInstance = null;
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   let rootSplitWidget;
   let inspectorView;
-  render4(html4`
+  render5(html5`
     <style>${advancedApp_css_default}</style>
     <devtools-split-view
         autofocus
@@ -2927,7 +2943,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
   }
 };
 var DEFAULT_TOOLBOX_VIEW = (input, _output, target) => {
-  render4(html4`
+  render5(html5`
     ${widget3(UI5.Widget.WrapperWidget, { widget: input.deviceModeView })}
   `, target);
 };
@@ -2946,7 +2962,7 @@ var AdvancedApp = class _AdvancedApp {
   #show = "both";
   #dockSide = UI5.DockController.DockState.BOTTOM;
   #topResizerEnabled = false;
-  constructor(universe, view = DEFAULT_VIEW4, toolboxView = DEFAULT_TOOLBOX_VIEW) {
+  constructor(universe, view = DEFAULT_VIEW5, toolboxView = DEFAULT_TOOLBOX_VIEW) {
     this.#universe = universe;
     this.#view = view;
     this.#toolboxView = toolboxView;

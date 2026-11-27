@@ -111,11 +111,12 @@ export class PlayerListView extends UI.Widget.VBox {
             for (const [name, value] of data.properties) {
                 this.onProperty(playerID, { name, value });
             }
-            const prevCount = this.#processedEventCounts.get(playerID) ?? 0;
-            for (let i = prevCount; i < data.events.length; i++) {
-                this.onEvent(playerID, data.events[i]);
+            let processedEvents = this.#processedEventCounts.get(playerID) ?? 0;
+            while (processedEvents < data.events.length) {
+                const event = data.events[processedEvents++];
+                this.#processedEventCounts.set(playerID, processedEvents);
+                this.onEvent(playerID, event);
             }
-            this.#processedEventCounts.set(playerID, data.events.length);
         }
     }
     set selectedPlayerID(playerID) {
@@ -244,13 +245,22 @@ export class PlayerListView extends UI.Widget.VBox {
         this.requestUpdate();
     }
     onEvent(playerID, event) {
-        const parsed = JSON.parse(event.value);
-        const eventType = parsed.event;
+        let parsed;
+        try {
+            parsed = JSON.parse(event.value);
+        }
+        catch {
+            return;
+        }
+        const eventType = parsed?.event;
         // Load events provide the actual underlying URL for the video, which makes
         // a great way to identify a specific video within a page that potentially
         // may have many videos. MSE videos have a special blob:http(s) protocol
         // that we'd like to keep mind of, so we do prepend blob:
         if (eventType === 'kLoad') {
+            if (typeof parsed.url !== 'string') {
+                return;
+            }
             const url = parsed.url;
             const videoName = url.substring(url.lastIndexOf('/') + 1);
             this.formatAndEvaluate(playerID, this.setMediaElementPlayerTitle, videoName, 1, 20);
@@ -276,8 +286,13 @@ export class PlayerListView extends UI.Widget.VBox {
         // have any relevance to the video being played, and would be shared by all
         // videos on the page.
         if (property.name === "kFrameUrl" /* PlayerPropertyKeys.FRAME_URL */) {
-            const frameTitle = new URL(property.value).hostname;
-            this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, frameTitle, 1, 20);
+            try {
+                const frameTitle = new URL(property.value).hostname;
+                this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, frameTitle, 1, 20);
+            }
+            catch {
+                // Ignore invalid URLs.
+            }
             return;
         }
         // On the other hand, the page may set a title, which usually makes for a

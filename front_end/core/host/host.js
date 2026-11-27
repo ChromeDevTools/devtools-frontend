@@ -313,9 +313,6 @@ var EnumeratedHistogram = /* @__PURE__ */ ((EnumeratedHistogram2) => {
   EnumeratedHistogram2["DeveloperResourceScheme"] = "DevTools.DeveloperResourceScheme";
   EnumeratedHistogram2["Language"] = "DevTools.Language";
   EnumeratedHistogram2["SyncSetting"] = "DevTools.SyncSetting";
-  EnumeratedHistogram2["RecordingReplayFinished"] = "DevTools.RecordingReplayFinished";
-  EnumeratedHistogram2["RecordingReplayStarted"] = "DevTools.RecordingReplayStarted";
-  EnumeratedHistogram2["RecordingToggled"] = "DevTools.RecordingToggled";
   EnumeratedHistogram2["SourcesPanelFileDebugged"] = "DevTools.SourcesPanelFileDebugged";
   EnumeratedHistogram2["SourcesPanelFileOpened"] = "DevTools.SourcesPanelFileOpened";
   EnumeratedHistogram2["NetworkPanelResponsePreviewOpened"] = "DevTools.NetworkPanelResponsePreviewOpened";
@@ -1112,15 +1109,6 @@ __export(UserMetrics_exports, {
   ManifestSectionCodes: () => ManifestSectionCodes2,
   MediaTypes: () => MediaTypes2,
   PanelCodes: () => PanelCodes2,
-  RecordingAssertion: () => RecordingAssertion2,
-  RecordingCodeToggled: () => RecordingCodeToggled2,
-  RecordingCopiedToClipboard: () => RecordingCopiedToClipboard2,
-  RecordingEdited: () => RecordingEdited2,
-  RecordingExported: () => RecordingExported2,
-  RecordingReplayFinished: () => RecordingReplayFinished2,
-  RecordingReplaySpeed: () => RecordingReplaySpeed2,
-  RecordingReplayStarted: () => RecordingReplayStarted2,
-  RecordingToggled: () => RecordingToggled2,
   ResendRequestType: () => ResendRequestType2,
   SwatchType: () => SwatchType2,
   SyncSetting: () => SyncSetting2,
@@ -1846,83 +1834,6 @@ var SyncSetting = /* @__PURE__ */ ((SyncSetting3) => {
   SyncSetting3[SyncSetting3["MAX_VALUE"] = 5] = "MAX_VALUE";
   return SyncSetting3;
 })(SyncSetting || {});
-var RecordingToggled = /* @__PURE__ */ ((RecordingToggled3) => {
-  RecordingToggled3[RecordingToggled3["RECORDING_STARTED"] = 1] = "RECORDING_STARTED";
-  RecordingToggled3[RecordingToggled3["RECORDING_FINISHED"] = 2] = "RECORDING_FINISHED";
-  RecordingToggled3[RecordingToggled3["MAX_VALUE"] = 3] = "MAX_VALUE";
-  return RecordingToggled3;
-})(RecordingToggled || {});
-var RecordingAssertion = /* @__PURE__ */ ((RecordingAssertion3) => {
-  RecordingAssertion3[RecordingAssertion3["ASSERTION_ADDED"] = 1] = "ASSERTION_ADDED";
-  RecordingAssertion3[RecordingAssertion3["PROPERTY_ASSERTION_EDITED"] = 2] = "PROPERTY_ASSERTION_EDITED";
-  RecordingAssertion3[RecordingAssertion3["ATTRIBUTE_ASSERTION_EDITED"] = 3] = "ATTRIBUTE_ASSERTION_EDITED";
-  RecordingAssertion3[RecordingAssertion3["MAX_VALUE"] = 4] = "MAX_VALUE";
-  return RecordingAssertion3;
-})(RecordingAssertion || {});
-var RecordingReplayFinished = /* @__PURE__ */ ((RecordingReplayFinished3) => {
-  RecordingReplayFinished3[RecordingReplayFinished3["SUCCESS"] = 1] = "SUCCESS";
-  RecordingReplayFinished3[RecordingReplayFinished3["TIMEOUT_ERROR_SELECTORS"] = 2] = "TIMEOUT_ERROR_SELECTORS";
-  RecordingReplayFinished3[RecordingReplayFinished3["TIMEOUT_ERROR_TARGET"] = 3] = "TIMEOUT_ERROR_TARGET";
-  RecordingReplayFinished3[RecordingReplayFinished3["OTHER_ERROR"] = 4] = "OTHER_ERROR";
-  RecordingReplayFinished3[RecordingReplayFinished3["MAX_VALUE"] = 5] = "MAX_VALUE";
-  return RecordingReplayFinished3;
-})(RecordingReplayFinished || {});
-var RecordingReplaySpeed = /* @__PURE__ */ ((RecordingReplaySpeed3) => {
-  RecordingReplaySpeed3[RecordingReplaySpeed3["NORMAL"] = 1] = "NORMAL";
-  RecordingReplaySpeed3[RecordingReplaySpeed3["SLOW"] = 2] = "SLOW";
-  RecordingReplaySpeed3[RecordingReplaySpeed3["VERY_SLOW"] = 3] = "VERY_SLOW";
-  RecordingReplaySpeed3[RecordingReplaySpeed3["EXTREMELY_SLOW"] = 4] = "EXTREMELY_SLOW";
-  RecordingReplaySpeed3[RecordingReplaySpeed3["MAX_VALUE"] = 5] = "MAX_VALUE";
-  return RecordingReplaySpeed3;
-})(RecordingReplaySpeed || {});
-var RecordingReplayStarted = /* @__PURE__ */ ((RecordingReplayStarted3) => {
-  RecordingReplayStarted3[RecordingReplayStarted3["REPLAY_ONLY"] = 1] = "REPLAY_ONLY";
-  RecordingReplayStarted3[RecordingReplayStarted3["REPLAY_WITH_PERFORMANCE_TRACING"] = 2] = "REPLAY_WITH_PERFORMANCE_TRACING";
-  RecordingReplayStarted3[RecordingReplayStarted3["REPLAY_VIA_EXTENSION"] = 3] = "REPLAY_VIA_EXTENSION";
-  RecordingReplayStarted3[RecordingReplayStarted3["MAX_VALUE"] = 4] = "MAX_VALUE";
-  return RecordingReplayStarted3;
-})(RecordingReplayStarted || {});
-var RecordingEdited = /* @__PURE__ */ ((RecordingEdited3) => {
-  RecordingEdited3[RecordingEdited3["SELECTOR_PICKER_USED"] = 1] = "SELECTOR_PICKER_USED";
-  RecordingEdited3[RecordingEdited3["STEP_ADDED"] = 2] = "STEP_ADDED";
-  RecordingEdited3[RecordingEdited3["STEP_REMOVED"] = 3] = "STEP_REMOVED";
-  RecordingEdited3[RecordingEdited3["SELECTOR_ADDED"] = 4] = "SELECTOR_ADDED";
-  RecordingEdited3[RecordingEdited3["SELECTOR_REMOVED"] = 5] = "SELECTOR_REMOVED";
-  RecordingEdited3[RecordingEdited3["SELECTOR_PART_ADDED"] = 6] = "SELECTOR_PART_ADDED";
-  RecordingEdited3[RecordingEdited3["SELECTOR_PART_EDITED"] = 7] = "SELECTOR_PART_EDITED";
-  RecordingEdited3[RecordingEdited3["SELECTOR_PART_REMOVED"] = 8] = "SELECTOR_PART_REMOVED";
-  RecordingEdited3[RecordingEdited3["TYPE_CHANGED"] = 9] = "TYPE_CHANGED";
-  RecordingEdited3[RecordingEdited3["OTHER_EDITING"] = 10] = "OTHER_EDITING";
-  RecordingEdited3[RecordingEdited3["MAX_VALUE"] = 11] = "MAX_VALUE";
-  return RecordingEdited3;
-})(RecordingEdited || {});
-var RecordingExported = /* @__PURE__ */ ((RecordingExported3) => {
-  RecordingExported3[RecordingExported3["TO_PUPPETEER"] = 1] = "TO_PUPPETEER";
-  RecordingExported3[RecordingExported3["TO_JSON"] = 2] = "TO_JSON";
-  RecordingExported3[RecordingExported3["TO_PUPPETEER_REPLAY"] = 3] = "TO_PUPPETEER_REPLAY";
-  RecordingExported3[RecordingExported3["TO_EXTENSION"] = 4] = "TO_EXTENSION";
-  RecordingExported3[RecordingExported3["TO_LIGHTHOUSE"] = 5] = "TO_LIGHTHOUSE";
-  RecordingExported3[RecordingExported3["MAX_VALUE"] = 6] = "MAX_VALUE";
-  return RecordingExported3;
-})(RecordingExported || {});
-var RecordingCodeToggled = /* @__PURE__ */ ((RecordingCodeToggled3) => {
-  RecordingCodeToggled3[RecordingCodeToggled3["CODE_SHOWN"] = 1] = "CODE_SHOWN";
-  RecordingCodeToggled3[RecordingCodeToggled3["CODE_HIDDEN"] = 2] = "CODE_HIDDEN";
-  RecordingCodeToggled3[RecordingCodeToggled3["MAX_VALUE"] = 3] = "MAX_VALUE";
-  return RecordingCodeToggled3;
-})(RecordingCodeToggled || {});
-var RecordingCopiedToClipboard = /* @__PURE__ */ ((RecordingCopiedToClipboard3) => {
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_RECORDING_WITH_PUPPETEER"] = 1] = "COPIED_RECORDING_WITH_PUPPETEER";
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_RECORDING_WITH_JSON"] = 2] = "COPIED_RECORDING_WITH_JSON";
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_RECORDING_WITH_REPLAY"] = 3] = "COPIED_RECORDING_WITH_REPLAY";
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_RECORDING_WITH_EXTENSION"] = 4] = "COPIED_RECORDING_WITH_EXTENSION";
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_STEP_WITH_PUPPETEER"] = 5] = "COPIED_STEP_WITH_PUPPETEER";
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_STEP_WITH_JSON"] = 6] = "COPIED_STEP_WITH_JSON";
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_STEP_WITH_REPLAY"] = 7] = "COPIED_STEP_WITH_REPLAY";
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_STEP_WITH_EXTENSION"] = 8] = "COPIED_STEP_WITH_EXTENSION";
-  RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["MAX_VALUE"] = 9] = "MAX_VALUE";
-  return RecordingCopiedToClipboard3;
-})(RecordingCopiedToClipboard || {});
 var ManifestSectionCodes = /* @__PURE__ */ ((ManifestSectionCodes3) => {
   ManifestSectionCodes3[ManifestSectionCodes3["OtherSection"] = 0] = "OtherSection";
   ManifestSectionCodes3[ManifestSectionCodes3["Identity"] = 1] = "Identity";
@@ -2239,27 +2150,6 @@ var UserMetrics = class {
       );
     });
   }
-  recordingToggled(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.RecordingToggled" /* RecordingToggled */,
-      value,
-      RecordingToggled2.MAX_VALUE
-    );
-  }
-  recordingReplayFinished(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.RecordingReplayFinished" /* RecordingReplayFinished */,
-      value,
-      RecordingReplayFinished2.MAX_VALUE
-    );
-  }
-  recordingReplayStarted(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-      "DevTools.RecordingReplayStarted" /* RecordingReplayStarted */,
-      value,
-      RecordingReplayStarted2.MAX_VALUE
-    );
-  }
   lighthouseModeRun(type) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
       "DevTools.LighthouseModeRun" /* LighthouseModeRun */,
@@ -2490,21 +2380,6 @@ var DeveloperResourceScheme2 = createDynamicEnumProxy(
 );
 var Language2 = createDynamicEnumProxy("Language", Language);
 var SyncSetting2 = createDynamicEnumProxy("SyncSetting", SyncSetting);
-var RecordingToggled2 = createDynamicEnumProxy("RecordingToggled", RecordingToggled);
-var RecordingAssertion2 = createDynamicEnumProxy("RecordingAssertion", RecordingAssertion);
-var RecordingReplayFinished2 = createDynamicEnumProxy(
-  "RecordingReplayFinished",
-  RecordingReplayFinished
-);
-var RecordingReplaySpeed2 = createDynamicEnumProxy("RecordingReplaySpeed", RecordingReplaySpeed);
-var RecordingReplayStarted2 = createDynamicEnumProxy("RecordingReplayStarted", RecordingReplayStarted);
-var RecordingEdited2 = createDynamicEnumProxy("RecordingEdited", RecordingEdited);
-var RecordingExported2 = createDynamicEnumProxy("RecordingExported", RecordingExported);
-var RecordingCodeToggled2 = createDynamicEnumProxy("RecordingCodeToggled", RecordingCodeToggled);
-var RecordingCopiedToClipboard2 = createDynamicEnumProxy(
-  "RecordingCopiedToClipboard",
-  RecordingCopiedToClipboard
-);
 var ManifestSectionCodes2 = createDynamicEnumProxy("ManifestSectionCodes", ManifestSectionCodes);
 var LighthouseModeRun2 = createDynamicEnumProxy("LighthouseModeRun", LighthouseModeRun);
 var LighthouseCategoryUsed2 = createDynamicEnumProxy("LighthouseCategoryUsed", LighthouseCategoryUsed);

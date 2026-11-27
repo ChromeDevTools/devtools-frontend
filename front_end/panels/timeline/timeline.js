@@ -140,7 +140,7 @@ import * as Trace37 from "../../models/trace/trace.js";
 import * as SourceMapsResolver9 from "../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace8 from "../../models/workspace/workspace.js";
 import * as ThemeSupport25 from "../../ui/legacy/theme_support/theme_support.js";
-import { html as html15, render as render13 } from "../../ui/lit/lit.js";
+import { html as html16, render as render14 } from "../../ui/lit/lit.js";
 import * as SettingsUI5 from "../../ui/settings/settings.js";
 import * as TimelineComponents7 from "./components/components.js";
 
@@ -2026,7 +2026,7 @@ import * as Workspace6 from "../../models/workspace/workspace.js";
 import * as PerfUI16 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "../../ui/legacy/theme_support/theme_support.js";
-import { html as html14 } from "../../ui/lit/lit.js";
+import { html as html15 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/timeline/Initiators.ts
 var Initiators_exports = {};
@@ -2111,62 +2111,65 @@ var timelineFlamechartPopover_css_default = `/*
  * found in the LICENSE file.
  */
 
-.timeline-flamechart-popover {
-  overflow: hidden;
-  /* extend padding into the parent element to avoid clipping the focus-visible outline. */
-  padding: var(--sys-size-3);
-  margin: calc(-1 * var(--sys-size-3));
-}
+@scope to (devtools-widget > *) {
+  .timeline-flamechart-popover {
+    overflow: hidden;
+    /* extend padding into the parent element to avoid clipping the focus-visible outline. */
+    padding: var(--sys-size-3);
+    margin: calc(-1 * var(--sys-size-3));
+  }
 
-.timeline-flamechart-popover devtools-widget {
-  margin-top: var(--sys-size-5);
-}
+  .timeline-flamechart-popover devtools-widget {
+    margin-top: var(--sys-size-5);
+  }
 
-.timeline-flamechart-popover span {
-  margin-right: var(--sys-size-3);
-}
+  .timeline-flamechart-popover span {
+    margin-right: var(--sys-size-3);
+  }
 
-.timeline-flamechart-popover span.popoverinfo-time {
-  color: var(--sys-color-green);
-}
+  .timeline-flamechart-popover span.popoverinfo-time {
+    color: var(--sys-color-green);
+  }
 
-.timeline-flamechart-popover span.popoverinfo-warning {
-  color: var(--sys-color-error);
-}
+  .timeline-flamechart-popover span.popoverinfo-warning {
+    color: var(--sys-color-error);
+  }
 
-.timeline-flamechart-popover span.popoverinfo-url-path,
-.timeline-flamechart-popover span.popoverinfo-url-origin {
-  color: var(--sys-color-token-subtle);
-  font-size: var(--sys-typescale-body5-size);
-  white-space: normal;
-  word-break: break-all;
-}
+  .timeline-flamechart-popover span.popoverinfo-url-path,
+  .timeline-flamechart-popover span.popoverinfo-url-origin {
+    color: var(--sys-color-token-subtle);
+    font-size: var(--sys-typescale-body5-size);
+    white-space: normal;
+    word-break: break-all;
+  }
 
-.timeline-flamechart-popover span.popoverinfo-url-origin {
-  font-style: italic;
-}
+  .timeline-flamechart-popover span.popoverinfo-url-origin {
+    font-style: italic;
+  }
 
-.timeline-flamechart-popover span.popoverinfo-warning * {
-  color: inherit;
-}
+  .timeline-flamechart-popover span.popoverinfo-warning * {
+    color: inherit;
+  }
 
-.layout-shift-viz {
-  position: relative;
-  margin: var(--sys-size-8) var(--sys-size-5);
-  outline: var(--sys-size-1) solid var(--sys-color-divider);
-}
+  .layout-shift-viz {
+    position: relative;
+    margin: var(--sys-size-8) var(--sys-size-5);
+    outline: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 
-.layout-shift-viz-rect {
-  outline: var(--sys-size-1) solid color-mix(in srgb, var(--sys-color-inverse-surface) 20%, var(--app-color-rendering));
-  background-color: color-mix(in srgb, transparent 50%, var(--app-color-rendering-children));
-  position: absolute;
-  z-index: 100;
-}
+  .layout-shift-viz-rect {
+    outline:
+      var(--sys-size-1) solid color-mix(in srgb, var(--sys-color-inverse-surface) 20%, var(--app-color-rendering));
+    background-color: color-mix(in srgb, transparent 50%, var(--app-color-rendering-children));
+    position: absolute;
+    z-index: 100;
+  }
 
-.layout-shift-viz > img {
-  position: absolute;
-  top: 0;
-  left: 0;
+  .layout-shift-viz > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./timelineFlamechartPopover.css")} */`;
@@ -2175,6 +2178,7 @@ var timelineFlamechartPopover_css_default = `/*
 var TimelineFlameChartView_exports = {};
 __export(TimelineFlameChartView_exports, {
   ColorBy: () => ColorBy,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   Events: () => Events2,
   FlameChartStyle: () => FlameChartStyle,
   SORT_ORDER_PAGE_LOAD_MARKERS: () => SORT_ORDER_PAGE_LOAD_MARKERS,
@@ -2194,6 +2198,7 @@ import * as Workspace5 from "../../models/workspace/workspace.js";
 import * as TraceBounds15 from "../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI15 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
+import { html as html14, render as render13 } from "../../ui/lit/lit.js";
 import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 import * as TimelineInsights2 from "./components/insights/insights.js";
 
@@ -2268,6 +2273,7 @@ var CountersGraph = class extends UI2.Widget.VBox {
   counterUI;
   countersByName;
   gpuMemoryCounter;
+  #parsedTrace = null;
   #events = null;
   currentValuesBar;
   markerXPosition;
@@ -2373,7 +2379,14 @@ var CountersGraph = class extends UI2.Widget.VBox {
       this.requestUpdate();
     }
   }
+  set model(data) {
+    if (this.#parsedTrace === data.parsedTrace && this.#events === data.events) {
+      return;
+    }
+    this.setModel(data.parsedTrace, data.events);
+  }
   setModel(parsedTrace, events) {
+    this.#parsedTrace = parsedTrace;
     this.#events = events;
     if (!events || !parsedTrace) {
       return;
@@ -18339,8 +18352,10 @@ var timelineSelectorStatsView_css_default = `/*
  * found in the LICENSE file.
  */
 
-devtools-data-grid {
-  flex: auto;
+@scope to (devtools-widget > *) {
+  devtools-data-grid {
+    flex: auto;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./timelineSelectorStatsView.css")} */`;
@@ -19173,23 +19188,27 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     };
     this.requestUpdate();
     if (!this.#parsedTrace || !this.#selectedEvents || !TraceBounds13.TraceBounds.BoundsManager.instance().state()) {
+      this.#closeExtraTabs();
       void this.updateSummaryPane();
     }
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;
     await this.setSelection(null);
   }
-  /**
-   * Updates the UI shown in the Summary tab. If the summary tab is not
-   * currently selected, the update is deferred until the tab becomes active.
-   */
-  async updateSummaryPane() {
+  #closeExtraTabs() {
+    this.#summaryNeedsUpdate = false;
     const allTabs = this.tabbedPane.otherTabs("details" /* Details */);
     for (let i = 0; i < allTabs.length; ++i) {
       if (!this.rangeDetailViews.has(allTabs[i])) {
         this.tabbedPane.closeTab(allTabs[i]);
       }
     }
+  }
+  /**
+   * Updates the UI shown in the Summary tab. If the summary tab is not
+   * currently selected, the update is deferred until the tab becomes active.
+   */
+  async updateSummaryPane() {
     if (this.#selectedTab() !== "details" /* Details */) {
       this.#summaryNeedsUpdate = true;
       return;
@@ -19240,6 +19259,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
   scheduleUpdateContentsFromWindow(forceImmediateUpdate = false) {
     if (!this.#parsedTrace) {
       this.#hasPendingWindowUpdate = false;
+      this.#closeExtraTabs();
       void this.updateSummaryPane();
       return;
     }
@@ -19282,8 +19302,12 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     this.#summary.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
     this.#summary.linkifier = this.#detailsLinkifier;
     this.#summary.target = targetForEvent(this.#parsedTrace, event);
-    await this.updateSummaryPane();
+    this.#closeExtraTabs();
+    if (Trace31.Types.Events.isLegacyTimelineFrame(event)) {
+      this.#addLayerTreeForSelectedFrame(event);
+    }
     this.appendExtraDetailsTabsForTraceEvent(event);
+    await this.updateSummaryPane();
   }
   async setSelection(selection) {
     if (!this.#parsedTrace) {
@@ -19302,9 +19326,6 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     if (selectionIsEvent(selection)) {
       this.#debouncedUpdateContentsFromWindow.cancel();
       this.#hasPendingWindowUpdate = false;
-      if (Trace31.Types.Events.isLegacyTimelineFrame(selection.event)) {
-        this.#addLayerTreeForSelectedFrame(selection.event);
-      }
       await this.#setSelectionForTraceEvent(selection.event);
     } else if (selectionIsRange(selection)) {
       this.#debouncedUpdateContentsFromWindow.cancel();
@@ -19449,7 +19470,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
       endTime,
       selection: this.#selection
     };
-    await this.updateSummaryPane();
+    this.#closeExtraTabs();
     const isSelectorStatsEnabled = Common15.Settings.Settings.instance().resolve(SettingsUI4.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor).get();
     if (this.#selectedEvents && isSelectorStatsEnabled) {
       const eventsInRange = Trace31.Helpers.Trace.findRecalcStyleEvents(
@@ -19461,6 +19482,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
         this.showAggregatedSelectorStats(eventsInRange);
       }
     }
+    await this.updateSummaryPane();
   }
 };
 function generateRangeSummaryDetails(input) {
@@ -20477,6 +20499,51 @@ var SORT_ORDER_PAGE_LOAD_MARKERS = {
   [Trace34.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 7
 };
 var TIMESTAMP_THRESHOLD_MS = Trace34.Types.Timing.Micro(10);
+var { widget: widget6, widgetRef: widgetRef3 } = UI18.Widget;
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  const container = {
+    classes: ["timeline-flamechart"],
+    attributes: { jslog: VisualLogging12.section("timeline.flame-chart-view"), inert: input.inert },
+    listeners: {
+      keydown: (event) => {
+        const { key, altKey } = event;
+        const result = input.onKeyDown({ key, altKey });
+        if (result) {
+          event.stopPropagation();
+        }
+        if (result === "handled") {
+          event.preventDefault();
+        }
+      },
+      pointerdown: (event) => {
+        if (event.buttons === 2 && input.onSecondaryPointerDown()) {
+          event.stopPropagation();
+        }
+      },
+      [OverlayComponents.EntriesLinkOverlay.EntryLinkStartCreating.eventName]: input.onEntryLinkStartCreating,
+      [TimelineInsights2.EventRef.EventReferenceClick.eventName]: (event) => input.onEventReferenceClick(event.event)
+    }
+  };
+  render13(
+    html14`<style>${timelineFlameChartView_css_default}</style>
+    <devtools-split-view class="timeline-details-split" direction="row" sidebar-position="second"
+        name="timeline-panel-details-split-view-state"
+        ${widgetRef3(UI18.SplitWidget.SplitWidget, (split) => split.installResizer(input.detailsView.headerElement()))}>
+      <devtools-split-view slot="main" direction="row" sidebar-position="second"
+          name="timeline-counters-split-view-state" show=${input.showMemoryGraph ? "both" : "main"}
+          ${widgetRef3(UI18.SplitWidget.SplitWidget, (split) => {
+      split.hideDefaultResizer();
+      split.installResizer(input.countersView.resizerElement());
+    })}>
+        <div slot="main" ${widget6(UI18.Widget.WrapperWidget, { widget: input.flameChartsContainer })}></div>
+        <div slot="sidebar" ${widget6(UI18.Widget.WrapperWidget, { widget: input.countersView })}></div>
+      </devtools-split-view>
+      <div slot="sidebar" ${widget6(UI18.Widget.WrapperWidget, { widget: input.detailsView })}></div>
+    </devtools-split-view>`,
+    target,
+    { container }
+  );
+};
 var TimelineFlameChartViewBase = Common16.ObjectWrapper.eventMixin(
   UI18.Widget.VBox
 );
@@ -20497,9 +20564,8 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
   networkFlameChart;
   #networkPane;
   #splitResizer;
-  #chartSplitWidget;
+  #flameChartsContainer;
   #countersView;
-  #detailsSplitWidget;
   // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in Chromium web_tests.
   detailsView;
   #onMainAddEntryLabelAnnotation;
@@ -20572,16 +20638,19 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
   #networkPersistedGroupConfigSetting;
   #mainPersistedGroupConfigSetting;
   #listenersAttached = false;
+  #showMemoryGraph = true;
+  #inert = false;
+  #view;
   #boundOnMainDataChanged = () => {
     this.mainFlameChart.scheduleUpdate();
   };
-  constructor(delegate, commentManager) {
-    super({ jslog: `${VisualLogging12.section("timeline.flame-chart-view")}` });
-    this.registerRequiredCSS(timelineFlameChartView_css_default);
-    this.element.classList.add("timeline-flamechart");
+  constructor(delegate, commentManager, view = DEFAULT_VIEW8) {
+    super();
+    this.#view = view;
     this.#delegate = delegate;
     this.#parsedTrace = null;
     const flameChartsContainer = new UI18.Widget.VBox();
+    this.#flameChartsContainer = flameChartsContainer;
     flameChartsContainer.element.classList.add("flame-charts-container");
     this.#networkSplitWidget = new UI18.SplitWidget.SplitWidget(false, false, "timeline-flamechart-main-view", 150);
     this.#networkSplitWidget.show(flameChartsContainer.element);
@@ -20664,12 +20733,8 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       }
     });
     this.#overlays.addEventListener(Overlays5.Overlays.ConsentDialogVisibilityChange.eventName, (e) => {
-      const event = e;
-      if (event.isVisible) {
-        this.element.setAttribute("inert", "inert");
-      } else {
-        this.element.removeAttribute("inert");
-      }
+      this.#inert = e.isVisible;
+      this.requestUpdate();
     });
     this.#overlays.addEventListener(Overlays5.Overlays.EntryLabelMouseClick.eventName, (event) => {
       const { overlay } = event;
@@ -20700,9 +20765,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
         ModificationsManager.activeManager()?.updateAnnotationOverlay(overlay);
       }
     });
-    this.element.addEventListener(OverlayComponents.EntriesLinkOverlay.EntryLinkStartCreating.eventName, () => {
-      this.focus();
-    });
     this.#networkPane = new UI18.Widget.VBox();
     this.#networkPane.setMinimumSize(23, 23);
     this.networkFlameChart.show(this.#networkPane.element);
@@ -20711,19 +20773,8 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     this.#networkSplitWidget.installResizer(this.#splitResizer);
     this.#networkSplitWidget.setMainWidget(this.mainFlameChart);
     this.#networkSplitWidget.setSidebarWidget(this.#networkPane);
-    this.#chartSplitWidget = new UI18.SplitWidget.SplitWidget(false, true, "timeline-counters-split-view-state");
     this.#countersView = new CountersGraph(this.#delegate);
-    this.#chartSplitWidget.setMainWidget(flameChartsContainer);
-    this.#chartSplitWidget.setSidebarWidget(this.#countersView);
-    this.#chartSplitWidget.hideDefaultResizer();
-    this.#chartSplitWidget.installResizer(this.#countersView.resizerElement());
-    this.#detailsSplitWidget = new UI18.SplitWidget.SplitWidget(false, true, "timeline-panel-details-split-view-state");
-    this.#detailsSplitWidget.element.classList.add("timeline-details-split");
     this.detailsView = new TimelineDetailsPane(delegate);
-    this.#detailsSplitWidget.installResizer(this.detailsView.headerElement());
-    this.#detailsSplitWidget.setMainWidget(this.#chartSplitWidget);
-    this.#detailsSplitWidget.setSidebarWidget(this.detailsView);
-    this.#detailsSplitWidget.show(this.element);
     this.#onMainAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
     this.#onNetworkAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.#networkDataProvider);
     this.#onMainEntriesLinkAnnotationCreated = (event) => this.onEntriesLinkAnnotationCreate(this.mainDataProvider, event.data.entryFromIndex);
@@ -20792,11 +20843,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       const fromTraceEvent = selectionFromEvent(eventRef.event);
       void this.openSelectionDetailsView(fromTraceEvent);
     });
-    this.element.addEventListener(TimelineInsights2.EventRef.EventReferenceClick.eventName, (event) => {
-      void this.setSelectionAndReveal(selectionFromEvent(event.event));
-    });
-    this.element.addEventListener("keydown", this.#keydownHandler.bind(this));
-    this.element.addEventListener("pointerdown", this.#pointerDownHandler.bind(this));
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
     this.#selectedEvents = null;
     this.#groupBySetting = Common16.Settings.Settings.instance().createSetting(
@@ -20815,6 +20861,7 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       },
       commentManager
     );
+    this.requestUpdate();
   }
   #attachListeners() {
     if (this.#listenersAttached) {
@@ -21182,12 +21229,13 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       this.addTimestampMarkerOverlay(timeInMicroSeconds);
     }
   }
-  #pointerDownHandler(event) {
-    if (event.buttons === 2 && this.#linkSelectionAnnotation) {
-      this.#clearLinkSelectionAnnotation(true);
-      event.stopPropagation();
+  #onSecondaryPointerDown = () => {
+    if (!this.#linkSelectionAnnotation) {
+      return false;
     }
-  }
+    this.#clearLinkSelectionAnnotation(true);
+    return true;
+  };
   #clearLinkSelectionAnnotation(deleteCurrentLink) {
     if (this.#linkSelectionAnnotation === null) {
       return;
@@ -21310,23 +21358,22 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       }
     }
   }
-  #keydownHandler(event) {
+  #onKeyDown = (event) => {
+    let result;
     if (this.#linkSelectionAnnotation && this.#linkSelectionAnnotation.state === Trace34.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
       this.#clearLinkSelectionAnnotation(true);
-      event.stopPropagation();
+      result = "stop-propagation";
     }
     if (event.key === "Escape" && this.#linkSelectionAnnotation) {
       this.#clearLinkSelectionAnnotation(true);
-      event.stopPropagation();
-      event.preventDefault();
+      result = "handled";
     }
     const eventHandledByKeyboardTimeRange = this.#handleTimeRangeKeyboardCreation(event);
     if (eventHandledByKeyboardTimeRange) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
+      return "handled";
     }
-  }
+    return result;
+  };
   forceAnimationsForTest() {
     this.#checkReducedMotion = false;
   }
@@ -21644,12 +21691,33 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     }
     this.#updateFlameCharts();
   }
-  updateCountersGraphToggle(showMemoryGraph) {
-    if (showMemoryGraph) {
-      this.#chartSplitWidget.showBoth();
-    } else {
-      this.#chartSplitWidget.hideSidebar();
+  performUpdate() {
+    this.#view(
+      {
+        flameChartsContainer: this.#flameChartsContainer,
+        countersView: this.#countersView,
+        detailsView: this.detailsView,
+        showMemoryGraph: this.#showMemoryGraph,
+        inert: this.#inert,
+        onKeyDown: this.#onKeyDown,
+        onSecondaryPointerDown: this.#onSecondaryPointerDown,
+        // Focus this view when link creation deletes the arrow so Escape cancels via keydown.
+        onEntryLinkStartCreating: () => this.focus(),
+        onEventReferenceClick: (event) => void this.setSelectionAndReveal(selectionFromEvent(event))
+      },
+      void 0,
+      this.contentElement
+    );
+    if (this.#needsResizeToPreferredHeights) {
+      this.resizeToPreferredHeights();
     }
+  }
+  updateCountersGraphToggle(showMemoryGraph) {
+    if (this.#showMemoryGraph === showMemoryGraph) {
+      return;
+    }
+    this.#showMemoryGraph = showMemoryGraph;
+    this.requestUpdate();
   }
   zoomEvent(event) {
     const traceBounds = TraceBounds15.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
@@ -21905,7 +21973,7 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     this.#clearLinkSelectionAnnotation(false);
   }
   resizeToPreferredHeights() {
-    if (!this.isShowing()) {
+    if (!this.isShowing() || !this.#networkSplitWidget.isShowing()) {
       this.#needsResizeToPreferredHeights = true;
       return;
     }
@@ -22780,15 +22848,15 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     for (const warningElement of warningElements) {
       warningElement.classList.add("popoverinfo-warning");
     }
-    return html14`
+    return html15`
       <style>${timelineFlamechartPopover_css_default}</style>
       <div class="timeline-flamechart-popover">
         <span class=${timeElementClassName}>${time}</span>
         <span class="popoverinfo-title">${title}</span>
         ${warningElements}
         ${additionalContent.map((elem) => {
-      const widget6 = UI19.Widget.Widget.get(elem);
-      return widget6 ? UI19.Widget.widget(UI19.Widget.WrapperWidget, { widget: widget6 }) : elem;
+      const widget7 = UI19.Widget.Widget.get(elem);
+      return widget7 ? html15`<div ${UI19.Widget.widget(UI19.Widget.WrapperWidget, { widget: widget7 })}></div>` : elem;
     })}
       </div>`;
   }
@@ -22798,7 +22866,7 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     if (!hiddenEntriesAmount) {
       return null;
     }
-    return html14`
+    return html15`
       <style>${timelineFlamechartPopover_css_default}</style>
       <div class="timeline-flamechart-popover">
         <span class="popoverinfo-title">${hiddenEntriesAmount} hidden</span>
@@ -23352,8 +23420,8 @@ var TimingsTrackAppender = class {
 // ../../front_end/panels/timeline/CompatibilityTracksAppender.ts
 import * as TimelineUtils from "./utils/utils.js";
 function renderPopoverUrl(input, _output, target) {
-  render13(
-    html15`<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${input.originWithEntity})</span></div>`,
+  render14(
+    html16`<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${input.originWithEntity})</span></div>`,
     target
   );
 }

@@ -1,25 +1,25 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as RenderCoordinator from '../../../components/render_coordinator/render_coordinator.js';
+import { Directives, html, render } from '../../../lit/lit.js';
 import * as SettingsUI from '../../../settings/settings.js';
 import * as UI from '../../legacy.js';
 import chartViewPortStyles from './chartViewport.css.js';
 import { MinimalTimeWindowMs } from './FlameChart.js';
+const { classMap, ref, styleMap } = Directives;
 export class ChartViewport extends UI.Widget.VBox {
     delegate;
-    viewportElement;
     #alwaysShowVerticalScroll;
+    #verticalScrollVisible = true;
+    #cursorVisible = false;
+    #cursorPosition = null;
     rangeSelectionEnabled;
-    vScrollElement;
-    vScrollContent;
-    selectionOverlay;
-    cursorElement;
     #isDragging;
-    totalHeight;
+    totalHeight = 0;
     offsetHeight;
     scrollTop;
     rangeSelectionStart;
@@ -45,33 +45,88 @@ export class ChartViewport extends UI.Widget.VBox {
      */
     #animState = null;
     #config;
+    #viewportElement;
+    #vScrollElement;
     constructor(delegate, config) {
         super();
         this.#config = config;
-        this.registerRequiredCSS(chartViewPortStyles);
         this.delegate = delegate;
-        this.viewportElement = this.contentElement.createChild('div', 'fill');
-        this.viewportElement.addEventListener('mousemove', this.updateCursorPosition.bind(this), false);
-        this.viewportElement.addEventListener('mouseout', this.onMouseOut.bind(this), false);
-        this.viewportElement.addEventListener('wheel', this.onMouseWheel.bind(this), false);
-        this.viewportElement.addEventListener('keydown', this.onChartKeyDown.bind(this), false);
-        this.viewportElement.addEventListener('keyup', this.onChartKeyUp.bind(this), false);
-        UI.UIUtils.installDragHandle(this.viewportElement, this.startDragging.bind(this), this.dragging.bind(this), this.endDragging.bind(this), '-webkit-grabbing', null);
-        UI.UIUtils.installDragHandle(this.viewportElement, this.startRangeSelection.bind(this), this.rangeSelectionDragging.bind(this), this.endRangeSelection.bind(this), 'text', null);
         this.#alwaysShowVerticalScroll = false;
         this.rangeSelectionEnabled = true;
-        this.vScrollElement = this.contentElement.createChild('div', 'chart-viewport-v-scroll');
-        this.vScrollContent = this.vScrollElement.createChild('div');
-        this.vScrollElement.addEventListener('scroll', this.onScroll.bind(this), false);
-        this.selectionOverlay = this.contentElement.createChild('div', 'chart-viewport-selection-overlay hidden');
-        this.cursorElement = this.contentElement.createChild('div', 'chart-cursor-element hidden');
+        // Render synchronously: the FlameChart adds its canvas to `viewportElement`
+        // right after construction, and `reset()` below measures the scrollbar.
+        this.#renderNow();
+        const viewportElement = this.#viewportElement;
+        if (viewportElement) {
+            viewportElement.addEventListener('wheel', this.onMouseWheel.bind(this), false);
+            viewportElement.addEventListener('keydown', this.onChartKeyDown.bind(this), false);
+            viewportElement.addEventListener('keyup', this.onChartKeyUp.bind(this), false);
+            UI.UIUtils.installDragHandle(viewportElement, this.startDragging.bind(this), this.dragging.bind(this), this.endDragging.bind(this), '-webkit-grabbing', null);
+            UI.UIUtils.installDragHandle(viewportElement, this.startRangeSelection.bind(this), this.rangeSelectionDragging.bind(this), this.endRangeSelection.bind(this), 'text', null);
+        }
         this.reset();
         this.rangeSelectionStart = null;
         this.rangeSelectionEnd = null;
     }
+    /**
+     * The canvas host of the chart. Callers add their own content (such as the
+     * FlameChart canvas) to it.
+     */
+    get viewportElement() {
+        const viewportElement = this.#viewportElement;
+        if (!viewportElement) {
+            throw new Error('The ChartViewport view did not provide a viewport element');
+        }
+        return viewportElement;
+    }
+    performUpdate() {
+        // clang-format off
+        render(html `
+      <style>${chartViewPortStyles}</style>
+      <div
+        class="fill"
+        @mousemove=${(e) => this.#onMouseMove(e)}
+        @mouseout=${() => this.#onMouseOut()}
+        ${ref(el => { this.#viewportElement = el instanceof HTMLElement ? el : undefined; })}></div>
+      <div
+        class=${classMap({ 'chart-viewport-v-scroll': true, 'always-show-scrollbar': this.#alwaysShowVerticalScroll })}
+        ?hidden=${!this.#verticalScrollVisible}
+        @scroll=${(e) => { if (e.currentTarget instanceof HTMLElement) {
+            this.#onScroll(e.currentTarget.scrollTop);
+        } }}
+        ${ref(el => { this.#vScrollElement = el instanceof HTMLElement ? el : undefined; })}>
+        <div style=${styleMap({ height: `${this.totalHeight}px` })}></div>
+      </div>
+      <div
+        class="chart-cursor-element"
+        ?hidden=${!this.#cursorVisible}
+        style=${styleMap({ left: this.#cursorPosition === null ? undefined : `${this.#cursorPosition}px` })}></div>
+    `, this.contentElement);
+        // clang-format on
+    }
+    /**
+     * Renders synchronously. This is used instead of `requestUpdate()` when the
+     * caller reads the layout right after the change: the scrollbar position in
+     * `updateContentElementSize()`, or the scroll range when it sets `scrollTop`.
+     */
+    #renderNow() {
+        this.performUpdate();
+    }
+    #getScrollTop() {
+        return this.#vScrollElement?.scrollTop ?? 0;
+    }
+    #setScrollTop(scrollTop) {
+        if (this.#vScrollElement) {
+            this.#vScrollElement.scrollTop = scrollTop;
+        }
+    }
     alwaysShowVerticalScroll() {
+        if (this.#alwaysShowVerticalScroll) {
+            return;
+        }
         this.#alwaysShowVerticalScroll = true;
-        this.vScrollElement.classList.add('always-show-scrollbar');
+        this.updateScrollBar();
+        this.requestUpdate();
     }
     disableRangeSelection() {
         this.rangeSelectionEnabled = false;
@@ -82,17 +137,18 @@ export class ChartViewport extends UI.Widget.VBox {
         return this.#isDragging;
     }
     elementsToRestoreScrollPositionsFor() {
-        return [this.vScrollElement];
+        return this.#vScrollElement ? [this.#vScrollElement] : [];
     }
     verticalScrollBarVisible() {
-        return !this.vScrollElement.classList.contains('hidden');
+        return this.#verticalScrollVisible;
     }
     updateScrollBar() {
         const showScroll = this.#alwaysShowVerticalScroll || this.totalHeight > this.offsetHeight;
-        if (this.vScrollElement.classList.contains('hidden') !== showScroll) {
+        if (this.#verticalScrollVisible === showScroll) {
             return;
         }
-        this.vScrollElement.classList.toggle('hidden', !showScroll);
+        this.#verticalScrollVisible = showScroll;
+        this.#renderNow();
         this.updateContentElementSize();
     }
     onResize() {
@@ -101,7 +157,7 @@ export class ChartViewport extends UI.Widget.VBox {
         this.scheduleUpdate();
     }
     reset() {
-        this.vScrollElement.scrollTop = 0;
+        this.#setScrollTop(0);
         this.scrollTop = 0;
         this.rangeSelectionStart = null;
         this.rangeSelectionEnd = null;
@@ -120,7 +176,7 @@ export class ChartViewport extends UI.Widget.VBox {
         this.updateContentElementSize();
     }
     updateContentElementSize() {
-        let offsetWidth = this.vScrollElement.offsetLeft;
+        let offsetWidth = this.#vScrollElement?.offsetLeft ?? 0;
         if (!offsetWidth) {
             offsetWidth = this.contentElement.offsetWidth;
         }
@@ -130,14 +186,14 @@ export class ChartViewport extends UI.Widget.VBox {
     }
     setContentHeight(totalHeight) {
         this.totalHeight = totalHeight;
-        this.vScrollContent.style.height = totalHeight + 'px';
+        this.#renderNow();
         this.updateScrollBar();
         this.updateContentElementSize();
         if (this.scrollTop + this.offsetHeight <= totalHeight) {
             return;
         }
         this.scrollTop = Math.max(0, totalHeight - this.offsetHeight);
-        this.vScrollElement.scrollTop = this.scrollTop;
+        this.#setScrollTop(this.scrollTop);
     }
     /**
      * @param centered If true, scrolls offset to where it is centered on the chart,
@@ -148,21 +204,21 @@ export class ChartViewport extends UI.Widget.VBox {
         if (centered) {
             // Half of the height for padding.
             const halfPadding = Math.floor(this.offsetHeight / 2);
-            if (this.vScrollElement.scrollTop > offset) {
+            if (this.#getScrollTop() > offset) {
                 // Need to scroll up, include height.
-                this.vScrollElement.scrollTop = offset - (height + halfPadding);
+                this.#setScrollTop(offset - (height + halfPadding));
             }
         }
-        else if (this.vScrollElement.scrollTop > offset) {
-            this.vScrollElement.scrollTop = offset;
+        else if (this.#getScrollTop() > offset) {
+            this.#setScrollTop(offset);
         }
-        if (this.vScrollElement.scrollTop < offset - this.offsetHeight + height) {
-            this.vScrollElement.scrollTop = offset - this.offsetHeight + height;
+        if (this.#getScrollTop() < offset - this.offsetHeight + height) {
+            this.#setScrollTop(offset - this.offsetHeight + height);
         }
     }
     scrollOffset() {
         // Return the cached value, rather than the live value (which typically incurs a forced reflow)
-        // In practice, this is true whenever scrollOffset() is called:  `this.scrollTop === this.vScrollElement.scrollTop`
+        // In practice, this is true whenever scrollOffset() is called:  `this.scrollTop === this.#getScrollTop()`
         return this.scrollTop;
     }
     chartHeight() {
@@ -196,7 +252,7 @@ export class ChartViewport extends UI.Widget.VBox {
         const zoomDelta = Math.pow(1.2, (wheelEvent.deltaY || wheelEvent.deltaX) * 1 / 53) - 1;
         if (navigation === 'classic') {
             if (wheelEvent.shiftKey) { // Scroll
-                this.vScrollElement.scrollTop += panDelta;
+                this.#setScrollTop(this.#getScrollTop() + panDelta);
             }
             else if (Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) { // Pan left/right on trackpad horizontal scroll
                 // Horizontal scroll on the trackpad feels smoother when only deltaX is taken into account
@@ -219,7 +275,7 @@ export class ChartViewport extends UI.Widget.VBox {
                 this.handleZoomGesture(zoomDelta);
             }
             else { // Scroll
-                this.vScrollElement.scrollTop += panDelta;
+                this.#setScrollTop(this.#getScrollTop() + panDelta);
             }
         }
         // Block swipe gesture.
@@ -232,7 +288,8 @@ export class ChartViewport extends UI.Widget.VBox {
         this.#isDragging = true;
         this.dragStartPointX = event.pageX;
         this.dragStartPointY = event.pageY;
-        this.dragStartScrollTop = this.vScrollElement.scrollTop;
+        this.dragStartScrollTop = this.#getScrollTop();
+        // The FlameChart sets the cursor of the shared canvas host on hover.
         this.viewportElement.style.cursor = '';
         return true;
     }
@@ -241,7 +298,7 @@ export class ChartViewport extends UI.Widget.VBox {
         this.dragStartPointX = event.pageX;
         this.handleHorizontalPanGesture(pixelShift);
         const pixelScroll = this.dragStartPointY - event.pageY;
-        this.vScrollElement.scrollTop = this.dragStartScrollTop + pixelScroll;
+        this.#setScrollTop(this.dragStartScrollTop + pixelScroll);
     }
     endDragging() {
         this.#isDragging = false;
@@ -260,7 +317,6 @@ export class ChartViewport extends UI.Widget.VBox {
         this.selectionStartX = null;
     }
     hideRangeSelection() {
-        this.selectionOverlay.classList.add('hidden');
         this.rangeSelectionStart = null;
         this.rangeSelectionEnd = null;
     }
@@ -292,22 +348,18 @@ export class ChartViewport extends UI.Widget.VBox {
         const end = this.pixelToTime(x);
         this.setRangeSelection(start, end);
     }
-    onScroll() {
-        this.scrollTop = this.vScrollElement.scrollTop;
+    #onScroll(scrollTop) {
+        this.scrollTop = scrollTop;
         this.scheduleUpdate();
     }
-    onMouseOut() {
+    #onMouseOut() {
         this.lastMouseOffsetX = -1;
-        this.showCursor(false);
+        this.#showCursor(false);
     }
-    updateCursorPosition(e) {
-        const mouseEvent = e;
-        this.lastMouseOffsetX = mouseEvent.offsetX;
-        const shouldShowCursor = this.#config.enableCursorElement && mouseEvent.shiftKey && !mouseEvent.metaKey;
-        this.showCursor(shouldShowCursor);
-        if (shouldShowCursor) {
-            this.cursorElement.style.left = mouseEvent.offsetX + 'px';
-        }
+    #onMouseMove({ offsetX, shiftKey, metaKey }) {
+        this.lastMouseOffsetX = offsetX;
+        const shouldShowCursor = this.#config.enableCursorElement && shiftKey && !metaKey;
+        this.#showCursor(shouldShowCursor, shouldShowCursor ? offsetX : this.#cursorPosition);
     }
     pixelToTime(x) {
         return this.pixelToTimeOffset(x) + this.visibleLeftTime;
@@ -321,15 +373,23 @@ export class ChartViewport extends UI.Widget.VBox {
     timeToPixel() {
         return this.offsetWidth / (this.visibleRightTime - this.visibleLeftTime);
     }
-    showCursor(visible) {
-        this.cursorElement.classList.toggle('hidden', !visible || this.#isDragging);
+    #showCursor(visible, position = this.#cursorPosition) {
+        const cursorVisible = this.#config.enableCursorElement && visible && !this.#isDragging;
+        if (this.#cursorVisible === cursorVisible && this.#cursorPosition === position) {
+            return;
+        }
+        this.#cursorVisible = cursorVisible;
+        this.#cursorPosition = position;
+        this.requestUpdate();
     }
     onChartKeyDown(keyboardEvent) {
-        this.showCursor(keyboardEvent.shiftKey);
+        const position = this.lastMouseOffsetX !== undefined && this.lastMouseOffsetX >= 0 ? this.lastMouseOffsetX :
+            this.#cursorPosition;
+        this.#showCursor(keyboardEvent.shiftKey, position);
         this.handleZoomPanScrollKeys(keyboardEvent);
     }
     onChartKeyUp(keyboardEvent) {
-        this.showCursor(keyboardEvent.shiftKey);
+        this.#showCursor(keyboardEvent.shiftKey);
     }
     handleZoomPanScrollKeys(keyboardEvent) {
         // Do not zoom, pan or scroll if the key combination has any modifiers other than shift key
@@ -356,12 +416,12 @@ export class ChartViewport extends UI.Widget.VBox {
                 break;
             case 'ArrowUp':
                 if (keyboardEvent.shiftKey) {
-                    this.vScrollElement.scrollTop -= scrollOffset;
+                    this.#setScrollTop(this.#getScrollTop() - scrollOffset);
                 }
                 break;
             case 'ArrowDown':
                 if (keyboardEvent.shiftKey) {
-                    this.vScrollElement.scrollTop += scrollOffset;
+                    this.#setScrollTop(this.#getScrollTop() + scrollOffset);
                 }
                 break;
             case 'ArrowLeft':

@@ -18411,6 +18411,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI16.Widget.Widge
   #changeTracker;
   #node;
   #nodeEventListeners = [];
+  #issueSubscriptionNodeIds = /* @__PURE__ */ new Set();
   #isClosingTag = false;
   #expanded = false;
   #isExpandable = false;
@@ -18600,12 +18601,56 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI16.Widget.Widge
       const universe = UI16.Widget.lookupUniverseForElement(this.contentElement);
       if (universe) {
         this.#domIssuesManager = universe.get(IssuesManager2.DOMIssuesManager.DOMIssuesManager);
-        if (this.#nodeEventListeners.length && this.#node?.id) {
-          this.#domIssuesManager.subscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
+      }
+    }
+    this.#syncIssueSubscriptions();
+    if (!this.#domIssuesManager) {
+      return [];
+    }
+    const issues = this.#domIssuesManager.issuesForNode(this.node);
+    const inlinedTextNode = this.#inlinedTextNode();
+    if (inlinedTextNode) {
+      issues.push(...this.#domIssuesManager.issuesForNode(inlinedTextNode));
+    }
+    return issues;
+  }
+  /**
+   * Returns the text child that this widget renders inline, between the
+   * opening tag and the closing tag.
+   */
+  #inlinedTextNode() {
+    if (!this.#node || this.#isClosingTag || this.#isExpandable || !_DOMTreeElementWidget.canShowInlineText(this.#node)) {
+      return null;
+    }
+    return this.#node.firstChild;
+  }
+  /**
+   * Subscribes to issue updates for the node and for the inlined text node.
+   * Removes the subscriptions for nodes that this widget no longer renders.
+   */
+  #syncIssueSubscriptions() {
+    if (!this.#domIssuesManager) {
+      return;
+    }
+    const nodeIds = /* @__PURE__ */ new Set();
+    if (this.#nodeEventListeners.length && this.#node) {
+      for (const node of [this.#node, this.#inlinedTextNode()]) {
+        if (node?.id) {
+          nodeIds.add(node.id);
         }
       }
     }
-    return this.#domIssuesManager?.issuesForNode(this.node) ?? [];
+    for (const nodeId of this.#issueSubscriptionNodeIds) {
+      if (!nodeIds.has(nodeId)) {
+        this.#domIssuesManager.unsubscribeByNodeId(nodeId, this.#onDOMIssueUpdated);
+      }
+    }
+    for (const nodeId of nodeIds) {
+      if (!this.#issueSubscriptionNodeIds.has(nodeId)) {
+        this.#domIssuesManager.subscribeByNodeId(nodeId, this.#onDOMIssueUpdated);
+      }
+    }
+    this.#issueSubscriptionNodeIds = nodeIds;
   }
   get changeTracker() {
     this.#changeTracker ??= UI16.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker3.ChangeTracker.ChangeTracker);
@@ -18976,9 +19021,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI16.Widget.Widge
       node.addEventListener(DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, setOverlayActive("grid")),
       node.addEventListener(DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, setOverlayActive("scrollSnap"))
     ];
-    if (this.#domIssuesManager && node.id) {
-      this.#domIssuesManager.subscribeByNodeId(node.id, this.#onDOMIssueUpdated);
-    }
+    this.#syncIssueSubscriptions();
   }
   clearView() {
     this.#view(emptyViewInput(), {}, this.contentElement);
@@ -19002,9 +19045,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI16.Widget.Widge
     }
     Common9.EventTarget.removeEventListeners(this.#nodeEventListeners);
     this.#nodeEventListeners = [];
-    if (this.#domIssuesManager && this.#node.id) {
-      this.#domIssuesManager.unsubscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
-    }
+    this.#syncIssueSubscriptions();
   }
   #onDOMIssueUpdated = () => {
     this.performUpdate();

@@ -46,12 +46,13 @@ Your role is to help web developers debug, analyze, and optimize web application
 * **Informational or exploratory questions** (e.g., asking what a network request, script, element, or storage entry is or does):
   - Answer directly and concisely in 1–2 short paragraphs or a compact list of key facts.
   - Do NOT include "**Root Cause**" or "**Suggestions**" sections, and do not add unrequested optimization advice when nothing is broken.
-* **Debugging or optimization questions (without live page modifications)** (e.g., asking why something fails, renders incorrectly, or is slow, or how to improve/fix it when you have NOT modified the live page):
-  - **Root Cause(s)**: Point out the root cause(s) of the problem.
+* **Debugging, optimization, or unapplied edit requests (when no live page modification succeeded in this turn)** (including when no write tool ran, only read-only checks ran, or a modification attempt failed or was denied):
+  - **Root Cause(s)** (include when diagnosing an issue): Point out the root cause(s) of the problem.
     - Example: "**Root Cause**: [reason]" or "**Root Causes**:" followed by a bulleted list.
-  - **Suggestion(s)**: List actionable solution suggestion(s) in order of impact.
+  - **Suggestion(s)**: List actionable solution suggestion(s) in order of impact (if a live modification was denied or failed, first state briefly that the live change was not applied without naming internal tools).
     - Example: "**Suggestion**: [Suggestion]" or "**Suggestions**:" followed by a bulleted list.
-* **Turns where you modified the live page** (e.g., after applying CSS or DOM changes to the inspected page):
+  - Do NOT include an "**Applied Live Changes**" section when no live page modification succeeded in this turn.
+* **Turns where a live page modification succeeded in this turn** (ONLY when a live style or page-modifying script call ran in the current turn and returned a non-error result):
   - **Root Cause(s)** (include when diagnosing a bug): Point out the root cause(s) of the problem.
   - **Applied Live Changes**: Detail the changes you applied to the live page (including the modified CSS properties or HTML attributes), note that these live changes are temporary and will reset on page reload, and ask the user to verify the result before updating their source code. Do NOT use "**Suggestion(s)**" or "**Suggested fix**" headings when you have already modified the live page.
 
@@ -64,7 +65,8 @@ Your role is to help web developers debug, analyze, and optimize web application
 * **CRITICAL**: You are a web development assistant. NEVER provide answers to questions of unrelated topics (such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non-web-development topics). If asked about these, respond with: "Sorry, I can't answer that. I'm best at questions about web development and debugging."
 * **CRITICAL**: Do not write standalone scripts (such as Python or bash) or arbitrary code to interact with the environment. The only way to execute code in the inspected page is via the 'executeJavaScript' tool.
 * **CRITICAL**: Do not expose raw, internal system identifiers (such as database IDs, internal node paths, or event keys) directly to the user. Use descriptive names instead.
-* **CRITICAL**: Stay read-only on informational (e.g., "what...", "where..."), diagnostic (e.g., "why..."), and how-to (e.g., "how do I...", "how can I...") queries. Do NOT modify live page state—even temporarily to test a hypothesis—(CSS styles, DOM nodes, text, attributes, scroll position, or simulated clicks/events) unless the user asks you to make a change, apply a fix, or run a live test (e.g., "make...", "change...", "fix...", "apply...", "try...", "click..."). When a live fix is possible on a read-only query, explain the solution first and offer to apply it on the live page (and include it as a follow-up suggestion).`;
+* **CRITICAL**: Stay read-only on informational (e.g., "what...", "where..."), diagnostic (e.g., "why..."), and how-to (e.g., "how do I...", "how can I...") queries. Do NOT modify live page state—even temporarily to test a hypothesis—(CSS styles, DOM nodes, text, attributes, scroll position, or simulated clicks/events) unless the user asks you to make a change, apply a fix, or run a live test (e.g., "make...", "change...", "fix...", "apply...", "try...", "click..."). When a live fix is possible on a read-only query, explain the solution first and offer to apply it on the live page (and include it as a follow-up suggestion).
+* **CRITICAL**: Never claim to have made live page changes in this turn or include an "**Applied Live Changes**" section unless a live style or page-modifying script call ran in this turn and succeeded without an error or "Error:" output. Read-only queries, failed calls, and user-denied calls do not modify the live page. If asked about earlier turns, you may refer to edits that actually succeeded in those turns without claiming new changes in this turn.`;
 export class AiAgent2 extends AiAgent {
     /**
      * Tracks skills, `PromptFact` instances, and context details committed to `AiAgent.#history`.
@@ -170,7 +172,7 @@ export class AiAgent2 extends AiAgent {
         const domModel = isTargetAllowed ? target.model(SDK.DOMModel.DOMModel) : null;
         // Ensure the DOM document is requested and cached in DOMModel so that
         // subsequent synchronous lookups via domModel.existingDocument() (e.g.,
-        // in #getDocumentBodyNode()) resolve the document and body immediately.
+        // in #getDefaultExecutionContextNode()) resolve the document and body immediately.
         if (domModel) {
             if (!domModel.existingDocument()) {
                 try {
@@ -180,12 +182,14 @@ export class AiAgent2 extends AiAgent {
                     debugLog('AiAgent2: Failed to request document', e);
                 }
             }
-            if (!domModel.existingDocument()?.body) {
+            const document = domModel.existingDocument();
+            // Fetching documentElement's children populates document.body in DOMModel as a side effect.
+            if (document && !document.body && document.documentElement) {
                 try {
-                    await domModel.pushNodeByPathToFrontend('1,HTML,1,BODY');
+                    await document.documentElement.getChildNodesPromise();
                 }
                 catch (e) {
-                    debugLog('AiAgent2: Failed to push body node to frontend', e);
+                    debugLog('AiAgent2: Failed to request documentElement child nodes', e);
                 }
             }
         }
@@ -415,7 +419,7 @@ ${skillsManifest}`,
         if (this.context instanceof DOMNodeContext) {
             return this.context.getItem();
         }
-        return this.#getDocumentBodyNode();
+        return this.#getDefaultExecutionContextNode();
     }
     #createExtensionScope(changes) {
         return new ExtensionScope(changes, this.sessionId, this.#getExecutionContextNode());
@@ -465,12 +469,14 @@ ${skillsManifest}`,
     }
     /**
      * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
-     * there is no user-selected DOM node. We fall back to the document body as the
-     * default execution context node so scripts have a valid `$0` target.
-     * Returns null if the conversation origin is not established or
-     * does not match the primary page document's security origin.
+     * there is no user-selected DOM node. Falls back to `document.body` and then
+     * `document.documentElement` so scripts have a valid Element `$0` target even
+     * on HTML documents without a `<body>` (such as framesets).
+     * Returns null if no document, body, or documentElement exists, or if the
+     * conversation origin is not established or does not match the primary page
+     * document's security origin.
      */
-    #getDocumentBodyNode() {
+    #getDefaultExecutionContextNode() {
         const target = this.#getTarget();
         const document = target?.model(SDK.DOMModel.DOMModel)?.existingDocument();
         if (!document) {
@@ -480,7 +486,7 @@ ${skillsManifest}`,
         if (!isOriginAllowedByLock(originLock, document.securityOrigin())) {
             return null;
         }
-        return document.body ?? null;
+        return document.body ?? document.documentElement ?? null;
     }
     /**
      * Returns the active draft's skills during `run()`, or `#committedState.skills` when idle.

@@ -61,6 +61,9 @@
       "path": "../../front_end/panels/ai_assistance/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../conductor/core-tsconfig.ref.json"
+    },
+    {
       "path": "../conductor/implementation-tsconfig.ref.json"
     },
     {

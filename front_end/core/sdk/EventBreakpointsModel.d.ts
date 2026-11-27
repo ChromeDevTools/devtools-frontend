@@ -51,7 +51,7 @@ declare class EventListenerBreakpoint extends CategorizedBreakpoint {
 }
 export declare class EventBreakpointsManager implements SDKModelObserver<EventBreakpointsModel> {
     #private;
-    constructor(targetManager?: TargetManager);
+    constructor(targetManager: TargetManager);
     static instance(opts?: {
         forceNew: boolean | null;
         targetManager?: TargetManager;

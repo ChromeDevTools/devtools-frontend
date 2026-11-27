@@ -4161,8 +4161,13 @@ var commentThreadWidget_css_default = `/*
     border-radius: var(--sys-shape-corner-extra-small);
     background: none;
     text-align: start;
+    cursor: pointer;
     /* Keep the focus ring visible when focusing scrolls the comment into view. */
     scroll-margin: var(--sys-size-2);
+
+    &:hover {
+      background-color: var(--sys-color-state-hover-on-subtle);
+    }
 
     &:focus-visible {
       outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);

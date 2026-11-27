@@ -1043,6 +1043,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     #changeTracker;
     #node;
     #nodeEventListeners = [];
+    #issueSubscriptionNodeIds = new Set();
     #isClosingTag = false;
     #expanded = false;
     #isExpandable = false;
@@ -1236,12 +1237,59 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
             const universe = UI.Widget.lookupUniverseForElement(this.contentElement);
             if (universe) {
                 this.#domIssuesManager = universe.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
-                if (this.#nodeEventListeners.length && this.#node?.id) {
-                    this.#domIssuesManager.subscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
+            }
+        }
+        this.#syncIssueSubscriptions();
+        if (!this.#domIssuesManager) {
+            return [];
+        }
+        const issues = this.#domIssuesManager.issuesForNode(this.node);
+        const inlinedTextNode = this.#inlinedTextNode();
+        if (inlinedTextNode) {
+            // An inlined text node has no row of its own. Show its issues on the
+            // row of the parent element.
+            issues.push(...this.#domIssuesManager.issuesForNode(inlinedTextNode));
+        }
+        return issues;
+    }
+    /**
+     * Returns the text child that this widget renders inline, between the
+     * opening tag and the closing tag.
+     */
+    #inlinedTextNode() {
+        if (!this.#node || this.#isClosingTag || this.#isExpandable ||
+            !DOMTreeElementWidget.canShowInlineText(this.#node)) {
+            return null;
+        }
+        return this.#node.firstChild;
+    }
+    /**
+     * Subscribes to issue updates for the node and for the inlined text node.
+     * Removes the subscriptions for nodes that this widget no longer renders.
+     */
+    #syncIssueSubscriptions() {
+        if (!this.#domIssuesManager) {
+            return;
+        }
+        const nodeIds = new Set();
+        if (this.#nodeEventListeners.length && this.#node) {
+            for (const node of [this.#node, this.#inlinedTextNode()]) {
+                if (node?.id) {
+                    nodeIds.add(node.id);
                 }
             }
         }
-        return this.#domIssuesManager?.issuesForNode(this.node) ?? [];
+        for (const nodeId of this.#issueSubscriptionNodeIds) {
+            if (!nodeIds.has(nodeId)) {
+                this.#domIssuesManager.unsubscribeByNodeId(nodeId, this.#onDOMIssueUpdated);
+            }
+        }
+        for (const nodeId of nodeIds) {
+            if (!this.#issueSubscriptionNodeIds.has(nodeId)) {
+                this.#domIssuesManager.subscribeByNodeId(nodeId, this.#onDOMIssueUpdated);
+            }
+        }
+        this.#issueSubscriptionNodeIds = nodeIds;
     }
     get changeTracker() {
         // The widget may be created without injected dependencies so the
@@ -1633,9 +1681,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
             node.addEventListener(DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, setOverlayActive('grid')),
             node.addEventListener(DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, setOverlayActive('scrollSnap')),
         ];
-        if (this.#domIssuesManager && node.id) {
-            this.#domIssuesManager.subscribeByNodeId(node.id, this.#onDOMIssueUpdated);
-        }
+        this.#syncIssueSubscriptions();
     }
     clearView() {
         // Update the element to clean up adorner registrations with the
@@ -1662,9 +1708,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
         }
         Common.EventTarget.removeEventListeners(this.#nodeEventListeners);
         this.#nodeEventListeners = [];
-        if (this.#domIssuesManager && this.#node.id) {
-            this.#domIssuesManager.unsubscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
-        }
+        this.#syncIssueSubscriptions();
     }
     #onDOMIssueUpdated = () => {
         this.performUpdate();

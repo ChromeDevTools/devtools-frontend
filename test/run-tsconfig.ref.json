@@ -21,7 +21,7 @@
   ],
   "references": [
     {
-      "path": "conductor/implementation-tsconfig.ref.json"
+      "path": "conductor/core-tsconfig.ref.json"
     }
   ]
 }

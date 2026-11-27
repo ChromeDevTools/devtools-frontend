@@ -1,7 +1,6 @@
 import * as Host from '../../core/host/host.js';
 export interface ConversationSummaryOptions {
     aidaClient: Host.AidaClient.AidaClient;
-    serverSideLoggingEnabled?: boolean;
 }
 /**
  * A class that takes a full conversation between a user and an agent in markdown
@@ -14,5 +13,5 @@ export interface ConversationSummaryOptions {
 export declare class ConversationSummary {
     #private;
     constructor(options: ConversationSummaryOptions);
-    summarizeConversation(conversation: string): Promise<string>;
+    summarizeConversation(conversation: string, serverSideLoggingEnabled?: boolean): Promise<string>;
 }

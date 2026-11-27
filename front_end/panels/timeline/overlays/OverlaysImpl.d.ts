@@ -96,6 +96,32 @@ export declare class EntryLabelMouseClick extends Event {
     static readonly eventName = "entrylabelmouseclick";
     constructor(overlay: Trace.Types.Overlays.EntryLabel);
 }
+/**
+ * The position of the border around an entry, in pixels.
+ */
+export interface EntryBorderOutlinePosition {
+    /**
+     * The height of the entry, including any part that is cut off.
+     */
+    entryHeight: number;
+    /**
+     * The width of the visible part of the entry.
+     */
+    entryWidth: number;
+    /**
+     * The height of the visible part of the entry.
+     */
+    height: number;
+    /**
+     * The height of the part of the entry that is cut off.
+     */
+    cutOffHeight: number;
+    cutOffTop: boolean;
+    cutOffBottom: boolean;
+    cutOffRight: boolean;
+    x: number;
+    y: number;
+}
 export declare class EventReferenceClick extends Event {
     event: Trace.Types.Events.Event;
     static readonly eventName = "eventreferenceclick";

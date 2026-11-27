@@ -4717,6 +4717,32 @@ var BLOCKED_NETWORK_HINT = "Network access (e.g., fetch, XMLHttpRequest) is bloc
 var NETWORK_TOOLS_HINT = "To inspect the page's network requests, load the `network` skill with `learnSkills` if it is not loaded yet, then use `listNetworkRequests` and `getNetworkRequestDetails`.";
 var ISOLATED_WORLD_REFERENCE_ERROR_PATTERN = /^Error: (?:executing the line .* failed with the following error:\n)?[\w$]+ is not defined$/;
 var ISOLATED_WORLD_HINT = "JavaScript run by this tool executes in an isolated world: it shares the page DOM, while globals, framework instances, and customElements defined by page scripts cannot be read. If this identifier is defined by page scripts, do not assume it is missing; inspect DOM attributes, <script> tags, or loaded sources instead.";
+var MISSING_TOP_LEVEL_DATA_HINT = "No top-level `data` variable was assigned. Assign a top-level `data` variable directly (use top-level `await` instead of `.then()` or an IIFE; do not rely on inner `return` statements, bare expressions, or `data` declared inside a block).";
+var TOP_LEVEL_DATA_ASSIGNMENT_PATTERN = /^(?:(?:const|let|var)\s+)?data\s*=(?![=>])/;
+var TOP_LEVEL_DATA_DECL_PATTERN = /^(?:let|var)\s+data\b/;
+var DATA_ASSIGNMENT_PATTERN = /(?:^|[^\w$.])data\s*=(?![=>])/;
+var NESTED_DATA_DECL_PATTERN = /^.+\b(?:const|let|var)\s+data\b/;
+var VALUE_RETURN_PATTERN = /(?:^|[;{)])[ \t]*return[ \t]+[^;}\s]/;
+var PROMISE_THEN_PATTERN = /\.then\s*\(/;
+function shouldHintMissingTopLevelData(code, userApproved) {
+  const nonBlankLines = code.split("\n").filter((line) => /\S/.test(line));
+  const minIndent = nonBlankLines.reduce((min, line) => Math.min(min, line.search(/\S/)), Infinity);
+  const normalizedLines = nonBlankLines.map((line) => line.slice(minIndent));
+  if (normalizedLines.some((line) => TOP_LEVEL_DATA_ASSIGNMENT_PATTERN.test(line))) {
+    return false;
+  }
+  const hasNestedOrIgnoredReturn = normalizedLines.some(
+    (line) => NESTED_DATA_DECL_PATTERN.test(line) || VALUE_RETURN_PATTERN.test(line) || PROMISE_THEN_PATTERN.test(line)
+  );
+  if (hasNestedOrIgnoredReturn) {
+    return true;
+  }
+  const hasDataAssignment = normalizedLines.some((line) => DATA_ASSIGNMENT_PATTERN.test(line));
+  if (hasDataAssignment) {
+    return !normalizedLines.some((line) => TOP_LEVEL_DATA_DECL_PATTERN.test(line));
+  }
+  return !userApproved;
+}
 function describeSizeLimitViolations(code) {
   const violations = [];
   const lines = code.split("\n");
@@ -4779,6 +4805,7 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
 
 * To return data, define a top-level \`data\` variable and populate it with data you want to get. JSON-serializable objects and DOM \`Element\` objects (directly or inside objects/arrays) can be assigned to \`data\`. Serialized DOM \`Element\` objects are prefixed with \`(uid=<backendNodeId>)\` (for example \`(uid=15) <div id="card">...</div>\`, up to ${MAX_SERIALIZED_ELEMENT_UIDS} elements per call), whose numeric \`uid\` can be passed to tools accepting numeric element \`uid\`s. Serialized output must not exceed ${MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
 * $0 refers to the currently selected DOM node (or document body if none selected).
+* **CRITICAL** Top-level \`await\` works directly; never wrap code in an IIFE (such as \`(async () => { ... })()\`), rely on inner \`return\` statements, end with a bare expression, or declare \`data\` only inside an \`if\` block or function.
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Variables from previous function calls are not available in subsequent calls.
@@ -4855,6 +4882,10 @@ ${hint}` };
       if (ISOLATED_WORLD_REFERENCE_ERROR_PATTERN.test(result.result)) {
         return { ...result, result: `${result.result}
 ${ISOLATED_WORLD_HINT}` };
+      }
+      if (result.result === "undefined" && shouldHintMissingTopLevelData(params.code, Boolean(options?.approved))) {
+        return { ...result, result: `${result.result}
+${MISSING_TOP_LEVEL_DATA_HINT}` };
       }
     }
     return result;
@@ -15557,12 +15588,13 @@ Your role is to help web developers debug, analyze, and optimize web application
 * **Informational or exploratory questions** (e.g., asking what a network request, script, element, or storage entry is or does):
   - Answer directly and concisely in 1\u20132 short paragraphs or a compact list of key facts.
   - Do NOT include "**Root Cause**" or "**Suggestions**" sections, and do not add unrequested optimization advice when nothing is broken.
-* **Debugging or optimization questions (without live page modifications)** (e.g., asking why something fails, renders incorrectly, or is slow, or how to improve/fix it when you have NOT modified the live page):
-  - **Root Cause(s)**: Point out the root cause(s) of the problem.
+* **Debugging, optimization, or unapplied edit requests (when no live page modification succeeded in this turn)** (including when no write tool ran, only read-only checks ran, or a modification attempt failed or was denied):
+  - **Root Cause(s)** (include when diagnosing an issue): Point out the root cause(s) of the problem.
     - Example: "**Root Cause**: [reason]" or "**Root Causes**:" followed by a bulleted list.
-  - **Suggestion(s)**: List actionable solution suggestion(s) in order of impact.
+  - **Suggestion(s)**: List actionable solution suggestion(s) in order of impact (if a live modification was denied or failed, first state briefly that the live change was not applied without naming internal tools).
     - Example: "**Suggestion**: [Suggestion]" or "**Suggestions**:" followed by a bulleted list.
-* **Turns where you modified the live page** (e.g., after applying CSS or DOM changes to the inspected page):
+  - Do NOT include an "**Applied Live Changes**" section when no live page modification succeeded in this turn.
+* **Turns where a live page modification succeeded in this turn** (ONLY when a live style or page-modifying script call ran in the current turn and returned a non-error result):
   - **Root Cause(s)** (include when diagnosing a bug): Point out the root cause(s) of the problem.
   - **Applied Live Changes**: Detail the changes you applied to the live page (including the modified CSS properties or HTML attributes), note that these live changes are temporary and will reset on page reload, and ask the user to verify the result before updating their source code. Do NOT use "**Suggestion(s)**" or "**Suggested fix**" headings when you have already modified the live page.
 
@@ -15575,7 +15607,8 @@ Your role is to help web developers debug, analyze, and optimize web application
 * **CRITICAL**: You are a web development assistant. NEVER provide answers to questions of unrelated topics (such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non-web-development topics). If asked about these, respond with: "Sorry, I can't answer that. I'm best at questions about web development and debugging."
 * **CRITICAL**: Do not write standalone scripts (such as Python or bash) or arbitrary code to interact with the environment. The only way to execute code in the inspected page is via the 'executeJavaScript' tool.
 * **CRITICAL**: Do not expose raw, internal system identifiers (such as database IDs, internal node paths, or event keys) directly to the user. Use descriptive names instead.
-* **CRITICAL**: Stay read-only on informational (e.g., "what...", "where..."), diagnostic (e.g., "why..."), and how-to (e.g., "how do I...", "how can I...") queries. Do NOT modify live page state\u2014even temporarily to test a hypothesis\u2014(CSS styles, DOM nodes, text, attributes, scroll position, or simulated clicks/events) unless the user asks you to make a change, apply a fix, or run a live test (e.g., "make...", "change...", "fix...", "apply...", "try...", "click..."). When a live fix is possible on a read-only query, explain the solution first and offer to apply it on the live page (and include it as a follow-up suggestion).`;
+* **CRITICAL**: Stay read-only on informational (e.g., "what...", "where..."), diagnostic (e.g., "why..."), and how-to (e.g., "how do I...", "how can I...") queries. Do NOT modify live page state\u2014even temporarily to test a hypothesis\u2014(CSS styles, DOM nodes, text, attributes, scroll position, or simulated clicks/events) unless the user asks you to make a change, apply a fix, or run a live test (e.g., "make...", "change...", "fix...", "apply...", "try...", "click..."). When a live fix is possible on a read-only query, explain the solution first and offer to apply it on the live page (and include it as a follow-up suggestion).
+* **CRITICAL**: Never claim to have made live page changes in this turn or include an "**Applied Live Changes**" section unless a live style or page-modifying script call ran in this turn and succeeded without an error or "Error:" output. Read-only queries, failed calls, and user-denied calls do not modify the live page. If asked about earlier turns, you may refer to edits that actually succeeded in those turns without claiming new changes in this turn.`;
 var AiAgent2 = class extends AiAgent {
   /**
    * Tracks skills, `PromptFact` instances, and context details committed to `AiAgent.#history`.
@@ -15687,11 +15720,12 @@ ${references}` : references;
           debugLog6("AiAgent2: Failed to request document", e);
         }
       }
-      if (!domModel.existingDocument()?.body) {
+      const document = domModel.existingDocument();
+      if (document && !document.body && document.documentElement) {
         try {
-          await domModel.pushNodeByPathToFrontend("1,HTML,1,BODY");
+          await document.documentElement.getChildNodesPromise();
         } catch (e) {
-          debugLog6("AiAgent2: Failed to push body node to frontend", e);
+          debugLog6("AiAgent2: Failed to request documentElement child nodes", e);
         }
       }
     }
@@ -15911,7 +15945,7 @@ ${instructions}`);
     if (this.context instanceof DOMNodeContext) {
       return this.context.getItem();
     }
-    return this.#getDocumentBodyNode();
+    return this.#getDefaultExecutionContextNode();
   }
   #createExtensionScope(changes) {
     return new ExtensionScope(changes, this.sessionId, this.#getExecutionContextNode());
@@ -15961,12 +15995,14 @@ ${instructions}`);
   }
   /**
    * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
-   * there is no user-selected DOM node. We fall back to the document body as the
-   * default execution context node so scripts have a valid `$0` target.
-   * Returns null if the conversation origin is not established or
-   * does not match the primary page document's security origin.
+   * there is no user-selected DOM node. Falls back to `document.body` and then
+   * `document.documentElement` so scripts have a valid Element `$0` target even
+   * on HTML documents without a `<body>` (such as framesets).
+   * Returns null if no document, body, or documentElement exists, or if the
+   * conversation origin is not established or does not match the primary page
+   * document's security origin.
    */
-  #getDocumentBodyNode() {
+  #getDefaultExecutionContextNode() {
     const target = this.#getTarget();
     const document = target?.model(SDK32.DOMModel.DOMModel)?.existingDocument();
     if (!document) {
@@ -15976,7 +16012,7 @@ ${instructions}`);
     if (!isOriginAllowedByLock(originLock, document.securityOrigin())) {
       return null;
     }
-    return document.body ?? null;
+    return document.body ?? document.documentElement ?? null;
   }
   /**
    * Returns the active draft's skills during `run()`, or `#committedState.skills` when idle.
@@ -16679,12 +16715,10 @@ color: red;
 - Past tense for actions; Present tense for technical facts.`;
 var ConversationSummary = class {
   #aidaClient;
-  #serverSideLoggingEnabled;
   constructor(options) {
     this.#aidaClient = options.aidaClient;
-    this.#serverSideLoggingEnabled = options.serverSideLoggingEnabled ?? false;
   }
-  async summarizeConversation(conversation) {
+  async summarizeConversation(conversation, serverSideLoggingEnabled = false) {
     const enhancedQuery = `Summarize the following conversation:
 
 ${conversation}`;
@@ -16699,7 +16733,7 @@ ${conversation}`;
       temperature,
       modelId,
       userTier,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled
+      serverSideLoggingEnabled
     });
     if (!resultText) {
       throw new Error("Failed to summarize conversation");

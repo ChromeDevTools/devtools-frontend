@@ -18,12 +18,7 @@ export interface Config {
 export declare class ChartViewport extends UI.Widget.VBox {
     #private;
     readonly delegate: ChartViewportDelegate;
-    viewportElement: HTMLElement;
     private rangeSelectionEnabled;
-    private vScrollElement;
-    private vScrollContent;
-    private readonly selectionOverlay;
-    private cursorElement;
     private totalHeight;
     offsetHeight: number;
     private scrollTop;
@@ -44,6 +39,12 @@ export declare class ChartViewport extends UI.Widget.VBox {
     private totalTime;
     private isUpdateScheduled?;
     constructor(delegate: ChartViewportDelegate, config: Config);
+    /**
+     * The canvas host of the chart. Callers add their own content (such as the
+     * FlameChart canvas) to it.
+     */
+    get viewportElement(): HTMLElement;
+    performUpdate(): void;
     alwaysShowVerticalScroll(): void;
     disableRangeSelection(): void;
     isDragging(): boolean;
@@ -91,14 +92,10 @@ export declare class ChartViewport extends UI.Widget.VBox {
     setRangeSelection(startTime: number, endTime: number): void;
     onClick(event: MouseEvent): void;
     private rangeSelectionDragging;
-    private onScroll;
-    private onMouseOut;
-    private updateCursorPosition;
     pixelToTime(x: number): number;
     pixelToTimeOffset(x: number): number;
     timeToPosition(time: number): number;
     timeToPixel(): number;
-    private showCursor;
     private onChartKeyDown;
     private onChartKeyUp;
     private handleZoomPanScrollKeys;

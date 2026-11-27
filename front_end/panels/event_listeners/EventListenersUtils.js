@@ -301,8 +301,6 @@ export async function frameworkEventListeners(object) {
                 return null;
             }
         }
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         function checkInternalHandler(handler) {
             if (handler && (typeof handler === 'function')) {
                 return handler;

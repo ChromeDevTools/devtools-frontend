@@ -648,6 +648,15 @@ export class NetworkLogViewColumns {
             this.sortHandler();
         }
     }
+    async showCustomHeadersDialog(view, jslogContext) {
+        const dialog = new UI.Dialog.Dialog(jslogContext);
+        view.show(dialog.contentElement);
+        dialog.setSizeBehavior("MeasureContent" /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */);
+        dialog.show(this.networkLogView.element);
+        // The view renders asynchronously; MEASURE_CONTENT only measures on show().
+        await view.updateComplete;
+        dialog.positionContent();
+    }
     manageRequestCustomHeaderDialog() {
         const customHeadersRequest = [];
         for (const columnConfig of this.columns) {
@@ -657,10 +666,7 @@ export class NetworkLogViewColumns {
             }
         }
         const manageCustomHeadersRequest = new NetworkManageCustomHeadersView(customHeadersRequest, headerTitle => Boolean(this.addCustomHeader(headerTitle, `request-header-${headerTitle}`)), (oldHeaderId, headerTitle) => Boolean(this.changeCustomHeader(`request-header-${oldHeaderId}`, headerTitle, `request-header-${headerTitle}`)), headerTitle => Boolean(this.removeCustomHeader(`request-header-${headerTitle}`)));
-        const dialogRequest = new UI.Dialog.Dialog('manage-custom-request-headers');
-        manageCustomHeadersRequest.show(dialogRequest.contentElement);
-        dialogRequest.setSizeBehavior("MeasureContent" /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */);
-        dialogRequest.show(this.networkLogView.element);
+        void this.showCustomHeadersDialog(manageCustomHeadersRequest, 'manage-custom-request-headers');
     }
     manageResponseCustomHeaderDialog() {
         const customHeadersResponse = [];
@@ -671,10 +677,7 @@ export class NetworkLogViewColumns {
             }
         }
         const manageCustomHeadersResponse = new NetworkManageCustomHeadersView(customHeadersResponse, headerTitle => Boolean(this.addCustomHeader(headerTitle, `response-header-${headerTitle}`)), (oldHeaderId, headerTitle) => Boolean(this.changeCustomHeader(`response-header-${oldHeaderId}`, headerTitle, `response-header-${headerTitle}`)), headerTitle => Boolean(this.removeCustomHeader(`response-header-${headerTitle}`)));
-        const dialogResponse = new UI.Dialog.Dialog('manage-custom-response-headers');
-        manageCustomHeadersResponse.show(dialogResponse.contentElement);
-        dialogResponse.setSizeBehavior("MeasureContent" /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */);
-        dialogResponse.show(this.networkLogView.element);
+        void this.showCustomHeadersDialog(manageCustomHeadersResponse, 'manage-custom-response-headers');
     }
     removeCustomHeader(headerId) {
         headerId = headerId.toLowerCase();

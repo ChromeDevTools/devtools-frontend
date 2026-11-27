@@ -1,17 +1,26 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, render } from '../../ui/lit/lit.js';
 import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.js';
+export const DEFAULT_VIEW = (_input, _output, target) => {
+    // clang-format off
+    render(html `
+    <style>${inspectedPagePlaceholderStyles}</style>
+    <slot></slot>`, target);
+    // clang-format on
+};
 let inspectedPagePlaceholderInstance;
 const InspectedPagePlaceholderBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
 export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
-    constructor() {
-        super({ useShadowDom: true });
-        this.registerRequiredCSS(inspectedPagePlaceholderStyles);
-        this.restoreMinimumSize();
+    #view;
+    #needsUpdate = true;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: 'pure' });
+        this.#view = view;
+        this.setMinimumSize(150, 150);
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
@@ -20,11 +29,15 @@ export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
         }
         return inspectedPagePlaceholderInstance;
     }
-    restoreMinimumSize() {
-        this.setMinimumSize(150, 150);
+    wasShown() {
+        super.wasShown();
+        if (this.#needsUpdate) {
+            this.requestUpdate();
+        }
     }
-    clearMinimumSize() {
-        this.setMinimumSize(1, 1);
+    performUpdate() {
+        this.#needsUpdate = false;
+        this.#view(undefined, undefined, this.contentElement);
     }
     #dipPageRect() {
         const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();

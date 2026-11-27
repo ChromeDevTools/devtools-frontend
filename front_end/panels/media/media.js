@@ -2000,8 +2000,8 @@ var PlayerPropertiesView = class extends UI4.Widget.VBox {
     return this.#properties;
   }
   onProperty(property) {
-    if (!(property.name in this.#properties)) {
-      throw new Error(`Player property '${property.name}' not supported.`);
+    if (!Object.hasOwn(this.#properties, property.name)) {
+      return;
     }
     this.#properties[property.name].data = property.value;
     this.requestUpdate();
@@ -2102,18 +2102,15 @@ var PlayerDetailView = class extends UI5.TabbedPane.TabbedPane {
     for (const [name, value] of data.properties) {
       this.onProperty({ name, value });
     }
-    for (let i = this.#processedEventsCount; i < data.events.length; i++) {
-      this.onEvent(data.events[i]);
+    while (this.#processedEventsCount < data.events.length) {
+      this.onEvent(data.events[this.#processedEventsCount++]);
     }
-    this.#processedEventsCount = data.events.length;
-    for (let i = this.#processedMessagesCount; i < data.messages.length; i++) {
-      this.onMessage(data.messages[i]);
+    while (this.#processedMessagesCount < data.messages.length) {
+      this.onMessage(data.messages[this.#processedMessagesCount++]);
     }
-    this.#processedMessagesCount = data.messages.length;
-    for (let i = this.#processedErrorsCount; i < data.errors.length; i++) {
-      this.onError(data.errors[i]);
+    while (this.#processedErrorsCount < data.errors.length) {
+      this.onError(data.errors[this.#processedErrorsCount++]);
     }
-    this.#processedErrorsCount = data.errors.length;
   }
   onProperty(property) {
     this.propertyView.onProperty(property);
@@ -2325,11 +2322,12 @@ var PlayerListView = class extends UI6.Widget.VBox {
       for (const [name, value] of data.properties) {
         this.onProperty(playerID, { name, value });
       }
-      const prevCount = this.#processedEventCounts.get(playerID) ?? 0;
-      for (let i = prevCount; i < data.events.length; i++) {
-        this.onEvent(playerID, data.events[i]);
+      let processedEvents = this.#processedEventCounts.get(playerID) ?? 0;
+      while (processedEvents < data.events.length) {
+        const event = data.events[processedEvents++];
+        this.#processedEventCounts.set(playerID, processedEvents);
+        this.onEvent(playerID, event);
       }
-      this.#processedEventCounts.set(playerID, data.events.length);
     }
   }
   set selectedPlayerID(playerID) {
@@ -2454,9 +2452,17 @@ var PlayerListView = class extends UI6.Widget.VBox {
     this.requestUpdate();
   }
   onEvent(playerID, event) {
-    const parsed = JSON.parse(event.value);
-    const eventType = parsed.event;
+    let parsed;
+    try {
+      parsed = JSON.parse(event.value);
+    } catch {
+      return;
+    }
+    const eventType = parsed?.event;
     if (eventType === "kLoad") {
+      if (typeof parsed.url !== "string") {
+        return;
+      }
       const url = parsed.url;
       const videoName = url.substring(url.lastIndexOf("/") + 1);
       this.formatAndEvaluate(playerID, this.setMediaElementPlayerTitle, videoName, 1, 20);
@@ -2477,8 +2483,11 @@ var PlayerListView = class extends UI6.Widget.VBox {
   }
   onProperty(playerID, property) {
     if (property.name === "kFrameUrl" /* FRAME_URL */) {
-      const frameTitle = new URL(property.value).hostname;
-      this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, frameTitle, 1, 20);
+      try {
+        const frameTitle = new URL(property.value).hostname;
+        this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, frameTitle, 1, 20);
+      } catch {
+      }
       return;
     }
     if (property.name === "kFrameTitle" /* FRAME_TITLE */ && property.value) {

@@ -662,7 +662,8 @@
       AiCodeCompletionFreCompletedFromSources: 207,
       AiAssistanceOpenedFromApplicationPanelFloatingButton: 208,
       AiAssistanceOpenedFromApplicationPanel: 209,
-      MAX_VALUE: 210,
+      AiAssistanceOptedOut: 210,
+      MAX_VALUE: 211,
     },
     PanelCodes: {
       elements: 1,
@@ -1288,6 +1289,11 @@
       UNKNOWN_ERROR: 16,
       MAX_VALUE: 17,
     },
+    AiAssistanceOptIn: {
+      SETTINGS: 0,
+      FIRST_PROMPT_DIALOG: 1,
+      MAX_VALUE: 2,
+    },
   };
   // LINT.ThenChange(/front_end/core/host/UserMetricsEnums.ts)
 
@@ -1336,6 +1342,7 @@
     AiClientRequestResultConsoleInsights: 'DevTools.AiClient.RequestResult.ConsoleInsights',
     AiClientRequestResultConversationSummary: 'DevTools.AiClient.RequestResult.ConversationSummary',
     AiClientRequestResultPerformanceAnnotations: 'DevTools.AiClient.RequestResult.PerformanceAnnotations',
+    AiAssistanceOptIn: 'DevTools.AiAssistance.OptIn',
     // LINT.ThenChange(/front_end/core/host/InspectorFrontendHostAPI.ts:EnumeratedHistogram)
   };
 

@@ -817,15 +817,22 @@ export class AISettingsTab extends UI.Widget.VBox {
             .set(true);
       }
     } else if (settingName === 'ai-assistance-enabled') {
-      if (!setting.get()) {
+      // AiSetting.get() returns undefined and set() is a no-op when disabled or unavailable.
+      // Compare booleans strictly so UMA records only confirmed false <-> true transitions.
+      const newSettingValue = setting.get();
+      if (!newSettingValue) {
         // If the "AI Assistance" is toggled off, we remove all the history entries related to the feature.
         void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
-      }
-
-      if (setting.get()) {
+        if (oldSettingValue === true && newSettingValue === false) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOptedOut);
+        }
+      } else {
         Common.Settings.Settings.instance()
             .resolve(AiAssistanceModel.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor)
             .set(true);
+        if (oldSettingValue === false) {
+          Host.userMetrics.aiAssistanceOptIn(Host.UserMetrics.AiAssistanceOptIn.SETTINGS);
+        }
       }
     }
     this.requestUpdate();

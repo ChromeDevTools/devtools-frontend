@@ -588,5 +588,6 @@ export const enum EnumeratedHistogram {
   AiClientRequestResultConsoleInsights = 'DevTools.AiClient.RequestResult.ConsoleInsights',
   AiClientRequestResultConversationSummary = 'DevTools.AiClient.RequestResult.ConversationSummary',
   AiClientRequestResultPerformanceAnnotations = 'DevTools.AiClient.RequestResult.PerformanceAnnotations',
+  AiAssistanceOptIn = 'DevTools.AiAssistance.OptIn',
   // LINT.ThenChange(/front_end/devtools_compatibility.js:EnumeratedHistogram)
 }

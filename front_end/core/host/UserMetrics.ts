@@ -291,6 +291,14 @@ export class UserMetrics {
                                                               AiClientRequestResult.MAX_VALUE);
     }
   }
+
+  /**
+   * Records the surface from which the user opted in to AI assistance.
+   */
+  aiAssistanceOptIn(source: AiAssistanceOptIn): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.AiAssistanceOptIn, source,
+                                                            AiAssistanceOptIn.MAX_VALUE);
+  }
 }
 
 /**
@@ -462,6 +470,10 @@ export const ResendRequestType: typeof Enums.ResendRequestType =
 export type AiClientRequestResult = Enums.AiClientRequestResult;
 export const AiClientRequestResult: typeof Enums.AiClientRequestResult =
     createDynamicEnumProxy<typeof Enums.AiClientRequestResult>('AiClientRequestResult', Enums.AiClientRequestResult);
+
+export type AiAssistanceOptIn = Enums.AiAssistanceOptIn;
+export const AiAssistanceOptIn: typeof Enums.AiAssistanceOptIn =
+    createDynamicEnumProxy<typeof Enums.AiAssistanceOptIn>('AiAssistanceOptIn', Enums.AiAssistanceOptIn);
 
 export type AiClientSurfaceHistogram = EnumeratedHistogram.AiClientRequestResultAiAssistance|
                                        EnumeratedHistogram.AiClientRequestResultCodeComplete|

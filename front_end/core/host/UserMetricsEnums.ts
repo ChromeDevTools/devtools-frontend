@@ -224,7 +224,8 @@ export enum Action {
   AiCodeCompletionFreCompletedFromSources = 207,
   AiAssistanceOpenedFromApplicationPanelFloatingButton = 208,
   AiAssistanceOpenedFromApplicationPanel = 209,
-  MAX_VALUE = 210,
+  AiAssistanceOptedOut = 210,
+  MAX_VALUE = 211,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -901,6 +902,16 @@ export enum AiClientRequestResult {
   BLOCKED_BY_SAFETY_OR_RECITATION = 15,
   UNKNOWN_ERROR = 16,
   MAX_VALUE = 17,
+}
+
+/**
+ * Maps to the `DevTools.AiAssistance.OptIn` UMA histogram.
+ * Values are persisted to logs and must remain append-only in sync with `enums.xml`.
+ */
+export enum AiAssistanceOptIn {
+  SETTINGS = 0,
+  FIRST_PROMPT_DIALOG = 1,
+  MAX_VALUE = 2,
 }
 
 // LINT.ThenChange(/front_end/devtools_compatibility.js)

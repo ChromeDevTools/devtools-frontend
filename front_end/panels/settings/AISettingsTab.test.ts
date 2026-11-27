@@ -364,6 +364,82 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.include(settingNames, 'ai-assistance-enabled');
   });
 
+  describe('AI assistance opt-in and opt-out metrics', () => {
+    let recordEnumeratedHistogramSpy: sinon.SinonSpy<
+        Parameters<typeof Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordEnumeratedHistogram>>;
+
+    beforeEach(() => {
+      recordEnumeratedHistogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+    });
+
+    it('records AiAssistance.OptIn.SETTINGS when AI assistance is enabled from false', async () => {
+      const aiAssistanceEnabledSetting =
+          resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor);
+      assert.isFalse(aiAssistanceEnabledSetting.get());
+      const {view} = await setupWidget();
+
+      view.input.toggleSetting('ai-assistance-enabled', new Switch.Switch.SwitchChangeEvent(true));
+
+      assert.isTrue(aiAssistanceEnabledSetting.get());
+      assert.strictEqual(Host.UserMetrics.AiAssistanceOptIn.SETTINGS, 0);
+      assert.isAbove(Host.UserMetrics.AiAssistanceOptIn.MAX_VALUE, Host.UserMetrics.AiAssistanceOptIn.SETTINGS);
+      sinon.assert.calledOnceWithExactly(
+          recordEnumeratedHistogramSpy,
+          Host.InspectorFrontendHostAPI.EnumeratedHistogram.AiAssistanceOptIn,
+          Host.UserMetrics.AiAssistanceOptIn.SETTINGS,
+          Host.UserMetrics.AiAssistanceOptIn.MAX_VALUE,
+      );
+    });
+
+    it('records Action.AiAssistanceOptedOut when AI assistance is disabled from true', async () => {
+      const aiAssistanceEnabledSetting =
+          resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor);
+      aiAssistanceEnabledSetting.set(true);
+      const {view} = await setupWidget();
+
+      view.input.toggleSetting('ai-assistance-enabled', new Switch.Switch.SwitchChangeEvent(false));
+
+      assert.isFalse(aiAssistanceEnabledSetting.get());
+      assert.strictEqual(Host.UserMetrics.Action.AiAssistanceOptedOut, 210);
+      assert.isAbove(Host.UserMetrics.Action.MAX_VALUE, Host.UserMetrics.Action.AiAssistanceOptedOut);
+      sinon.assert.calledOnceWithExactly(
+          recordEnumeratedHistogramSpy,
+          Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
+          Host.UserMetrics.Action.AiAssistanceOptedOut,
+          Host.UserMetrics.Action.MAX_VALUE,
+      );
+    });
+
+    it('does not record AI assistance opt-in or opt-out when the setting is disabled', async () => {
+      const aiAssistanceEnabledSetting =
+          resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor);
+      sinon.stub(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor, 'isAvailable').returns({
+        status: Common.Settings.SettingAvailability.DISABLED,
+        reason: [AiAssistanceModel.AiUtils.DisabledReason.WRONG_LOCALE],
+      });
+      const {view} = await setupWidget();
+
+      view.input.toggleSetting('ai-assistance-enabled', new MouseEvent('click'));
+
+      assert.isFalse(aiAssistanceEnabledSetting.get());
+      sinon.assert.notCalled(recordEnumeratedHistogramSpy);
+    });
+
+    it('does not record AI assistance opt-in or opt-out when toggling another AI setting', async () => {
+      const consoleInsightsEnabledSetting =
+          resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor);
+      const {view} = await setupWidget();
+
+      view.input.toggleSetting('console-insights-enabled', new Switch.Switch.SwitchChangeEvent(true));
+      assert.isTrue(consoleInsightsEnabledSetting.get());
+      view.input.toggleSetting('console-insights-enabled', new Switch.Switch.SwitchChangeEvent(false));
+      assert.isFalse(consoleInsightsEnabledSetting.get());
+
+      sinon.assert.notCalled(recordEnumeratedHistogramSpy);
+    });
+  });
+
   describe('allowed tools', () => {
     const {ToolName} = AiAssistanceModel.Tool;
 

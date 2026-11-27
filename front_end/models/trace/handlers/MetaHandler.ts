@@ -486,10 +486,15 @@ export async function finalize(options?: FinalizeOptions): Promise<void> {
       const redirectedUrl = finalDisplayUrlByNavigationId.get(navigationId)?.split('#')[0];
       const sameOriginRedirectUrl =
           redirectedUrl && hasSameTupleOrigin(trimmedNavUrl, redirectedUrl) ? redirectedUrl : null;
+      const nextMainFrameNavTs = mainFrameNavigations.at(1)?.ts ?? Number.POSITIVE_INFINITY;
       const committedEntries = committedFramesByFrameId.get(mainFrameId) ?? [];
+      const firstCommittedEntryForNav =
+          committedEntries.find(({ts}) => ts >= firstMainFrameNav.ts && ts < nextMainFrameNavTs);
+      const matchesInitialUrl = firstCommittedEntryForNav?.frame.url === trimmedNavUrl;
+      const matchesSameOriginRedirect =
+          sameOriginRedirectUrl !== null && firstCommittedEntryForNav?.frame.url === sameOriginRedirectUrl;
       const matchingCommittedEntry =
-          committedEntries.findLast(({frame}) => frame.url === trimmedNavUrl ||
-                                        (sameOriginRedirectUrl !== null && frame.url === sameOriginRedirectUrl));
+          (matchesInitialUrl || matchesSameOriginRedirect) ? firstCommittedEntryForNav : undefined;
       if (matchingCommittedEntry && 'isOpaqueOrigin' in matchingCommittedEntry.frame) {
         mainFrameIsOpaqueOrigin = Boolean(matchingCommittedEntry.frame.isOpaqueOrigin);
         activeMainFrameTs = matchingCommittedEntry.ts;

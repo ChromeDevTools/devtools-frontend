@@ -933,4 +933,144 @@ describe('MetaHandler', function() {
     await Trace.Handlers.ModelHandlers.Meta.finalize();
     assert.isTrue(Trace.Handlers.ModelHandlers.Meta.data().mainFrameIsOpaqueOrigin);
   });
+
+  it('marks mainFrameIsOpaqueOrigin when an intermediate main frame commit is opaque before returning to the initial navigation URL',
+     async () => {
+       Trace.Handlers.ModelHandlers.Meta.reset();
+       const initialStartedEvent: Trace.Types.Events.TracingStartedInBrowser = {
+         ...defaultTraceEvent,
+         name: Trace.Types.Events.Name.TRACING_STARTED_IN_BROWSER,
+         ph: Trace.Types.Events.Phase.INSTANT,
+         s: Trace.Types.Events.Scope.THREAD,
+         ts: Trace.Types.Timing.Micro(100),
+         args: {
+           data: {
+             frameTreeNodeId: 1,
+             persistentIds: true,
+             frames: [
+               {
+                 frame: 'MAIN_FRAME',
+                 name: '',
+                 processId: Trace.Types.Events.ProcessID(100),
+                 url: 'about:blank',
+                 isOutermostMainFrame: true,
+                 isInPrimaryMainFrame: true,
+                 isOpaqueOrigin: false,
+               },
+             ],
+           },
+         },
+       };
+       const initialNavStartEvent: Trace.Types.Events.NavigationStart = {
+         ...defaultTraceEvent,
+         name: Trace.Types.Events.Name.NAVIGATION_START,
+         ph: Trace.Types.Events.Phase.MARK,
+         ts: Trace.Types.Timing.Micro(200),
+         args: {
+           frame: 'MAIN_FRAME',
+           data: {
+             isLoadingMainFrame: true,
+             isOutermostMainFrame: true,
+             documentLoaderURL: 'https://victim.example/page.html',
+             navigationId: 'nav-initial',
+           },
+         },
+       };
+       const initialCommitEvent: Trace.Types.Events.FrameCommittedInBrowser = {
+         ...defaultTraceEvent,
+         name: 'FrameCommittedInBrowser',
+         ph: Trace.Types.Events.Phase.INSTANT,
+         s: Trace.Types.Events.Scope.THREAD,
+         ts: Trace.Types.Timing.Micro(250),
+         args: {
+           data: {
+             frame: 'MAIN_FRAME',
+             name: '',
+             processId: Trace.Types.Events.ProcessID(101),
+             url: 'https://victim.example/page.html',
+             isOutermostMainFrame: true,
+             isInPrimaryMainFrame: true,
+             isOpaqueOrigin: false,
+           },
+         },
+       };
+       const sandboxNavStartEvent: Trace.Types.Events.NavigationStart = {
+         ...defaultTraceEvent,
+         name: Trace.Types.Events.Name.NAVIGATION_START,
+         ph: Trace.Types.Events.Phase.MARK,
+         ts: Trace.Types.Timing.Micro(900_000),
+         args: {
+           frame: 'MAIN_FRAME',
+           data: {
+             isLoadingMainFrame: true,
+             isOutermostMainFrame: true,
+             documentLoaderURL: 'https://victim.example/sandboxed.html',
+             navigationId: 'nav-sandbox',
+           },
+         },
+       };
+       const sandboxCommitEvent: Trace.Types.Events.FrameCommittedInBrowser = {
+         ...defaultTraceEvent,
+         name: 'FrameCommittedInBrowser',
+         ph: Trace.Types.Events.Phase.INSTANT,
+         s: Trace.Types.Events.Scope.THREAD,
+         ts: Trace.Types.Timing.Micro(1_000_000),
+         args: {
+           data: {
+             frame: 'MAIN_FRAME',
+             name: '',
+             processId: Trace.Types.Events.ProcessID(102),
+             url: 'https://victim.example/sandboxed.html',
+             isOutermostMainFrame: true,
+             isInPrimaryMainFrame: true,
+             isOpaqueOrigin: true,
+           },
+         },
+       };
+       const returnNavStartEvent: Trace.Types.Events.NavigationStart = {
+         ...defaultTraceEvent,
+         name: Trace.Types.Events.Name.NAVIGATION_START,
+         ph: Trace.Types.Events.Phase.MARK,
+         ts: Trace.Types.Timing.Micro(1_900_000),
+         args: {
+           frame: 'MAIN_FRAME',
+           data: {
+             isLoadingMainFrame: true,
+             isOutermostMainFrame: true,
+             documentLoaderURL: 'https://victim.example/page.html',
+             navigationId: 'nav-return',
+           },
+         },
+       };
+       const returnCommitEvent: Trace.Types.Events.FrameCommittedInBrowser = {
+         ...defaultTraceEvent,
+         name: 'FrameCommittedInBrowser',
+         ph: Trace.Types.Events.Phase.INSTANT,
+         s: Trace.Types.Events.Scope.THREAD,
+         ts: Trace.Types.Timing.Micro(2_000_000),
+         args: {
+           data: {
+             frame: 'MAIN_FRAME',
+             name: '',
+             processId: Trace.Types.Events.ProcessID(103),
+             url: 'https://victim.example/page.html',
+             isOutermostMainFrame: true,
+             isInPrimaryMainFrame: true,
+             isOpaqueOrigin: false,
+           },
+         },
+       };
+
+       Trace.Handlers.ModelHandlers.Meta.handleEvent(initialStartedEvent);
+       Trace.Handlers.ModelHandlers.Meta.handleEvent(initialNavStartEvent);
+       Trace.Handlers.ModelHandlers.Meta.handleEvent(initialCommitEvent);
+       Trace.Handlers.ModelHandlers.Meta.handleEvent(sandboxNavStartEvent);
+       Trace.Handlers.ModelHandlers.Meta.handleEvent(sandboxCommitEvent);
+       Trace.Handlers.ModelHandlers.Meta.handleEvent(returnNavStartEvent);
+       Trace.Handlers.ModelHandlers.Meta.handleEvent(returnCommitEvent);
+       await Trace.Handlers.ModelHandlers.Meta.finalize();
+       const data = Trace.Handlers.ModelHandlers.Meta.data();
+       assert.strictEqual(data.mainFrameURL, 'https://victim.example/page.html');
+       assert.isTrue(data.mainFrameIsOpaqueOrigin);
+     });
 });

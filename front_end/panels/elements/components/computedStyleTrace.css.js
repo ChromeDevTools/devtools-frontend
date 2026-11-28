@@ -38,17 +38,12 @@ export default `/*
   margin: calc(-1 * var(--sys-size-1)) 0 0 calc(-1 * var(--size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-primary-bright);
+  border: none;
+  padding: 0;
 }
 
 .computed-style-trace:hover .goto {
   display: inline-block;
-}
-
-.devtools-link {
-  color: var(--sys-color-on-surface);
-  text-decoration-color: var(--sys-color-token-subtle);
-  text-decoration-line: underline;
-  cursor: pointer;
 }
 
 .trace-value {
@@ -67,6 +62,8 @@ export default `/*
 }
 
 .trace-link {
+  --text-link: var(--sys-color-on-surface);
+
   user-select: none;
   float: right;
   padding-left: 1em;
@@ -90,6 +87,10 @@ export default `/*
 
   .computed-style-trace:hover .trace-selector {
     --override-trace-selector-color: HighlightText;
+  }
+
+  .computed-style-trace:hover .trace-link {
+    --text-link: HighlightText;
   }
 }
 

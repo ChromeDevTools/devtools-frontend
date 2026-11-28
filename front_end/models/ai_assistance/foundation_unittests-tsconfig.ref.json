@@ -70,6 +70,7 @@
     "../../../../../../front_end/models/ai_assistance/tools/RecordPerformanceTrace.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ResolveDevtoolsNodePath.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/RunLighthouse.test.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/SearchInSources.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/SelectTraceEventByKey.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/SetElementStyles.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/Tool.test.ts",

@@ -200,6 +200,12 @@ export class UserMetrics {
             InspectorFrontendHostInstance.recordEnumeratedHistogram(surfaceHistogram, result, AiClientRequestResult.MAX_VALUE);
         }
     }
+    /**
+     * Records the surface from which the user opted in to AI assistance.
+     */
+    aiAssistanceOptIn(source) {
+        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.AiAssistance.OptIn" /* EnumeratedHistogram.AiAssistanceOptIn */, source, AiAssistanceOptIn.MAX_VALUE);
+    }
 }
 /**
  * Creates a proxy that delays the resolution of UMA enum values until runtime.
@@ -289,6 +295,7 @@ export const TimelineNavigationSetting = createDynamicEnumProxy('TimelineNavigat
 export const BuiltInAiAvailability = createDynamicEnumProxy('BuiltInAiAvailability', Enums.BuiltInAiAvailability);
 export const ResendRequestType = createDynamicEnumProxy('ResendRequestType', Enums.ResendRequestType);
 export const AiClientRequestResult = createDynamicEnumProxy('AiClientRequestResult', Enums.AiClientRequestResult);
+export const AiAssistanceOptIn = createDynamicEnumProxy('AiAssistanceOptIn', Enums.AiAssistanceOptIn);
 export const userMetrics = new UserMetrics();
 const resendRequestTypeMap = new Map([
     [Common.ResourceType.resourceTypes.XHR, 'XHR'],

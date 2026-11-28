@@ -2345,6 +2345,7 @@ var Preload;
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+    PrerenderFinalStatus2["AudioOutput"] = "AudioOutput";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus2;
   ((PreloadingStatus3) => {
@@ -14723,7 +14724,7 @@ var NetworkManager_exports = {};
 __export(NetworkManager_exports, {
   AppliedNetworkConditions: () => AppliedNetworkConditions,
   BlockingConditions: () => BlockingConditions,
-  Events: () => Events17,
+  Events: () => Events18,
   Fast4GConditions: () => Fast4GConditions,
   FetchDispatcher: () => FetchDispatcher,
   InterceptedRequest: () => InterceptedRequest,
@@ -14757,15 +14758,72 @@ import * as Platform18 from "../platform/platform.js";
 import * as Root7 from "../root/root.js";
 import * as TextUtils21 from "../text_utils/text_utils.js";
 
-// ../../front_end/core/sdk/RuntimeModel.ts
-var RuntimeModel_exports = {};
-__export(RuntimeModel_exports, {
-  Events: () => Events13,
-  ExecutionContext: () => ExecutionContext,
-  RuntimeModel: () => RuntimeModel
+// ../../front_end/core/sdk/ResourceTreeModel.ts
+var ResourceTreeModel_exports = {};
+__export(ResourceTreeModel_exports, {
+  Events: () => Events3,
+  PageDispatcher: () => PageDispatcher,
+  PrimaryPageChangeType: () => PrimaryPageChangeType,
+  ResourceTreeFrame: () => ResourceTreeFrame,
+  ResourceTreeModel: () => ResourceTreeModel
 });
 import * as Common27 from "../common/common.js";
+import * as i18n17 from "../i18n/i18n.js";
+import * as Platform17 from "../platform/platform.js";
+
+// ../../front_end/core/sdk/DOMModel.ts
+var DOMModel_exports = {};
+__export(DOMModel_exports, {
+  ARIA_ATTRIBUTES: () => ARIA_ATTRIBUTES,
+  AdoptedStyleSheet: () => AdoptedStyleSheet,
+  DOMDocument: () => DOMDocument,
+  DOMDocumentSnapshot: () => DOMDocumentSnapshot,
+  DOMModel: () => DOMModel,
+  DOMModelUndoStack: () => DOMModelUndoStack,
+  DOMNode: () => DOMNode,
+  DOMNodeEvents: () => DOMNodeEvents,
+  DOMNodeShortcut: () => DOMNodeShortcut,
+  DOMNodeSnapshot: () => DOMNodeSnapshot,
+  DeferredDOMNode: () => DeferredDOMNode,
+  Events: () => Events10,
+  NodeType: () => NodeType,
+  cssEscape: () => cssEscape
+});
+import * as Common24 from "../common/common.js";
+import * as Platform15 from "../platform/platform.js";
+import * as Root6 from "../root/root.js";
+
+// ../../front_end/core/sdk/ConsoleModel.ts
+var ConsoleModel_exports = {};
+__export(ConsoleModel_exports, {
+  ConsoleMessage: () => ConsoleMessage,
+  ConsoleModel: () => ConsoleModel,
+  Events: () => Events15,
+  FrontendMessageType: () => FrontendMessageType,
+  MessageSourceDisplayName: () => MessageSourceDisplayName
+});
+import * as Common23 from "../common/common.js";
 import * as Host6 from "../host/host.js";
+import * as i18n15 from "../i18n/i18n.js";
+import * as Platform14 from "../platform/platform.js";
+
+// ../../front_end/core/sdk/ConsoleModelTypes.ts
+var FrontendMessageType = /* @__PURE__ */ ((FrontendMessageType2) => {
+  FrontendMessageType2["Result"] = "result";
+  FrontendMessageType2["Command"] = "command";
+  FrontendMessageType2["System"] = "system";
+  FrontendMessageType2["QueryObjectResult"] = "queryObjectResult";
+  return FrontendMessageType2;
+})(FrontendMessageType || {});
+
+// ../../front_end/core/sdk/CPUProfilerModel.ts
+var CPUProfilerModel_exports = {};
+__export(CPUProfilerModel_exports, {
+  CPUProfilerModel: () => CPUProfilerModel,
+  Events: () => Events13,
+  ProfileFinishedData: () => ProfileFinishedData
+});
+import * as i18n13 from "../i18n/i18n.js";
 
 // ../../front_end/core/sdk/DebuggerModel.ts
 var DebuggerModel_exports = {};
@@ -14776,9 +14834,9 @@ __export(DebuggerModel_exports, {
   CallFrame: () => CallFrame,
   DebuggerModel: () => DebuggerModel,
   DebuggerPausedDetails: () => DebuggerPausedDetails,
-  Events: () => Events10,
+  Events: () => Events9,
   LOGPOINT_SOURCE_URL: () => LOGPOINT_SOURCE_URL,
-  Location: () => Location,
+  Location: () => Location2,
   PauseOnExceptionsState: () => PauseOnExceptionsState,
   Scope: () => Scope,
   StepMode: () => StepMode,
@@ -14786,9 +14844,9 @@ __export(DebuggerModel_exports, {
   skipAllPausesSettingDescriptor: () => skipAllPausesSettingDescriptor,
   sortAndMergeRanges: () => sortAndMergeRanges
 });
-import * as Common26 from "../common/common.js";
-import * as i18n17 from "../i18n/i18n.js";
-import * as Root6 from "../root/root.js";
+import * as Common22 from "../common/common.js";
+import * as i18n11 from "../i18n/i18n.js";
+import * as Root5 from "../root/root.js";
 
 // ../../front_end/core/sdk/RemoteObject.ts
 var RemoteObject_exports = {};
@@ -15731,72 +15789,22 @@ var LinearMemoryInspectable = class {
   }
 };
 
-// ../../front_end/core/sdk/ResourceTreeModel.ts
-var ResourceTreeModel_exports = {};
-__export(ResourceTreeModel_exports, {
-  Events: () => Events4,
-  PageDispatcher: () => PageDispatcher,
-  PrimaryPageChangeType: () => PrimaryPageChangeType,
-  ResourceTreeFrame: () => ResourceTreeFrame,
-  ResourceTreeModel: () => ResourceTreeModel
-});
-import * as Common24 from "../common/common.js";
-import * as i18n13 from "../i18n/i18n.js";
-import * as Platform16 from "../platform/platform.js";
-
-// ../../front_end/core/sdk/DOMModel.ts
-var DOMModel_exports = {};
-__export(DOMModel_exports, {
-  ARIA_ATTRIBUTES: () => ARIA_ATTRIBUTES,
-  AdoptedStyleSheet: () => AdoptedStyleSheet,
-  DOMDocument: () => DOMDocument,
-  DOMDocumentSnapshot: () => DOMDocumentSnapshot,
-  DOMModel: () => DOMModel,
-  DOMModelUndoStack: () => DOMModelUndoStack,
-  DOMNode: () => DOMNode,
-  DOMNodeEvents: () => DOMNodeEvents,
-  DOMNodeShortcut: () => DOMNodeShortcut,
-  DOMNodeSnapshot: () => DOMNodeSnapshot,
-  DeferredDOMNode: () => DeferredDOMNode,
-  Events: () => Events11,
-  NodeType: () => NodeType,
-  cssEscape: () => cssEscape
-});
-import * as Common21 from "../common/common.js";
-import * as Platform14 from "../platform/platform.js";
-import * as Root5 from "../root/root.js";
-
-// ../../front_end/core/sdk/ConsoleModel.ts
-var ConsoleModel_exports = {};
-__export(ConsoleModel_exports, {
-  ConsoleMessage: () => ConsoleMessage,
-  ConsoleModel: () => ConsoleModel,
-  Events: () => Events14,
-  FrontendMessageType: () => FrontendMessageType,
-  MessageSourceDisplayName: () => MessageSourceDisplayName
+// ../../front_end/core/sdk/RuntimeModel.ts
+var RuntimeModel_exports = {};
+__export(RuntimeModel_exports, {
+  Events: () => Events12,
+  ExecutionContext: () => ExecutionContext,
+  RuntimeModel: () => RuntimeModel
 });
 import * as Common20 from "../common/common.js";
-import * as Host5 from "../host/host.js";
-import * as i18n11 from "../i18n/i18n.js";
-import * as Platform13 from "../platform/platform.js";
+import * as Host4 from "../host/host.js";
 
-// ../../front_end/core/sdk/ConsoleModelTypes.ts
-var FrontendMessageType = /* @__PURE__ */ ((FrontendMessageType2) => {
-  FrontendMessageType2["Result"] = "result";
-  FrontendMessageType2["Command"] = "command";
-  FrontendMessageType2["System"] = "system";
-  FrontendMessageType2["QueryObjectResult"] = "queryObjectResult";
-  return FrontendMessageType2;
-})(FrontendMessageType || {});
-
-// ../../front_end/core/sdk/CPUProfilerModel.ts
-var CPUProfilerModel_exports = {};
-__export(CPUProfilerModel_exports, {
-  CPUProfilerModel: () => CPUProfilerModel,
+// ../../front_end/core/sdk/HeapProfilerModel.ts
+var HeapProfilerModel_exports = {};
+__export(HeapProfilerModel_exports, {
   Events: () => Events,
-  ProfileFinishedData: () => ProfileFinishedData
+  HeapProfilerModel: () => HeapProfilerModel
 });
-import * as i18n from "../i18n/i18n.js";
 
 // ../../front_end/core/sdk/Target.ts
 var Target_exports = {};
@@ -16263,157 +16271,137 @@ var Capability = /* @__PURE__ */ ((Capability2) => {
   return Capability2;
 })(Capability || {});
 
-// ../../front_end/core/sdk/CPUProfilerModel.ts
-var UIStrings = {
-  /**
-   * @description Name of a profile. Placeholder is either a user-supplied name or a number automatically assigned to the profile.
-   * @example {2} PH1
-   */
-  profileD: "Profile {PH1}"
-};
-var str_ = i18n.i18n.registerUIStrings("core/sdk/CPUProfilerModel.ts", UIStrings);
-var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var CPUProfilerModel = class extends SDKModel {
-  #nextAnonymousConsoleProfileNumber;
-  #anonymousConsoleProfileIdToTitle;
-  #profilerAgent;
-  #preciseCoverageDeltaUpdateCallback;
-  #debuggerModel;
+// ../../front_end/core/sdk/HeapProfilerModel.ts
+var HeapProfilerModel = class extends SDKModel {
+  #enabled = false;
+  #heapProfilerAgent;
+  #runtimeModel;
   constructor(target) {
     super(target);
-    this.#nextAnonymousConsoleProfileNumber = 1;
-    this.#anonymousConsoleProfileIdToTitle = /* @__PURE__ */ new Map();
-    this.#profilerAgent = target.profilerAgent();
-    this.#preciseCoverageDeltaUpdateCallback = null;
-    target.registerProfilerDispatcher(this);
-    void this.#profilerAgent.invoke_enable();
-    this.#debuggerModel = target.model(DebuggerModel);
-  }
-  runtimeModel() {
-    return this.#debuggerModel.runtimeModel();
+    target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
+    this.#heapProfilerAgent = target.heapProfilerAgent();
+    this.#runtimeModel = target.model(RuntimeModel);
   }
   debuggerModel() {
-    return this.#debuggerModel;
+    return this.#runtimeModel.debuggerModel();
   }
-  consoleProfileStarted({ id, location, title }) {
-    if (!title) {
-      title = i18nString(UIStrings.profileD, { PH1: this.#nextAnonymousConsoleProfileNumber++ });
-      this.#anonymousConsoleProfileIdToTitle.set(id, title);
+  runtimeModel() {
+    return this.#runtimeModel;
+  }
+  async enable() {
+    if (this.#enabled) {
+      return;
     }
-    const eventData = this.#createEventDataFrom(id, location, title);
-    this.dispatchEventToListeners("ConsoleProfileStarted" /* CONSOLE_PROFILE_STARTED */, eventData);
+    this.#enabled = true;
+    await this.#heapProfilerAgent.invoke_enable();
   }
-  consoleProfileFinished({ id, location, profile, title }) {
-    if (!title) {
-      title = this.#anonymousConsoleProfileIdToTitle.get(id);
-      this.#anonymousConsoleProfileIdToTitle.delete(id);
-    }
-    const eventData = new ProfileFinishedData(this.#createEventDataFrom(id, location, title), profile);
-    this.dispatchEventToListeners("ConsoleProfileFinished" /* CONSOLE_PROFILE_FINISHED */, eventData);
-  }
-  #createEventDataFrom(id, scriptLocation, title) {
-    const debuggerLocation = Location.fromPayload(this.#debuggerModel, scriptLocation);
-    const globalId = this.target().id() + "." + id;
-    return {
-      id: globalId,
-      scriptLocation: debuggerLocation,
-      title: title || "",
-      cpuProfilerModel: this
-    };
-  }
-  startRecording() {
-    const intervalUs = 100;
-    void this.#profilerAgent.invoke_setSamplingInterval({ interval: intervalUs });
-    return this.#profilerAgent.invoke_start();
-  }
-  stopRecording() {
-    return this.#profilerAgent.invoke_stop().then((response) => response.profile || null);
-  }
-  startPreciseCoverage(jsCoveragePerBlock, preciseCoverageDeltaUpdateCallback) {
-    const callCount = false;
-    this.#preciseCoverageDeltaUpdateCallback = preciseCoverageDeltaUpdateCallback;
-    const allowUpdatesTriggeredByBackend = true;
-    return this.#profilerAgent.invoke_startPreciseCoverage(
-      { callCount, detailed: jsCoveragePerBlock, allowTriggeredUpdates: allowUpdatesTriggeredByBackend }
+  async startSampling(samplingRateInBytes) {
+    const defaultSamplingIntervalInBytes = 16384;
+    const response = await this.#heapProfilerAgent.invoke_startSampling(
+      { samplingInterval: samplingRateInBytes || defaultSamplingIntervalInBytes }
     );
+    return Boolean(response.getError());
   }
-  async takePreciseCoverage() {
-    const r = await this.#profilerAgent.invoke_takePreciseCoverage();
-    const timestamp = r?.timestamp || 0;
-    const coverage = r?.result || [];
-    return { timestamp, coverage };
-  }
-  stopPreciseCoverage() {
-    this.#preciseCoverageDeltaUpdateCallback = null;
-    return this.#profilerAgent.invoke_stopPreciseCoverage();
-  }
-  preciseCoverageDeltaUpdate({ timestamp, result }) {
-    if (this.#preciseCoverageDeltaUpdateCallback) {
-      void this.#preciseCoverageDeltaUpdateCallback(timestamp, result);
+  async stopSampling() {
+    const response = await this.#heapProfilerAgent.invoke_stopSampling();
+    if (response.getError()) {
+      throw new Error("Sampling profiler is not running.");
     }
+    return response.profile;
+  }
+  async getSamplingProfile() {
+    const response = await this.#heapProfilerAgent.invoke_getSamplingProfile();
+    if (response.getError()) {
+      return null;
+    }
+    return response.profile;
+  }
+  async collectGarbage() {
+    const response = await this.#heapProfilerAgent.invoke_collectGarbage();
+    return Boolean(response.getError());
+  }
+  async snapshotObjectIdForObjectId(objectId) {
+    const response = await this.#heapProfilerAgent.invoke_getHeapObjectId({ objectId });
+    if (response.getError()) {
+      return null;
+    }
+    return response.heapSnapshotObjectId;
+  }
+  async objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
+    const result = await this.#heapProfilerAgent.invoke_getObjectByHeapObjectId(
+      { objectId: snapshotObjectId, objectGroup: objectGroupName }
+    );
+    if (result.getError()) {
+      return null;
+    }
+    return this.#runtimeModel.createRemoteObject(result.result);
+  }
+  async addInspectedHeapObject(snapshotObjectId) {
+    const response = await this.#heapProfilerAgent.invoke_addInspectedHeapObject({ heapObjectId: snapshotObjectId });
+    return Boolean(response.getError());
+  }
+  async takeHeapSnapshot(heapSnapshotOptions) {
+    await this.target().targetManager().suspendAllTargets("heap-snapshot");
+    try {
+      await this.#heapProfilerAgent.invoke_takeHeapSnapshot(heapSnapshotOptions);
+    } finally {
+      await this.target().targetManager().resumeAllTargets();
+    }
+  }
+  async startTrackingHeapObjects(recordAllocationStacks) {
+    const response = await this.#heapProfilerAgent.invoke_startTrackingHeapObjects({ trackAllocations: recordAllocationStacks });
+    return Boolean(response.getError());
+  }
+  async stopTrackingHeapObjects(reportProgress) {
+    const response = await this.#heapProfilerAgent.invoke_stopTrackingHeapObjects({ reportProgress });
+    return Boolean(response.getError());
+  }
+  heapStatsUpdate(samples) {
+    this.dispatchEventToListeners("HeapStatsUpdate" /* HEAP_STATS_UPDATED */, samples);
+  }
+  lastSeenObjectId(lastSeenObjectId, timestamp) {
+    this.dispatchEventToListeners("LastSeenObjectId" /* LAST_SEEN_OBJECT_ID */, { lastSeenObjectId, timestamp });
+  }
+  addHeapSnapshotChunk(chunk) {
+    this.dispatchEventToListeners("AddHeapSnapshotChunk" /* ADD_HEAP_SNAPSHOT_CHUNK */, chunk);
+  }
+  reportHeapSnapshotProgress(done, total, finished) {
+    this.dispatchEventToListeners("ReportHeapSnapshotProgress" /* REPORT_HEAP_SNAPSHOT_PROGRESS */, { done, total, finished });
+  }
+  resetProfiles() {
+    this.dispatchEventToListeners("ResetProfiles" /* RESET_PROFILES */, this);
   }
 };
 var Events = /* @__PURE__ */ ((Events36) => {
-  Events36["CONSOLE_PROFILE_STARTED"] = "ConsoleProfileStarted";
-  Events36["CONSOLE_PROFILE_FINISHED"] = "ConsoleProfileFinished";
+  Events36["HEAP_STATS_UPDATED"] = "HeapStatsUpdate";
+  Events36["LAST_SEEN_OBJECT_ID"] = "LastSeenObjectId";
+  Events36["ADD_HEAP_SNAPSHOT_CHUNK"] = "AddHeapSnapshotChunk";
+  Events36["REPORT_HEAP_SNAPSHOT_PROGRESS"] = "ReportHeapSnapshotProgress";
+  Events36["RESET_PROFILES"] = "ResetProfiles";
   return Events36;
 })(Events || {});
-SDKModel.register(CPUProfilerModel, { capabilities: 4 /* JS */, autostart: true });
-var ProfileFinishedData = class {
-  id;
-  scriptLocation;
-  title;
-  cpuProfilerModel;
-  cpuProfile;
-  constructor(eventData, cpuProfile) {
-    this.id = eventData.id;
-    this.scriptLocation = eventData.scriptLocation;
-    this.title = eventData.title;
-    this.cpuProfilerModel = eventData.cpuProfilerModel;
-    this.cpuProfile = cpuProfile;
+var HeapProfilerDispatcher = class {
+  #heapProfilerModel;
+  constructor(model) {
+    this.#heapProfilerModel = model;
+  }
+  heapStatsUpdate({ statsUpdate }) {
+    this.#heapProfilerModel.heapStatsUpdate(statsUpdate);
+  }
+  lastSeenObjectId({ lastSeenObjectId, timestamp }) {
+    this.#heapProfilerModel.lastSeenObjectId(lastSeenObjectId, timestamp);
+  }
+  addHeapSnapshotChunk({ chunk }) {
+    this.#heapProfilerModel.addHeapSnapshotChunk(chunk);
+  }
+  reportHeapSnapshotProgress({ done, total, finished }) {
+    this.#heapProfilerModel.reportHeapSnapshotProgress(done, total, finished);
+  }
+  resetProfiles() {
+    this.#heapProfilerModel.resetProfiles();
   }
 };
-
-// ../../front_end/core/sdk/LogModel.ts
-var LogModel_exports = {};
-__export(LogModel_exports, {
-  Events: () => Events2,
-  LogModel: () => LogModel
-});
-import * as Host from "../host/host.js";
-var LogModel = class extends SDKModel {
-  #logAgent;
-  constructor(target) {
-    super(target);
-    target.registerLogDispatcher(this);
-    this.#logAgent = target.logAgent();
-    void this.#logAgent.invoke_enable();
-    if (!Host.InspectorFrontendHost.isUnderTest()) {
-      void this.#logAgent.invoke_startViolationsReport({
-        config: [
-          { name: Log.ViolationSettingName.LongTask, threshold: 200 },
-          { name: Log.ViolationSettingName.LongLayout, threshold: 30 },
-          { name: Log.ViolationSettingName.BlockedEvent, threshold: 100 },
-          { name: Log.ViolationSettingName.BlockedParser, threshold: -1 },
-          { name: Log.ViolationSettingName.Handler, threshold: 150 },
-          { name: Log.ViolationSettingName.RecurringHandler, threshold: 50 },
-          { name: Log.ViolationSettingName.DiscouragedAPIUse, threshold: -1 }
-        ]
-      });
-    }
-  }
-  entryAdded({ entry }) {
-    this.dispatchEventToListeners("EntryAdded" /* ENTRY_ADDED */, { logModel: this, entry });
-  }
-  requestClear() {
-    void this.#logAgent.invoke_clear();
-  }
-};
-var Events2 = /* @__PURE__ */ ((Events36) => {
-  Events36["ENTRY_ADDED"] = "EntryAdded";
-  return Events36;
-})(Events2 || {});
-SDKModel.register(LogModel, { capabilities: 8 /* LOG */, autostart: true });
+SDKModel.register(HeapProfilerModel, { capabilities: 4 /* JS */, autostart: false });
 
 // ../../front_end/core/sdk/PageFunctions.ts
 function scrollListenerInPage(id, reportScrollPositionBindingName, scrollListenerNameInPage) {
@@ -16622,7 +16610,7 @@ __export(EmulationModel_exports, {
   DeviceOrientation: () => DeviceOrientation,
   EmulationModel: () => EmulationModel,
   EmulationModelEvents: () => EmulationModelEvents,
-  Location: () => Location2
+  Location: () => Location
 });
 import * as Common18 from "../common/common.js";
 
@@ -16635,11 +16623,11 @@ __export(CSSModel_exports, {
   CSSPropertyTrackerEvents: () => CSSPropertyTrackerEvents,
   ColorScheme: () => ColorScheme,
   Edit: () => Edit,
-  Events: () => Events9,
+  Events: () => Events8,
   InlineStyleResult: () => InlineStyleResult
 });
 import * as Common14 from "../common/common.js";
-import * as Host4 from "../host/host.js";
+import * as Host3 from "../host/host.js";
 import * as Platform11 from "../platform/platform.js";
 import * as Root4 from "../root/root.js";
 import * as TextUtils16 from "../text_utils/text_utils.js";
@@ -16719,7 +16707,7 @@ import * as Platform5 from "../platform/platform.js";
 var CSSProperty_exports = {};
 __export(CSSProperty_exports, {
   CSSProperty: () => CSSProperty,
-  Events: () => Events3
+  Events: () => Events2
 });
 import * as Common6 from "../common/common.js";
 import * as HostModule from "../host/host.js";
@@ -18781,10 +18769,10 @@ var TreeSearch = class _TreeSearch extends TreeWalker {
 };
 
 // ../../front_end/core/sdk/CSSProperty.ts
-var Events3 = /* @__PURE__ */ ((Events36) => {
+var Events2 = /* @__PURE__ */ ((Events36) => {
   Events36["LOCAL_VALUE_UPDATED"] = "localValueUpdated";
   return Events36;
-})(Events3 || {});
+})(Events2 || {});
 var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper {
   ownerStyle;
   index;
@@ -21866,10 +21854,10 @@ __export(CSSStyleSheetHeader_exports, {
   CSSStyleSheetHeader: () => CSSStyleSheetHeader
 });
 import * as Common7 from "../common/common.js";
-import * as i18n3 from "../i18n/i18n.js";
+import * as i18n from "../i18n/i18n.js";
 import * as Platform6 from "../platform/platform.js";
 import * as TextUtils12 from "../text_utils/text_utils.js";
-var UIStrings2 = {
+var UIStrings = {
   /**
    * @description Error message for when a CSS file can't be loaded.
    */
@@ -21879,8 +21867,8 @@ var UIStrings2 = {
    */
   couldNotRetrieveSourceStyles: "Couldn\u2019t retrieve source styles"
 };
-var str_2 = i18n3.i18n.registerUIStrings("core/sdk/CSSStyleSheetHeader.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var str_ = i18n.i18n.registerUIStrings("core/sdk/CSSStyleSheetHeader.ts", UIStrings);
+var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var CSSStyleSheetHeader = class {
   #cssModel;
   id;
@@ -21931,7 +21919,7 @@ var CSSStyleSheetHeader = class {
       const lazyContent = (async () => {
         const originalText = await this.#cssModel.originalStyleSheetText(this);
         if (originalText === null) {
-          return { error: i18nString2(UIStrings2.couldNotFindTheOriginalStyle) };
+          return { error: i18nString(UIStrings.couldNotFindTheOriginalStyle) };
         }
         return new TextUtils12.ContentData.ContentData(
           originalText,
@@ -22008,7 +21996,7 @@ var CSSStyleSheetHeader = class {
   async requestContentData() {
     const cssText = await this.#cssModel.getStyleSheetText(this.id);
     if (cssText === null) {
-      return { error: i18nString2(UIStrings2.couldNotRetrieveSourceStyles) };
+      return { error: i18nString(UIStrings.couldNotRetrieveSourceStyles) };
     }
     return new TextUtils12.ContentData.ContentData(
       cssText,
@@ -22223,8 +22211,8 @@ var SourceMapScopeChainEntry_exports = {};
 __export(SourceMapScopeChainEntry_exports, {
   SourceMapScopeChainEntry: () => SourceMapScopeChainEntry
 });
-import * as i18n5 from "../i18n/i18n.js";
-var UIStrings3 = {
+import * as i18n3 from "../i18n/i18n.js";
+var UIStrings2 = {
   /**
    * @description Title of a section in the debugger showing local JavaScript variables.
    */
@@ -22250,8 +22238,8 @@ var UIStrings3 = {
    */
   returnValue: "Return value"
 };
-var str_3 = i18n5.i18n.registerUIStrings("core/sdk/SourceMapScopeChainEntry.ts", UIStrings3);
-var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+var str_2 = i18n3.i18n.registerUIStrings("core/sdk/SourceMapScopeChainEntry.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var SourceMapScopeChainEntry = class {
   #callFrame;
   #scope;
@@ -22281,7 +22269,7 @@ var SourceMapScopeChainEntry = class {
     const extraProperties = [];
     if (this.#isInnerMostFunction && this.#callFrame.exception) {
       extraProperties.push(new RemoteObjectProperty(
-        i18nString3(UIStrings3.exception),
+        i18nString2(UIStrings2.exception),
         this.#callFrame.exception,
         void 0,
         void 0,
@@ -22294,7 +22282,7 @@ var SourceMapScopeChainEntry = class {
     }
     if (this.#returnValue) {
       extraProperties.push(new RemoteObjectProperty(
-        i18nString3(UIStrings3.returnValue),
+        i18nString2(UIStrings2.returnValue),
         this.#returnValue,
         void 0,
         void 0,
@@ -22325,13 +22313,13 @@ var SourceMapScopeChainEntry = class {
   }
   typeName() {
     if (this.#scope.isStackFrame) {
-      return this.#isInnerMostFunction ? i18nString3(UIStrings3.local) : i18nString3(UIStrings3.closure);
+      return this.#isInnerMostFunction ? i18nString2(UIStrings2.local) : i18nString2(UIStrings2.closure);
     }
     switch (this.#scope.kind?.toLowerCase()) {
       case "global":
-        return i18nString3(UIStrings3.global);
+        return i18nString2(UIStrings2.global);
       case "block":
-        return i18nString3(UIStrings3.block);
+        return i18nString2(UIStrings2.block);
     }
     return this.#scope.kind ?? "";
   }
@@ -24045,7 +24033,7 @@ var TokenIterator = class {
 // ../../front_end/core/sdk/SourceMapManager.ts
 var SourceMapManager_exports = {};
 __export(SourceMapManager_exports, {
-  Events: () => Events8,
+  Events: () => Events7,
   SourceMapManager: () => SourceMapManager,
   lazyLoadingSettingDescriptor: () => lazyLoadingSettingDescriptor,
   tryLoadSourceMap: () => tryLoadSourceMap
@@ -24056,13 +24044,13 @@ import * as Platform10 from "../platform/platform.js";
 // ../../front_end/core/sdk/PageResourceLoader.ts
 var PageResourceLoader_exports = {};
 __export(PageResourceLoader_exports, {
-  Events: () => Events7,
+  Events: () => Events6,
   PageResourceLoader: () => PageResourceLoader,
   ResourceKey: () => ResourceKey
 });
 import * as Common12 from "../common/common.js";
-import * as Host3 from "../host/host.js";
-import * as i18n7 from "../i18n/i18n.js";
+import * as Host2 from "../host/host.js";
+import * as i18n5 from "../i18n/i18n.js";
 import * as Root3 from "../root/root.js";
 
 // ../../front_end/core/sdk/IOModel.ts
@@ -24147,13 +24135,13 @@ SDKModel.register(IOModel, { capabilities: 131072 /* IO */, autostart: true });
 // ../../front_end/core/sdk/TargetManager.ts
 var TargetManager_exports = {};
 __export(TargetManager_exports, {
-  Events: () => Events6,
+  Events: () => Events5,
   Observer: () => Observer,
   SDKModelObserver: () => SDKModelObserver,
   TargetManager: () => TargetManager
 });
 import * as Common11 from "../common/common.js";
-import * as Host2 from "../host/host.js";
+import * as Host from "../host/host.js";
 import * as Platform8 from "../platform/platform.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "../platform/platform.js";
 import * as Root2 from "../root/root.js";
@@ -24161,7 +24149,7 @@ import * as Root2 from "../root/root.js";
 // ../../front_end/core/sdk/FrameManager.ts
 var FrameManager_exports = {};
 __export(FrameManager_exports, {
-  Events: () => Events5,
+  Events: () => Events4,
   FrameManager: () => FrameManager
 });
 import * as Common10 from "../common/common.js";
@@ -24338,14 +24326,14 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
     }
   }
 };
-var Events5 = /* @__PURE__ */ ((Events36) => {
+var Events4 = /* @__PURE__ */ ((Events36) => {
   Events36["FRAME_ADDED_TO_TARGET"] = "FrameAddedToTarget";
   Events36["FRAME_NAVIGATED"] = "FrameNavigated";
   Events36["FRAME_REMOVED"] = "FrameRemoved";
   Events36["RESOURCE_ADDED"] = "ResourceAdded";
   Events36["OUTERMOST_FRAME_NAVIGATED"] = "OutermostFrameNavigated";
   return Events36;
-})(Events5 || {});
+})(Events4 || {});
 
 // ../../front_end/core/sdk/TargetManager.ts
 var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWrapper {
@@ -24454,7 +24442,7 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     if (target !== this.#scopeTarget) {
       return;
     }
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
       target.inspectedURL() || Platform8.DevToolsPath.EmptyUrlString
     );
     this.dispatchEventToListeners("InspectedURLChanged" /* INSPECTED_URL_CHANGED */, target);
@@ -24725,7 +24713,7 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
       );
       this.#browserTarget.createModels(this.#autoStartModels());
     }
-    const targetId = await Host2.InspectorFrontendHost.InspectorFrontendHostInstance.initialTargetId();
+    const targetId = await Host.InspectorFrontendHost.InspectorFrontendHostInstance.initialTargetId();
     void this.#browserTarget.targetAgent().invoke_autoAttachRelated({
       targetId,
       waitForDebuggerOnStart: true
@@ -24809,13 +24797,13 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     return this.#scopeTarget;
   }
 };
-var Events6 = /* @__PURE__ */ ((Events36) => {
+var Events5 = /* @__PURE__ */ ((Events36) => {
   Events36["AVAILABLE_TARGETS_CHANGED"] = "AvailableTargetsChanged";
   Events36["INSPECTED_URL_CHANGED"] = "InspectedURLChanged";
   Events36["NAME_CHANGED"] = "NameChanged";
   Events36["SUSPEND_STATE_CHANGED"] = "SuspendStateChanged";
   return Events36;
-})(Events6 || {});
+})(Events5 || {});
 var Observer = class {
   targetAdded(_target) {
   }
@@ -24833,7 +24821,7 @@ function isSDKModelEvent(arg) {
 }
 
 // ../../front_end/core/sdk/PageResourceLoader.ts
-var UIStrings4 = {
+var UIStrings3 = {
   /**
    * @description Error message for canceled source map loads.
    */
@@ -24850,8 +24838,8 @@ var UIStrings4 = {
    */
   noTargetForHttpLoad: "Can\u2019t load http(s) resource without a target"
 };
-var str_4 = i18n7.i18n.registerUIStrings("core/sdk/PageResourceLoader.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var str_3 = i18n5.i18n.registerUIStrings("core/sdk/PageResourceLoader.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 function isExtensionInitiator(initiator) {
   return "extensionId" in initiator;
 }
@@ -24912,7 +24900,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       return;
     }
     for (const { reject } of this.#queuedLoads) {
-      reject(new Error(i18nString4(UIStrings4.loadCanceledDueToReloadOf)));
+      reject(new Error(i18nString3(UIStrings3.loadCanceledDueToReloadOf)));
     }
     this.#queuedLoads = [];
     const mainFrameTarget = mainFrame.resourceTreeModel().target();
@@ -25112,18 +25100,18 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     const isHttp = Boolean(parsedURL && (parsedURL.scheme === "http" || parsedURL.scheme === "https"));
     const loadThroughTarget = this.getLoadThroughTargetSetting().get();
     const eligibleForLoadFromTarget = Boolean(loadThroughTarget && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools" && initiator.target);
-    Host3.userMetrics.developerResourceScheme(this.#getDeveloperResourceScheme(parsedURL));
+    Host2.userMetrics.developerResourceScheme(this.#getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget && initiator.target) {
       let mustEnforceCSP = isHttp;
       const { frameTarget, frameId, initiatorFrameId, usedFallbackMainFrame } = this.#resolveFrameTarget(initiator);
       if (usedFallbackMainFrame && !this.#isInitiatorUrlSameOriginWithMainFrame(initiator, frameTarget)) {
-        Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
+        Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
         return {
           success: false,
           content: "",
           errorDescription: {
             statusCode: 0,
-            message: i18nString4(UIStrings4.crossOriginFrameLoadBlocked)
+            message: i18nString3(UIStrings3.crossOriginFrameLoadBlocked)
           }
         };
       }
@@ -25137,12 +25125,12 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
         }
       }
       try {
-        Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
+        Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
         const result2 = await this.#loadFromTarget(frameTarget ?? initiator.target, frameId, url, isBinary);
         return result2;
       } catch (e) {
         if (e instanceof Error) {
-          Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
+          Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
           if (mustEnforceCSP || !this.#isSameOriginWithPrimaryPage(hasExplicitTarget, frameTarget, initiatorFrameId) || e.message.includes("CSP violation")) {
             return {
               success: false,
@@ -25155,24 +25143,24 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
           }
         }
       }
-      Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK);
+      Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK);
     } else {
-      const code = loadThroughTarget ? Host3.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL : Host3.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE;
-      Host3.userMetrics.developerResourceLoaded(code);
+      const code = loadThroughTarget ? Host2.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL : Host2.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE;
+      Host2.userMetrics.developerResourceLoaded(code);
       if (loadThroughTarget && isHttp && !initiator.target) {
         return {
           success: false,
           content: "",
           errorDescription: {
             statusCode: 0,
-            message: i18nString4(UIStrings4.noTargetForHttpLoad)
+            message: i18nString3(UIStrings3.noTargetForHttpLoad)
           }
         };
       }
     }
     const result = await this.#loadFromHostBindings(url);
     if (eligibleForLoadFromTarget && !result.success) {
-      Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
+      Host2.userMetrics.developerResourceLoaded(Host2.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
     }
     if (failureReason) {
       result.errorDescription.message = `Fetch through target failed: ${failureReason}; Fallback: ${result.errorDescription.message}`;
@@ -25181,22 +25169,22 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
   }
   #getDeveloperResourceScheme(parsedURL) {
     if (!parsedURL || parsedURL.scheme === "") {
-      return Host3.UserMetrics.DeveloperResourceScheme.UKNOWN;
+      return Host2.UserMetrics.DeveloperResourceScheme.UKNOWN;
     }
     const isLocalhost = parsedURL.host === "localhost" || parsedURL.host.endsWith(".localhost");
     switch (parsedURL.scheme) {
       case "file":
-        return Host3.UserMetrics.DeveloperResourceScheme.FILE;
+        return Host2.UserMetrics.DeveloperResourceScheme.FILE;
       case "data":
-        return Host3.UserMetrics.DeveloperResourceScheme.DATA;
+        return Host2.UserMetrics.DeveloperResourceScheme.DATA;
       case "blob":
-        return Host3.UserMetrics.DeveloperResourceScheme.BLOB;
+        return Host2.UserMetrics.DeveloperResourceScheme.BLOB;
       case "http":
-        return isLocalhost ? Host3.UserMetrics.DeveloperResourceScheme.HTTP_LOCALHOST : Host3.UserMetrics.DeveloperResourceScheme.HTTP;
+        return isLocalhost ? Host2.UserMetrics.DeveloperResourceScheme.HTTP_LOCALHOST : Host2.UserMetrics.DeveloperResourceScheme.HTTP;
       case "https":
-        return isLocalhost ? Host3.UserMetrics.DeveloperResourceScheme.HTTPS_LOCALHOST : Host3.UserMetrics.DeveloperResourceScheme.HTTPS;
+        return isLocalhost ? Host2.UserMetrics.DeveloperResourceScheme.HTTPS_LOCALHOST : Host2.UserMetrics.DeveloperResourceScheme.HTTPS;
     }
-    return Host3.UserMetrics.DeveloperResourceScheme.OTHER;
+    return Host2.UserMetrics.DeveloperResourceScheme.OTHER;
   }
   async #loadFromTarget(target, frameId, url, isBinary) {
     const networkManager = target.model(NetworkManager);
@@ -25212,7 +25200,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
           statusCode: resource.httpStatusCode || 0,
           netError: resource.netError,
           netErrorName: resource.netErrorName,
-          message: Host3.ResourceLoader.netErrorToMessage(
+          message: Host2.ResourceLoader.netErrorToMessage(
             resource.netError,
             resource.httpStatusCode,
             resource.netErrorName
@@ -25236,7 +25224,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     }
     const allowRemoteFilePaths = this.#settings.resolve(enableRemoteFileLoadingSettingDescriptor).get();
     return await new Promise(
-      (resolve) => Host3.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
+      (resolve) => Host2.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
         resolve({ success, content, errorDescription });
       }, allowRemoteFilePaths)
     );
@@ -25245,10 +25233,10 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     return this.#settings.createSetting("load-through-target", true);
   }
 };
-var Events7 = /* @__PURE__ */ ((Events36) => {
+var Events6 = /* @__PURE__ */ ((Events36) => {
   Events36["UPDATE"] = "Update";
   return Events36;
-})(Events7 || {});
+})(Events6 || {});
 
 // ../../front_end/core/sdk/SourceMapCache.ts
 var SourceMapCache_exports = {};
@@ -25550,13 +25538,13 @@ async function tryLoadSourceMap(resourceLoader, url, initiator) {
     return null;
   }
 }
-var Events8 = /* @__PURE__ */ ((Events36) => {
+var Events7 = /* @__PURE__ */ ((Events36) => {
   Events36["SourceMapWillAttach"] = "SourceMapWillAttach";
   Events36["SourceMapFailedToAttach"] = "SourceMapFailedToAttach";
   Events36["SourceMapAttached"] = "SourceMapAttached";
   Events36["SourceMapDetached"] = "SourceMapDetached";
   return Events36;
-})(Events8 || {});
+})(Events7 || {});
 
 // ../../front_end/core/sdk/CSSModel.ts
 var ColorScheme = /* @__PURE__ */ ((ColorScheme2) => {
@@ -25759,7 +25747,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setSelectorText(styleSheetId, range, text) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { selectorList } = await this.agent.invoke_setRuleSelector({ styleSheetId, range, selector: text });
@@ -25776,7 +25764,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setPropertyRulePropertyName(styleSheetId, range, text) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { propertyName } = await this.agent.invoke_setPropertyRulePropertyName({ styleSheetId, range, propertyName: text });
@@ -25793,7 +25781,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setKeyframeKey(styleSheetId, range, text) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { keyText } = await this.agent.invoke_setKeyframeKey({ styleSheetId, range, keyText: text });
@@ -26029,7 +26017,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     return node.marker(PseudoStateMarker) || [];
   }
   async setMediaText(styleSheetId, range, newMediaText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { media } = await this.agent.invoke_setMediaText({ styleSheetId, range, text: newMediaText });
@@ -26046,7 +26034,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setContainerQueryText(styleSheetId, range, newContainerQueryText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { containerQuery } = await this.agent.invoke_setContainerQueryText({ styleSheetId, range, text: newContainerQueryText });
@@ -26063,7 +26051,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setContainerQueryConditionText(styleSheetId, range, newContainerQueryConditionText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { containerQuery } = await this.agent.invoke_setContainerQueryConditionText(
@@ -26082,7 +26070,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setSupportsText(styleSheetId, range, newSupportsText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { supports } = await this.agent.invoke_setSupportsText({ styleSheetId, range, text: newSupportsText });
@@ -26099,7 +26087,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setNavigationText(styleSheetId, range, newNavigationText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { navigation } = await this.agent.invoke_setNavigationText({ styleSheetId, range, text: newNavigationText });
@@ -26116,7 +26104,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setScopeText(styleSheetId, range, newScopeText) {
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { scope } = await this.agent.invoke_setScopeText({ styleSheetId, range, text: newScopeText });
@@ -26428,7 +26416,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     return this.agent;
   }
 };
-var Events9 = /* @__PURE__ */ ((Events36) => {
+var Events8 = /* @__PURE__ */ ((Events36) => {
   Events36["FontsUpdated"] = "FontsUpdated";
   Events36["MediaQueryResultChanged"] = "MediaQueryResultChanged";
   Events36["ModelWasEnabled"] = "ModelWasEnabled";
@@ -26441,7 +26429,7 @@ var Events9 = /* @__PURE__ */ ((Events36) => {
   Events36["StyleSheetRemoved"] = "StyleSheetRemoved";
   Events36["ComputedStyleUpdated"] = "ComputedStyleUpdated";
   return Events36;
-})(Events9 || {});
+})(Events8 || {});
 var PseudoStateMarker = "pseudo-state-marker";
 var PositionTryOptionMarker = "position-try-option-marker";
 var Edit = class {
@@ -26553,13 +26541,13 @@ SDKModel.register(CSSModel, { capabilities: 2 /* DOM */, autostart: true });
 var OverlayModel_exports = {};
 __export(OverlayModel_exports, {
   EmulatedOSType: () => EmulatedOSType,
-  Events: () => Events12,
+  Events: () => Events11,
   OverlayModel: () => OverlayModel,
   SourceOrderHighlighter: () => SourceOrderHighlighter,
   WindowControls: () => WindowControls
 });
 import * as Common17 from "../common/common.js";
-import * as i18n9 from "../i18n/i18n.js";
+import * as i18n7 from "../i18n/i18n.js";
 
 // ../../front_end/core/sdk/OverlayPersistentHighlighter.ts
 var OverlayPersistentHighlighter_exports = {};
@@ -27002,14 +26990,14 @@ var OverlayPersistentHighlighter = class {
 };
 
 // ../../front_end/core/sdk/OverlayModel.ts
-var UIStrings5 = {
+var UIStrings4 = {
   /**
    * @description Overlay message indicating that execution is paused in the debugger.
    */
   pausedInDebugger: "Paused in debugger"
 };
-var str_5 = i18n9.i18n.registerUIStrings("core/sdk/OverlayModel.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_4 = i18n7.i18n.registerUIStrings("core/sdk/OverlayModel.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var EmulatedOSType = /* @__PURE__ */ ((EmulatedOSType2) => {
   EmulatedOSType2["WINDOWS"] = "Windows";
   EmulatedOSType2["MAC"] = "Mac";
@@ -27232,7 +27220,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       return;
     }
     const settings = this.target().targetManager().settings;
-    const message = this.#debuggerModel && this.#debuggerModel.isPaused() && !settings.resolve(disablePausedStateOverlaySettingDescriptor).get() ? i18nString5(UIStrings5.pausedInDebugger) : void 0;
+    const message = this.#debuggerModel && this.#debuggerModel.isPaused() && !settings.resolve(disablePausedStateOverlaySettingDescriptor).get() ? i18nString4(UIStrings4.pausedInDebugger) : void 0;
     void this.overlayAgent.invoke_setPausedInDebuggerMessage({ message });
   }
   setHighlighter(highlighter) {
@@ -27827,7 +27815,7 @@ var WindowControls = class _WindowControls {
     return _WindowControls.#transformStyleSheet(x, y, width, height, originalStyleSheet);
   }
 };
-var Events12 = /* @__PURE__ */ ((Events36) => {
+var Events11 = /* @__PURE__ */ ((Events36) => {
   Events36["INSPECT_MODE_WILL_BE_TOGGLED"] = "InspectModeWillBeToggled";
   Events36["EXITED_INSPECT_MODE"] = "InspectModeExited";
   Events36["HIGHLIGHT_NODE_REQUESTED"] = "HighlightNodeRequested";
@@ -27837,7 +27825,7 @@ var Events12 = /* @__PURE__ */ ((Events36) => {
   Events36["PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "PersistentScrollSnapOverlayStateChanged";
   Events36["PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "PersistentContainerQueryOverlayStateChanged";
   return Events36;
-})(Events12 || {});
+})(Events11 || {});
 var DefaultHighlighter = class {
   #model;
   constructor(model) {
@@ -28321,7 +28309,7 @@ var EmulationModelEvents = /* @__PURE__ */ ((EmulationModelEvents2) => {
   EmulationModelEvents2["SCREEN_ORIENTATION_LOCK_CHANGED"] = "ScreenOrientationLockChanged";
   return EmulationModelEvents2;
 })(EmulationModelEvents || {});
-var Location2 = class _Location {
+var Location = class _Location {
   static DEFAULT_ACCURACY = 150;
   latitude;
   longitude;
@@ -28747,8 +28735,2482 @@ var customNetworkConditionsSettingDescriptor = {
   storageType: Common19.Settings.SettingStorageType.SYNCED
 };
 
-// ../../front_end/core/sdk/ConsoleModel.ts
+// ../../front_end/core/sdk/RuntimeModel.ts
+var RuntimeModel = class extends SDKModel {
+  agent;
+  #executionContextById = /* @__PURE__ */ new Map();
+  #executionContextComparator = ExecutionContext.comparator;
+  #customFormattersSetting;
+  constructor(target) {
+    super(target);
+    this.agent = target.runtimeAgent();
+    this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
+    void this.agent.invoke_enable();
+    this.#customFormattersSetting = this.target().targetManager().context.get(Common20.Settings.Settings).resolve(customFormattersSettingDescriptor);
+    if (this.#customFormattersSetting.get()) {
+      void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
+    }
+    this.#customFormattersSetting.addChangeListener(this.#customFormattersStateChanged, this);
+  }
+  dispose() {
+    this.#customFormattersSetting.removeChangeListener(this.#customFormattersStateChanged, this);
+  }
+  static isSideEffectFailure(response) {
+    const exceptionDetails = "exceptionDetails" in response && response.exceptionDetails;
+    return Boolean(
+      exceptionDetails && exceptionDetails.exception?.description?.startsWith("EvalError: Possible side-effect in debug-evaluate")
+    );
+  }
+  debuggerModel() {
+    return this.target().model(DebuggerModel);
+  }
+  heapProfilerModel() {
+    return this.target().model(HeapProfilerModel);
+  }
+  executionContexts() {
+    return [...this.#executionContextById.values()].sort(this.executionContextComparator());
+  }
+  setExecutionContextComparator(comparator) {
+    this.#executionContextComparator = comparator;
+  }
+  /**
+   * comparator
+   */
+  executionContextComparator() {
+    return this.#executionContextComparator;
+  }
+  defaultExecutionContext() {
+    for (const context of this.executionContexts()) {
+      if (context.isDefault) {
+        return context;
+      }
+    }
+    return null;
+  }
+  executionContext(id) {
+    return this.#executionContextById.get(id) || null;
+  }
+  executionContextCreated(context) {
+    const data = context.auxData || { isDefault: true };
+    const executionContext = new ExecutionContext(
+      this,
+      context.id,
+      context.uniqueId,
+      context.name,
+      context.origin,
+      data["isDefault"],
+      data["frameId"]
+    );
+    this.#executionContextById.set(executionContext.id, executionContext);
+    this.dispatchEventToListeners("ExecutionContextCreated" /* ExecutionContextCreated */, executionContext);
+  }
+  executionContextDestroyed(executionContextId) {
+    const executionContext = this.#executionContextById.get(executionContextId);
+    if (!executionContext) {
+      return;
+    }
+    this.debuggerModel().executionContextDestroyed(executionContext);
+    this.#executionContextById.delete(executionContextId);
+    this.dispatchEventToListeners("ExecutionContextDestroyed" /* ExecutionContextDestroyed */, executionContext);
+  }
+  fireExecutionContextOrderChanged() {
+    this.dispatchEventToListeners("ExecutionContextOrderChanged" /* ExecutionContextOrderChanged */, this);
+  }
+  executionContextsCleared() {
+    this.debuggerModel().globalObjectCleared();
+    const contexts = this.executionContexts();
+    this.#executionContextById.clear();
+    for (let i = 0; i < contexts.length; ++i) {
+      this.dispatchEventToListeners("ExecutionContextDestroyed" /* ExecutionContextDestroyed */, contexts[i]);
+    }
+  }
+  createRemoteObject(payload) {
+    console.assert(typeof payload === "object", "Remote object payload should only be an object");
+    return new RemoteObjectImpl(
+      this,
+      payload.objectId,
+      payload.type,
+      payload.subtype,
+      payload.value,
+      payload.unserializableValue,
+      payload.description,
+      payload.preview,
+      payload.customPreview,
+      payload.className
+    );
+  }
+  createScopeRemoteObject(payload, scopeRef) {
+    return new ScopeRemoteObject(
+      this,
+      payload.objectId,
+      scopeRef,
+      payload.type,
+      payload.subtype,
+      payload.value,
+      payload.unserializableValue,
+      payload.description,
+      payload.preview
+    );
+  }
+  createRemoteObjectFromPrimitiveValue(value) {
+    const type = typeof value;
+    let unserializableValue = void 0;
+    const unserializableDescription = RemoteObject.unserializableDescription(value);
+    if (unserializableDescription !== null) {
+      unserializableValue = unserializableDescription;
+    }
+    if (typeof unserializableValue !== "undefined") {
+      value = void 0;
+    }
+    return new RemoteObjectImpl(this, void 0, type, void 0, value, unserializableValue);
+  }
+  createRemotePropertyFromPrimitiveValue(name, value) {
+    return new RemoteObjectProperty(name, this.createRemoteObjectFromPrimitiveValue(value));
+  }
+  discardConsoleEntries() {
+    void this.agent.invoke_discardConsoleEntries();
+  }
+  releaseObjectGroup(objectGroup) {
+    void this.agent.invoke_releaseObjectGroup({ objectGroup });
+  }
+  releaseEvaluationResult(result) {
+    if ("object" in result && result.object) {
+      result.object.release();
+    }
+    if ("exceptionDetails" in result && result.exceptionDetails?.exception) {
+      const exception = result.exceptionDetails.exception;
+      const exceptionObject = this.createRemoteObject({ type: exception.type, objectId: exception.objectId });
+      exceptionObject.release();
+    }
+  }
+  runIfWaitingForDebugger() {
+    void this.agent.invoke_runIfWaitingForDebugger();
+  }
+  #customFormattersStateChanged({ data: enabled }) {
+    void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled });
+  }
+  async compileScript(expression, sourceURL, persistScript, executionContextId) {
+    const response = await this.agent.invoke_compileScript({
+      expression,
+      sourceURL,
+      persistScript,
+      executionContextId
+    });
+    if (response.getError()) {
+      console.error(response.getError());
+      return null;
+    }
+    return { scriptId: response.scriptId, exceptionDetails: response.exceptionDetails };
+  }
+  async runScript(scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise) {
+    const response = await this.agent.invoke_runScript({
+      scriptId,
+      executionContextId,
+      objectGroup,
+      silent,
+      includeCommandLineAPI,
+      returnByValue,
+      generatePreview,
+      awaitPromise
+    });
+    const error = response.getError();
+    if (error) {
+      console.error(error);
+      return { error };
+    }
+    return { object: this.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
+  }
+  async queryObjects(prototype) {
+    if (!prototype.objectId) {
+      return { error: "Prototype should be an Object." };
+    }
+    const response = await this.agent.invoke_queryObjects({ prototypeObjectId: prototype.objectId, objectGroup: "console" });
+    const error = response.getError();
+    if (error) {
+      console.error(error);
+      return { error };
+    }
+    return { objects: this.createRemoteObject(response.objects) };
+  }
+  async isolateId() {
+    const response = await this.agent.invoke_getIsolateId();
+    if (response.getError() || !response.id) {
+      return this.target().id();
+    }
+    return response.id;
+  }
+  async heapUsage() {
+    const result = await this.agent.invoke_getHeapUsage();
+    return result.getError() ? null : result;
+  }
+  inspectRequested(payload, hints, executionContextId) {
+    const object = this.createRemoteObject(payload);
+    if (hints !== null && typeof hints === "object") {
+      if ("copyToClipboard" in hints && Boolean(hints.copyToClipboard)) {
+        this.#copyRequested(object);
+        return;
+      }
+      if ("queryObjects" in hints && hints.queryObjects) {
+        void this.#queryObjectsRequested(object, executionContextId);
+        return;
+      }
+    }
+    if (object.isNode()) {
+      const omitFocus = hints !== null && typeof hints === "object" && "omitFocus" in hints && Boolean(hints.omitFocus);
+      void Common20.Revealer.reveal(object, omitFocus).then(object.release.bind(object));
+      return;
+    }
+    if (object.type === "function") {
+      void RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
+      return;
+    }
+    function didGetDetails(response) {
+      object.release();
+      if (!response?.location) {
+        return;
+      }
+      void Common20.Revealer.reveal(response.location);
+    }
+    object.release();
+  }
+  async addBinding(event) {
+    return await this.agent.invoke_addBinding(event);
+  }
+  async removeBinding(request) {
+    return await this.agent.invoke_removeBinding(request);
+  }
+  bindingCalled(event) {
+    this.dispatchEventToListeners("BindingCalled" /* BindingCalled */, event);
+  }
+  #copyRequested(object) {
+    if (!object.objectId) {
+      Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
+        object.unserializableValue() || object.value
+      );
+      return;
+    }
+    const indent = this.target().targetManager().context.get(Common20.Settings.Settings).resolve(textEditorIndentSettingDescriptor).get();
+    void object.callFunctionJSON(toStringForClipboard, [{
+      value: {
+        subtype: object.subtype,
+        indent
+      }
+    }]).then(Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+      Host4.InspectorFrontendHost.InspectorFrontendHostInstance
+    ));
+  }
+  async #queryObjectsRequested(object, executionContextId) {
+    const result = await this.queryObjects(object);
+    object.release();
+    if ("error" in result) {
+      this.target().targetManager().getConsole().error(result.error);
+      return;
+    }
+    this.dispatchEventToListeners("QueryObjectRequested" /* QueryObjectRequested */, { objects: result.objects, executionContextId });
+  }
+  static simpleTextFromException(exceptionDetails) {
+    let text = exceptionDetails.text;
+    if (exceptionDetails.exception?.description) {
+      let description = exceptionDetails.exception.description;
+      if (description.indexOf("\n") !== -1) {
+        description = description.substring(0, description.indexOf("\n"));
+      }
+      text += " " + description;
+    }
+    return text;
+  }
+  exceptionThrown(timestamp, exceptionDetails) {
+    const exceptionWithTimestamp = { timestamp, details: exceptionDetails };
+    this.dispatchEventToListeners("ExceptionThrown" /* ExceptionThrown */, exceptionWithTimestamp);
+  }
+  exceptionRevoked(exceptionId) {
+    this.dispatchEventToListeners("ExceptionRevoked" /* ExceptionRevoked */, exceptionId);
+  }
+  consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context) {
+    const consoleAPICall = {
+      type,
+      args,
+      executionContextId,
+      timestamp,
+      stackTrace,
+      context
+    };
+    this.dispatchEventToListeners("ConsoleAPICalled" /* ConsoleAPICalled */, consoleAPICall);
+  }
+  executionContextIdForScriptId(scriptId) {
+    const script = this.debuggerModel().scriptForId(scriptId);
+    return script ? script.executionContextId : 0;
+  }
+  executionContextForStackTrace(stackTrace) {
+    let currentStackTrace = stackTrace;
+    while (currentStackTrace && !currentStackTrace.callFrames.length) {
+      currentStackTrace = currentStackTrace.parent || null;
+    }
+    if (!currentStackTrace?.callFrames.length) {
+      return 0;
+    }
+    return this.executionContextIdForScriptId(currentStackTrace.callFrames[0].scriptId);
+  }
+  terminateExecution() {
+    return this.agent.invoke_terminateExecution();
+  }
+  async getExceptionDetails(errorObjectId) {
+    const response = await this.agent.invoke_getExceptionDetails({ errorObjectId });
+    if (response.getError()) {
+      return void 0;
+    }
+    return response.exceptionDetails;
+  }
+};
+var Events12 = /* @__PURE__ */ ((Events36) => {
+  Events36["BindingCalled"] = "BindingCalled";
+  Events36["ExecutionContextCreated"] = "ExecutionContextCreated";
+  Events36["ExecutionContextDestroyed"] = "ExecutionContextDestroyed";
+  Events36["ExecutionContextChanged"] = "ExecutionContextChanged";
+  Events36["ExecutionContextOrderChanged"] = "ExecutionContextOrderChanged";
+  Events36["ExceptionThrown"] = "ExceptionThrown";
+  Events36["ExceptionRevoked"] = "ExceptionRevoked";
+  Events36["ConsoleAPICalled"] = "ConsoleAPICalled";
+  Events36["QueryObjectRequested"] = "QueryObjectRequested";
+  return Events36;
+})(Events12 || {});
+var RuntimeDispatcher = class {
+  #runtimeModel;
+  constructor(runtimeModel) {
+    this.#runtimeModel = runtimeModel;
+  }
+  executionContextCreated({ context }) {
+    this.#runtimeModel.executionContextCreated(context);
+  }
+  executionContextDestroyed({ executionContextId }) {
+    this.#runtimeModel.executionContextDestroyed(executionContextId);
+  }
+  executionContextsCleared() {
+    this.#runtimeModel.executionContextsCleared();
+  }
+  exceptionThrown({ timestamp, exceptionDetails }) {
+    this.#runtimeModel.exceptionThrown(timestamp, exceptionDetails);
+  }
+  exceptionRevoked({ exceptionId }) {
+    this.#runtimeModel.exceptionRevoked(exceptionId);
+  }
+  consoleAPICalled({ type, args, executionContextId, timestamp, stackTrace, context }) {
+    this.#runtimeModel.consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context);
+  }
+  inspectRequested({ object, hints, executionContextId }) {
+    this.#runtimeModel.inspectRequested(object, hints, executionContextId);
+  }
+  bindingCalled(event) {
+    this.#runtimeModel.bindingCalled(event);
+  }
+};
+var ExecutionContext = class {
+  id;
+  uniqueId;
+  name;
+  #label;
+  origin;
+  isDefault;
+  runtimeModel;
+  debuggerModel;
+  frameId;
+  constructor(runtimeModel, id, uniqueId, name, origin, isDefault, frameId) {
+    this.id = id;
+    this.uniqueId = uniqueId;
+    this.name = name;
+    this.#label = null;
+    this.origin = origin;
+    this.isDefault = isDefault;
+    this.runtimeModel = runtimeModel;
+    this.debuggerModel = runtimeModel.debuggerModel();
+    this.frameId = frameId;
+    this.#setLabel("");
+  }
+  target() {
+    return this.runtimeModel.target();
+  }
+  static comparator(a, b) {
+    function targetWeight(target) {
+      if (target.parentTarget()?.type() !== "frame" /* FRAME */) {
+        return 5;
+      }
+      if (target.type() === "frame" /* FRAME */) {
+        return 4;
+      }
+      if (target.type() === "service-worker" /* ServiceWorker */) {
+        return 3;
+      }
+      if (target.type() === "worker" /* Worker */ || target.type() === "shared-worker" /* SHARED_WORKER */) {
+        return 2;
+      }
+      return 1;
+    }
+    function targetPath(target) {
+      let currentTarget = target;
+      const parents = [];
+      while (currentTarget) {
+        parents.push(currentTarget);
+        currentTarget = currentTarget.parentTarget();
+      }
+      return parents.reverse();
+    }
+    const tagetsA = targetPath(a.target());
+    const targetsB = targetPath(b.target());
+    let targetA;
+    let targetB;
+    for (let i = 0; ; i++) {
+      if (!tagetsA[i] || !targetsB[i] || tagetsA[i] !== targetsB[i]) {
+        targetA = tagetsA[i];
+        targetB = targetsB[i];
+        break;
+      }
+    }
+    if (!targetA && targetB) {
+      return -1;
+    }
+    if (!targetB && targetA) {
+      return 1;
+    }
+    if (targetA && targetB) {
+      const weightDiff = targetWeight(targetA) - targetWeight(targetB);
+      if (weightDiff) {
+        return -weightDiff;
+      }
+      return targetA.id().localeCompare(targetB.id());
+    }
+    if (a.isDefault) {
+      return -1;
+    }
+    if (b.isDefault) {
+      return 1;
+    }
+    return a.name.localeCompare(b.name);
+  }
+  async evaluateWithSelectedFrameFallback(options, userGesture, awaitPromise) {
+    if (this.debuggerModel.selectedCallFrame()) {
+      return await this.debuggerModel.evaluateOnSelectedCallFrame(options);
+    }
+    return await this.evaluate(options, userGesture, awaitPromise);
+  }
+  globalObject(objectGroup, generatePreview) {
+    const evaluationOptions = {
+      expression: "this",
+      objectGroup,
+      includeCommandLineAPI: false,
+      silent: true,
+      returnByValue: false,
+      generatePreview
+    };
+    return this.evaluate(evaluationOptions, false, false);
+  }
+  async callFunctionOn(options) {
+    const response = await this.runtimeModel.agent.invoke_callFunctionOn({
+      functionDeclaration: options.functionDeclaration,
+      returnByValue: options.returnByValue,
+      userGesture: options.userGesture,
+      awaitPromise: options.awaitPromise,
+      throwOnSideEffect: options.throwOnSideEffect,
+      arguments: options.arguments,
+      // Old back-ends don't know about uniqueContextId (and also don't generate
+      // one), so fall back to contextId in that case (https://crbug.com/1192621).
+      ...this.uniqueId ? { uniqueContextId: this.uniqueId } : { contextId: this.id }
+    });
+    const error = response.getError();
+    if (error) {
+      return { error };
+    }
+    return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
+  }
+  async evaluate(options, userGesture, awaitPromise) {
+    if (!options.expression) {
+      options.expression = "this";
+    }
+    const response = await this.runtimeModel.agent.invoke_evaluate({
+      expression: options.expression,
+      objectGroup: options.objectGroup,
+      includeCommandLineAPI: options.includeCommandLineAPI,
+      silent: options.silent,
+      returnByValue: options.returnByValue,
+      generatePreview: options.generatePreview,
+      userGesture,
+      awaitPromise,
+      throwOnSideEffect: options.throwOnSideEffect,
+      timeout: options.timeout,
+      disableBreaks: options.disableBreaks,
+      replMode: options.replMode,
+      allowUnsafeEvalBlockedByCSP: options.allowUnsafeEvalBlockedByCSP,
+      // Old back-ends don't know about uniqueContextId (and also don't generate
+      // one), so fall back to contextId in that case (https://crbug.com/1192621).
+      ...this.uniqueId ? { uniqueContextId: this.uniqueId } : { contextId: this.id }
+    });
+    const error = response.getError();
+    if (error) {
+      console.error(error);
+      return { error };
+    }
+    return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
+  }
+  async globalLexicalScopeNames() {
+    const response = await this.runtimeModel.agent.invoke_globalLexicalScopeNames({ executionContextId: this.id });
+    return response.getError() ? [] : response.names;
+  }
+  label() {
+    return this.#label;
+  }
+  setLabel(label) {
+    this.#setLabel(label);
+    this.runtimeModel.dispatchEventToListeners("ExecutionContextChanged" /* ExecutionContextChanged */, this);
+  }
+  #setLabel(label) {
+    if (label) {
+      this.#label = label;
+      return;
+    }
+    if (this.name) {
+      this.#label = this.name;
+      return;
+    }
+    const parsedUrl = Common20.ParsedURL.ParsedURL.fromString(this.origin);
+    this.#label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : "";
+  }
+};
+SDKModel.register(RuntimeModel, { capabilities: 4 /* JS */, autostart: true });
+
+// ../../front_end/core/sdk/Script.ts
+var Script_exports = {};
+__export(Script_exports, {
+  Script: () => Script,
+  disassembleWasm: () => disassembleWasm,
+  sourceURLRegex: () => sourceURLRegex
+});
+import * as Platform13 from "../platform/platform.js";
+import * as Common21 from "../common/common.js";
+import * as i18n9 from "../i18n/i18n.js";
+import * as TextUtils17 from "../text_utils/text_utils.js";
+var UIStrings5 = {
+  /**
+   * @description Error message for when a script can't be loaded because it was removed or deleted.
+   */
+  scriptRemovedOrDeleted: "Script removed or deleted",
+  /**
+   * @description Error message when failing to load a script source text.
+   */
+  unableToFetchScriptSource: "Unable to fetch script source"
+};
+var str_5 = i18n9.i18n.registerUIStrings("core/sdk/Script.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var scriptCacheInstance = null;
+var Script = class _Script {
+  debuggerModel;
+  scriptId;
+  /**
+   * The URL of the script. When `hasSourceURL` is true, this value comes from a `//# sourceURL=` directive. Otherwise,
+   * it's the original `src` URL from which the script was loaded.
+   */
+  sourceURL;
+  lineOffset;
+  columnOffset;
+  endLine;
+  endColumn;
+  executionContextId;
+  hash;
+  #isContentScript;
+  sourceMapURL;
+  debugSymbols;
+  hasSourceURL;
+  contentLength;
+  originStackTrace;
+  #codeOffset;
+  #language;
+  #contentPromise;
+  #embedderName;
+  #securityOrigin;
+  isModule;
+  buildId;
+  constructor(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, sourceMapURL, hasSourceURL, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
+    this.debuggerModel = debuggerModel;
+    this.scriptId = scriptId;
+    this.sourceURL = sourceURL;
+    this.lineOffset = startLine;
+    this.columnOffset = startColumn;
+    this.endLine = endLine;
+    this.endColumn = endColumn;
+    this.isModule = isModule;
+    this.buildId = buildId;
+    this.executionContextId = executionContextId;
+    this.hash = hash;
+    this.#isContentScript = isContentScript;
+    this.sourceMapURL = sourceMapURL;
+    this.debugSymbols = debugSymbols;
+    this.hasSourceURL = hasSourceURL;
+    this.contentLength = length;
+    this.originStackTrace = originStackTrace;
+    this.#codeOffset = codeOffset;
+    this.#language = scriptLanguage;
+    this.#contentPromise = null;
+    this.#embedderName = embedderName;
+    this.#securityOrigin = SecurityOrigin.create(this.#embedderName ?? "");
+  }
+  embedderName() {
+    return this.#embedderName;
+  }
+  /**
+   * Returns the security origin of the script derived exclusively from its
+   * embedder/network URL (`#embedderName`), or a unique opaque origin if the
+   * script has no valid network provenance (e.g. `eval()` or buffer-based Wasm).
+   *
+   * Security note: Do NOT fall back to `this.sourceURL` or
+   * `this.target().inspectedSecurityOrigin()`:
+   * - `sourceURL` is overwritten by `//# sourceURL=` comments, allowing a script
+   *   to spoof an arbitrary origin.
+   * - Third-party scripts (`<script src="https://attacker.example/...">`) run in
+   *   the same target/frame as the main page; falling back to the target's
+   *   origin would allow them to launder their origin by dynamically evaluating
+   *   code via `eval()` or `WebAssembly.instantiate(buffer)`.
+   */
+  securityOrigin() {
+    return this.#securityOrigin;
+  }
+  target() {
+    return this.debuggerModel.target();
+  }
+  static #trimSourceURLComment(source) {
+    let sourceURLIndex = source.lastIndexOf("//# sourceURL=");
+    if (sourceURLIndex === -1) {
+      sourceURLIndex = source.lastIndexOf("//@ sourceURL=");
+      if (sourceURLIndex === -1) {
+        return source;
+      }
+    }
+    const sourceURLLineIndex = source.lastIndexOf("\n", sourceURLIndex);
+    if (sourceURLLineIndex === -1) {
+      return source;
+    }
+    const sourceURLLine = source.substr(sourceURLLineIndex + 1);
+    if (!sourceURLLine.match(sourceURLRegex)) {
+      return source;
+    }
+    return source.substr(0, sourceURLLineIndex);
+  }
+  isContentScript() {
+    return this.#isContentScript;
+  }
+  codeOffset() {
+    return this.#codeOffset;
+  }
+  isJavaScript() {
+    return this.#language === Debugger.ScriptLanguage.JavaScript;
+  }
+  isWasm() {
+    return this.#language === Debugger.ScriptLanguage.WebAssembly;
+  }
+  scriptLanguage() {
+    return this.#language;
+  }
+  executionContext() {
+    return this.debuggerModel.runtimeModel().executionContext(this.executionContextId);
+  }
+  contentURL() {
+    return this.sourceURL;
+  }
+  contentType() {
+    return Common21.ResourceType.resourceTypes.Script;
+  }
+  async #loadTextContent() {
+    const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({ scriptId: this.scriptId });
+    if (result.getError()) {
+      throw new Error(result.getError());
+    }
+    const { scriptSource, bytecode } = result;
+    if (bytecode) {
+      return new TextUtils17.ContentData.ContentData(
+        bytecode,
+        /* isBase64 */
+        true,
+        "application/wasm"
+      );
+    }
+    let content = scriptSource || "";
+    if (this.hasSourceURL && Common21.ParsedURL.schemeIs(this.sourceURL, "snippet:")) {
+      content = _Script.#trimSourceURLComment(content);
+    }
+    return new TextUtils17.ContentData.ContentData(
+      content,
+      /* isBase64 */
+      false,
+      "text/javascript"
+    );
+  }
+  async #loadWasmContent() {
+    if (!this.isWasm()) {
+      throw new Error("Not a wasm script");
+    }
+    const result = await this.debuggerModel.target().debuggerAgent().invoke_disassembleWasmModule({ scriptId: this.scriptId });
+    if (result.getError()) {
+      const contentData = await this.#loadTextContent();
+      return await disassembleWasm(contentData.base64);
+    }
+    const { streamId, functionBodyOffsets, chunk: { lines, bytecodeOffsets } } = result;
+    const lineChunks = [];
+    const bytecodeOffsetChunks = [];
+    let totalLength = lines.reduce((sum, line) => sum + line.length + 1, 0);
+    const truncationMessage = "<truncated>";
+    const cmSizeLimit = 1e9 - truncationMessage.length;
+    if (streamId) {
+      while (true) {
+        const result2 = await this.debuggerModel.target().debuggerAgent().invoke_nextWasmDisassemblyChunk({ streamId });
+        if (result2.getError()) {
+          throw new Error(result2.getError());
+        }
+        const { chunk: { lines: linesChunk, bytecodeOffsets: bytecodeOffsetsChunk } } = result2;
+        totalLength += linesChunk.reduce((sum, line) => sum + line.length + 1, 0);
+        if (linesChunk.length === 0) {
+          break;
+        }
+        if (totalLength >= cmSizeLimit) {
+          lineChunks.push([truncationMessage]);
+          bytecodeOffsetChunks.push([0]);
+          break;
+        }
+        lineChunks.push(linesChunk);
+        bytecodeOffsetChunks.push(bytecodeOffsetsChunk);
+      }
+    }
+    const functionBodyRanges = [];
+    for (let i = 0; i < functionBodyOffsets.length; i += 2) {
+      functionBodyRanges.push({ start: functionBodyOffsets[i], end: functionBodyOffsets[i + 1] });
+    }
+    return new TextUtils17.WasmDisassembly.WasmDisassembly(
+      lines.concat(...lineChunks),
+      bytecodeOffsets.concat(...bytecodeOffsetChunks),
+      functionBodyRanges
+    );
+  }
+  requestContentData() {
+    if (!this.#contentPromise) {
+      const fileSizeToCache = 65535;
+      if (this.hash && this.contentLength > fileSizeToCache) {
+        if (!scriptCacheInstance) {
+          scriptCacheInstance = {
+            cache: /* @__PURE__ */ new Map(),
+            registry: new FinalizationRegistry((hashCode) => scriptCacheInstance?.cache.delete(hashCode))
+          };
+        }
+        const fullHash = [
+          this.#language,
+          this.contentLength,
+          this.lineOffset,
+          this.columnOffset,
+          this.endLine,
+          this.endColumn,
+          this.#codeOffset,
+          this.hash
+        ].join(":");
+        const cachedContentPromise = scriptCacheInstance.cache.get(fullHash)?.deref();
+        if (cachedContentPromise) {
+          this.#contentPromise = cachedContentPromise;
+        } else {
+          this.#contentPromise = this.#requestContent();
+          scriptCacheInstance.cache.set(fullHash, new WeakRef(this.#contentPromise));
+          scriptCacheInstance.registry.register(this.#contentPromise, fullHash);
+        }
+      } else {
+        this.#contentPromise = this.#requestContent();
+      }
+    }
+    return this.#contentPromise;
+  }
+  async #requestContent() {
+    if (!this.scriptId) {
+      return { error: i18nString5(UIStrings5.scriptRemovedOrDeleted) };
+    }
+    try {
+      return this.isWasm() ? await this.#loadWasmContent() : await this.#loadTextContent();
+    } catch {
+      return { error: i18nString5(UIStrings5.unableToFetchScriptSource) };
+    }
+  }
+  async getWasmBytecode() {
+    const base64 = await this.debuggerModel.target().debuggerAgent().invoke_getWasmBytecode({ scriptId: this.scriptId });
+    const response = await fetch(`data:application/wasm;base64,${base64.bytecode}`);
+    return await response.arrayBuffer();
+  }
+  originalContentProvider() {
+    return new TextUtils17.StaticContentProvider.StaticContentProvider(
+      this.contentURL(),
+      this.contentType(),
+      () => this.requestContentData()
+    );
+  }
+  async searchInContent(query, caseSensitive, isRegex) {
+    if (!this.scriptId) {
+      return [];
+    }
+    const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent(
+      { scriptId: this.scriptId, query, caseSensitive, isRegex }
+    );
+    return TextUtils17.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
+  }
+  rawLocation(lineNumber, columnNumber) {
+    if (this.containsLocation(lineNumber, columnNumber)) {
+      return new Location2(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
+    }
+    return null;
+  }
+  isInlineScript() {
+    const startsAtZero = !this.lineOffset && !this.columnOffset;
+    return !this.isWasm() && Boolean(this.sourceURL) && !startsAtZero;
+  }
+  isAnonymousScript() {
+    return !this.sourceURL;
+  }
+  async setBlackboxedRanges(positions) {
+    const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
+      { scriptId: this.scriptId, positions }
+    );
+    return !response.getError();
+  }
+  containsLocation(lineNumber, columnNumber) {
+    const afterStart = lineNumber === this.lineOffset && columnNumber >= this.columnOffset || lineNumber > this.lineOffset;
+    const beforeEnd = lineNumber < this.endLine || lineNumber === this.endLine && columnNumber <= this.endColumn;
+    return afterStart && beforeEnd;
+  }
+  get frameId() {
+    if (typeof this[frameIdSymbol] !== "string") {
+      this[frameIdSymbol] = frameIdForScript(this);
+    }
+    return this[frameIdSymbol];
+  }
+  /**
+   * @returns true, iff this script originates from a breakpoint/logpoint condition
+   */
+  get isBreakpointCondition() {
+    return [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL].includes(this.sourceURL);
+  }
+  /**
+   * @returns the currently attached source map for this Script or `undefined` if there is none or it
+   * hasn't loaded yet.
+   */
+  sourceMap() {
+    return this.debuggerModel.sourceMapManager().sourceMapForClient(this);
+  }
+  createPageResourceLoadInitiator() {
+    return { target: this.target(), frameId: this.frameId, initiatorUrl: this.embedderName() };
+  }
+  debugId() {
+    return this.buildId;
+  }
+  rawLocationToRelativeLocation(rawLocation) {
+    let { lineNumber, columnNumber } = rawLocation;
+    if (!this.hasSourceURL && this.isInlineScript()) {
+      lineNumber -= this.lineOffset;
+      if (lineNumber === 0 && columnNumber !== void 0) {
+        columnNumber -= this.columnOffset;
+      }
+    }
+    return { lineNumber, columnNumber };
+  }
+  relativeLocationToRawLocation(relativeLocation) {
+    let { lineNumber, columnNumber } = relativeLocation;
+    if (!this.hasSourceURL && this.isInlineScript()) {
+      if (lineNumber === 0 && columnNumber !== void 0) {
+        columnNumber += this.columnOffset;
+      }
+      lineNumber += this.lineOffset;
+    }
+    return { lineNumber, columnNumber };
+  }
+};
+var frameIdSymbol = /* @__PURE__ */ Symbol("frameid");
+function frameIdForScript(script) {
+  const executionContext = script.executionContext();
+  if (executionContext) {
+    return executionContext.frameId || null;
+  }
+  const resourceTreeModel = script.debuggerModel.target().model(ResourceTreeModel);
+  if (!resourceTreeModel?.mainFrame) {
+    return null;
+  }
+  return resourceTreeModel.mainFrame.id;
+}
+var sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
+async function disassembleWasm(content) {
+  const worker = Platform13.HostRuntime.HOST_RUNTIME.createWorker(
+    new URL("../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js", import.meta.url).toString()
+  );
+  const promise = new Promise((resolve, reject) => {
+    worker.onmessage = ({ data }) => {
+      if ("method" in data) {
+        switch (data.method) {
+          case "disassemble":
+            if ("error" in data) {
+              reject(data.error);
+            } else if ("result" in data) {
+              const { lines, offsets, functionBodyOffsets } = data.result;
+              resolve(new TextUtils17.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
+            }
+            break;
+        }
+      }
+    };
+    worker.onerror = reject;
+  });
+  worker.postMessage({ method: "disassemble", params: { content } });
+  try {
+    return await promise;
+  } finally {
+    worker.terminate();
+  }
+}
+
+// ../../front_end/core/sdk/DebuggerModel.ts
 var UIStrings6 = {
+  /**
+   * @description Title of a section in the debugger showing local JavaScript variables.
+   */
+  local: "Local",
+  /**
+   * @description Text that refers to closure as a programming term.
+   */
+  closure: "Closure",
+  /**
+   * @description Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.
+   */
+  block: "Block",
+  /**
+   * @description Label for a group of JavaScript files.
+   */
+  script: "Script",
+  /**
+   * @description Title of a section in the debugger showing JavaScript variables from a 'with'
+   * block. Block here means section of code, 'with' refers to a JavaScript programming concept and
+   * is a fixed term.
+   */
+  withBlock: "`With` block",
+  /**
+   * @description Title of a section in the debugger showing JavaScript variables from a 'catch'
+   * block. Block here means section of code, 'catch' refers to a JavaScript programming concept and
+   * is a fixed term.
+   */
+  catchBlock: "`Catch` block",
+  /**
+   * @description Title of a section in the debugger showing JavaScript variables from the global scope.
+   */
+  global: "Global",
+  /**
+   * @description Text for a JavaScript module, the programming concept.
+   */
+  module: "Module",
+  /**
+   * @description Text describing the expression scope in WebAssembly.
+   */
+  expression: "Expression",
+  /**
+   * @description Text in Scope Chain section of the Sources panel.
+   */
+  exception: "Exception",
+  /**
+   * @description Text in Scope Chain section of the Sources panel.
+   */
+  returnValue: "Return value"
+};
+var str_6 = i18n11.i18n.registerUIStrings("core/sdk/DebuggerModel.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+function sortAndMergeRanges(locationRanges) {
+  function compare(p1, p2) {
+    return p1.lineNumber - p2.lineNumber || p1.columnNumber - p2.columnNumber;
+  }
+  function overlap(r1, r2) {
+    if (r1.scriptId !== r2.scriptId) {
+      return false;
+    }
+    const n = compare(r1.start, r2.start);
+    if (n < 0) {
+      return compare(r1.end, r2.start) >= 0;
+    }
+    if (n > 0) {
+      return compare(r1.start, r2.end) <= 0;
+    }
+    return true;
+  }
+  if (locationRanges.length === 0) {
+    return [];
+  }
+  locationRanges.sort((r1, r2) => {
+    if (r1.scriptId < r2.scriptId) {
+      return -1;
+    }
+    if (r1.scriptId > r2.scriptId) {
+      return 1;
+    }
+    return compare(r1.start, r2.start) || compare(r1.end, r2.end);
+  });
+  let prev = locationRanges[0];
+  const merged = [];
+  for (let i = 1; i < locationRanges.length; ++i) {
+    const curr = locationRanges[i];
+    if (overlap(prev, curr)) {
+      if (compare(prev.end, curr.end) <= 0) {
+        prev = { ...prev, end: curr.end };
+      }
+    } else {
+      merged.push(prev);
+      prev = curr;
+    }
+  }
+  merged.push(prev);
+  return merged;
+}
+var StepMode = /* @__PURE__ */ ((StepMode2) => {
+  StepMode2["STEP_INTO"] = "StepInto";
+  StepMode2["STEP_OUT"] = "StepOut";
+  StepMode2["STEP_OVER"] = "StepOver";
+  return StepMode2;
+})(StepMode || {});
+var WASM_SYMBOLS_PRIORITY = [
+  Debugger.DebugSymbolsType.ExternalDWARF,
+  Debugger.DebugSymbolsType.EmbeddedDWARF,
+  Debugger.DebugSymbolsType.SourceMap
+];
+var skipAllPausesSettingDescriptor = {
+  name: "skip-all-pauses",
+  type: Common22.Settings.SettingType.BOOLEAN,
+  defaultValue: false
+};
+var DebuggerModel = class _DebuggerModel extends SDKModel {
+  agent;
+  #runtimeModel;
+  #sourceMapManager;
+  #debuggerPausedDetails = null;
+  #scripts = /* @__PURE__ */ new Map();
+  #scriptsBySourceURL = /* @__PURE__ */ new Map();
+  #discardableScripts = [];
+  continueToLocationCallback = null;
+  #selectedCallFrame = null;
+  #debuggerEnabled = false;
+  #debuggerId = null;
+  #pauseOnExceptionEnabledSetting;
+  #pauseOnCaughtExceptionSetting;
+  #pauseOnUncaughtExceptionSetting;
+  #disableAsyncStackTracesSetting;
+  #breakpointsActiveSetting;
+  #jsSourceMapsEnabledSetting;
+  #skipAllPausesSetting;
+  #skipAllPausesTimeout;
+  #beforePausedCallback = null;
+  #computeAutoStepCallback = null;
+  evaluateOnCallFrameCallback = null;
+  #synchronizeBreakpointsCallback = null;
+  // We need to be able to register listeners for individual breakpoints. As such, we dispatch
+  // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
+  #breakpointResolvedEventTarget = new Common22.ObjectWrapper.ObjectWrapper();
+  #stepContext = null;
+  #isPausing = false;
+  constructor(target) {
+    super(target);
+    target.registerDebuggerDispatcher(new DebuggerDispatcher(this));
+    this.agent = target.debuggerAgent();
+    this.#runtimeModel = target.model(RuntimeModel);
+    this.#sourceMapManager = new SourceMapManager(
+      target,
+      (compiledURL, sourceMappingURL, payload, script, provenance) => new SourceMap(
+        compiledURL,
+        sourceMappingURL,
+        payload,
+        target.targetManager().getConsole(),
+        script,
+        provenance
+      )
+    );
+    const settings = this.target().targetManager().settings;
+    this.#pauseOnExceptionEnabledSetting = settings.resolve(pauseOnExceptionEnabledSettingDescriptor);
+    this.#pauseOnExceptionEnabledSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#pauseOnCaughtExceptionSetting = settings.resolve(pauseOnCaughtExceptionSettingDescriptor);
+    this.#pauseOnCaughtExceptionSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#pauseOnUncaughtExceptionSetting = settings.resolve(pauseOnUncaughtExceptionSettingDescriptor);
+    this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#disableAsyncStackTracesSetting = settings.resolve(disableAsyncStackTracesSettingDescriptor);
+    this.#disableAsyncStackTracesSetting.addChangeListener(this.asyncStackTracesStateChanged, this);
+    this.#breakpointsActiveSetting = settings.resolve(breakpointsActiveSettingDescriptor);
+    this.#breakpointsActiveSetting.addChangeListener(this.breakpointsActiveChanged, this);
+    this.#skipAllPausesSetting = settings.resolve(skipAllPausesSettingDescriptor);
+    this.#skipAllPausesSetting.addChangeListener(this.skipAllPausesChanged, this);
+    this.#jsSourceMapsEnabledSetting = settings.resolve(jsSourceMapsEnabledSettingDescriptor);
+    this.#jsSourceMapsEnabledSetting.addChangeListener(this.jsSourceMapsStateChanged, this);
+    this.#sourceMapManager.setEnabled(this.#jsSourceMapsEnabledSetting.get());
+    if (!target.suspended()) {
+      void this.enableDebugger();
+    }
+    const resourceTreeModel = target.model(ResourceTreeModel);
+    if (resourceTreeModel) {
+      resourceTreeModel.addEventListener("FrameNavigated" /* FrameNavigated */, this.onFrameNavigated, this);
+    }
+  }
+  static selectSymbolSource(debugSymbols, devToolsConsole) {
+    if (!debugSymbols || debugSymbols.length === 0) {
+      return null;
+    }
+    if ("type" in debugSymbols) {
+      if (debugSymbols.type === "None") {
+        return null;
+      }
+      return debugSymbols;
+    }
+    let debugSymbolsSource = null;
+    const symbolTypes = new Map(debugSymbols.map((symbol) => [symbol.type, symbol]));
+    for (const symbol of WASM_SYMBOLS_PRIORITY) {
+      if (symbolTypes.has(symbol)) {
+        debugSymbolsSource = symbolTypes.get(symbol) || null;
+        break;
+      }
+    }
+    console.assert(
+      debugSymbolsSource !== null,
+      "Unknown symbol types. Front-end and back-end should be kept in sync regarding Protocol.Debugger.DebugSymbolTypes"
+    );
+    if (debugSymbolsSource && debugSymbols.length > 1) {
+      devToolsConsole.warn(`Multiple debug symbols for script were found. Using ${debugSymbolsSource.type}`);
+    }
+    return debugSymbolsSource;
+  }
+  sourceMapManager() {
+    return this.#sourceMapManager;
+  }
+  runtimeModel() {
+    return this.#runtimeModel;
+  }
+  debuggerEnabled() {
+    return Boolean(this.#debuggerEnabled);
+  }
+  debuggerId() {
+    return this.#debuggerId;
+  }
+  async enableDebugger() {
+    if (this.#debuggerEnabled) {
+      return;
+    }
+    this.#debuggerEnabled = true;
+    let skipAllPausesPromise;
+    if (this.#skipAllPausesSetting.get()) {
+      skipAllPausesPromise = this.agent.invoke_setSkipAllPauses({ skip: true });
+    }
+    const isRemoteFrontend = Root5.Runtime.Runtime.queryParam("remoteFrontend") || Root5.Runtime.Runtime.queryParam("ws");
+    const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
+    const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
+    let instrumentationPromise;
+    if (Root5.Runtime.experiments.isEnabled(Root5.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+      instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
+        instrumentation: Debugger.SetInstrumentationBreakpointRequestInstrumentation.BeforeScriptExecution
+      });
+    }
+    this.pauseOnExceptionStateChanged();
+    void this.asyncStackTracesStateChanged();
+    if (!this.#breakpointsActiveSetting.get()) {
+      this.breakpointsActiveChanged();
+    }
+    this.dispatchEventToListeners("DebuggerWasEnabled" /* DebuggerWasEnabled */, this);
+    const [enableResult] = await Promise.all([enablePromise, instrumentationPromise, skipAllPausesPromise]);
+    this.registerDebugger(enableResult);
+  }
+  async syncDebuggerId() {
+    const isRemoteFrontend = Root5.Runtime.Runtime.queryParam("remoteFrontend") || Root5.Runtime.Runtime.queryParam("ws");
+    const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
+    const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
+    void enablePromise.then(this.registerDebugger.bind(this));
+    return await enablePromise;
+  }
+  onFrameNavigated() {
+    _DebuggerModel.modelsNeedingDebuggerIdResync.add(this);
+  }
+  registerDebugger(response) {
+    if (response.getError()) {
+      this.#debuggerEnabled = false;
+      return;
+    }
+    const { debuggerId } = response;
+    if (typeof this.#debuggerId === "string" && this.#debuggerId !== debuggerId) {
+      debuggerIdToModel.delete(this.#debuggerId);
+    }
+    debuggerIdToModel.set(debuggerId, this);
+    this.#debuggerId = debuggerId;
+    this.dispatchEventToListeners("DebuggerIsReadyToPause" /* DebuggerIsReadyToPause */, this);
+  }
+  isReadyToPause() {
+    return Boolean(this.#debuggerId);
+  }
+  static async modelForDebuggerId(debuggerId) {
+    const existingModel = debuggerIdToModel.get(debuggerId);
+    if (existingModel) {
+      return existingModel;
+    }
+    if (_DebuggerModel.modelsNeedingDebuggerIdResync.size > 0 || _DebuggerModel.resyncDebuggerIdPromise) {
+      await _DebuggerModel.resyncDebuggerIdForModels();
+    }
+    return debuggerIdToModel.get(debuggerId) || null;
+  }
+  static async resyncDebuggerIdForModels() {
+    if (!_DebuggerModel.resyncDebuggerIdPromise) {
+      const promise = (async () => {
+        while (_DebuggerModel.modelsNeedingDebuggerIdResync.size > 0) {
+          const dbgModels = Array.from(_DebuggerModel.modelsNeedingDebuggerIdResync).filter((m) => m.debuggerEnabled());
+          _DebuggerModel.modelsNeedingDebuggerIdResync.clear();
+          await Promise.all(dbgModels.map((m) => m.syncDebuggerId()));
+        }
+      })();
+      _DebuggerModel.resyncDebuggerIdPromise = promise.finally(() => {
+        _DebuggerModel.resyncDebuggerIdPromise = null;
+      });
+    }
+    await _DebuggerModel.resyncDebuggerIdPromise;
+  }
+  async disableDebugger() {
+    if (!this.#debuggerEnabled) {
+      return;
+    }
+    this.#debuggerEnabled = false;
+    await this.asyncStackTracesStateChanged();
+    await this.agent.invoke_disable();
+    this.#isPausing = false;
+    this.globalObjectCleared();
+    this.dispatchEventToListeners("DebuggerWasDisabled" /* DebuggerWasDisabled */, this);
+    if (typeof this.#debuggerId === "string") {
+      debuggerIdToModel.delete(this.#debuggerId);
+    }
+    this.#debuggerId = null;
+    _DebuggerModel.modelsNeedingDebuggerIdResync.delete(this);
+  }
+  skipAllPauses(skip) {
+    if (this.#skipAllPausesSetting.get()) {
+      return;
+    }
+    clearTimeout(this.#skipAllPausesTimeout);
+    void this.agent.invoke_setSkipAllPauses({ skip });
+  }
+  skipAllPausesChanged() {
+    const skip = this.#skipAllPausesSetting.get();
+    clearTimeout(this.#skipAllPausesTimeout);
+    void this.agent.invoke_setSkipAllPauses({ skip });
+  }
+  skipAllPausesUntilReloadOrTimeout(timeout) {
+    if (this.#skipAllPausesSetting.get()) {
+      return;
+    }
+    clearTimeout(this.#skipAllPausesTimeout);
+    void this.agent.invoke_setSkipAllPauses({ skip: true });
+    this.#skipAllPausesTimeout = globalThis.setTimeout(
+      this.skipAllPauses.bind(this, false),
+      timeout
+    );
+  }
+  jsSourceMapsStateChanged() {
+    this.#sourceMapManager.setEnabled(this.#jsSourceMapsEnabledSetting.get());
+  }
+  pauseOnExceptionStateChanged() {
+    const pauseOnCaughtEnabled = this.#pauseOnCaughtExceptionSetting.get();
+    let state;
+    const pauseOnUncaughtEnabled = this.#pauseOnUncaughtExceptionSetting.get();
+    if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
+      state = Debugger.SetPauseOnExceptionsRequestState.All;
+    } else if (pauseOnCaughtEnabled) {
+      state = Debugger.SetPauseOnExceptionsRequestState.Caught;
+    } else if (pauseOnUncaughtEnabled) {
+      state = Debugger.SetPauseOnExceptionsRequestState.Uncaught;
+    } else {
+      state = Debugger.SetPauseOnExceptionsRequestState.None;
+    }
+    void this.agent.invoke_setPauseOnExceptions({ state });
+  }
+  asyncStackTracesStateChanged() {
+    const maxAsyncStackChainDepth = 32;
+    const enabled = !this.#disableAsyncStackTracesSetting.get() && this.#debuggerEnabled;
+    const maxDepth = enabled ? maxAsyncStackChainDepth : 0;
+    return this.agent.invoke_setAsyncCallStackDepth({ maxDepth });
+  }
+  breakpointsActiveChanged() {
+    void this.agent.invoke_setBreakpointsActive({ active: this.#breakpointsActiveSetting.get() });
+  }
+  setComputeAutoStepCallback(callback) {
+    this.#computeAutoStepCallback = callback;
+  }
+  async stepInto() {
+    await this.#userStep("StepInto" /* STEP_INTO */);
+  }
+  async stepOver() {
+    await this.#userStep("StepOver" /* STEP_OVER */);
+  }
+  async stepOut() {
+    await this.#userStep("StepOut" /* STEP_OUT */);
+  }
+  scheduleStepIntoAsync() {
+    void this.#userStep(
+      "StepInto" /* STEP_INTO */,
+      /* breakOnAsyncCall */
+      true
+    );
+  }
+  async #userStep(mode, breakOnAsyncCall = false) {
+    const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
+    this.#stepContext = { mode, callFrames };
+    const step = this.#computeAutoStepCallback && callFrames.length > 0 ? await this.#computeAutoStepCallback(mode, callFrames) : { command: mode, ranges: [] };
+    this.#issueStep(step, breakOnAsyncCall);
+  }
+  #issueStep({ command, ranges, enterRanges }, breakOnAsyncCall = false) {
+    const toProtocolRange = ({ start, end }) => ({
+      scriptId: start.scriptId,
+      start: { lineNumber: start.lineNumber, columnNumber: start.columnNumber },
+      end: { lineNumber: end.lineNumber, columnNumber: end.columnNumber }
+    });
+    const skipList = sortAndMergeRanges(ranges.map(toProtocolRange));
+    switch (command) {
+      case "StepInto" /* STEP_INTO */:
+        void this.agent.invoke_stepInto({ breakOnAsyncCall, skipList });
+        break;
+      case "StepOver" /* STEP_OVER */: {
+        const request = { skipList };
+        if (enterRanges?.length) {
+          request.enterRanges = sortAndMergeRanges(enterRanges.map(toProtocolRange));
+        }
+        void this.agent.invoke_stepOver(request);
+        break;
+      }
+      case "StepOut" /* STEP_OUT */:
+        void this.agent.invoke_stepOut();
+        break;
+    }
+  }
+  resume() {
+    this.#stepContext = null;
+    this.#resumeBackend();
+  }
+  /** Resumes without touching the step context. */
+  #resumeBackend() {
+    void this.agent.invoke_resume({ terminateOnResume: false });
+    this.#isPausing = false;
+  }
+  pause() {
+    this.#stepContext = null;
+    this.#isPausing = true;
+    this.skipAllPauses(false);
+    void this.agent.invoke_pause();
+  }
+  async setBreakpointByURL(url, lineNumber, columnNumber, condition) {
+    let minColumnNumber = 0;
+    const scripts = this.#scriptsBySourceURL.get(url) || [];
+    for (let i = 0, l = scripts.length; i < l; ++i) {
+      const script = scripts[i];
+      if (lineNumber === script.lineOffset) {
+        minColumnNumber = minColumnNumber ? Math.min(minColumnNumber, script.columnOffset) : script.columnOffset;
+      }
+    }
+    columnNumber = Math.max(columnNumber || 0, minColumnNumber);
+    const response = await this.agent.invoke_setBreakpointByUrl({
+      lineNumber,
+      url,
+      columnNumber,
+      condition
+    });
+    if (response.getError()) {
+      return { locations: [], breakpointId: null };
+    }
+    let locations = [];
+    if (response.locations) {
+      locations = response.locations.map((payload) => Location2.fromPayload(this, payload));
+    }
+    return { locations, breakpointId: response.breakpointId };
+  }
+  async setBreakpointInAnonymousScript(scriptHash, lineNumber, columnNumber, condition) {
+    const response = await this.agent.invoke_setBreakpointByUrl({ lineNumber, scriptHash, columnNumber, condition });
+    if (response.getError()) {
+      return { locations: [], breakpointId: null };
+    }
+    let locations = [];
+    if (response.locations) {
+      locations = response.locations.map((payload) => Location2.fromPayload(this, payload));
+    }
+    return { locations, breakpointId: response.breakpointId };
+  }
+  async removeBreakpoint(breakpointId) {
+    await this.agent.invoke_removeBreakpoint({ breakpointId });
+  }
+  async getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
+    const response = await this.agent.invoke_getPossibleBreakpoints({
+      start: startLocation.payload(),
+      end: endLocation ? endLocation.payload() : void 0,
+      restrictToFunction
+    });
+    if (response.getError() || !response.locations) {
+      return [];
+    }
+    return response.locations.map((location) => BreakLocation.fromPayload(this, location));
+  }
+  async fetchAsyncStackTrace(stackId) {
+    const response = await this.agent.invoke_getStackTrace({ stackTraceId: stackId });
+    return response.getError() ? null : response.stackTrace;
+  }
+  breakpointResolved(breakpointId, location) {
+    this.#breakpointResolvedEventTarget.dispatchEventToListeners(breakpointId, Location2.fromPayload(this, location));
+  }
+  globalObjectCleared() {
+    this.resetDebuggerPausedDetails();
+    this.reset();
+    this.dispatchEventToListeners("GlobalObjectCleared" /* GlobalObjectCleared */, this);
+  }
+  reset() {
+    for (const script of this.#scripts.values()) {
+      this.#sourceMapManager.detachSourceMap(script);
+    }
+    this.#scripts.clear();
+    this.#scriptsBySourceURL.clear();
+    this.#discardableScripts = [];
+    this.#stepContext = null;
+  }
+  scripts() {
+    return Array.from(this.#scripts.values());
+  }
+  scriptForId(scriptId) {
+    return this.#scripts.get(scriptId) || null;
+  }
+  isWasm(scriptId) {
+    const script = this.scriptForId(scriptId);
+    return script ? script.isWasm() : false;
+  }
+  /**
+   * Returns all `Script` objects with the same provided `sourceURL`. The
+   * resulting array is sorted by time with the newest `Script` in the front.
+   */
+  scriptsForSourceURL(sourceURL) {
+    return this.#scriptsBySourceURL.get(sourceURL) || [];
+  }
+  scriptsForExecutionContext(executionContext) {
+    const result = [];
+    for (const script of this.#scripts.values()) {
+      if (script.executionContextId === executionContext.id) {
+        result.push(script);
+      }
+    }
+    return result;
+  }
+  get callFrames() {
+    return this.#debuggerPausedDetails ? this.#debuggerPausedDetails.callFrames : null;
+  }
+  debuggerPausedDetails() {
+    return this.#debuggerPausedDetails;
+  }
+  /**
+   * Call this after running code in the paused target that can assign to variables (e.g. a console evaluation).
+   * The scope chains of the paused call frames are re-fetched on demand afterwards. Listeners are expected to
+   * recompute whatever they derived from a scope chain, similar to what happens after a step.
+   */
+  invalidateScopeChains() {
+    const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
+    for (const callFrame of callFrames) {
+      callFrame.markScopeChainStale();
+    }
+    if (callFrames.length > 0) {
+      this.dispatchEventToListeners("ScopeChainsInvalidated" /* ScopeChainsInvalidated */, this);
+    }
+  }
+  /**
+   * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
+   */
+  async setDebuggerPausedDetails(debuggerPausedDetails) {
+    this.#isPausing = false;
+    this.#debuggerPausedDetails = debuggerPausedDetails;
+    if (this.#beforePausedCallback) {
+      const autoStep = await this.#beforePausedCallback(debuggerPausedDetails, this.#stepContext);
+      if (autoStep) {
+        return autoStep;
+      }
+    }
+    this.#stepContext = null;
+    this.dispatchEventToListeners("DebuggerPaused" /* DebuggerPaused */, this);
+    this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
+    return null;
+  }
+  resetDebuggerPausedDetails() {
+    this.#isPausing = false;
+    this.#debuggerPausedDetails = null;
+    this.setSelectedCallFrame(null);
+  }
+  setBeforePausedCallback(callback) {
+    this.#beforePausedCallback = callback;
+  }
+  setEvaluateOnCallFrameCallback(callback) {
+    this.evaluateOnCallFrameCallback = callback;
+  }
+  setSynchronizeBreakpointsCallback(callback) {
+    this.#synchronizeBreakpointsCallback = callback;
+  }
+  async pausedScript(callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
+    if (reason === Debugger.PausedEventReason.Instrumentation) {
+      const script = this.scriptForId(auxData.scriptId);
+      if (this.#synchronizeBreakpointsCallback && script) {
+        await this.#synchronizeBreakpointsCallback(script);
+      }
+      this.#resumeBackend();
+      return;
+    }
+    if (this.#skipAllPausesSetting.get()) {
+      this.resume();
+      return;
+    }
+    const pausedDetails = new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
+    if (this.continueToLocationCallback) {
+      const callback = this.continueToLocationCallback;
+      this.continueToLocationCallback = null;
+      if (callback(pausedDetails)) {
+        return;
+      }
+    }
+    const autoStep = await this.setDebuggerPausedDetails(pausedDetails);
+    if (autoStep) {
+      this.#issueStep(autoStep);
+    }
+  }
+  resumedScript() {
+    this.resetDebuggerPausedDetails();
+    this.dispatchEventToListeners("DebuggerResumed" /* DebuggerResumed */, this);
+  }
+  parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURLComment, hasSyntaxError, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
+    const knownScript = this.#scripts.get(scriptId);
+    if (knownScript) {
+      return knownScript;
+    }
+    let isContentScript = false;
+    if (executionContextAuxData && "isDefault" in executionContextAuxData) {
+      isContentScript = !executionContextAuxData["isDefault"];
+    }
+    const selectedDebugSymbol = _DebuggerModel.selectSymbolSource(debugSymbols, this.target().targetManager().getConsole());
+    const script = new Script(
+      this,
+      scriptId,
+      sourceURL,
+      startLine,
+      startColumn,
+      endLine,
+      endColumn,
+      executionContextId,
+      hash,
+      isContentScript,
+      sourceMapURL,
+      hasSourceURLComment,
+      length,
+      isModule,
+      originStackTrace,
+      codeOffset,
+      scriptLanguage,
+      selectedDebugSymbol,
+      embedderName,
+      buildId
+    );
+    this.registerScript(script);
+    this.dispatchEventToListeners("ParsedScriptSource" /* ParsedScriptSource */, script);
+    if ((!selectedDebugSymbol || selectedDebugSymbol.type === Debugger.DebugSymbolsType.SourceMap) && script.sourceMapURL && !hasSyntaxError) {
+      this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL, "cdp" /* CDP */);
+    }
+    const isDiscardable = hasSyntaxError && script.isAnonymousScript();
+    if (isDiscardable) {
+      this.#discardableScripts.push(script);
+      this.collectDiscardedScripts();
+    }
+    return script;
+  }
+  setSourceMapURL(script, newSourceMapURL, provenance) {
+    this.#sourceMapManager.detachSourceMap(script);
+    script.sourceMapURL = newSourceMapURL;
+    this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL, provenance);
+  }
+  async setDebugInfoURL(script, _externalURL) {
+    this.dispatchEventToListeners("DebugInfoAttached" /* DebugInfoAttached */, script);
+  }
+  executionContextDestroyed(executionContext) {
+    for (const script of this.#scripts.values()) {
+      if (script.executionContextId === executionContext.id) {
+        this.#sourceMapManager.detachSourceMap(script);
+      }
+    }
+  }
+  registerScript(script) {
+    this.#scripts.set(script.scriptId, script);
+    if (script.isAnonymousScript()) {
+      return;
+    }
+    let scripts = this.#scriptsBySourceURL.get(script.sourceURL);
+    if (!scripts) {
+      scripts = [];
+      this.#scriptsBySourceURL.set(script.sourceURL, scripts);
+    }
+    scripts.unshift(script);
+  }
+  unregisterScript(script) {
+    console.assert(script.isAnonymousScript());
+    this.#scripts.delete(script.scriptId);
+  }
+  collectDiscardedScripts() {
+    if (this.#discardableScripts.length < 1e3) {
+      return;
+    }
+    const scriptsToDiscard = this.#discardableScripts.splice(0, 100);
+    for (const script of scriptsToDiscard) {
+      this.unregisterScript(script);
+      this.dispatchEventToListeners("DiscardedAnonymousScriptSource" /* DiscardedAnonymousScriptSource */, script);
+    }
+  }
+  createRawLocation(script, lineNumber, columnNumber) {
+    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber);
+  }
+  createRawLocationByURL(sourceURL, lineNumber, columnNumber) {
+    for (const script of this.#scriptsBySourceURL.get(sourceURL) || []) {
+      if (script.lineOffset > lineNumber || script.lineOffset === lineNumber && columnNumber !== void 0 && script.columnOffset > columnNumber) {
+        continue;
+      }
+      if (script.endLine < lineNumber || script.endLine === lineNumber && columnNumber !== void 0 && script.endColumn <= columnNumber) {
+        continue;
+      }
+      return new Location2(this, script.scriptId, lineNumber, columnNumber);
+    }
+    return null;
+  }
+  createRawLocationByScriptId(scriptId, lineNumber, columnNumber) {
+    return new Location2(this, scriptId, lineNumber, columnNumber);
+  }
+  createRawLocationsByStackTrace(stackTrace) {
+    const rawLocations = [];
+    for (let current = stackTrace; current; current = current.parent) {
+      for (const { scriptId, lineNumber, columnNumber } of current.callFrames) {
+        rawLocations.push(this.createRawLocationByScriptId(scriptId, lineNumber, columnNumber));
+      }
+    }
+    return rawLocations;
+  }
+  isPaused() {
+    return Boolean(this.debuggerPausedDetails());
+  }
+  isPausing() {
+    return this.#isPausing;
+  }
+  setSelectedCallFrame(callFrame) {
+    if (this.#selectedCallFrame === callFrame) {
+      return;
+    }
+    this.#selectedCallFrame = callFrame;
+    this.dispatchEventToListeners("CallFrameSelected" /* CallFrameSelected */, this);
+  }
+  selectedCallFrame() {
+    return this.#selectedCallFrame;
+  }
+  async evaluateOnSelectedCallFrame(options) {
+    const callFrame = this.selectedCallFrame();
+    if (!callFrame) {
+      throw new Error("No call frame selected");
+    }
+    return await callFrame.evaluate(options);
+  }
+  functionDetailsPromise(remoteObject) {
+    return remoteObject.getAllProperties(
+      false,
+      false
+      /* generatePreview */
+    ).then(buildDetails.bind(this));
+    function buildDetails(response) {
+      if (!response) {
+        return null;
+      }
+      let location = null;
+      if (response.internalProperties) {
+        for (const prop of response.internalProperties) {
+          if (prop.name === "[[FunctionLocation]]") {
+            location = prop.value;
+          }
+        }
+      }
+      let functionName = null;
+      if (response.properties) {
+        for (const prop of response.properties) {
+          if (prop.name === "name" && prop.value?.type === "string") {
+            functionName = prop.value;
+          }
+        }
+      }
+      let debuggerLocation = null;
+      if (location) {
+        debuggerLocation = this.createRawLocationByScriptId(
+          location.value.scriptId,
+          location.value.lineNumber,
+          location.value.columnNumber
+        );
+      }
+      return { location: debuggerLocation, functionName: functionName ? functionName.value : "" };
+    }
+  }
+  async setVariableValue(scopeNumber, variableName, newValue, callFrameId) {
+    const response = await this.agent.invoke_setVariableValue({ scopeNumber, variableName, newValue, callFrameId });
+    const error = response.getError();
+    return error;
+  }
+  addBreakpointListener(breakpointId, listener, thisObject) {
+    this.#breakpointResolvedEventTarget.addEventListener(breakpointId, listener, thisObject);
+  }
+  removeBreakpointListener(breakpointId, listener, thisObject) {
+    this.#breakpointResolvedEventTarget.removeEventListener(breakpointId, listener, thisObject);
+  }
+  async setBlackboxPatterns(patterns, skipAnonymous) {
+    const response = await this.agent.invoke_setBlackboxPatterns({ patterns, skipAnonymous });
+    const error = response.getError();
+    return !error;
+  }
+  async setBlackboxExecutionContexts(uniqueIds) {
+    const response = await this.agent.invoke_setBlackboxExecutionContexts({ uniqueIds });
+    const error = response.getError();
+    return !error;
+  }
+  dispose() {
+    _DebuggerModel.modelsNeedingDebuggerIdResync.delete(this);
+    if (this.#debuggerId) {
+      debuggerIdToModel.delete(this.#debuggerId);
+    }
+    this.#pauseOnExceptionEnabledSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#pauseOnCaughtExceptionSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#skipAllPausesSetting.removeChangeListener(this.skipAllPausesChanged, this);
+    this.#pauseOnUncaughtExceptionSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    this.#disableAsyncStackTracesSetting.removeChangeListener(this.asyncStackTracesStateChanged, this);
+    this.#breakpointsActiveSetting.removeChangeListener(this.breakpointsActiveChanged, this);
+    this.#jsSourceMapsEnabledSetting.removeChangeListener(this.jsSourceMapsStateChanged, this);
+    this.reset();
+  }
+  async suspendModel() {
+    await this.disableDebugger();
+  }
+  async resumeModel() {
+    await this.enableDebugger();
+  }
+  static modelsNeedingDebuggerIdResync = /* @__PURE__ */ new Set();
+  static resyncDebuggerIdPromise = null;
+  getEvaluateOnCallFrameCallback() {
+    return this.evaluateOnCallFrameCallback;
+  }
+  /**
+   * Iterates the async stack trace parents.
+   *
+   * Retrieving cross-target async stack fragments requires CDP interaction, so this is an async generator.
+   *
+   * Important: This iterator will not yield the "synchronous" part of the stack trace, only the async parent chain.
+   */
+  async *iterateAsyncParents(stackTraceOrPausedDetails) {
+    const isPausedDetails = (details) => !("parent" in details) && !("parentId" in details);
+    let stackTrace = isPausedDetails(stackTraceOrPausedDetails) ? {
+      callFrames: [],
+      parent: stackTraceOrPausedDetails.asyncStackTrace,
+      parentId: stackTraceOrPausedDetails.asyncStackTraceId
+    } : stackTraceOrPausedDetails;
+    let target = this.target();
+    while (true) {
+      if (stackTrace.parent) {
+        stackTrace = stackTrace.parent;
+      } else if (stackTrace.parentId) {
+        const model = stackTrace.parentId.debuggerId ? await _DebuggerModel.modelForDebuggerId(stackTrace.parentId.debuggerId) : this;
+        if (!model) {
+          return;
+        }
+        const maybeStackTrace = await model.fetchAsyncStackTrace(stackTrace.parentId);
+        if (!maybeStackTrace) {
+          return;
+        }
+        stackTrace = maybeStackTrace;
+        target = model.target();
+      } else {
+        return;
+      }
+      yield { stackTrace, target };
+    }
+  }
+};
+var debuggerIdToModel = /* @__PURE__ */ new Map();
+var PauseOnExceptionsState = /* @__PURE__ */ ((PauseOnExceptionsState2) => {
+  PauseOnExceptionsState2["DontPauseOnExceptions"] = "none";
+  PauseOnExceptionsState2["PauseOnAllExceptions"] = "all";
+  PauseOnExceptionsState2["PauseOnCaughtExceptions"] = "caught";
+  PauseOnExceptionsState2["PauseOnUncaughtExceptions"] = "uncaught";
+  return PauseOnExceptionsState2;
+})(PauseOnExceptionsState || {});
+var Events9 = /* @__PURE__ */ ((Events36) => {
+  Events36["DebuggerWasEnabled"] = "DebuggerWasEnabled";
+  Events36["DebuggerWasDisabled"] = "DebuggerWasDisabled";
+  Events36["DebuggerPaused"] = "DebuggerPaused";
+  Events36["DebuggerResumed"] = "DebuggerResumed";
+  Events36["DebugInfoAttached"] = "DebugInfoAttached";
+  Events36["ParsedScriptSource"] = "ParsedScriptSource";
+  Events36["DiscardedAnonymousScriptSource"] = "DiscardedAnonymousScriptSource";
+  Events36["GlobalObjectCleared"] = "GlobalObjectCleared";
+  Events36["CallFrameSelected"] = "CallFrameSelected";
+  Events36["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
+  Events36["ScopeChainsInvalidated"] = "ScopeChainsInvalidated";
+  return Events36;
+})(Events9 || {});
+var DebuggerDispatcher = class {
+  #debuggerModel;
+  constructor(debuggerModel) {
+    this.#debuggerModel = debuggerModel;
+  }
+  paused({ callFrames, reason, data, hitBreakpoints, asyncStackTrace, asyncStackTraceId }) {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    void this.#debuggerModel.pausedScript(
+      callFrames,
+      reason,
+      data,
+      hitBreakpoints || [],
+      asyncStackTrace,
+      asyncStackTraceId
+    );
+  }
+  resumed() {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this.#debuggerModel.resumedScript();
+  }
+  scriptParsed({
+    scriptId,
+    url,
+    startLine,
+    startColumn,
+    endLine,
+    endColumn,
+    executionContextId,
+    hash,
+    executionContextAuxData,
+    sourceMapURL,
+    hasSourceURL,
+    length,
+    isModule,
+    stackTrace,
+    codeOffset,
+    scriptLanguage,
+    debugSymbols,
+    embedderName,
+    buildId
+  }) {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this.#debuggerModel.parsedScriptSource(
+      scriptId,
+      url,
+      startLine,
+      startColumn,
+      endLine,
+      endColumn,
+      executionContextId,
+      hash,
+      executionContextAuxData,
+      sourceMapURL,
+      Boolean(hasSourceURL),
+      false,
+      length || 0,
+      isModule || null,
+      stackTrace || null,
+      codeOffset || null,
+      scriptLanguage || null,
+      debugSymbols || null,
+      embedderName || null,
+      buildId || null
+    );
+  }
+  scriptFailedToParse({
+    scriptId,
+    url,
+    startLine,
+    startColumn,
+    endLine,
+    endColumn,
+    executionContextId,
+    hash,
+    executionContextAuxData,
+    sourceMapURL,
+    hasSourceURL,
+    length,
+    isModule,
+    stackTrace,
+    codeOffset,
+    scriptLanguage,
+    embedderName,
+    buildId
+  }) {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this.#debuggerModel.parsedScriptSource(
+      scriptId,
+      url,
+      startLine,
+      startColumn,
+      endLine,
+      endColumn,
+      executionContextId,
+      hash,
+      executionContextAuxData,
+      sourceMapURL,
+      Boolean(hasSourceURL),
+      true,
+      length || 0,
+      isModule || null,
+      stackTrace || null,
+      codeOffset || null,
+      scriptLanguage || null,
+      null,
+      embedderName || null,
+      buildId || null
+    );
+  }
+  breakpointResolved({ breakpointId, location }) {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this.#debuggerModel.breakpointResolved(breakpointId, location);
+  }
+};
+var Location2 = class _Location {
+  debuggerModel;
+  scriptId;
+  lineNumber;
+  columnNumber;
+  inlineFrameIndex;
+  constructor(debuggerModel, scriptId, lineNumber, columnNumber, inlineFrameIndex) {
+    this.debuggerModel = debuggerModel;
+    this.scriptId = scriptId;
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber || 0;
+    this.inlineFrameIndex = inlineFrameIndex || 0;
+  }
+  static fromPayload(debuggerModel, payload, inlineFrameIndex) {
+    return new _Location(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, inlineFrameIndex);
+  }
+  payload() {
+    return { scriptId: this.scriptId, lineNumber: this.lineNumber, columnNumber: this.columnNumber };
+  }
+  script() {
+    return this.debuggerModel.scriptForId(this.scriptId);
+  }
+  continueToLocation(pausedCallback) {
+    if (pausedCallback) {
+      this.debuggerModel.continueToLocationCallback = this.paused.bind(this, pausedCallback);
+    }
+    void this.debuggerModel.agent.invoke_continueToLocation({
+      location: this.payload(),
+      targetCallFrames: Debugger.ContinueToLocationRequestTargetCallFrames.Current
+    });
+  }
+  paused(pausedCallback, debuggerPausedDetails) {
+    const location = debuggerPausedDetails.callFrames[0].location();
+    if (location.scriptId === this.scriptId && location.lineNumber === this.lineNumber && location.columnNumber === this.columnNumber) {
+      pausedCallback();
+      return true;
+    }
+    return false;
+  }
+  id() {
+    return this.debuggerModel.target().id() + ":" + this.scriptId + ":" + this.lineNumber + ":" + this.columnNumber;
+  }
+};
+var BreakLocation = class _BreakLocation extends Location2 {
+  type;
+  constructor(debuggerModel, scriptId, lineNumber, columnNumber, type) {
+    super(debuggerModel, scriptId, lineNumber, columnNumber);
+    if (type) {
+      this.type = type;
+    }
+  }
+  static fromPayload(debuggerModel, payload) {
+    return new _BreakLocation(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, payload.type);
+  }
+};
+var CallFrame = class _CallFrame {
+  debuggerModel;
+  script;
+  payload;
+  #location;
+  /** Shared with the virtual call frames of this call frame, as they share the payload. */
+  #scopeChainState = { stale: false };
+  #scopes;
+  inlineFrameIndex;
+  functionName;
+  #functionLocation;
+  #returnValue;
+  exception;
+  canBeRestarted;
+  constructor(debuggerModel, script, payload, inlineFrameIndex, functionName, exception = null) {
+    this.debuggerModel = debuggerModel;
+    this.script = script;
+    this.payload = payload;
+    this.#location = Location2.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
+    this.inlineFrameIndex = inlineFrameIndex || 0;
+    this.functionName = functionName ?? payload.functionName;
+    this.canBeRestarted = Boolean(payload.canBeRestarted);
+    this.exception = exception;
+    if (payload.functionLocation) {
+      this.#functionLocation = Location2.fromPayload(debuggerModel, payload.functionLocation);
+    }
+    this.#returnValue = payload.returnValue ? this.debuggerModel.runtimeModel().createRemoteObject(payload.returnValue) : null;
+  }
+  static fromPayloadArray(debuggerModel, callFrames, exception) {
+    const result = [];
+    for (let i = 0; i < callFrames.length; ++i) {
+      const callFrame = callFrames[i];
+      const script = debuggerModel.scriptForId(callFrame.location.scriptId);
+      if (script) {
+        const ex = i === 0 ? exception : null;
+        result.push(new _CallFrame(debuggerModel, script, callFrame, void 0, void 0, ex));
+      }
+    }
+    return result;
+  }
+  createVirtualCallFrame(inlineFrameIndex, name) {
+    const callFrame = new _CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name, this.exception);
+    callFrame.#scopeChainState = this.#scopeChainState;
+    return callFrame;
+  }
+  get id() {
+    return this.payload.callFrameId;
+  }
+  /**
+   * Call this after running code in the paused target that can assign to variables. The scope chain V8
+   * reported with the pause is a snapshot, so it is re-fetched the next time it is requested.
+   */
+  markScopeChainStale() {
+    this.#scopeChainState.stale = true;
+  }
+  async scopeChain() {
+    const state = this.#scopeChainState;
+    while (state.stale || state.refetch) {
+      if (!state.refetch) {
+        state.stale = false;
+        state.refetch = this.#refetchScopeChain();
+      }
+      await state.refetch;
+    }
+    const payload = this.payload.scopeChain;
+    if (this.#scopes?.payload !== payload) {
+      this.#scopes = { payload, chain: payload.map((_, ordinal) => new Scope(this, ordinal)) };
+    }
+    return this.#scopes.chain;
+  }
+  async #refetchScopeChain() {
+    try {
+      const response = await this.debuggerModel.agent.invoke_getScopeChain({ callFrameId: this.id });
+      if (!response.getError()) {
+        this.payload.scopeChain = response.scopeChain;
+      }
+    } finally {
+      this.#scopeChainState.refetch = void 0;
+    }
+  }
+  thisObject() {
+    return this.payload.this ? this.debuggerModel.runtimeModel().createRemoteObject(this.payload.this) : null;
+  }
+  returnValue() {
+    return this.#returnValue;
+  }
+  async setReturnValue(expression) {
+    if (!this.#returnValue) {
+      return null;
+    }
+    const evaluateResponse = await this.debuggerModel.agent.invoke_evaluateOnCallFrame(
+      { callFrameId: this.id, expression, silent: true, objectGroup: "backtrace" }
+    );
+    if (evaluateResponse.getError()) {
+      return null;
+    }
+    if (evaluateResponse.exceptionDetails) {
+      this.debuggerModel.invalidateScopeChains();
+      return null;
+    }
+    const response = await this.debuggerModel.agent.invoke_setReturnValue({ newValue: evaluateResponse.result });
+    if (!response.getError()) {
+      this.#returnValue = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
+    }
+    this.debuggerModel.invalidateScopeChains();
+    return response.getError() ? null : this.#returnValue;
+  }
+  location() {
+    return this.#location;
+  }
+  functionLocation() {
+    return this.#functionLocation || null;
+  }
+  async evaluate(options) {
+    const debuggerModel = this.debuggerModel;
+    const runtimeModel = debuggerModel.runtimeModel();
+    const evaluateOnCallFrameCallback = debuggerModel.getEvaluateOnCallFrameCallback();
+    if (evaluateOnCallFrameCallback) {
+      const result = await evaluateOnCallFrameCallback(this, options);
+      if (result) {
+        return result;
+      }
+    }
+    const response = await this.debuggerModel.agent.invoke_evaluateOnCallFrame({
+      callFrameId: this.id,
+      expression: options.expression,
+      objectGroup: options.objectGroup,
+      includeCommandLineAPI: options.includeCommandLineAPI,
+      silent: options.silent,
+      returnByValue: options.returnByValue,
+      generatePreview: options.generatePreview,
+      throwOnSideEffect: options.throwOnSideEffect,
+      timeout: options.timeout,
+      scopeNumber: options.scopeNumber
+    });
+    const error = response.getError();
+    if (error) {
+      return { error };
+    }
+    return { object: runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
+  }
+  async restart() {
+    console.assert(this.canBeRestarted, "This frame can not be restarted.");
+    await this.debuggerModel.agent.invoke_restartFrame(
+      { callFrameId: this.id, mode: Debugger.RestartFrameRequestMode.StepInto }
+    );
+  }
+  getPayload() {
+    return this.payload;
+  }
+};
+var Scope = class {
+  #callFrame;
+  #payload;
+  #type;
+  #name;
+  #ordinal;
+  #locationRange;
+  #object = null;
+  constructor(callFrame, ordinal) {
+    this.#callFrame = callFrame;
+    this.#payload = callFrame.getPayload().scopeChain[ordinal];
+    this.#type = this.#payload.type;
+    this.#name = this.#payload.name;
+    this.#ordinal = ordinal;
+    const start = this.#payload.startLocation ? Location2.fromPayload(callFrame.debuggerModel, this.#payload.startLocation) : null;
+    const end = this.#payload.endLocation ? Location2.fromPayload(callFrame.debuggerModel, this.#payload.endLocation) : null;
+    if (start && end && start.scriptId === end.scriptId) {
+      this.#locationRange = { start, end };
+    } else {
+      this.#locationRange = null;
+    }
+  }
+  callFrame() {
+    return this.#callFrame;
+  }
+  /** The index of this scope in {@link CallFrame.scopeChain}, usable as an `evaluateOnCallFrame` `scopeNumber`. */
+  ordinal() {
+    return this.#ordinal;
+  }
+  type() {
+    return this.#type;
+  }
+  typeName() {
+    switch (this.#type) {
+      case Debugger.ScopeType.Local:
+        return i18nString6(UIStrings6.local);
+      case Debugger.ScopeType.Closure:
+        return i18nString6(UIStrings6.closure);
+      case Debugger.ScopeType.Catch:
+        return i18nString6(UIStrings6.catchBlock);
+      case Debugger.ScopeType.Eval:
+        return i18n11.i18n.lockedString("Eval");
+      case Debugger.ScopeType.Block:
+        return i18nString6(UIStrings6.block);
+      case Debugger.ScopeType.Script:
+        return i18nString6(UIStrings6.script);
+      case Debugger.ScopeType.With:
+        return i18nString6(UIStrings6.withBlock);
+      case Debugger.ScopeType.Global:
+        return i18nString6(UIStrings6.global);
+      case Debugger.ScopeType.Module:
+        return i18nString6(UIStrings6.module);
+      case Debugger.ScopeType.WasmExpressionStack:
+        return i18nString6(UIStrings6.expression);
+    }
+    return "";
+  }
+  name() {
+    return this.#name;
+  }
+  range() {
+    return this.#locationRange;
+  }
+  object() {
+    if (this.#object) {
+      return this.#object;
+    }
+    const runtimeModel = this.#callFrame.debuggerModel.runtimeModel();
+    const declarativeScope = this.#type !== Debugger.ScopeType.With && this.#type !== Debugger.ScopeType.Global;
+    if (declarativeScope) {
+      this.#object = runtimeModel.createScopeRemoteObject(this.#payload.object, new ScopeRef(this.#ordinal, this.#callFrame.id));
+    } else {
+      this.#object = runtimeModel.createRemoteObject(this.#payload.object);
+    }
+    return this.#object;
+  }
+  description() {
+    const declarativeScope = this.#type !== Debugger.ScopeType.With && this.#type !== Debugger.ScopeType.Global;
+    return declarativeScope ? "" : this.#payload.object.description || "";
+  }
+  icon() {
+    return void 0;
+  }
+  /**
+   * Present iff V8 has no variable values to show for this scope, either because the scope
+   * declares no variables or because all of them are unavailable (e.g. optimized out).
+   *
+   * Such scopes are retained in {@link CallFrame.scopeChain} so they can be addressed via
+   * `scopeNumber` in `Debugger.evaluateOnCallFrame` and matched against source map scopes.
+   */
+  emptyReason() {
+    return this.#payload.emptyReason;
+  }
+  extraProperties() {
+    if (this.#type !== Debugger.ScopeType.Local || this.#callFrame.script.isWasm()) {
+      return [];
+    }
+    const extraProperties = [];
+    const exception = this.#callFrame.exception;
+    if (exception) {
+      extraProperties.push(new RemoteObjectProperty(
+        i18nString6(UIStrings6.exception),
+        exception,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        /* synthetic */
+        true
+      ));
+    }
+    const returnValue = this.#callFrame.returnValue();
+    if (returnValue) {
+      extraProperties.push(new RemoteObjectProperty(
+        i18nString6(UIStrings6.returnValue),
+        returnValue,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        /* synthetic */
+        true,
+        this.#callFrame.setReturnValue.bind(this.#callFrame)
+      ));
+    }
+    return extraProperties;
+  }
+};
+var DebuggerPausedDetails = class {
+  debuggerModel;
+  callFrames;
+  reason;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  auxData;
+  breakpointIds;
+  asyncStackTrace;
+  asyncStackTraceId;
+  constructor(debuggerModel, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
+    this.debuggerModel = debuggerModel;
+    this.reason = reason;
+    this.auxData = auxData;
+    this.breakpointIds = breakpointIds;
+    if (asyncStackTrace) {
+      this.asyncStackTrace = this.cleanRedundantFrames(asyncStackTrace);
+    }
+    this.asyncStackTraceId = asyncStackTraceId;
+    this.callFrames = CallFrame.fromPayloadArray(debuggerModel, callFrames, this.exception());
+  }
+  exception() {
+    if (this.reason !== Debugger.PausedEventReason.Exception && this.reason !== Debugger.PausedEventReason.PromiseRejection) {
+      return null;
+    }
+    return this.debuggerModel.runtimeModel().createRemoteObject(this.auxData);
+  }
+  cleanRedundantFrames(asyncStackTrace) {
+    let stack = asyncStackTrace;
+    let previous = null;
+    while (stack) {
+      if (previous && !stack.callFrames.length) {
+        previous.parent = stack.parent;
+      } else {
+        previous = stack;
+      }
+      stack = stack.parent;
+    }
+    return asyncStackTrace;
+  }
+};
+SDKModel.register(DebuggerModel, { capabilities: 4 /* JS */, autostart: true });
+var BreakpointType = /* @__PURE__ */ ((BreakpointType2) => {
+  BreakpointType2["LOGPOINT"] = "LOGPOINT";
+  BreakpointType2["CONDITIONAL_BREAKPOINT"] = "CONDITIONAL_BREAKPOINT";
+  BreakpointType2["REGULAR_BREAKPOINT"] = "REGULAR_BREAKPOINT";
+  return BreakpointType2;
+})(BreakpointType || {});
+var LOGPOINT_SOURCE_URL = "debugger://logpoint";
+var COND_BREAKPOINT_SOURCE_URL = "debugger://breakpoint";
+
+// ../../front_end/core/sdk/CPUProfilerModel.ts
+var UIStrings7 = {
+  /**
+   * @description Name of a profile. Placeholder is either a user-supplied name or a number automatically assigned to the profile.
+   * @example {2} PH1
+   */
+  profileD: "Profile {PH1}"
+};
+var str_7 = i18n13.i18n.registerUIStrings("core/sdk/CPUProfilerModel.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var CPUProfilerModel = class extends SDKModel {
+  #nextAnonymousConsoleProfileNumber;
+  #anonymousConsoleProfileIdToTitle;
+  #profilerAgent;
+  #preciseCoverageDeltaUpdateCallback;
+  #debuggerModel;
+  constructor(target) {
+    super(target);
+    this.#nextAnonymousConsoleProfileNumber = 1;
+    this.#anonymousConsoleProfileIdToTitle = /* @__PURE__ */ new Map();
+    this.#profilerAgent = target.profilerAgent();
+    this.#preciseCoverageDeltaUpdateCallback = null;
+    target.registerProfilerDispatcher(this);
+    void this.#profilerAgent.invoke_enable();
+    this.#debuggerModel = target.model(DebuggerModel);
+  }
+  runtimeModel() {
+    return this.#debuggerModel.runtimeModel();
+  }
+  debuggerModel() {
+    return this.#debuggerModel;
+  }
+  consoleProfileStarted({ id, location, title }) {
+    if (!title) {
+      title = i18nString7(UIStrings7.profileD, { PH1: this.#nextAnonymousConsoleProfileNumber++ });
+      this.#anonymousConsoleProfileIdToTitle.set(id, title);
+    }
+    const eventData = this.#createEventDataFrom(id, location, title);
+    this.dispatchEventToListeners("ConsoleProfileStarted" /* CONSOLE_PROFILE_STARTED */, eventData);
+  }
+  consoleProfileFinished({ id, location, profile, title }) {
+    if (!title) {
+      title = this.#anonymousConsoleProfileIdToTitle.get(id);
+      this.#anonymousConsoleProfileIdToTitle.delete(id);
+    }
+    const eventData = new ProfileFinishedData(this.#createEventDataFrom(id, location, title), profile);
+    this.dispatchEventToListeners("ConsoleProfileFinished" /* CONSOLE_PROFILE_FINISHED */, eventData);
+  }
+  #createEventDataFrom(id, scriptLocation, title) {
+    const debuggerLocation = Location2.fromPayload(this.#debuggerModel, scriptLocation);
+    const globalId = this.target().id() + "." + id;
+    return {
+      id: globalId,
+      scriptLocation: debuggerLocation,
+      title: title || "",
+      cpuProfilerModel: this
+    };
+  }
+  startRecording() {
+    const intervalUs = 100;
+    void this.#profilerAgent.invoke_setSamplingInterval({ interval: intervalUs });
+    return this.#profilerAgent.invoke_start();
+  }
+  stopRecording() {
+    return this.#profilerAgent.invoke_stop().then((response) => response.profile || null);
+  }
+  startPreciseCoverage(jsCoveragePerBlock, preciseCoverageDeltaUpdateCallback) {
+    const callCount = false;
+    this.#preciseCoverageDeltaUpdateCallback = preciseCoverageDeltaUpdateCallback;
+    const allowUpdatesTriggeredByBackend = true;
+    return this.#profilerAgent.invoke_startPreciseCoverage(
+      { callCount, detailed: jsCoveragePerBlock, allowTriggeredUpdates: allowUpdatesTriggeredByBackend }
+    );
+  }
+  async takePreciseCoverage() {
+    const r = await this.#profilerAgent.invoke_takePreciseCoverage();
+    const timestamp = r?.timestamp || 0;
+    const coverage = r?.result || [];
+    return { timestamp, coverage };
+  }
+  stopPreciseCoverage() {
+    this.#preciseCoverageDeltaUpdateCallback = null;
+    return this.#profilerAgent.invoke_stopPreciseCoverage();
+  }
+  preciseCoverageDeltaUpdate({ timestamp, result }) {
+    if (this.#preciseCoverageDeltaUpdateCallback) {
+      void this.#preciseCoverageDeltaUpdateCallback(timestamp, result);
+    }
+  }
+};
+var Events13 = /* @__PURE__ */ ((Events36) => {
+  Events36["CONSOLE_PROFILE_STARTED"] = "ConsoleProfileStarted";
+  Events36["CONSOLE_PROFILE_FINISHED"] = "ConsoleProfileFinished";
+  return Events36;
+})(Events13 || {});
+SDKModel.register(CPUProfilerModel, { capabilities: 4 /* JS */, autostart: true });
+var ProfileFinishedData = class {
+  id;
+  scriptLocation;
+  title;
+  cpuProfilerModel;
+  cpuProfile;
+  constructor(eventData, cpuProfile) {
+    this.id = eventData.id;
+    this.scriptLocation = eventData.scriptLocation;
+    this.title = eventData.title;
+    this.cpuProfilerModel = eventData.cpuProfilerModel;
+    this.cpuProfile = cpuProfile;
+  }
+};
+
+// ../../front_end/core/sdk/LogModel.ts
+var LogModel_exports = {};
+__export(LogModel_exports, {
+  Events: () => Events14,
+  LogModel: () => LogModel
+});
+import * as Host5 from "../host/host.js";
+var LogModel = class extends SDKModel {
+  #logAgent;
+  constructor(target) {
+    super(target);
+    target.registerLogDispatcher(this);
+    this.#logAgent = target.logAgent();
+    void this.#logAgent.invoke_enable();
+    if (!Host5.InspectorFrontendHost.isUnderTest()) {
+      void this.#logAgent.invoke_startViolationsReport({
+        config: [
+          { name: Log.ViolationSettingName.LongTask, threshold: 200 },
+          { name: Log.ViolationSettingName.LongLayout, threshold: 30 },
+          { name: Log.ViolationSettingName.BlockedEvent, threshold: 100 },
+          { name: Log.ViolationSettingName.BlockedParser, threshold: -1 },
+          { name: Log.ViolationSettingName.Handler, threshold: 150 },
+          { name: Log.ViolationSettingName.RecurringHandler, threshold: 50 },
+          { name: Log.ViolationSettingName.DiscouragedAPIUse, threshold: -1 }
+        ]
+      });
+    }
+  }
+  entryAdded({ entry }) {
+    this.dispatchEventToListeners("EntryAdded" /* ENTRY_ADDED */, { logModel: this, entry });
+  }
+  requestClear() {
+    void this.#logAgent.invoke_clear();
+  }
+};
+var Events14 = /* @__PURE__ */ ((Events36) => {
+  Events36["ENTRY_ADDED"] = "EntryAdded";
+  return Events36;
+})(Events14 || {});
+SDKModel.register(LogModel, { capabilities: 8 /* LOG */, autostart: true });
+
+// ../../front_end/core/sdk/ConsoleModel.ts
+var UIStrings8 = {
   /**
    * @description Text shown when the main frame (page) of the website was navigated to a different URL.
    * @example {https://example.com} PH1
@@ -28775,12 +31237,12 @@ var UIStrings6 = {
    */
   failedToSaveToTempVariable: "Failed to save to temp variable"
 };
-var str_6 = i18n11.i18n.registerUIStrings("core/sdk/ConsoleModel.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_8 = i18n15.i18n.registerUIStrings("core/sdk/ConsoleModel.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var ConsoleModel = class _ConsoleModel extends SDKModel {
   #console;
   #messages = [];
-  #messagesByTimestamp = new Platform13.MapUtilities.Multimap();
+  #messagesByTimestamp = new Platform14.MapUtilities.Multimap();
   #messageByExceptionId = /* @__PURE__ */ new Map();
   #warnings = 0;
   #errors = 0;
@@ -28796,7 +31258,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       return;
     }
     const eventListener = resourceTreeModel.addEventListener("CachedResourcesLoaded" /* CachedResourcesLoaded */, () => {
-      Common20.EventTarget.removeEventListeners([eventListener]);
+      Common23.EventTarget.removeEventListeners([eventListener]);
       this.#initTarget(target);
     });
   }
@@ -28854,7 +31316,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     if (runtimeModel) {
       this.#messageByExceptionId.delete(runtimeModel);
     }
-    Common20.EventTarget.removeEventListeners(this.#targetListeners.get(target) || []);
+    Common23.EventTarget.removeEventListeners(this.#targetListeners.get(target) || []);
   }
   async evaluateCommandInConsole(executionContext, originatingMessage, expression, useCommandLineAPI) {
     const result = await executionContext.evaluateWithSelectedFrameFallback(
@@ -28872,7 +31334,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       /* awaitPromise */
       false
     );
-    Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.ConsoleEvaluated);
+    Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.ConsoleEvaluated);
     if ("error" in result) {
       return;
     }
@@ -28900,7 +31362,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   }
   addMessage(msg) {
     msg.setPageLoadSequenceNumber(this.#pageLoadSequenceNumber);
-    if (msg.source === Common20.Console.FrontendMessageSource.ConsoleAPI && msg.type === Runtime.ConsoleAPICalledEventType.Clear) {
+    if (msg.source === Common23.Console.FrontendMessageSource.ConsoleAPI && msg.type === Runtime.ConsoleAPICalledEventType.Clear) {
       this.#clearIfNecessary();
     }
     this.#messages.push(msg);
@@ -28975,7 +31437,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       executionContextId: call.executionContextId,
       context: call.context
     };
-    const consoleMessage = new ConsoleMessage(runtimeModel, Common20.Console.FrontendMessageSource.ConsoleAPI, level, message, details);
+    const consoleMessage = new ConsoleMessage(runtimeModel, Common23.Console.FrontendMessageSource.ConsoleAPI, level, message, details);
     for (const msg of this.#messagesByTimestamp.get(consoleMessage.timestamp).values()) {
       if (consoleMessage.isEqual(msg)) {
         return;
@@ -28992,7 +31454,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     };
     const consoleMessage = new ConsoleMessage(
       runtimeModel,
-      Common20.Console.FrontendMessageSource.ConsoleAPI,
+      Common23.Console.FrontendMessageSource.ConsoleAPI,
       Log.LogEntryLevel.Info,
       "",
       details
@@ -29011,9 +31473,9 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     if (settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
       const { frame } = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {
-        this.#console.log(i18nString6(UIStrings6.bfcacheNavigation, { PH1: frame.url }));
+        this.#console.log(i18nString8(UIStrings8.bfcacheNavigation, { PH1: frame.url }));
       } else {
-        this.#console.log(i18nString6(UIStrings6.navigatedToS, { PH1: frame.url }));
+        this.#console.log(i18nString8(UIStrings8.navigatedToS, { PH1: frame.url }));
       }
     }
   }
@@ -29023,7 +31485,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       cpuProfilerModel,
       Runtime.ConsoleAPICalledEventType.Profile,
       data.scriptLocation,
-      i18nString6(UIStrings6.profileSStarted, { PH1: data.title })
+      i18nString8(UIStrings8.profileSStarted, { PH1: data.title })
     );
   }
   #consoleProfileFinished(cpuProfilerModel, event) {
@@ -29032,7 +31494,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       cpuProfilerModel,
       Runtime.ConsoleAPICalledEventType.ProfileEnd,
       data.scriptLocation,
-      i18nString6(UIStrings6.profileSFinished, { PH1: data.title })
+      i18nString8(UIStrings8.profileSFinished, { PH1: data.title })
     );
   }
   #addConsoleProfileMessage(cpuProfilerModel, type, scriptLocation, messageText) {
@@ -29046,7 +31508,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     }];
     this.addMessage(new ConsoleMessage(
       cpuProfilerModel.runtimeModel(),
-      Common20.Console.FrontendMessageSource.ConsoleAPI,
+      Common23.Console.FrontendMessageSource.ConsoleAPI,
       Log.LogEntryLevel.Info,
       messageText,
       { type, stackTrace: { callFrames } }
@@ -29124,7 +31586,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   }
   async saveToTempVariable(currentExecutionContext, remoteObject) {
     const failedToSave = (result2) => {
-      let message = i18nString6(UIStrings6.failedToSaveToTempVariable);
+      let message = i18nString8(UIStrings8.failedToSaveToTempVariable);
       if (result2) {
         message = message + " " + result2.description;
       }
@@ -29166,13 +31628,13 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     }
   }
 };
-var Events14 = /* @__PURE__ */ ((Events36) => {
+var Events15 = /* @__PURE__ */ ((Events36) => {
   Events36["ConsoleCleared"] = "ConsoleCleared";
   Events36["MessageAdded"] = "MessageAdded";
   Events36["MessageUpdated"] = "MessageUpdated";
   Events36["CommandEvaluated"] = "CommandEvaluated";
   return Events36;
-})(Events14 || {});
+})(Events15 || {});
 function extractExceptionMetaData(metaData) {
   if (!metaData) {
     return void 0;
@@ -29331,7 +31793,7 @@ var ConsoleMessage = class _ConsoleMessage {
   }
   isGroupable() {
     const isUngroupableError = this.level === Log.LogEntryLevel.Error && (this.source === Log.LogEntrySource.Javascript || this.source === Log.LogEntrySource.Network);
-    return this.source !== Common20.Console.FrontendMessageSource.ConsoleAPI && this.type !== "command" /* Command */ && this.type !== "result" /* Result */ && this.type !== "system" /* System */ && !isUngroupableError;
+    return this.source !== Common23.Console.FrontendMessageSource.ConsoleAPI && this.type !== "command" /* Command */ && this.type !== "result" /* Result */ && this.type !== "system" /* System */ && !isUngroupableError;
   }
   groupCategoryKey() {
     return [this.source, this.level, this.type, this.#pageLoadSequenceNumber].join(":");
@@ -29384,11 +31846,11 @@ var MessageSourceDisplayName = /* @__PURE__ */ new Map([
   [Log.LogEntrySource.XML, "xml"],
   [Log.LogEntrySource.Javascript, "javascript"],
   [Log.LogEntrySource.Network, "network"],
-  [Common20.Console.FrontendMessageSource.ConsoleAPI, "console-api"],
+  [Common23.Console.FrontendMessageSource.ConsoleAPI, "console-api"],
   [Log.LogEntrySource.Storage, "storage"],
   [Log.LogEntrySource.Appcache, "appcache"],
   [Log.LogEntrySource.Rendering, "rendering"],
-  [Common20.Console.FrontendMessageSource.CSS, "css"],
+  [Common23.Console.FrontendMessageSource.CSS, "css"],
   [Log.LogEntrySource.Security, "security"],
   [Log.LogEntrySource.Deprecation, "deprecation"],
   [Log.LogEntrySource.Worker, "worker"],
@@ -29396,7 +31858,7 @@ var MessageSourceDisplayName = /* @__PURE__ */ new Map([
   [Log.LogEntrySource.Intervention, "intervention"],
   [Log.LogEntrySource.Recommendation, "recommendation"],
   [Log.LogEntrySource.Other, "other"],
-  [Common20.Console.FrontendMessageSource.ISSUE_PANEL, "issue-panel"]
+  [Common23.Console.FrontendMessageSource.ISSUE_PANEL, "issue-panel"]
 ]);
 
 // ../../front_end/core/sdk/DOMModel.ts
@@ -29508,7 +31970,7 @@ function cssEscape(value) {
   }
   return result;
 }
-var DOMNode = class _DOMNode extends Common21.ObjectWrapper.ObjectWrapper {
+var DOMNode = class _DOMNode extends Common24.ObjectWrapper.ObjectWrapper {
   #domModel;
   #frameManager;
   #agent;
@@ -30375,7 +32837,7 @@ var DOMNode = class _DOMNode extends Common21.ObjectWrapper.ObjectWrapper {
     }
     for (let frameOwnerCandidate = this; frameOwnerCandidate; frameOwnerCandidate = frameOwnerCandidate.parentNode) {
       if (frameOwnerCandidate instanceof DOMDocument && frameOwnerCandidate.baseURL) {
-        return Common21.ParsedURL.ParsedURL.completeURL(frameOwnerCandidate.baseURL, url);
+        return Common24.ParsedURL.ParsedURL.completeURL(frameOwnerCandidate.baseURL, url);
       }
     }
     return null;
@@ -30751,7 +33213,7 @@ var DOMModel = class _DOMModel extends SDKModel {
   #frameOwnerNode;
   #loadNodeAttributesTimeout;
   #searchId;
-  #topLayerThrottler = new Common21.Throttler.Throttler(100);
+  #topLayerThrottler = new Common24.Throttler.Throttler(100);
   #topLayerNodes = [];
   #resourceTreeModel = null;
   constructor(target) {
@@ -31304,7 +33766,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
   }
 };
-var Events11 = /* @__PURE__ */ ((Events36) => {
+var Events10 = /* @__PURE__ */ ((Events36) => {
   Events36["AttrModified"] = "AttrModified";
   Events36["AttrRemoved"] = "AttrRemoved";
   Events36["CharacterDataModified"] = "CharacterDataModified";
@@ -31320,7 +33782,7 @@ var Events11 = /* @__PURE__ */ ((Events36) => {
   Events36["AffectedByStartingStylesFlagUpdated"] = "AffectedByStartingStylesFlagUpdated";
   Events36["AdoptedStyleSheetsModified"] = "AdoptedStyleSheetsModified";
   return Events36;
-})(Events11 || {});
+})(Events10 || {});
 var DOMDispatcher = class {
   #domModel;
   constructor(domModel) {
@@ -31395,10 +33857,10 @@ var DOMModelUndoStack = class _DOMModelUndoStack {
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!Root5.DevToolsContext.globalInstance().has(_DOMModelUndoStack) || forceNew) {
-      Root5.DevToolsContext.globalInstance().set(_DOMModelUndoStack, new _DOMModelUndoStack());
+    if (!Root6.DevToolsContext.globalInstance().has(_DOMModelUndoStack) || forceNew) {
+      Root6.DevToolsContext.globalInstance().set(_DOMModelUndoStack, new _DOMModelUndoStack());
     }
-    return Root5.DevToolsContext.globalInstance().get(_DOMModelUndoStack);
+    return Root6.DevToolsContext.globalInstance().get(_DOMModelUndoStack);
   }
   async markUndoableState(model, minorChange) {
     if (this.#lastModelWithMinorChange && model !== this.#lastModelWithMinorChange) {
@@ -31441,7 +33903,7 @@ var DOMModelUndoStack = class _DOMModelUndoStack {
         ++shift;
       }
     }
-    Platform14.ArrayUtilities.removeElement(this.#stack, model);
+    Platform15.ArrayUtilities.removeElement(this.#stack, model);
     this.#index -= shift;
     if (this.#lastModelWithMinorChange === model) {
       this.#lastModelWithMinorChange = null;
@@ -31529,9 +33991,9 @@ var Resource_exports = {};
 __export(Resource_exports, {
   Resource: () => Resource
 });
-import * as Common22 from "../common/common.js";
-import * as Platform15 from "../platform/platform.js";
-import * as TextUtils17 from "../text_utils/text_utils.js";
+import * as Common25 from "../common/common.js";
+import * as Platform16 from "../platform/platform.js";
+import * as TextUtils19 from "../text_utils/text_utils.js";
 var Resource = class {
   #resourceTreeModel;
   #request;
@@ -31558,10 +34020,10 @@ var Resource = class {
     this.#documentURL = documentURL;
     this.#frameId = frameId;
     this.#loaderId = loaderId;
-    this.#type = type || Common22.ResourceType.resourceTypes.Other;
+    this.#type = type || Common25.ResourceType.resourceTypes.Other;
     this.#mimeType = mimeType;
     this.#isGenerated = false;
-    this.#lastModified = lastModified && Platform15.DateUtilities.isValid(lastModified) ? lastModified : null;
+    this.#lastModified = lastModified && Platform16.DateUtilities.isValid(lastModified) ? lastModified : null;
     this.#contentSize = contentSize;
   }
   lastModified() {
@@ -31570,7 +34032,7 @@ var Resource = class {
     }
     const lastModifiedHeader = this.#request.responseLastModified();
     const date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
-    this.#lastModified = date && Platform15.DateUtilities.isValid(date) ? date : null;
+    this.#lastModified = date && Platform16.DateUtilities.isValid(date) ? date : null;
     return this.#lastModified;
   }
   contentSize() {
@@ -31587,7 +34049,7 @@ var Resource = class {
   }
   set url(x) {
     this.#url = x;
-    this.#parsedURL = new Common22.ParsedURL.ParsedURL(x);
+    this.#parsedURL = new Common25.ParsedURL.ParsedURL(x);
   }
   get parsedURL() {
     return this.#parsedURL;
@@ -31626,8 +34088,8 @@ var Resource = class {
     return this.#url;
   }
   contentType() {
-    if (this.resourceType() === Common22.ResourceType.resourceTypes.Document && this.mimeType.indexOf("javascript") !== -1) {
-      return Common22.ResourceType.resourceTypes.Script;
+    if (this.resourceType() === Common25.ResourceType.resourceTypes.Document && this.mimeType.indexOf("javascript") !== -1) {
+      return Common25.ResourceType.resourceTypes.Script;
     }
     return this.resourceType();
   }
@@ -31639,7 +34101,7 @@ var Resource = class {
       return await this.#pendingContentData;
     }
     this.#pendingContentData = this.#innerRequestContent().then((contentData) => {
-      if (!TextUtils17.ContentData.ContentData.isError(contentData)) {
+      if (!TextUtils19.ContentData.ContentData.isError(contentData)) {
         this.#contentData = contentData;
       }
       this.#pendingContentData = null;
@@ -31660,11 +34122,11 @@ var Resource = class {
     const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource(
       { frameId: this.frameId, url: this.url, query, caseSensitive, isRegex }
     );
-    return TextUtils17.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
+    return TextUtils19.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
   }
   async populateImageSource(image) {
     const contentData = await this.requestContentData();
-    if (TextUtils17.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils19.ContentData.ContentData.isError(contentData)) {
       return;
     }
     const imageSrc = contentData.asImagePreviewUrl();
@@ -31681,7 +34143,7 @@ var Resource = class {
     if (error) {
       return { error };
     }
-    return new TextUtils17.ContentData.ContentData(response.content, response.base64Encoded, this.mimeType);
+    return new TextUtils19.ContentData.ContentData(response.content, response.base64Encoded, this.mimeType);
   }
   frame() {
     return this.#frameId ? this.#resourceTreeModel.frameForId(this.#frameId) : null;
@@ -31694,7 +34156,7 @@ var Resource = class {
 // ../../front_end/core/sdk/SecurityOriginManager.ts
 var SecurityOriginManager_exports = {};
 __export(SecurityOriginManager_exports, {
-  Events: () => Events15,
+  Events: () => Events16,
   SecurityOriginManager: () => SecurityOriginManager
 });
 var SecurityOriginManager = class extends SDKModel {
@@ -31737,23 +34199,23 @@ var SecurityOriginManager = class extends SDKModel {
     });
   }
 };
-var Events15 = /* @__PURE__ */ ((Events36) => {
+var Events16 = /* @__PURE__ */ ((Events36) => {
   Events36["SecurityOriginAdded"] = "SecurityOriginAdded";
   Events36["SecurityOriginRemoved"] = "SecurityOriginRemoved";
   Events36["MainSecurityOriginChanged"] = "MainSecurityOriginChanged";
   return Events36;
-})(Events15 || {});
+})(Events16 || {});
 SDKModel.register(SecurityOriginManager, { capabilities: 0 /* NONE */, autostart: false });
 
 // ../../front_end/core/sdk/StorageKeyManager.ts
 var StorageKeyManager_exports = {};
 __export(StorageKeyManager_exports, {
-  Events: () => Events16,
+  Events: () => Events17,
   StorageKeyComponent: () => StorageKeyComponent,
   StorageKeyManager: () => StorageKeyManager,
   parseStorageKey: () => parseStorageKey
 });
-import * as Common23 from "../common/common.js";
+import * as Common26 from "../common/common.js";
 var StorageKeyManager = class extends SDKModel {
   #mainStorageKey;
   #storageKeys;
@@ -31791,7 +34253,7 @@ var StorageKeyManager = class extends SDKModel {
 };
 function parseStorageKey(storageKeyString) {
   const components = storageKeyString.split("^");
-  const origin = Common23.ParsedURL.ParsedURL.extractOrigin(components[0]);
+  const origin = Common26.ParsedURL.ParsedURL.extractOrigin(components[0]);
   const storageKey = {
     // For file:// URLs, extracting the origin collapses it to "file://".
     // Node.js uses the full file URL as the StorageKey, so keep the original URL here.
@@ -31813,12 +34275,12 @@ var StorageKeyComponent = /* @__PURE__ */ ((StorageKeyComponent2) => {
   StorageKeyComponent2["TOP_LEVEL_SITE_OPAQUE_NONCE_PRECURSOR"] = "6";
   return StorageKeyComponent2;
 })(StorageKeyComponent || {});
-var Events16 = /* @__PURE__ */ ((Events36) => {
+var Events17 = /* @__PURE__ */ ((Events36) => {
   Events36["STORAGE_KEY_ADDED"] = "StorageKeyAdded";
   Events36["STORAGE_KEY_REMOVED"] = "StorageKeyRemoved";
   Events36["MAIN_STORAGE_KEY_CHANGED"] = "MainStorageKeyChanged";
   return Events36;
-})(Events16 || {});
+})(Events17 || {});
 SDKModel.register(StorageKeyManager, { capabilities: 0 /* NONE */, autostart: false });
 
 // ../../front_end/core/sdk/ResourceTreeModel.ts
@@ -32019,7 +34481,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       const frameResource = this.createResourceFromFramePayload(
         framePayload,
         framePayload.url,
-        Common24.ResourceType.resourceTypes.Document,
+        Common27.ResourceType.resourceTypes.Document,
         framePayload.mimeType,
         null,
         null
@@ -32131,7 +34593,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       frame.url,
       frameId,
       data.loaderId,
-      Common24.ResourceType.resourceTypes[data.resourceType],
+      Common27.ResourceType.resourceTypes[data.resourceType],
       data.mimeType,
       data.lastModified,
       null
@@ -32168,7 +34630,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       const resource = this.createResourceFromFramePayload(
         framePayload,
         subresource.url,
-        Common24.ResourceType.resourceTypes[subresource.type],
+        Common27.ResourceType.resourceTypes[subresource.type],
         subresource.mimeType,
         subresource.lastModified || null,
         subresource.contentSize || null
@@ -32179,7 +34641,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       const frameResource = this.createResourceFromFramePayload(
         framePayload,
         framePayload.url,
-        Common24.ResourceType.resourceTypes.Document,
+        Common27.ResourceType.resourceTypes.Document,
         framePayload.mimeType,
         null,
         null
@@ -32413,7 +34875,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
   }
 };
-var Events4 = /* @__PURE__ */ ((Events36) => {
+var Events3 = /* @__PURE__ */ ((Events36) => {
   Events36["FrameAdded"] = "FrameAdded";
   Events36["FrameNavigated"] = "FrameNavigated";
   Events36["FrameNavigatedWithinDocument"] = "FrameNavigatedWithinDocument";
@@ -32435,7 +34897,7 @@ var Events4 = /* @__PURE__ */ ((Events36) => {
   Events36["BackForwardCacheDetailsUpdated"] = "BackForwardCacheDetailsUpdated";
   Events36["JavaScriptDialogOpening"] = "JavaScriptDialogOpening";
   return Events36;
-})(Events4 || {});
+})(Events3 || {});
 var ResourceTreeFrame = class {
   #model;
   #sameTargetParentFrame;
@@ -32466,11 +34928,11 @@ var ResourceTreeFrame = class {
     this.#id = frameId;
     this.#loaderId = payload?.loaderId ?? "";
     this.#name = payload?.name;
-    this.#url = payload && payload.url || Platform16.DevToolsPath.EmptyUrlString;
+    this.#url = payload && payload.url || Platform17.DevToolsPath.EmptyUrlString;
     this.#domainAndRegistry = payload?.domainAndRegistry || "";
     this.#securityOrigin = SecurityOrigin.create(payload?.securityOrigin ?? "");
     this.#securityOriginDetails = payload?.securityOriginDetails;
-    this.#unreachableUrl = payload && payload.unreachableUrl || Platform16.DevToolsPath.EmptyUrlString;
+    this.#unreachableUrl = payload && payload.unreachableUrl || Platform17.DevToolsPath.EmptyUrlString;
     this.#adFrameStatus = payload?.adFrameStatus;
     this.#secureContextType = payload?.secureContextType ?? null;
     this.#crossOriginIsolatedContextType = payload?.crossOriginIsolatedContextType ?? null;
@@ -32512,7 +34974,7 @@ var ResourceTreeFrame = class {
       /* forceFetch */
       true
     );
-    this.#unreachableUrl = framePayload.unreachableUrl || Platform16.DevToolsPath.EmptyUrlString;
+    this.#unreachableUrl = framePayload.unreachableUrl || Platform17.DevToolsPath.EmptyUrlString;
     this.#adFrameStatus = framePayload?.adFrameStatus;
     this.#secureContextType = framePayload.secureContextType;
     this.#crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
@@ -32712,16 +35174,16 @@ var ResourceTreeFrame = class {
   }
   displayName() {
     if (this.isOutermostFrame()) {
-      return i18n13.i18n.lockedString("top");
+      return i18n17.i18n.lockedString("top");
     }
-    const subtitle = new Common24.ParsedURL.ParsedURL(this.#url).displayName;
+    const subtitle = new Common27.ParsedURL.ParsedURL(this.#url).displayName;
     if (subtitle) {
       if (!this.#name) {
         return subtitle;
       }
       return this.#name + " (" + subtitle + ")";
     }
-    return i18n13.i18n.lockedString("iframe");
+    return i18n17.i18n.lockedString("iframe");
   }
   async getOwnerDeferredDOMNode() {
     const parentFrame = this.parentFrame();
@@ -32864,2465 +35326,6 @@ var PrimaryPageChangeType = /* @__PURE__ */ ((PrimaryPageChangeType2) => {
   return PrimaryPageChangeType2;
 })(PrimaryPageChangeType || {});
 
-// ../../front_end/core/sdk/Script.ts
-var Script_exports = {};
-__export(Script_exports, {
-  Script: () => Script,
-  disassembleWasm: () => disassembleWasm,
-  sourceURLRegex: () => sourceURLRegex
-});
-import * as Platform17 from "../platform/platform.js";
-import * as Common25 from "../common/common.js";
-import * as i18n15 from "../i18n/i18n.js";
-import * as TextUtils19 from "../text_utils/text_utils.js";
-var UIStrings7 = {
-  /**
-   * @description Error message for when a script can't be loaded because it was removed or deleted.
-   */
-  scriptRemovedOrDeleted: "Script removed or deleted",
-  /**
-   * @description Error message when failing to load a script source text.
-   */
-  unableToFetchScriptSource: "Unable to fetch script source"
-};
-var str_7 = i18n15.i18n.registerUIStrings("core/sdk/Script.ts", UIStrings7);
-var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_7);
-var scriptCacheInstance = null;
-var Script = class _Script {
-  debuggerModel;
-  scriptId;
-  /**
-   * The URL of the script. When `hasSourceURL` is true, this value comes from a `//# sourceURL=` directive. Otherwise,
-   * it's the original `src` URL from which the script was loaded.
-   */
-  sourceURL;
-  lineOffset;
-  columnOffset;
-  endLine;
-  endColumn;
-  executionContextId;
-  hash;
-  #isContentScript;
-  sourceMapURL;
-  debugSymbols;
-  hasSourceURL;
-  contentLength;
-  originStackTrace;
-  #codeOffset;
-  #language;
-  #contentPromise;
-  #embedderName;
-  #securityOrigin;
-  isModule;
-  buildId;
-  constructor(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, sourceMapURL, hasSourceURL, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
-    this.debuggerModel = debuggerModel;
-    this.scriptId = scriptId;
-    this.sourceURL = sourceURL;
-    this.lineOffset = startLine;
-    this.columnOffset = startColumn;
-    this.endLine = endLine;
-    this.endColumn = endColumn;
-    this.isModule = isModule;
-    this.buildId = buildId;
-    this.executionContextId = executionContextId;
-    this.hash = hash;
-    this.#isContentScript = isContentScript;
-    this.sourceMapURL = sourceMapURL;
-    this.debugSymbols = debugSymbols;
-    this.hasSourceURL = hasSourceURL;
-    this.contentLength = length;
-    this.originStackTrace = originStackTrace;
-    this.#codeOffset = codeOffset;
-    this.#language = scriptLanguage;
-    this.#contentPromise = null;
-    this.#embedderName = embedderName;
-    this.#securityOrigin = SecurityOrigin.create(this.#embedderName ?? "");
-  }
-  embedderName() {
-    return this.#embedderName;
-  }
-  /**
-   * Returns the security origin of the script derived exclusively from its
-   * embedder/network URL (`#embedderName`), or a unique opaque origin if the
-   * script has no valid network provenance (e.g. `eval()` or buffer-based Wasm).
-   *
-   * Security note: Do NOT fall back to `this.sourceURL` or
-   * `this.target().inspectedSecurityOrigin()`:
-   * - `sourceURL` is overwritten by `//# sourceURL=` comments, allowing a script
-   *   to spoof an arbitrary origin.
-   * - Third-party scripts (`<script src="https://attacker.example/...">`) run in
-   *   the same target/frame as the main page; falling back to the target's
-   *   origin would allow them to launder their origin by dynamically evaluating
-   *   code via `eval()` or `WebAssembly.instantiate(buffer)`.
-   */
-  securityOrigin() {
-    return this.#securityOrigin;
-  }
-  target() {
-    return this.debuggerModel.target();
-  }
-  static #trimSourceURLComment(source) {
-    let sourceURLIndex = source.lastIndexOf("//# sourceURL=");
-    if (sourceURLIndex === -1) {
-      sourceURLIndex = source.lastIndexOf("//@ sourceURL=");
-      if (sourceURLIndex === -1) {
-        return source;
-      }
-    }
-    const sourceURLLineIndex = source.lastIndexOf("\n", sourceURLIndex);
-    if (sourceURLLineIndex === -1) {
-      return source;
-    }
-    const sourceURLLine = source.substr(sourceURLLineIndex + 1);
-    if (!sourceURLLine.match(sourceURLRegex)) {
-      return source;
-    }
-    return source.substr(0, sourceURLLineIndex);
-  }
-  isContentScript() {
-    return this.#isContentScript;
-  }
-  codeOffset() {
-    return this.#codeOffset;
-  }
-  isJavaScript() {
-    return this.#language === Debugger.ScriptLanguage.JavaScript;
-  }
-  isWasm() {
-    return this.#language === Debugger.ScriptLanguage.WebAssembly;
-  }
-  scriptLanguage() {
-    return this.#language;
-  }
-  executionContext() {
-    return this.debuggerModel.runtimeModel().executionContext(this.executionContextId);
-  }
-  contentURL() {
-    return this.sourceURL;
-  }
-  contentType() {
-    return Common25.ResourceType.resourceTypes.Script;
-  }
-  async #loadTextContent() {
-    const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({ scriptId: this.scriptId });
-    if (result.getError()) {
-      throw new Error(result.getError());
-    }
-    const { scriptSource, bytecode } = result;
-    if (bytecode) {
-      return new TextUtils19.ContentData.ContentData(
-        bytecode,
-        /* isBase64 */
-        true,
-        "application/wasm"
-      );
-    }
-    let content = scriptSource || "";
-    if (this.hasSourceURL && Common25.ParsedURL.schemeIs(this.sourceURL, "snippet:")) {
-      content = _Script.#trimSourceURLComment(content);
-    }
-    return new TextUtils19.ContentData.ContentData(
-      content,
-      /* isBase64 */
-      false,
-      "text/javascript"
-    );
-  }
-  async #loadWasmContent() {
-    if (!this.isWasm()) {
-      throw new Error("Not a wasm script");
-    }
-    const result = await this.debuggerModel.target().debuggerAgent().invoke_disassembleWasmModule({ scriptId: this.scriptId });
-    if (result.getError()) {
-      const contentData = await this.#loadTextContent();
-      return await disassembleWasm(contentData.base64);
-    }
-    const { streamId, functionBodyOffsets, chunk: { lines, bytecodeOffsets } } = result;
-    const lineChunks = [];
-    const bytecodeOffsetChunks = [];
-    let totalLength = lines.reduce((sum, line) => sum + line.length + 1, 0);
-    const truncationMessage = "<truncated>";
-    const cmSizeLimit = 1e9 - truncationMessage.length;
-    if (streamId) {
-      while (true) {
-        const result2 = await this.debuggerModel.target().debuggerAgent().invoke_nextWasmDisassemblyChunk({ streamId });
-        if (result2.getError()) {
-          throw new Error(result2.getError());
-        }
-        const { chunk: { lines: linesChunk, bytecodeOffsets: bytecodeOffsetsChunk } } = result2;
-        totalLength += linesChunk.reduce((sum, line) => sum + line.length + 1, 0);
-        if (linesChunk.length === 0) {
-          break;
-        }
-        if (totalLength >= cmSizeLimit) {
-          lineChunks.push([truncationMessage]);
-          bytecodeOffsetChunks.push([0]);
-          break;
-        }
-        lineChunks.push(linesChunk);
-        bytecodeOffsetChunks.push(bytecodeOffsetsChunk);
-      }
-    }
-    const functionBodyRanges = [];
-    for (let i = 0; i < functionBodyOffsets.length; i += 2) {
-      functionBodyRanges.push({ start: functionBodyOffsets[i], end: functionBodyOffsets[i + 1] });
-    }
-    return new TextUtils19.WasmDisassembly.WasmDisassembly(
-      lines.concat(...lineChunks),
-      bytecodeOffsets.concat(...bytecodeOffsetChunks),
-      functionBodyRanges
-    );
-  }
-  requestContentData() {
-    if (!this.#contentPromise) {
-      const fileSizeToCache = 65535;
-      if (this.hash && this.contentLength > fileSizeToCache) {
-        if (!scriptCacheInstance) {
-          scriptCacheInstance = {
-            cache: /* @__PURE__ */ new Map(),
-            registry: new FinalizationRegistry((hashCode) => scriptCacheInstance?.cache.delete(hashCode))
-          };
-        }
-        const fullHash = [
-          this.#language,
-          this.contentLength,
-          this.lineOffset,
-          this.columnOffset,
-          this.endLine,
-          this.endColumn,
-          this.#codeOffset,
-          this.hash
-        ].join(":");
-        const cachedContentPromise = scriptCacheInstance.cache.get(fullHash)?.deref();
-        if (cachedContentPromise) {
-          this.#contentPromise = cachedContentPromise;
-        } else {
-          this.#contentPromise = this.#requestContent();
-          scriptCacheInstance.cache.set(fullHash, new WeakRef(this.#contentPromise));
-          scriptCacheInstance.registry.register(this.#contentPromise, fullHash);
-        }
-      } else {
-        this.#contentPromise = this.#requestContent();
-      }
-    }
-    return this.#contentPromise;
-  }
-  async #requestContent() {
-    if (!this.scriptId) {
-      return { error: i18nString7(UIStrings7.scriptRemovedOrDeleted) };
-    }
-    try {
-      return this.isWasm() ? await this.#loadWasmContent() : await this.#loadTextContent();
-    } catch {
-      return { error: i18nString7(UIStrings7.unableToFetchScriptSource) };
-    }
-  }
-  async getWasmBytecode() {
-    const base64 = await this.debuggerModel.target().debuggerAgent().invoke_getWasmBytecode({ scriptId: this.scriptId });
-    const response = await fetch(`data:application/wasm;base64,${base64.bytecode}`);
-    return await response.arrayBuffer();
-  }
-  originalContentProvider() {
-    return new TextUtils19.StaticContentProvider.StaticContentProvider(
-      this.contentURL(),
-      this.contentType(),
-      () => this.requestContentData()
-    );
-  }
-  async searchInContent(query, caseSensitive, isRegex) {
-    if (!this.scriptId) {
-      return [];
-    }
-    const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent(
-      { scriptId: this.scriptId, query, caseSensitive, isRegex }
-    );
-    return TextUtils19.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
-  }
-  rawLocation(lineNumber, columnNumber) {
-    if (this.containsLocation(lineNumber, columnNumber)) {
-      return new Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
-    }
-    return null;
-  }
-  isInlineScript() {
-    const startsAtZero = !this.lineOffset && !this.columnOffset;
-    return !this.isWasm() && Boolean(this.sourceURL) && !startsAtZero;
-  }
-  isAnonymousScript() {
-    return !this.sourceURL;
-  }
-  async setBlackboxedRanges(positions) {
-    const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
-      { scriptId: this.scriptId, positions }
-    );
-    return !response.getError();
-  }
-  containsLocation(lineNumber, columnNumber) {
-    const afterStart = lineNumber === this.lineOffset && columnNumber >= this.columnOffset || lineNumber > this.lineOffset;
-    const beforeEnd = lineNumber < this.endLine || lineNumber === this.endLine && columnNumber <= this.endColumn;
-    return afterStart && beforeEnd;
-  }
-  get frameId() {
-    if (typeof this[frameIdSymbol] !== "string") {
-      this[frameIdSymbol] = frameIdForScript(this);
-    }
-    return this[frameIdSymbol];
-  }
-  /**
-   * @returns true, iff this script originates from a breakpoint/logpoint condition
-   */
-  get isBreakpointCondition() {
-    return [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL].includes(this.sourceURL);
-  }
-  /**
-   * @returns the currently attached source map for this Script or `undefined` if there is none or it
-   * hasn't loaded yet.
-   */
-  sourceMap() {
-    return this.debuggerModel.sourceMapManager().sourceMapForClient(this);
-  }
-  createPageResourceLoadInitiator() {
-    return { target: this.target(), frameId: this.frameId, initiatorUrl: this.embedderName() };
-  }
-  debugId() {
-    return this.buildId;
-  }
-  rawLocationToRelativeLocation(rawLocation) {
-    let { lineNumber, columnNumber } = rawLocation;
-    if (!this.hasSourceURL && this.isInlineScript()) {
-      lineNumber -= this.lineOffset;
-      if (lineNumber === 0 && columnNumber !== void 0) {
-        columnNumber -= this.columnOffset;
-      }
-    }
-    return { lineNumber, columnNumber };
-  }
-  relativeLocationToRawLocation(relativeLocation) {
-    let { lineNumber, columnNumber } = relativeLocation;
-    if (!this.hasSourceURL && this.isInlineScript()) {
-      if (lineNumber === 0 && columnNumber !== void 0) {
-        columnNumber += this.columnOffset;
-      }
-      lineNumber += this.lineOffset;
-    }
-    return { lineNumber, columnNumber };
-  }
-};
-var frameIdSymbol = /* @__PURE__ */ Symbol("frameid");
-function frameIdForScript(script) {
-  const executionContext = script.executionContext();
-  if (executionContext) {
-    return executionContext.frameId || null;
-  }
-  const resourceTreeModel = script.debuggerModel.target().model(ResourceTreeModel);
-  if (!resourceTreeModel?.mainFrame) {
-    return null;
-  }
-  return resourceTreeModel.mainFrame.id;
-}
-var sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
-async function disassembleWasm(content) {
-  const worker = Platform17.HostRuntime.HOST_RUNTIME.createWorker(
-    new URL("../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js", import.meta.url).toString()
-  );
-  const promise = new Promise((resolve, reject) => {
-    worker.onmessage = ({ data }) => {
-      if ("method" in data) {
-        switch (data.method) {
-          case "disassemble":
-            if ("error" in data) {
-              reject(data.error);
-            } else if ("result" in data) {
-              const { lines, offsets, functionBodyOffsets } = data.result;
-              resolve(new TextUtils19.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
-            }
-            break;
-        }
-      }
-    };
-    worker.onerror = reject;
-  });
-  worker.postMessage({ method: "disassemble", params: { content } });
-  try {
-    return await promise;
-  } finally {
-    worker.terminate();
-  }
-}
-
-// ../../front_end/core/sdk/DebuggerModel.ts
-var UIStrings8 = {
-  /**
-   * @description Title of a section in the debugger showing local JavaScript variables.
-   */
-  local: "Local",
-  /**
-   * @description Text that refers to closure as a programming term.
-   */
-  closure: "Closure",
-  /**
-   * @description Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.
-   */
-  block: "Block",
-  /**
-   * @description Label for a group of JavaScript files.
-   */
-  script: "Script",
-  /**
-   * @description Title of a section in the debugger showing JavaScript variables from a 'with'
-   * block. Block here means section of code, 'with' refers to a JavaScript programming concept and
-   * is a fixed term.
-   */
-  withBlock: "`With` block",
-  /**
-   * @description Title of a section in the debugger showing JavaScript variables from a 'catch'
-   * block. Block here means section of code, 'catch' refers to a JavaScript programming concept and
-   * is a fixed term.
-   */
-  catchBlock: "`Catch` block",
-  /**
-   * @description Title of a section in the debugger showing JavaScript variables from the global scope.
-   */
-  global: "Global",
-  /**
-   * @description Text for a JavaScript module, the programming concept.
-   */
-  module: "Module",
-  /**
-   * @description Text describing the expression scope in WebAssembly.
-   */
-  expression: "Expression",
-  /**
-   * @description Text in Scope Chain section of the Sources panel.
-   */
-  exception: "Exception",
-  /**
-   * @description Text in Scope Chain section of the Sources panel.
-   */
-  returnValue: "Return value"
-};
-var str_8 = i18n17.i18n.registerUIStrings("core/sdk/DebuggerModel.ts", UIStrings8);
-var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_8);
-function sortAndMergeRanges(locationRanges) {
-  function compare(p1, p2) {
-    return p1.lineNumber - p2.lineNumber || p1.columnNumber - p2.columnNumber;
-  }
-  function overlap(r1, r2) {
-    if (r1.scriptId !== r2.scriptId) {
-      return false;
-    }
-    const n = compare(r1.start, r2.start);
-    if (n < 0) {
-      return compare(r1.end, r2.start) >= 0;
-    }
-    if (n > 0) {
-      return compare(r1.start, r2.end) <= 0;
-    }
-    return true;
-  }
-  if (locationRanges.length === 0) {
-    return [];
-  }
-  locationRanges.sort((r1, r2) => {
-    if (r1.scriptId < r2.scriptId) {
-      return -1;
-    }
-    if (r1.scriptId > r2.scriptId) {
-      return 1;
-    }
-    return compare(r1.start, r2.start) || compare(r1.end, r2.end);
-  });
-  let prev = locationRanges[0];
-  const merged = [];
-  for (let i = 1; i < locationRanges.length; ++i) {
-    const curr = locationRanges[i];
-    if (overlap(prev, curr)) {
-      if (compare(prev.end, curr.end) <= 0) {
-        prev = { ...prev, end: curr.end };
-      }
-    } else {
-      merged.push(prev);
-      prev = curr;
-    }
-  }
-  merged.push(prev);
-  return merged;
-}
-var StepMode = /* @__PURE__ */ ((StepMode2) => {
-  StepMode2["STEP_INTO"] = "StepInto";
-  StepMode2["STEP_OUT"] = "StepOut";
-  StepMode2["STEP_OVER"] = "StepOver";
-  return StepMode2;
-})(StepMode || {});
-var WASM_SYMBOLS_PRIORITY = [
-  Debugger.DebugSymbolsType.ExternalDWARF,
-  Debugger.DebugSymbolsType.EmbeddedDWARF,
-  Debugger.DebugSymbolsType.SourceMap
-];
-var skipAllPausesSettingDescriptor = {
-  name: "skip-all-pauses",
-  type: Common26.Settings.SettingType.BOOLEAN,
-  defaultValue: false
-};
-var DebuggerModel = class _DebuggerModel extends SDKModel {
-  agent;
-  #runtimeModel;
-  #sourceMapManager;
-  #debuggerPausedDetails = null;
-  #scripts = /* @__PURE__ */ new Map();
-  #scriptsBySourceURL = /* @__PURE__ */ new Map();
-  #discardableScripts = [];
-  continueToLocationCallback = null;
-  #selectedCallFrame = null;
-  #debuggerEnabled = false;
-  #debuggerId = null;
-  #pauseOnExceptionEnabledSetting;
-  #pauseOnCaughtExceptionSetting;
-  #pauseOnUncaughtExceptionSetting;
-  #disableAsyncStackTracesSetting;
-  #breakpointsActiveSetting;
-  #jsSourceMapsEnabledSetting;
-  #skipAllPausesSetting;
-  #skipAllPausesTimeout;
-  #beforePausedCallback = null;
-  #computeAutoStepCallback = null;
-  evaluateOnCallFrameCallback = null;
-  #synchronizeBreakpointsCallback = null;
-  // We need to be able to register listeners for individual breakpoints. As such, we dispatch
-  // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
-  #breakpointResolvedEventTarget = new Common26.ObjectWrapper.ObjectWrapper();
-  #stepContext = null;
-  #isPausing = false;
-  constructor(target) {
-    super(target);
-    target.registerDebuggerDispatcher(new DebuggerDispatcher(this));
-    this.agent = target.debuggerAgent();
-    this.#runtimeModel = target.model(RuntimeModel);
-    this.#sourceMapManager = new SourceMapManager(
-      target,
-      (compiledURL, sourceMappingURL, payload, script, provenance) => new SourceMap(
-        compiledURL,
-        sourceMappingURL,
-        payload,
-        target.targetManager().getConsole(),
-        script,
-        provenance
-      )
-    );
-    const settings = this.target().targetManager().settings;
-    this.#pauseOnExceptionEnabledSetting = settings.resolve(pauseOnExceptionEnabledSettingDescriptor);
-    this.#pauseOnExceptionEnabledSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
-    this.#pauseOnCaughtExceptionSetting = settings.resolve(pauseOnCaughtExceptionSettingDescriptor);
-    this.#pauseOnCaughtExceptionSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
-    this.#pauseOnUncaughtExceptionSetting = settings.resolve(pauseOnUncaughtExceptionSettingDescriptor);
-    this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
-    this.#disableAsyncStackTracesSetting = settings.resolve(disableAsyncStackTracesSettingDescriptor);
-    this.#disableAsyncStackTracesSetting.addChangeListener(this.asyncStackTracesStateChanged, this);
-    this.#breakpointsActiveSetting = settings.resolve(breakpointsActiveSettingDescriptor);
-    this.#breakpointsActiveSetting.addChangeListener(this.breakpointsActiveChanged, this);
-    this.#skipAllPausesSetting = settings.resolve(skipAllPausesSettingDescriptor);
-    this.#skipAllPausesSetting.addChangeListener(this.skipAllPausesChanged, this);
-    this.#jsSourceMapsEnabledSetting = settings.resolve(jsSourceMapsEnabledSettingDescriptor);
-    this.#jsSourceMapsEnabledSetting.addChangeListener(this.jsSourceMapsStateChanged, this);
-    this.#sourceMapManager.setEnabled(this.#jsSourceMapsEnabledSetting.get());
-    if (!target.suspended()) {
-      void this.enableDebugger();
-    }
-    const resourceTreeModel = target.model(ResourceTreeModel);
-    if (resourceTreeModel) {
-      resourceTreeModel.addEventListener("FrameNavigated" /* FrameNavigated */, this.onFrameNavigated, this);
-    }
-  }
-  static selectSymbolSource(debugSymbols, devToolsConsole) {
-    if (!debugSymbols || debugSymbols.length === 0) {
-      return null;
-    }
-    if ("type" in debugSymbols) {
-      if (debugSymbols.type === "None") {
-        return null;
-      }
-      return debugSymbols;
-    }
-    let debugSymbolsSource = null;
-    const symbolTypes = new Map(debugSymbols.map((symbol) => [symbol.type, symbol]));
-    for (const symbol of WASM_SYMBOLS_PRIORITY) {
-      if (symbolTypes.has(symbol)) {
-        debugSymbolsSource = symbolTypes.get(symbol) || null;
-        break;
-      }
-    }
-    console.assert(
-      debugSymbolsSource !== null,
-      "Unknown symbol types. Front-end and back-end should be kept in sync regarding Protocol.Debugger.DebugSymbolTypes"
-    );
-    if (debugSymbolsSource && debugSymbols.length > 1) {
-      devToolsConsole.warn(`Multiple debug symbols for script were found. Using ${debugSymbolsSource.type}`);
-    }
-    return debugSymbolsSource;
-  }
-  sourceMapManager() {
-    return this.#sourceMapManager;
-  }
-  runtimeModel() {
-    return this.#runtimeModel;
-  }
-  debuggerEnabled() {
-    return Boolean(this.#debuggerEnabled);
-  }
-  debuggerId() {
-    return this.#debuggerId;
-  }
-  async enableDebugger() {
-    if (this.#debuggerEnabled) {
-      return;
-    }
-    this.#debuggerEnabled = true;
-    let skipAllPausesPromise;
-    if (this.#skipAllPausesSetting.get()) {
-      skipAllPausesPromise = this.agent.invoke_setSkipAllPauses({ skip: true });
-    }
-    const isRemoteFrontend = Root6.Runtime.Runtime.queryParam("remoteFrontend") || Root6.Runtime.Runtime.queryParam("ws");
-    const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
-    const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
-    let instrumentationPromise;
-    if (Root6.Runtime.experiments.isEnabled(Root6.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
-      instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
-        instrumentation: Debugger.SetInstrumentationBreakpointRequestInstrumentation.BeforeScriptExecution
-      });
-    }
-    this.pauseOnExceptionStateChanged();
-    void this.asyncStackTracesStateChanged();
-    if (!this.#breakpointsActiveSetting.get()) {
-      this.breakpointsActiveChanged();
-    }
-    this.dispatchEventToListeners("DebuggerWasEnabled" /* DebuggerWasEnabled */, this);
-    const [enableResult] = await Promise.all([enablePromise, instrumentationPromise, skipAllPausesPromise]);
-    this.registerDebugger(enableResult);
-  }
-  async syncDebuggerId() {
-    const isRemoteFrontend = Root6.Runtime.Runtime.queryParam("remoteFrontend") || Root6.Runtime.Runtime.queryParam("ws");
-    const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
-    const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
-    void enablePromise.then(this.registerDebugger.bind(this));
-    return await enablePromise;
-  }
-  onFrameNavigated() {
-    _DebuggerModel.modelsNeedingDebuggerIdResync.add(this);
-  }
-  registerDebugger(response) {
-    if (response.getError()) {
-      this.#debuggerEnabled = false;
-      return;
-    }
-    const { debuggerId } = response;
-    if (typeof this.#debuggerId === "string" && this.#debuggerId !== debuggerId) {
-      debuggerIdToModel.delete(this.#debuggerId);
-    }
-    debuggerIdToModel.set(debuggerId, this);
-    this.#debuggerId = debuggerId;
-    this.dispatchEventToListeners("DebuggerIsReadyToPause" /* DebuggerIsReadyToPause */, this);
-  }
-  isReadyToPause() {
-    return Boolean(this.#debuggerId);
-  }
-  static async modelForDebuggerId(debuggerId) {
-    const existingModel = debuggerIdToModel.get(debuggerId);
-    if (existingModel) {
-      return existingModel;
-    }
-    if (_DebuggerModel.modelsNeedingDebuggerIdResync.size > 0 || _DebuggerModel.resyncDebuggerIdPromise) {
-      await _DebuggerModel.resyncDebuggerIdForModels();
-    }
-    return debuggerIdToModel.get(debuggerId) || null;
-  }
-  static async resyncDebuggerIdForModels() {
-    if (!_DebuggerModel.resyncDebuggerIdPromise) {
-      const promise = (async () => {
-        while (_DebuggerModel.modelsNeedingDebuggerIdResync.size > 0) {
-          const dbgModels = Array.from(_DebuggerModel.modelsNeedingDebuggerIdResync).filter((m) => m.debuggerEnabled());
-          _DebuggerModel.modelsNeedingDebuggerIdResync.clear();
-          await Promise.all(dbgModels.map((m) => m.syncDebuggerId()));
-        }
-      })();
-      _DebuggerModel.resyncDebuggerIdPromise = promise.finally(() => {
-        _DebuggerModel.resyncDebuggerIdPromise = null;
-      });
-    }
-    await _DebuggerModel.resyncDebuggerIdPromise;
-  }
-  async disableDebugger() {
-    if (!this.#debuggerEnabled) {
-      return;
-    }
-    this.#debuggerEnabled = false;
-    await this.asyncStackTracesStateChanged();
-    await this.agent.invoke_disable();
-    this.#isPausing = false;
-    this.globalObjectCleared();
-    this.dispatchEventToListeners("DebuggerWasDisabled" /* DebuggerWasDisabled */, this);
-    if (typeof this.#debuggerId === "string") {
-      debuggerIdToModel.delete(this.#debuggerId);
-    }
-    this.#debuggerId = null;
-    _DebuggerModel.modelsNeedingDebuggerIdResync.delete(this);
-  }
-  skipAllPauses(skip) {
-    if (this.#skipAllPausesSetting.get()) {
-      return;
-    }
-    clearTimeout(this.#skipAllPausesTimeout);
-    void this.agent.invoke_setSkipAllPauses({ skip });
-  }
-  skipAllPausesChanged() {
-    const skip = this.#skipAllPausesSetting.get();
-    clearTimeout(this.#skipAllPausesTimeout);
-    void this.agent.invoke_setSkipAllPauses({ skip });
-  }
-  skipAllPausesUntilReloadOrTimeout(timeout) {
-    if (this.#skipAllPausesSetting.get()) {
-      return;
-    }
-    clearTimeout(this.#skipAllPausesTimeout);
-    void this.agent.invoke_setSkipAllPauses({ skip: true });
-    this.#skipAllPausesTimeout = globalThis.setTimeout(
-      this.skipAllPauses.bind(this, false),
-      timeout
-    );
-  }
-  jsSourceMapsStateChanged() {
-    this.#sourceMapManager.setEnabled(this.#jsSourceMapsEnabledSetting.get());
-  }
-  pauseOnExceptionStateChanged() {
-    const pauseOnCaughtEnabled = this.#pauseOnCaughtExceptionSetting.get();
-    let state;
-    const pauseOnUncaughtEnabled = this.#pauseOnUncaughtExceptionSetting.get();
-    if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
-      state = Debugger.SetPauseOnExceptionsRequestState.All;
-    } else if (pauseOnCaughtEnabled) {
-      state = Debugger.SetPauseOnExceptionsRequestState.Caught;
-    } else if (pauseOnUncaughtEnabled) {
-      state = Debugger.SetPauseOnExceptionsRequestState.Uncaught;
-    } else {
-      state = Debugger.SetPauseOnExceptionsRequestState.None;
-    }
-    void this.agent.invoke_setPauseOnExceptions({ state });
-  }
-  asyncStackTracesStateChanged() {
-    const maxAsyncStackChainDepth = 32;
-    const enabled = !this.#disableAsyncStackTracesSetting.get() && this.#debuggerEnabled;
-    const maxDepth = enabled ? maxAsyncStackChainDepth : 0;
-    return this.agent.invoke_setAsyncCallStackDepth({ maxDepth });
-  }
-  breakpointsActiveChanged() {
-    void this.agent.invoke_setBreakpointsActive({ active: this.#breakpointsActiveSetting.get() });
-  }
-  setComputeAutoStepCallback(callback) {
-    this.#computeAutoStepCallback = callback;
-  }
-  async stepInto() {
-    await this.#userStep("StepInto" /* STEP_INTO */);
-  }
-  async stepOver() {
-    await this.#userStep("StepOver" /* STEP_OVER */);
-  }
-  async stepOut() {
-    await this.#userStep("StepOut" /* STEP_OUT */);
-  }
-  scheduleStepIntoAsync() {
-    void this.#userStep(
-      "StepInto" /* STEP_INTO */,
-      /* breakOnAsyncCall */
-      true
-    );
-  }
-  async #userStep(mode, breakOnAsyncCall = false) {
-    const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
-    this.#stepContext = { mode, callFrames };
-    const step = this.#computeAutoStepCallback && callFrames.length > 0 ? await this.#computeAutoStepCallback(mode, callFrames) : { command: mode, ranges: [] };
-    this.#issueStep(step, breakOnAsyncCall);
-  }
-  #issueStep({ command, ranges, enterRanges }, breakOnAsyncCall = false) {
-    const toProtocolRange = ({ start, end }) => ({
-      scriptId: start.scriptId,
-      start: { lineNumber: start.lineNumber, columnNumber: start.columnNumber },
-      end: { lineNumber: end.lineNumber, columnNumber: end.columnNumber }
-    });
-    const skipList = sortAndMergeRanges(ranges.map(toProtocolRange));
-    switch (command) {
-      case "StepInto" /* STEP_INTO */:
-        void this.agent.invoke_stepInto({ breakOnAsyncCall, skipList });
-        break;
-      case "StepOver" /* STEP_OVER */: {
-        const request = { skipList };
-        if (enterRanges?.length) {
-          request.enterRanges = sortAndMergeRanges(enterRanges.map(toProtocolRange));
-        }
-        void this.agent.invoke_stepOver(request);
-        break;
-      }
-      case "StepOut" /* STEP_OUT */:
-        void this.agent.invoke_stepOut();
-        break;
-    }
-  }
-  resume() {
-    this.#stepContext = null;
-    this.#resumeBackend();
-  }
-  /** Resumes without touching the step context. */
-  #resumeBackend() {
-    void this.agent.invoke_resume({ terminateOnResume: false });
-    this.#isPausing = false;
-  }
-  pause() {
-    this.#stepContext = null;
-    this.#isPausing = true;
-    this.skipAllPauses(false);
-    void this.agent.invoke_pause();
-  }
-  async setBreakpointByURL(url, lineNumber, columnNumber, condition) {
-    let minColumnNumber = 0;
-    const scripts = this.#scriptsBySourceURL.get(url) || [];
-    for (let i = 0, l = scripts.length; i < l; ++i) {
-      const script = scripts[i];
-      if (lineNumber === script.lineOffset) {
-        minColumnNumber = minColumnNumber ? Math.min(minColumnNumber, script.columnOffset) : script.columnOffset;
-      }
-    }
-    columnNumber = Math.max(columnNumber || 0, minColumnNumber);
-    const response = await this.agent.invoke_setBreakpointByUrl({
-      lineNumber,
-      url,
-      columnNumber,
-      condition
-    });
-    if (response.getError()) {
-      return { locations: [], breakpointId: null };
-    }
-    let locations = [];
-    if (response.locations) {
-      locations = response.locations.map((payload) => Location.fromPayload(this, payload));
-    }
-    return { locations, breakpointId: response.breakpointId };
-  }
-  async setBreakpointInAnonymousScript(scriptHash, lineNumber, columnNumber, condition) {
-    const response = await this.agent.invoke_setBreakpointByUrl({ lineNumber, scriptHash, columnNumber, condition });
-    if (response.getError()) {
-      return { locations: [], breakpointId: null };
-    }
-    let locations = [];
-    if (response.locations) {
-      locations = response.locations.map((payload) => Location.fromPayload(this, payload));
-    }
-    return { locations, breakpointId: response.breakpointId };
-  }
-  async removeBreakpoint(breakpointId) {
-    await this.agent.invoke_removeBreakpoint({ breakpointId });
-  }
-  async getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
-    const response = await this.agent.invoke_getPossibleBreakpoints({
-      start: startLocation.payload(),
-      end: endLocation ? endLocation.payload() : void 0,
-      restrictToFunction
-    });
-    if (response.getError() || !response.locations) {
-      return [];
-    }
-    return response.locations.map((location) => BreakLocation.fromPayload(this, location));
-  }
-  async fetchAsyncStackTrace(stackId) {
-    const response = await this.agent.invoke_getStackTrace({ stackTraceId: stackId });
-    return response.getError() ? null : response.stackTrace;
-  }
-  breakpointResolved(breakpointId, location) {
-    this.#breakpointResolvedEventTarget.dispatchEventToListeners(breakpointId, Location.fromPayload(this, location));
-  }
-  globalObjectCleared() {
-    this.resetDebuggerPausedDetails();
-    this.reset();
-    this.dispatchEventToListeners("GlobalObjectCleared" /* GlobalObjectCleared */, this);
-  }
-  reset() {
-    for (const script of this.#scripts.values()) {
-      this.#sourceMapManager.detachSourceMap(script);
-    }
-    this.#scripts.clear();
-    this.#scriptsBySourceURL.clear();
-    this.#discardableScripts = [];
-    this.#stepContext = null;
-  }
-  scripts() {
-    return Array.from(this.#scripts.values());
-  }
-  scriptForId(scriptId) {
-    return this.#scripts.get(scriptId) || null;
-  }
-  isWasm(scriptId) {
-    const script = this.scriptForId(scriptId);
-    return script ? script.isWasm() : false;
-  }
-  /**
-   * Returns all `Script` objects with the same provided `sourceURL`. The
-   * resulting array is sorted by time with the newest `Script` in the front.
-   */
-  scriptsForSourceURL(sourceURL) {
-    return this.#scriptsBySourceURL.get(sourceURL) || [];
-  }
-  scriptsForExecutionContext(executionContext) {
-    const result = [];
-    for (const script of this.#scripts.values()) {
-      if (script.executionContextId === executionContext.id) {
-        result.push(script);
-      }
-    }
-    return result;
-  }
-  get callFrames() {
-    return this.#debuggerPausedDetails ? this.#debuggerPausedDetails.callFrames : null;
-  }
-  debuggerPausedDetails() {
-    return this.#debuggerPausedDetails;
-  }
-  /**
-   * Call this after running code in the paused target that can assign to variables (e.g. a console evaluation).
-   * The scope chains of the paused call frames are re-fetched on demand afterwards. Listeners are expected to
-   * recompute whatever they derived from a scope chain, similar to what happens after a step.
-   */
-  invalidateScopeChains() {
-    const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
-    for (const callFrame of callFrames) {
-      callFrame.markScopeChainStale();
-    }
-    if (callFrames.length > 0) {
-      this.dispatchEventToListeners("ScopeChainsInvalidated" /* ScopeChainsInvalidated */, this);
-    }
-  }
-  /**
-   * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
-   */
-  async setDebuggerPausedDetails(debuggerPausedDetails) {
-    this.#isPausing = false;
-    this.#debuggerPausedDetails = debuggerPausedDetails;
-    if (this.#beforePausedCallback) {
-      const autoStep = await this.#beforePausedCallback(debuggerPausedDetails, this.#stepContext);
-      if (autoStep) {
-        return autoStep;
-      }
-    }
-    this.#stepContext = null;
-    this.dispatchEventToListeners("DebuggerPaused" /* DebuggerPaused */, this);
-    this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
-    return null;
-  }
-  resetDebuggerPausedDetails() {
-    this.#isPausing = false;
-    this.#debuggerPausedDetails = null;
-    this.setSelectedCallFrame(null);
-  }
-  setBeforePausedCallback(callback) {
-    this.#beforePausedCallback = callback;
-  }
-  setEvaluateOnCallFrameCallback(callback) {
-    this.evaluateOnCallFrameCallback = callback;
-  }
-  setSynchronizeBreakpointsCallback(callback) {
-    this.#synchronizeBreakpointsCallback = callback;
-  }
-  async pausedScript(callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
-    if (reason === Debugger.PausedEventReason.Instrumentation) {
-      const script = this.scriptForId(auxData.scriptId);
-      if (this.#synchronizeBreakpointsCallback && script) {
-        await this.#synchronizeBreakpointsCallback(script);
-      }
-      this.#resumeBackend();
-      return;
-    }
-    if (this.#skipAllPausesSetting.get()) {
-      this.resume();
-      return;
-    }
-    const pausedDetails = new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
-    if (this.continueToLocationCallback) {
-      const callback = this.continueToLocationCallback;
-      this.continueToLocationCallback = null;
-      if (callback(pausedDetails)) {
-        return;
-      }
-    }
-    const autoStep = await this.setDebuggerPausedDetails(pausedDetails);
-    if (autoStep) {
-      this.#issueStep(autoStep);
-    }
-  }
-  resumedScript() {
-    this.resetDebuggerPausedDetails();
-    this.dispatchEventToListeners("DebuggerResumed" /* DebuggerResumed */, this);
-  }
-  parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURLComment, hasSyntaxError, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
-    const knownScript = this.#scripts.get(scriptId);
-    if (knownScript) {
-      return knownScript;
-    }
-    let isContentScript = false;
-    if (executionContextAuxData && "isDefault" in executionContextAuxData) {
-      isContentScript = !executionContextAuxData["isDefault"];
-    }
-    const selectedDebugSymbol = _DebuggerModel.selectSymbolSource(debugSymbols, this.target().targetManager().getConsole());
-    const script = new Script(
-      this,
-      scriptId,
-      sourceURL,
-      startLine,
-      startColumn,
-      endLine,
-      endColumn,
-      executionContextId,
-      hash,
-      isContentScript,
-      sourceMapURL,
-      hasSourceURLComment,
-      length,
-      isModule,
-      originStackTrace,
-      codeOffset,
-      scriptLanguage,
-      selectedDebugSymbol,
-      embedderName,
-      buildId
-    );
-    this.registerScript(script);
-    this.dispatchEventToListeners("ParsedScriptSource" /* ParsedScriptSource */, script);
-    if ((!selectedDebugSymbol || selectedDebugSymbol.type === Debugger.DebugSymbolsType.SourceMap) && script.sourceMapURL && !hasSyntaxError) {
-      this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL, "cdp" /* CDP */);
-    }
-    const isDiscardable = hasSyntaxError && script.isAnonymousScript();
-    if (isDiscardable) {
-      this.#discardableScripts.push(script);
-      this.collectDiscardedScripts();
-    }
-    return script;
-  }
-  setSourceMapURL(script, newSourceMapURL, provenance) {
-    this.#sourceMapManager.detachSourceMap(script);
-    script.sourceMapURL = newSourceMapURL;
-    this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL, provenance);
-  }
-  async setDebugInfoURL(script, _externalURL) {
-    this.dispatchEventToListeners("DebugInfoAttached" /* DebugInfoAttached */, script);
-  }
-  executionContextDestroyed(executionContext) {
-    for (const script of this.#scripts.values()) {
-      if (script.executionContextId === executionContext.id) {
-        this.#sourceMapManager.detachSourceMap(script);
-      }
-    }
-  }
-  registerScript(script) {
-    this.#scripts.set(script.scriptId, script);
-    if (script.isAnonymousScript()) {
-      return;
-    }
-    let scripts = this.#scriptsBySourceURL.get(script.sourceURL);
-    if (!scripts) {
-      scripts = [];
-      this.#scriptsBySourceURL.set(script.sourceURL, scripts);
-    }
-    scripts.unshift(script);
-  }
-  unregisterScript(script) {
-    console.assert(script.isAnonymousScript());
-    this.#scripts.delete(script.scriptId);
-  }
-  collectDiscardedScripts() {
-    if (this.#discardableScripts.length < 1e3) {
-      return;
-    }
-    const scriptsToDiscard = this.#discardableScripts.splice(0, 100);
-    for (const script of scriptsToDiscard) {
-      this.unregisterScript(script);
-      this.dispatchEventToListeners("DiscardedAnonymousScriptSource" /* DiscardedAnonymousScriptSource */, script);
-    }
-  }
-  createRawLocation(script, lineNumber, columnNumber) {
-    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber);
-  }
-  createRawLocationByURL(sourceURL, lineNumber, columnNumber) {
-    for (const script of this.#scriptsBySourceURL.get(sourceURL) || []) {
-      if (script.lineOffset > lineNumber || script.lineOffset === lineNumber && columnNumber !== void 0 && script.columnOffset > columnNumber) {
-        continue;
-      }
-      if (script.endLine < lineNumber || script.endLine === lineNumber && columnNumber !== void 0 && script.endColumn <= columnNumber) {
-        continue;
-      }
-      return new Location(this, script.scriptId, lineNumber, columnNumber);
-    }
-    return null;
-  }
-  createRawLocationByScriptId(scriptId, lineNumber, columnNumber) {
-    return new Location(this, scriptId, lineNumber, columnNumber);
-  }
-  createRawLocationsByStackTrace(stackTrace) {
-    const rawLocations = [];
-    for (let current = stackTrace; current; current = current.parent) {
-      for (const { scriptId, lineNumber, columnNumber } of current.callFrames) {
-        rawLocations.push(this.createRawLocationByScriptId(scriptId, lineNumber, columnNumber));
-      }
-    }
-    return rawLocations;
-  }
-  isPaused() {
-    return Boolean(this.debuggerPausedDetails());
-  }
-  isPausing() {
-    return this.#isPausing;
-  }
-  setSelectedCallFrame(callFrame) {
-    if (this.#selectedCallFrame === callFrame) {
-      return;
-    }
-    this.#selectedCallFrame = callFrame;
-    this.dispatchEventToListeners("CallFrameSelected" /* CallFrameSelected */, this);
-  }
-  selectedCallFrame() {
-    return this.#selectedCallFrame;
-  }
-  async evaluateOnSelectedCallFrame(options) {
-    const callFrame = this.selectedCallFrame();
-    if (!callFrame) {
-      throw new Error("No call frame selected");
-    }
-    return await callFrame.evaluate(options);
-  }
-  functionDetailsPromise(remoteObject) {
-    return remoteObject.getAllProperties(
-      false,
-      false
-      /* generatePreview */
-    ).then(buildDetails.bind(this));
-    function buildDetails(response) {
-      if (!response) {
-        return null;
-      }
-      let location = null;
-      if (response.internalProperties) {
-        for (const prop of response.internalProperties) {
-          if (prop.name === "[[FunctionLocation]]") {
-            location = prop.value;
-          }
-        }
-      }
-      let functionName = null;
-      if (response.properties) {
-        for (const prop of response.properties) {
-          if (prop.name === "name" && prop.value?.type === "string") {
-            functionName = prop.value;
-          }
-        }
-      }
-      let debuggerLocation = null;
-      if (location) {
-        debuggerLocation = this.createRawLocationByScriptId(
-          location.value.scriptId,
-          location.value.lineNumber,
-          location.value.columnNumber
-        );
-      }
-      return { location: debuggerLocation, functionName: functionName ? functionName.value : "" };
-    }
-  }
-  async setVariableValue(scopeNumber, variableName, newValue, callFrameId) {
-    const response = await this.agent.invoke_setVariableValue({ scopeNumber, variableName, newValue, callFrameId });
-    const error = response.getError();
-    return error;
-  }
-  addBreakpointListener(breakpointId, listener, thisObject) {
-    this.#breakpointResolvedEventTarget.addEventListener(breakpointId, listener, thisObject);
-  }
-  removeBreakpointListener(breakpointId, listener, thisObject) {
-    this.#breakpointResolvedEventTarget.removeEventListener(breakpointId, listener, thisObject);
-  }
-  async setBlackboxPatterns(patterns, skipAnonymous) {
-    const response = await this.agent.invoke_setBlackboxPatterns({ patterns, skipAnonymous });
-    const error = response.getError();
-    return !error;
-  }
-  async setBlackboxExecutionContexts(uniqueIds) {
-    const response = await this.agent.invoke_setBlackboxExecutionContexts({ uniqueIds });
-    const error = response.getError();
-    return !error;
-  }
-  dispose() {
-    _DebuggerModel.modelsNeedingDebuggerIdResync.delete(this);
-    if (this.#debuggerId) {
-      debuggerIdToModel.delete(this.#debuggerId);
-    }
-    this.#pauseOnExceptionEnabledSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    this.#pauseOnCaughtExceptionSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    this.#skipAllPausesSetting.removeChangeListener(this.skipAllPausesChanged, this);
-    this.#pauseOnUncaughtExceptionSetting.removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    this.#disableAsyncStackTracesSetting.removeChangeListener(this.asyncStackTracesStateChanged, this);
-    this.#breakpointsActiveSetting.removeChangeListener(this.breakpointsActiveChanged, this);
-    this.#jsSourceMapsEnabledSetting.removeChangeListener(this.jsSourceMapsStateChanged, this);
-    this.reset();
-  }
-  async suspendModel() {
-    await this.disableDebugger();
-  }
-  async resumeModel() {
-    await this.enableDebugger();
-  }
-  static modelsNeedingDebuggerIdResync = /* @__PURE__ */ new Set();
-  static resyncDebuggerIdPromise = null;
-  getEvaluateOnCallFrameCallback() {
-    return this.evaluateOnCallFrameCallback;
-  }
-  /**
-   * Iterates the async stack trace parents.
-   *
-   * Retrieving cross-target async stack fragments requires CDP interaction, so this is an async generator.
-   *
-   * Important: This iterator will not yield the "synchronous" part of the stack trace, only the async parent chain.
-   */
-  async *iterateAsyncParents(stackTraceOrPausedDetails) {
-    const isPausedDetails = (details) => !("parent" in details) && !("parentId" in details);
-    let stackTrace = isPausedDetails(stackTraceOrPausedDetails) ? {
-      callFrames: [],
-      parent: stackTraceOrPausedDetails.asyncStackTrace,
-      parentId: stackTraceOrPausedDetails.asyncStackTraceId
-    } : stackTraceOrPausedDetails;
-    let target = this.target();
-    while (true) {
-      if (stackTrace.parent) {
-        stackTrace = stackTrace.parent;
-      } else if (stackTrace.parentId) {
-        const model = stackTrace.parentId.debuggerId ? await _DebuggerModel.modelForDebuggerId(stackTrace.parentId.debuggerId) : this;
-        if (!model) {
-          return;
-        }
-        const maybeStackTrace = await model.fetchAsyncStackTrace(stackTrace.parentId);
-        if (!maybeStackTrace) {
-          return;
-        }
-        stackTrace = maybeStackTrace;
-        target = model.target();
-      } else {
-        return;
-      }
-      yield { stackTrace, target };
-    }
-  }
-};
-var debuggerIdToModel = /* @__PURE__ */ new Map();
-var PauseOnExceptionsState = /* @__PURE__ */ ((PauseOnExceptionsState2) => {
-  PauseOnExceptionsState2["DontPauseOnExceptions"] = "none";
-  PauseOnExceptionsState2["PauseOnAllExceptions"] = "all";
-  PauseOnExceptionsState2["PauseOnCaughtExceptions"] = "caught";
-  PauseOnExceptionsState2["PauseOnUncaughtExceptions"] = "uncaught";
-  return PauseOnExceptionsState2;
-})(PauseOnExceptionsState || {});
-var Events10 = /* @__PURE__ */ ((Events36) => {
-  Events36["DebuggerWasEnabled"] = "DebuggerWasEnabled";
-  Events36["DebuggerWasDisabled"] = "DebuggerWasDisabled";
-  Events36["DebuggerPaused"] = "DebuggerPaused";
-  Events36["DebuggerResumed"] = "DebuggerResumed";
-  Events36["DebugInfoAttached"] = "DebugInfoAttached";
-  Events36["ParsedScriptSource"] = "ParsedScriptSource";
-  Events36["DiscardedAnonymousScriptSource"] = "DiscardedAnonymousScriptSource";
-  Events36["GlobalObjectCleared"] = "GlobalObjectCleared";
-  Events36["CallFrameSelected"] = "CallFrameSelected";
-  Events36["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
-  Events36["ScopeChainsInvalidated"] = "ScopeChainsInvalidated";
-  return Events36;
-})(Events10 || {});
-var DebuggerDispatcher = class {
-  #debuggerModel;
-  constructor(debuggerModel) {
-    this.#debuggerModel = debuggerModel;
-  }
-  paused({ callFrames, reason, data, hitBreakpoints, asyncStackTrace, asyncStackTraceId }) {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    void this.#debuggerModel.pausedScript(
-      callFrames,
-      reason,
-      data,
-      hitBreakpoints || [],
-      asyncStackTrace,
-      asyncStackTraceId
-    );
-  }
-  resumed() {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    this.#debuggerModel.resumedScript();
-  }
-  scriptParsed({
-    scriptId,
-    url,
-    startLine,
-    startColumn,
-    endLine,
-    endColumn,
-    executionContextId,
-    hash,
-    executionContextAuxData,
-    sourceMapURL,
-    hasSourceURL,
-    length,
-    isModule,
-    stackTrace,
-    codeOffset,
-    scriptLanguage,
-    debugSymbols,
-    embedderName,
-    buildId
-  }) {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    this.#debuggerModel.parsedScriptSource(
-      scriptId,
-      url,
-      startLine,
-      startColumn,
-      endLine,
-      endColumn,
-      executionContextId,
-      hash,
-      executionContextAuxData,
-      sourceMapURL,
-      Boolean(hasSourceURL),
-      false,
-      length || 0,
-      isModule || null,
-      stackTrace || null,
-      codeOffset || null,
-      scriptLanguage || null,
-      debugSymbols || null,
-      embedderName || null,
-      buildId || null
-    );
-  }
-  scriptFailedToParse({
-    scriptId,
-    url,
-    startLine,
-    startColumn,
-    endLine,
-    endColumn,
-    executionContextId,
-    hash,
-    executionContextAuxData,
-    sourceMapURL,
-    hasSourceURL,
-    length,
-    isModule,
-    stackTrace,
-    codeOffset,
-    scriptLanguage,
-    embedderName,
-    buildId
-  }) {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    this.#debuggerModel.parsedScriptSource(
-      scriptId,
-      url,
-      startLine,
-      startColumn,
-      endLine,
-      endColumn,
-      executionContextId,
-      hash,
-      executionContextAuxData,
-      sourceMapURL,
-      Boolean(hasSourceURL),
-      true,
-      length || 0,
-      isModule || null,
-      stackTrace || null,
-      codeOffset || null,
-      scriptLanguage || null,
-      null,
-      embedderName || null,
-      buildId || null
-    );
-  }
-  breakpointResolved({ breakpointId, location }) {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    this.#debuggerModel.breakpointResolved(breakpointId, location);
-  }
-};
-var Location = class _Location {
-  debuggerModel;
-  scriptId;
-  lineNumber;
-  columnNumber;
-  inlineFrameIndex;
-  constructor(debuggerModel, scriptId, lineNumber, columnNumber, inlineFrameIndex) {
-    this.debuggerModel = debuggerModel;
-    this.scriptId = scriptId;
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber || 0;
-    this.inlineFrameIndex = inlineFrameIndex || 0;
-  }
-  static fromPayload(debuggerModel, payload, inlineFrameIndex) {
-    return new _Location(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, inlineFrameIndex);
-  }
-  payload() {
-    return { scriptId: this.scriptId, lineNumber: this.lineNumber, columnNumber: this.columnNumber };
-  }
-  script() {
-    return this.debuggerModel.scriptForId(this.scriptId);
-  }
-  continueToLocation(pausedCallback) {
-    if (pausedCallback) {
-      this.debuggerModel.continueToLocationCallback = this.paused.bind(this, pausedCallback);
-    }
-    void this.debuggerModel.agent.invoke_continueToLocation({
-      location: this.payload(),
-      targetCallFrames: Debugger.ContinueToLocationRequestTargetCallFrames.Current
-    });
-  }
-  paused(pausedCallback, debuggerPausedDetails) {
-    const location = debuggerPausedDetails.callFrames[0].location();
-    if (location.scriptId === this.scriptId && location.lineNumber === this.lineNumber && location.columnNumber === this.columnNumber) {
-      pausedCallback();
-      return true;
-    }
-    return false;
-  }
-  id() {
-    return this.debuggerModel.target().id() + ":" + this.scriptId + ":" + this.lineNumber + ":" + this.columnNumber;
-  }
-};
-var BreakLocation = class _BreakLocation extends Location {
-  type;
-  constructor(debuggerModel, scriptId, lineNumber, columnNumber, type) {
-    super(debuggerModel, scriptId, lineNumber, columnNumber);
-    if (type) {
-      this.type = type;
-    }
-  }
-  static fromPayload(debuggerModel, payload) {
-    return new _BreakLocation(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, payload.type);
-  }
-};
-var CallFrame = class _CallFrame {
-  debuggerModel;
-  script;
-  payload;
-  #location;
-  /** Shared with the virtual call frames of this call frame, as they share the payload. */
-  #scopeChainState = { stale: false };
-  #scopes;
-  inlineFrameIndex;
-  functionName;
-  #functionLocation;
-  #returnValue;
-  exception;
-  canBeRestarted;
-  constructor(debuggerModel, script, payload, inlineFrameIndex, functionName, exception = null) {
-    this.debuggerModel = debuggerModel;
-    this.script = script;
-    this.payload = payload;
-    this.#location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
-    this.inlineFrameIndex = inlineFrameIndex || 0;
-    this.functionName = functionName ?? payload.functionName;
-    this.canBeRestarted = Boolean(payload.canBeRestarted);
-    this.exception = exception;
-    if (payload.functionLocation) {
-      this.#functionLocation = Location.fromPayload(debuggerModel, payload.functionLocation);
-    }
-    this.#returnValue = payload.returnValue ? this.debuggerModel.runtimeModel().createRemoteObject(payload.returnValue) : null;
-  }
-  static fromPayloadArray(debuggerModel, callFrames, exception) {
-    const result = [];
-    for (let i = 0; i < callFrames.length; ++i) {
-      const callFrame = callFrames[i];
-      const script = debuggerModel.scriptForId(callFrame.location.scriptId);
-      if (script) {
-        const ex = i === 0 ? exception : null;
-        result.push(new _CallFrame(debuggerModel, script, callFrame, void 0, void 0, ex));
-      }
-    }
-    return result;
-  }
-  createVirtualCallFrame(inlineFrameIndex, name) {
-    const callFrame = new _CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name, this.exception);
-    callFrame.#scopeChainState = this.#scopeChainState;
-    return callFrame;
-  }
-  get id() {
-    return this.payload.callFrameId;
-  }
-  /**
-   * Call this after running code in the paused target that can assign to variables. The scope chain V8
-   * reported with the pause is a snapshot, so it is re-fetched the next time it is requested.
-   */
-  markScopeChainStale() {
-    this.#scopeChainState.stale = true;
-  }
-  async scopeChain() {
-    const state = this.#scopeChainState;
-    while (state.stale || state.refetch) {
-      if (!state.refetch) {
-        state.stale = false;
-        state.refetch = this.#refetchScopeChain();
-      }
-      await state.refetch;
-    }
-    const payload = this.payload.scopeChain;
-    if (this.#scopes?.payload !== payload) {
-      this.#scopes = { payload, chain: payload.map((_, ordinal) => new Scope(this, ordinal)) };
-    }
-    return this.#scopes.chain;
-  }
-  async #refetchScopeChain() {
-    try {
-      const response = await this.debuggerModel.agent.invoke_getScopeChain({ callFrameId: this.id });
-      if (!response.getError()) {
-        this.payload.scopeChain = response.scopeChain;
-      }
-    } finally {
-      this.#scopeChainState.refetch = void 0;
-    }
-  }
-  thisObject() {
-    return this.payload.this ? this.debuggerModel.runtimeModel().createRemoteObject(this.payload.this) : null;
-  }
-  returnValue() {
-    return this.#returnValue;
-  }
-  async setReturnValue(expression) {
-    if (!this.#returnValue) {
-      return null;
-    }
-    const evaluateResponse = await this.debuggerModel.agent.invoke_evaluateOnCallFrame(
-      { callFrameId: this.id, expression, silent: true, objectGroup: "backtrace" }
-    );
-    if (evaluateResponse.getError()) {
-      return null;
-    }
-    if (evaluateResponse.exceptionDetails) {
-      this.debuggerModel.invalidateScopeChains();
-      return null;
-    }
-    const response = await this.debuggerModel.agent.invoke_setReturnValue({ newValue: evaluateResponse.result });
-    if (!response.getError()) {
-      this.#returnValue = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
-    }
-    this.debuggerModel.invalidateScopeChains();
-    return response.getError() ? null : this.#returnValue;
-  }
-  location() {
-    return this.#location;
-  }
-  functionLocation() {
-    return this.#functionLocation || null;
-  }
-  async evaluate(options) {
-    const debuggerModel = this.debuggerModel;
-    const runtimeModel = debuggerModel.runtimeModel();
-    const evaluateOnCallFrameCallback = debuggerModel.getEvaluateOnCallFrameCallback();
-    if (evaluateOnCallFrameCallback) {
-      const result = await evaluateOnCallFrameCallback(this, options);
-      if (result) {
-        return result;
-      }
-    }
-    const response = await this.debuggerModel.agent.invoke_evaluateOnCallFrame({
-      callFrameId: this.id,
-      expression: options.expression,
-      objectGroup: options.objectGroup,
-      includeCommandLineAPI: options.includeCommandLineAPI,
-      silent: options.silent,
-      returnByValue: options.returnByValue,
-      generatePreview: options.generatePreview,
-      throwOnSideEffect: options.throwOnSideEffect,
-      timeout: options.timeout,
-      scopeNumber: options.scopeNumber
-    });
-    const error = response.getError();
-    if (error) {
-      return { error };
-    }
-    return { object: runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
-  }
-  async restart() {
-    console.assert(this.canBeRestarted, "This frame can not be restarted.");
-    await this.debuggerModel.agent.invoke_restartFrame(
-      { callFrameId: this.id, mode: Debugger.RestartFrameRequestMode.StepInto }
-    );
-  }
-  getPayload() {
-    return this.payload;
-  }
-};
-var Scope = class {
-  #callFrame;
-  #payload;
-  #type;
-  #name;
-  #ordinal;
-  #locationRange;
-  #object = null;
-  constructor(callFrame, ordinal) {
-    this.#callFrame = callFrame;
-    this.#payload = callFrame.getPayload().scopeChain[ordinal];
-    this.#type = this.#payload.type;
-    this.#name = this.#payload.name;
-    this.#ordinal = ordinal;
-    const start = this.#payload.startLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.startLocation) : null;
-    const end = this.#payload.endLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.endLocation) : null;
-    if (start && end && start.scriptId === end.scriptId) {
-      this.#locationRange = { start, end };
-    } else {
-      this.#locationRange = null;
-    }
-  }
-  callFrame() {
-    return this.#callFrame;
-  }
-  /** The index of this scope in {@link CallFrame.scopeChain}, usable as an `evaluateOnCallFrame` `scopeNumber`. */
-  ordinal() {
-    return this.#ordinal;
-  }
-  type() {
-    return this.#type;
-  }
-  typeName() {
-    switch (this.#type) {
-      case Debugger.ScopeType.Local:
-        return i18nString8(UIStrings8.local);
-      case Debugger.ScopeType.Closure:
-        return i18nString8(UIStrings8.closure);
-      case Debugger.ScopeType.Catch:
-        return i18nString8(UIStrings8.catchBlock);
-      case Debugger.ScopeType.Eval:
-        return i18n17.i18n.lockedString("Eval");
-      case Debugger.ScopeType.Block:
-        return i18nString8(UIStrings8.block);
-      case Debugger.ScopeType.Script:
-        return i18nString8(UIStrings8.script);
-      case Debugger.ScopeType.With:
-        return i18nString8(UIStrings8.withBlock);
-      case Debugger.ScopeType.Global:
-        return i18nString8(UIStrings8.global);
-      case Debugger.ScopeType.Module:
-        return i18nString8(UIStrings8.module);
-      case Debugger.ScopeType.WasmExpressionStack:
-        return i18nString8(UIStrings8.expression);
-    }
-    return "";
-  }
-  name() {
-    return this.#name;
-  }
-  range() {
-    return this.#locationRange;
-  }
-  object() {
-    if (this.#object) {
-      return this.#object;
-    }
-    const runtimeModel = this.#callFrame.debuggerModel.runtimeModel();
-    const declarativeScope = this.#type !== Debugger.ScopeType.With && this.#type !== Debugger.ScopeType.Global;
-    if (declarativeScope) {
-      this.#object = runtimeModel.createScopeRemoteObject(this.#payload.object, new ScopeRef(this.#ordinal, this.#callFrame.id));
-    } else {
-      this.#object = runtimeModel.createRemoteObject(this.#payload.object);
-    }
-    return this.#object;
-  }
-  description() {
-    const declarativeScope = this.#type !== Debugger.ScopeType.With && this.#type !== Debugger.ScopeType.Global;
-    return declarativeScope ? "" : this.#payload.object.description || "";
-  }
-  icon() {
-    return void 0;
-  }
-  /**
-   * Present iff V8 has no variable values to show for this scope, either because the scope
-   * declares no variables or because all of them are unavailable (e.g. optimized out).
-   *
-   * Such scopes are retained in {@link CallFrame.scopeChain} so they can be addressed via
-   * `scopeNumber` in `Debugger.evaluateOnCallFrame` and matched against source map scopes.
-   */
-  emptyReason() {
-    return this.#payload.emptyReason;
-  }
-  extraProperties() {
-    if (this.#type !== Debugger.ScopeType.Local || this.#callFrame.script.isWasm()) {
-      return [];
-    }
-    const extraProperties = [];
-    const exception = this.#callFrame.exception;
-    if (exception) {
-      extraProperties.push(new RemoteObjectProperty(
-        i18nString8(UIStrings8.exception),
-        exception,
-        void 0,
-        void 0,
-        void 0,
-        void 0,
-        void 0,
-        /* synthetic */
-        true
-      ));
-    }
-    const returnValue = this.#callFrame.returnValue();
-    if (returnValue) {
-      extraProperties.push(new RemoteObjectProperty(
-        i18nString8(UIStrings8.returnValue),
-        returnValue,
-        void 0,
-        void 0,
-        void 0,
-        void 0,
-        void 0,
-        /* synthetic */
-        true,
-        this.#callFrame.setReturnValue.bind(this.#callFrame)
-      ));
-    }
-    return extraProperties;
-  }
-};
-var DebuggerPausedDetails = class {
-  debuggerModel;
-  callFrames;
-  reason;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  auxData;
-  breakpointIds;
-  asyncStackTrace;
-  asyncStackTraceId;
-  constructor(debuggerModel, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
-    this.debuggerModel = debuggerModel;
-    this.reason = reason;
-    this.auxData = auxData;
-    this.breakpointIds = breakpointIds;
-    if (asyncStackTrace) {
-      this.asyncStackTrace = this.cleanRedundantFrames(asyncStackTrace);
-    }
-    this.asyncStackTraceId = asyncStackTraceId;
-    this.callFrames = CallFrame.fromPayloadArray(debuggerModel, callFrames, this.exception());
-  }
-  exception() {
-    if (this.reason !== Debugger.PausedEventReason.Exception && this.reason !== Debugger.PausedEventReason.PromiseRejection) {
-      return null;
-    }
-    return this.debuggerModel.runtimeModel().createRemoteObject(this.auxData);
-  }
-  cleanRedundantFrames(asyncStackTrace) {
-    let stack = asyncStackTrace;
-    let previous = null;
-    while (stack) {
-      if (previous && !stack.callFrames.length) {
-        previous.parent = stack.parent;
-      } else {
-        previous = stack;
-      }
-      stack = stack.parent;
-    }
-    return asyncStackTrace;
-  }
-};
-SDKModel.register(DebuggerModel, { capabilities: 4 /* JS */, autostart: true });
-var BreakpointType = /* @__PURE__ */ ((BreakpointType2) => {
-  BreakpointType2["LOGPOINT"] = "LOGPOINT";
-  BreakpointType2["CONDITIONAL_BREAKPOINT"] = "CONDITIONAL_BREAKPOINT";
-  BreakpointType2["REGULAR_BREAKPOINT"] = "REGULAR_BREAKPOINT";
-  return BreakpointType2;
-})(BreakpointType || {});
-var LOGPOINT_SOURCE_URL = "debugger://logpoint";
-var COND_BREAKPOINT_SOURCE_URL = "debugger://breakpoint";
-
-// ../../front_end/core/sdk/HeapProfilerModel.ts
-var HeapProfilerModel_exports = {};
-__export(HeapProfilerModel_exports, {
-  Events: () => Events18,
-  HeapProfilerModel: () => HeapProfilerModel
-});
-var HeapProfilerModel = class extends SDKModel {
-  #enabled = false;
-  #heapProfilerAgent;
-  #runtimeModel;
-  constructor(target) {
-    super(target);
-    target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
-    this.#heapProfilerAgent = target.heapProfilerAgent();
-    this.#runtimeModel = target.model(RuntimeModel);
-  }
-  debuggerModel() {
-    return this.#runtimeModel.debuggerModel();
-  }
-  runtimeModel() {
-    return this.#runtimeModel;
-  }
-  async enable() {
-    if (this.#enabled) {
-      return;
-    }
-    this.#enabled = true;
-    await this.#heapProfilerAgent.invoke_enable();
-  }
-  async startSampling(samplingRateInBytes) {
-    const defaultSamplingIntervalInBytes = 16384;
-    const response = await this.#heapProfilerAgent.invoke_startSampling(
-      { samplingInterval: samplingRateInBytes || defaultSamplingIntervalInBytes }
-    );
-    return Boolean(response.getError());
-  }
-  async stopSampling() {
-    const response = await this.#heapProfilerAgent.invoke_stopSampling();
-    if (response.getError()) {
-      throw new Error("Sampling profiler is not running.");
-    }
-    return response.profile;
-  }
-  async getSamplingProfile() {
-    const response = await this.#heapProfilerAgent.invoke_getSamplingProfile();
-    if (response.getError()) {
-      return null;
-    }
-    return response.profile;
-  }
-  async collectGarbage() {
-    const response = await this.#heapProfilerAgent.invoke_collectGarbage();
-    return Boolean(response.getError());
-  }
-  async snapshotObjectIdForObjectId(objectId) {
-    const response = await this.#heapProfilerAgent.invoke_getHeapObjectId({ objectId });
-    if (response.getError()) {
-      return null;
-    }
-    return response.heapSnapshotObjectId;
-  }
-  async objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
-    const result = await this.#heapProfilerAgent.invoke_getObjectByHeapObjectId(
-      { objectId: snapshotObjectId, objectGroup: objectGroupName }
-    );
-    if (result.getError()) {
-      return null;
-    }
-    return this.#runtimeModel.createRemoteObject(result.result);
-  }
-  async addInspectedHeapObject(snapshotObjectId) {
-    const response = await this.#heapProfilerAgent.invoke_addInspectedHeapObject({ heapObjectId: snapshotObjectId });
-    return Boolean(response.getError());
-  }
-  async takeHeapSnapshot(heapSnapshotOptions) {
-    await this.target().targetManager().suspendAllTargets("heap-snapshot");
-    try {
-      await this.#heapProfilerAgent.invoke_takeHeapSnapshot(heapSnapshotOptions);
-    } finally {
-      await this.target().targetManager().resumeAllTargets();
-    }
-  }
-  async startTrackingHeapObjects(recordAllocationStacks) {
-    const response = await this.#heapProfilerAgent.invoke_startTrackingHeapObjects({ trackAllocations: recordAllocationStacks });
-    return Boolean(response.getError());
-  }
-  async stopTrackingHeapObjects(reportProgress) {
-    const response = await this.#heapProfilerAgent.invoke_stopTrackingHeapObjects({ reportProgress });
-    return Boolean(response.getError());
-  }
-  heapStatsUpdate(samples) {
-    this.dispatchEventToListeners("HeapStatsUpdate" /* HEAP_STATS_UPDATED */, samples);
-  }
-  lastSeenObjectId(lastSeenObjectId, timestamp) {
-    this.dispatchEventToListeners("LastSeenObjectId" /* LAST_SEEN_OBJECT_ID */, { lastSeenObjectId, timestamp });
-  }
-  addHeapSnapshotChunk(chunk) {
-    this.dispatchEventToListeners("AddHeapSnapshotChunk" /* ADD_HEAP_SNAPSHOT_CHUNK */, chunk);
-  }
-  reportHeapSnapshotProgress(done, total, finished) {
-    this.dispatchEventToListeners("ReportHeapSnapshotProgress" /* REPORT_HEAP_SNAPSHOT_PROGRESS */, { done, total, finished });
-  }
-  resetProfiles() {
-    this.dispatchEventToListeners("ResetProfiles" /* RESET_PROFILES */, this);
-  }
-};
-var Events18 = /* @__PURE__ */ ((Events36) => {
-  Events36["HEAP_STATS_UPDATED"] = "HeapStatsUpdate";
-  Events36["LAST_SEEN_OBJECT_ID"] = "LastSeenObjectId";
-  Events36["ADD_HEAP_SNAPSHOT_CHUNK"] = "AddHeapSnapshotChunk";
-  Events36["REPORT_HEAP_SNAPSHOT_PROGRESS"] = "ReportHeapSnapshotProgress";
-  Events36["RESET_PROFILES"] = "ResetProfiles";
-  return Events36;
-})(Events18 || {});
-var HeapProfilerDispatcher = class {
-  #heapProfilerModel;
-  constructor(model) {
-    this.#heapProfilerModel = model;
-  }
-  heapStatsUpdate({ statsUpdate }) {
-    this.#heapProfilerModel.heapStatsUpdate(statsUpdate);
-  }
-  lastSeenObjectId({ lastSeenObjectId, timestamp }) {
-    this.#heapProfilerModel.lastSeenObjectId(lastSeenObjectId, timestamp);
-  }
-  addHeapSnapshotChunk({ chunk }) {
-    this.#heapProfilerModel.addHeapSnapshotChunk(chunk);
-  }
-  reportHeapSnapshotProgress({ done, total, finished }) {
-    this.#heapProfilerModel.reportHeapSnapshotProgress(done, total, finished);
-  }
-  resetProfiles() {
-    this.#heapProfilerModel.resetProfiles();
-  }
-};
-SDKModel.register(HeapProfilerModel, { capabilities: 4 /* JS */, autostart: false });
-
-// ../../front_end/core/sdk/RuntimeModel.ts
-var RuntimeModel = class extends SDKModel {
-  agent;
-  #executionContextById = /* @__PURE__ */ new Map();
-  #executionContextComparator = ExecutionContext.comparator;
-  #customFormattersSetting;
-  constructor(target) {
-    super(target);
-    this.agent = target.runtimeAgent();
-    this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
-    void this.agent.invoke_enable();
-    this.#customFormattersSetting = this.target().targetManager().context.get(Common27.Settings.Settings).resolve(customFormattersSettingDescriptor);
-    if (this.#customFormattersSetting.get()) {
-      void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
-    }
-    this.#customFormattersSetting.addChangeListener(this.#customFormattersStateChanged, this);
-  }
-  dispose() {
-    this.#customFormattersSetting.removeChangeListener(this.#customFormattersStateChanged, this);
-  }
-  static isSideEffectFailure(response) {
-    const exceptionDetails = "exceptionDetails" in response && response.exceptionDetails;
-    return Boolean(
-      exceptionDetails && exceptionDetails.exception?.description?.startsWith("EvalError: Possible side-effect in debug-evaluate")
-    );
-  }
-  debuggerModel() {
-    return this.target().model(DebuggerModel);
-  }
-  heapProfilerModel() {
-    return this.target().model(HeapProfilerModel);
-  }
-  executionContexts() {
-    return [...this.#executionContextById.values()].sort(this.executionContextComparator());
-  }
-  setExecutionContextComparator(comparator) {
-    this.#executionContextComparator = comparator;
-  }
-  /**
-   * comparator
-   */
-  executionContextComparator() {
-    return this.#executionContextComparator;
-  }
-  defaultExecutionContext() {
-    for (const context of this.executionContexts()) {
-      if (context.isDefault) {
-        return context;
-      }
-    }
-    return null;
-  }
-  executionContext(id) {
-    return this.#executionContextById.get(id) || null;
-  }
-  executionContextCreated(context) {
-    const data = context.auxData || { isDefault: true };
-    const executionContext = new ExecutionContext(
-      this,
-      context.id,
-      context.uniqueId,
-      context.name,
-      context.origin,
-      data["isDefault"],
-      data["frameId"]
-    );
-    this.#executionContextById.set(executionContext.id, executionContext);
-    this.dispatchEventToListeners("ExecutionContextCreated" /* ExecutionContextCreated */, executionContext);
-  }
-  executionContextDestroyed(executionContextId) {
-    const executionContext = this.#executionContextById.get(executionContextId);
-    if (!executionContext) {
-      return;
-    }
-    this.debuggerModel().executionContextDestroyed(executionContext);
-    this.#executionContextById.delete(executionContextId);
-    this.dispatchEventToListeners("ExecutionContextDestroyed" /* ExecutionContextDestroyed */, executionContext);
-  }
-  fireExecutionContextOrderChanged() {
-    this.dispatchEventToListeners("ExecutionContextOrderChanged" /* ExecutionContextOrderChanged */, this);
-  }
-  executionContextsCleared() {
-    this.debuggerModel().globalObjectCleared();
-    const contexts = this.executionContexts();
-    this.#executionContextById.clear();
-    for (let i = 0; i < contexts.length; ++i) {
-      this.dispatchEventToListeners("ExecutionContextDestroyed" /* ExecutionContextDestroyed */, contexts[i]);
-    }
-  }
-  createRemoteObject(payload) {
-    console.assert(typeof payload === "object", "Remote object payload should only be an object");
-    return new RemoteObjectImpl(
-      this,
-      payload.objectId,
-      payload.type,
-      payload.subtype,
-      payload.value,
-      payload.unserializableValue,
-      payload.description,
-      payload.preview,
-      payload.customPreview,
-      payload.className
-    );
-  }
-  createScopeRemoteObject(payload, scopeRef) {
-    return new ScopeRemoteObject(
-      this,
-      payload.objectId,
-      scopeRef,
-      payload.type,
-      payload.subtype,
-      payload.value,
-      payload.unserializableValue,
-      payload.description,
-      payload.preview
-    );
-  }
-  createRemoteObjectFromPrimitiveValue(value) {
-    const type = typeof value;
-    let unserializableValue = void 0;
-    const unserializableDescription = RemoteObject.unserializableDescription(value);
-    if (unserializableDescription !== null) {
-      unserializableValue = unserializableDescription;
-    }
-    if (typeof unserializableValue !== "undefined") {
-      value = void 0;
-    }
-    return new RemoteObjectImpl(this, void 0, type, void 0, value, unserializableValue);
-  }
-  createRemotePropertyFromPrimitiveValue(name, value) {
-    return new RemoteObjectProperty(name, this.createRemoteObjectFromPrimitiveValue(value));
-  }
-  discardConsoleEntries() {
-    void this.agent.invoke_discardConsoleEntries();
-  }
-  releaseObjectGroup(objectGroup) {
-    void this.agent.invoke_releaseObjectGroup({ objectGroup });
-  }
-  releaseEvaluationResult(result) {
-    if ("object" in result && result.object) {
-      result.object.release();
-    }
-    if ("exceptionDetails" in result && result.exceptionDetails?.exception) {
-      const exception = result.exceptionDetails.exception;
-      const exceptionObject = this.createRemoteObject({ type: exception.type, objectId: exception.objectId });
-      exceptionObject.release();
-    }
-  }
-  runIfWaitingForDebugger() {
-    void this.agent.invoke_runIfWaitingForDebugger();
-  }
-  #customFormattersStateChanged({ data: enabled }) {
-    void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled });
-  }
-  async compileScript(expression, sourceURL, persistScript, executionContextId) {
-    const response = await this.agent.invoke_compileScript({
-      expression,
-      sourceURL,
-      persistScript,
-      executionContextId
-    });
-    if (response.getError()) {
-      console.error(response.getError());
-      return null;
-    }
-    return { scriptId: response.scriptId, exceptionDetails: response.exceptionDetails };
-  }
-  async runScript(scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise) {
-    const response = await this.agent.invoke_runScript({
-      scriptId,
-      executionContextId,
-      objectGroup,
-      silent,
-      includeCommandLineAPI,
-      returnByValue,
-      generatePreview,
-      awaitPromise
-    });
-    const error = response.getError();
-    if (error) {
-      console.error(error);
-      return { error };
-    }
-    return { object: this.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
-  }
-  async queryObjects(prototype) {
-    if (!prototype.objectId) {
-      return { error: "Prototype should be an Object." };
-    }
-    const response = await this.agent.invoke_queryObjects({ prototypeObjectId: prototype.objectId, objectGroup: "console" });
-    const error = response.getError();
-    if (error) {
-      console.error(error);
-      return { error };
-    }
-    return { objects: this.createRemoteObject(response.objects) };
-  }
-  async isolateId() {
-    const response = await this.agent.invoke_getIsolateId();
-    if (response.getError() || !response.id) {
-      return this.target().id();
-    }
-    return response.id;
-  }
-  async heapUsage() {
-    const result = await this.agent.invoke_getHeapUsage();
-    return result.getError() ? null : result;
-  }
-  inspectRequested(payload, hints, executionContextId) {
-    const object = this.createRemoteObject(payload);
-    if (hints !== null && typeof hints === "object") {
-      if ("copyToClipboard" in hints && Boolean(hints.copyToClipboard)) {
-        this.#copyRequested(object);
-        return;
-      }
-      if ("queryObjects" in hints && hints.queryObjects) {
-        void this.#queryObjectsRequested(object, executionContextId);
-        return;
-      }
-    }
-    if (object.isNode()) {
-      const omitFocus = hints !== null && typeof hints === "object" && "omitFocus" in hints && Boolean(hints.omitFocus);
-      void Common27.Revealer.reveal(object, omitFocus).then(object.release.bind(object));
-      return;
-    }
-    if (object.type === "function") {
-      void RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
-      return;
-    }
-    function didGetDetails(response) {
-      object.release();
-      if (!response?.location) {
-        return;
-      }
-      void Common27.Revealer.reveal(response.location);
-    }
-    object.release();
-  }
-  async addBinding(event) {
-    return await this.agent.invoke_addBinding(event);
-  }
-  async removeBinding(request) {
-    return await this.agent.invoke_removeBinding(request);
-  }
-  bindingCalled(event) {
-    this.dispatchEventToListeners("BindingCalled" /* BindingCalled */, event);
-  }
-  #copyRequested(object) {
-    if (!object.objectId) {
-      Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
-        object.unserializableValue() || object.value
-      );
-      return;
-    }
-    const indent = this.target().targetManager().context.get(Common27.Settings.Settings).resolve(textEditorIndentSettingDescriptor).get();
-    void object.callFunctionJSON(toStringForClipboard, [{
-      value: {
-        subtype: object.subtype,
-        indent
-      }
-    }]).then(Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
-      Host6.InspectorFrontendHost.InspectorFrontendHostInstance
-    ));
-  }
-  async #queryObjectsRequested(object, executionContextId) {
-    const result = await this.queryObjects(object);
-    object.release();
-    if ("error" in result) {
-      this.target().targetManager().getConsole().error(result.error);
-      return;
-    }
-    this.dispatchEventToListeners("QueryObjectRequested" /* QueryObjectRequested */, { objects: result.objects, executionContextId });
-  }
-  static simpleTextFromException(exceptionDetails) {
-    let text = exceptionDetails.text;
-    if (exceptionDetails.exception?.description) {
-      let description = exceptionDetails.exception.description;
-      if (description.indexOf("\n") !== -1) {
-        description = description.substring(0, description.indexOf("\n"));
-      }
-      text += " " + description;
-    }
-    return text;
-  }
-  exceptionThrown(timestamp, exceptionDetails) {
-    const exceptionWithTimestamp = { timestamp, details: exceptionDetails };
-    this.dispatchEventToListeners("ExceptionThrown" /* ExceptionThrown */, exceptionWithTimestamp);
-  }
-  exceptionRevoked(exceptionId) {
-    this.dispatchEventToListeners("ExceptionRevoked" /* ExceptionRevoked */, exceptionId);
-  }
-  consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context) {
-    const consoleAPICall = {
-      type,
-      args,
-      executionContextId,
-      timestamp,
-      stackTrace,
-      context
-    };
-    this.dispatchEventToListeners("ConsoleAPICalled" /* ConsoleAPICalled */, consoleAPICall);
-  }
-  executionContextIdForScriptId(scriptId) {
-    const script = this.debuggerModel().scriptForId(scriptId);
-    return script ? script.executionContextId : 0;
-  }
-  executionContextForStackTrace(stackTrace) {
-    let currentStackTrace = stackTrace;
-    while (currentStackTrace && !currentStackTrace.callFrames.length) {
-      currentStackTrace = currentStackTrace.parent || null;
-    }
-    if (!currentStackTrace?.callFrames.length) {
-      return 0;
-    }
-    return this.executionContextIdForScriptId(currentStackTrace.callFrames[0].scriptId);
-  }
-  terminateExecution() {
-    return this.agent.invoke_terminateExecution();
-  }
-  async getExceptionDetails(errorObjectId) {
-    const response = await this.agent.invoke_getExceptionDetails({ errorObjectId });
-    if (response.getError()) {
-      return void 0;
-    }
-    return response.exceptionDetails;
-  }
-};
-var Events13 = /* @__PURE__ */ ((Events36) => {
-  Events36["BindingCalled"] = "BindingCalled";
-  Events36["ExecutionContextCreated"] = "ExecutionContextCreated";
-  Events36["ExecutionContextDestroyed"] = "ExecutionContextDestroyed";
-  Events36["ExecutionContextChanged"] = "ExecutionContextChanged";
-  Events36["ExecutionContextOrderChanged"] = "ExecutionContextOrderChanged";
-  Events36["ExceptionThrown"] = "ExceptionThrown";
-  Events36["ExceptionRevoked"] = "ExceptionRevoked";
-  Events36["ConsoleAPICalled"] = "ConsoleAPICalled";
-  Events36["QueryObjectRequested"] = "QueryObjectRequested";
-  return Events36;
-})(Events13 || {});
-var RuntimeDispatcher = class {
-  #runtimeModel;
-  constructor(runtimeModel) {
-    this.#runtimeModel = runtimeModel;
-  }
-  executionContextCreated({ context }) {
-    this.#runtimeModel.executionContextCreated(context);
-  }
-  executionContextDestroyed({ executionContextId }) {
-    this.#runtimeModel.executionContextDestroyed(executionContextId);
-  }
-  executionContextsCleared() {
-    this.#runtimeModel.executionContextsCleared();
-  }
-  exceptionThrown({ timestamp, exceptionDetails }) {
-    this.#runtimeModel.exceptionThrown(timestamp, exceptionDetails);
-  }
-  exceptionRevoked({ exceptionId }) {
-    this.#runtimeModel.exceptionRevoked(exceptionId);
-  }
-  consoleAPICalled({ type, args, executionContextId, timestamp, stackTrace, context }) {
-    this.#runtimeModel.consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context);
-  }
-  inspectRequested({ object, hints, executionContextId }) {
-    this.#runtimeModel.inspectRequested(object, hints, executionContextId);
-  }
-  bindingCalled(event) {
-    this.#runtimeModel.bindingCalled(event);
-  }
-};
-var ExecutionContext = class {
-  id;
-  uniqueId;
-  name;
-  #label;
-  origin;
-  isDefault;
-  runtimeModel;
-  debuggerModel;
-  frameId;
-  constructor(runtimeModel, id, uniqueId, name, origin, isDefault, frameId) {
-    this.id = id;
-    this.uniqueId = uniqueId;
-    this.name = name;
-    this.#label = null;
-    this.origin = origin;
-    this.isDefault = isDefault;
-    this.runtimeModel = runtimeModel;
-    this.debuggerModel = runtimeModel.debuggerModel();
-    this.frameId = frameId;
-    this.#setLabel("");
-  }
-  target() {
-    return this.runtimeModel.target();
-  }
-  static comparator(a, b) {
-    function targetWeight(target) {
-      if (target.parentTarget()?.type() !== "frame" /* FRAME */) {
-        return 5;
-      }
-      if (target.type() === "frame" /* FRAME */) {
-        return 4;
-      }
-      if (target.type() === "service-worker" /* ServiceWorker */) {
-        return 3;
-      }
-      if (target.type() === "worker" /* Worker */ || target.type() === "shared-worker" /* SHARED_WORKER */) {
-        return 2;
-      }
-      return 1;
-    }
-    function targetPath(target) {
-      let currentTarget = target;
-      const parents = [];
-      while (currentTarget) {
-        parents.push(currentTarget);
-        currentTarget = currentTarget.parentTarget();
-      }
-      return parents.reverse();
-    }
-    const tagetsA = targetPath(a.target());
-    const targetsB = targetPath(b.target());
-    let targetA;
-    let targetB;
-    for (let i = 0; ; i++) {
-      if (!tagetsA[i] || !targetsB[i] || tagetsA[i] !== targetsB[i]) {
-        targetA = tagetsA[i];
-        targetB = targetsB[i];
-        break;
-      }
-    }
-    if (!targetA && targetB) {
-      return -1;
-    }
-    if (!targetB && targetA) {
-      return 1;
-    }
-    if (targetA && targetB) {
-      const weightDiff = targetWeight(targetA) - targetWeight(targetB);
-      if (weightDiff) {
-        return -weightDiff;
-      }
-      return targetA.id().localeCompare(targetB.id());
-    }
-    if (a.isDefault) {
-      return -1;
-    }
-    if (b.isDefault) {
-      return 1;
-    }
-    return a.name.localeCompare(b.name);
-  }
-  async evaluateWithSelectedFrameFallback(options, userGesture, awaitPromise) {
-    if (this.debuggerModel.selectedCallFrame()) {
-      return await this.debuggerModel.evaluateOnSelectedCallFrame(options);
-    }
-    return await this.evaluate(options, userGesture, awaitPromise);
-  }
-  globalObject(objectGroup, generatePreview) {
-    const evaluationOptions = {
-      expression: "this",
-      objectGroup,
-      includeCommandLineAPI: false,
-      silent: true,
-      returnByValue: false,
-      generatePreview
-    };
-    return this.evaluate(evaluationOptions, false, false);
-  }
-  async callFunctionOn(options) {
-    const response = await this.runtimeModel.agent.invoke_callFunctionOn({
-      functionDeclaration: options.functionDeclaration,
-      returnByValue: options.returnByValue,
-      userGesture: options.userGesture,
-      awaitPromise: options.awaitPromise,
-      throwOnSideEffect: options.throwOnSideEffect,
-      arguments: options.arguments,
-      // Old back-ends don't know about uniqueContextId (and also don't generate
-      // one), so fall back to contextId in that case (https://crbug.com/1192621).
-      ...this.uniqueId ? { uniqueContextId: this.uniqueId } : { contextId: this.id }
-    });
-    const error = response.getError();
-    if (error) {
-      return { error };
-    }
-    return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
-  }
-  async evaluate(options, userGesture, awaitPromise) {
-    if (!options.expression) {
-      options.expression = "this";
-    }
-    const response = await this.runtimeModel.agent.invoke_evaluate({
-      expression: options.expression,
-      objectGroup: options.objectGroup,
-      includeCommandLineAPI: options.includeCommandLineAPI,
-      silent: options.silent,
-      returnByValue: options.returnByValue,
-      generatePreview: options.generatePreview,
-      userGesture,
-      awaitPromise,
-      throwOnSideEffect: options.throwOnSideEffect,
-      timeout: options.timeout,
-      disableBreaks: options.disableBreaks,
-      replMode: options.replMode,
-      allowUnsafeEvalBlockedByCSP: options.allowUnsafeEvalBlockedByCSP,
-      // Old back-ends don't know about uniqueContextId (and also don't generate
-      // one), so fall back to contextId in that case (https://crbug.com/1192621).
-      ...this.uniqueId ? { uniqueContextId: this.uniqueId } : { contextId: this.id }
-    });
-    const error = response.getError();
-    if (error) {
-      console.error(error);
-      return { error };
-    }
-    return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
-  }
-  async globalLexicalScopeNames() {
-    const response = await this.runtimeModel.agent.invoke_globalLexicalScopeNames({ executionContextId: this.id });
-    return response.getError() ? [] : response.names;
-  }
-  label() {
-    return this.#label;
-  }
-  setLabel(label) {
-    this.#setLabel(label);
-    this.runtimeModel.dispatchEventToListeners("ExecutionContextChanged" /* ExecutionContextChanged */, this);
-  }
-  #setLabel(label) {
-    if (label) {
-      this.#label = label;
-      return;
-    }
-    if (this.name) {
-      this.#label = this.name;
-      return;
-    }
-    const parsedUrl = Common27.ParsedURL.ParsedURL.fromString(this.origin);
-    this.#label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : "";
-  }
-};
-SDKModel.register(RuntimeModel, { capabilities: 4 /* JS */, autostart: true });
-
 // ../../front_end/core/sdk/NetworkManager.ts
 var UIStrings9 = {
   /**
@@ -35413,6 +35416,7 @@ var str_9 = i18n19.i18n.registerUIStrings("core/sdk/NetworkManager.ts", UIString
 var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_9);
 var i18nLazyString = i18n19.i18n.getLazilyComputedLocalizedString.bind(void 0, str_9);
 var requestToManagerMap = /* @__PURE__ */ new WeakMap();
+var requestToExecutionContextMap = /* @__PURE__ */ new WeakMap();
 var FULL_FIDELITY_RESEND_TYPES = /* @__PURE__ */ new Set([
   Common28.ResourceType.resourceTypes.XHR,
   Common28.ResourceType.resourceTypes.Fetch,
@@ -35518,21 +35522,23 @@ var NetworkManager = class _NetworkManager extends SDKModel {
       return;
     }
     let executionContext = null;
-    const frameId = request.frameId;
-    if (frameId) {
-      executionContext = runtimeModel.executionContexts().find((ctx) => ctx.frameId === frameId && ctx.isDefault) ?? null;
+    const capturedContext = requestToExecutionContextMap.get(request);
+    if (capturedContext) {
+      executionContext = runtimeModel.executionContexts().find((ctx) => ctx.uniqueId === capturedContext.uniqueId && ctx.origin === capturedContext.origin) ?? null;
+    } else if (target.type() !== "frame" /* FRAME */) {
+      const requestOrigin = request.initiatorSecurityOrigin();
+      if (!requestOrigin.isOpaque()) {
+        const defaultContext = runtimeModel.defaultExecutionContext();
+        if (defaultContext && requestOrigin.isSameOriginWith(SecurityOrigin.create(defaultContext.origin))) {
+          executionContext = defaultContext;
+        }
+      }
     }
-    const usesFallbackContext = !executionContext;
     if (!executionContext) {
-      executionContext = runtimeModel.defaultExecutionContext();
-    }
-    if (!executionContext) {
-      return;
-    }
-    if (usesFallbackContext) {
-      runtimeModel.target().targetManager().getConsole().warn(
-        "Resend: original execution context unavailable, using top-level context."
+      runtimeModel.target().targetManager().getConsole().error(
+        `Resend failed for ${request.url()}: the original execution context is no longer available.`
       );
+      return;
     }
     const method = request.requestMethod;
     const url = request.url();
@@ -35548,6 +35554,12 @@ var NetworkManager = class _NetworkManager extends SDKModel {
       headers.push([name, value]);
     }
     const body = await request.requestFormData();
+    if (runtimeModel.executionContext(executionContext.id) !== executionContext) {
+      runtimeModel.target().targetManager().getConsole().error(
+        `Resend failed for ${url}: the original execution context is no longer available.`
+      );
+      return;
+    }
     const fetchOptions = {
       method,
       headers,
@@ -35764,6 +35776,9 @@ var NetworkManager = class _NetworkManager extends SDKModel {
   requestForURL(url) {
     return this.dispatcher.requestForURL(url);
   }
+  requestsForURL(url) {
+    return this.dispatcher.requestsForURL(url);
+  }
   requestForId(id) {
     return this.dispatcher.requestForId(id);
   }
@@ -35821,7 +35836,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     this.dispatcher.clearRequests();
   }
 };
-var Events17 = /* @__PURE__ */ ((Events36) => {
+var Events18 = /* @__PURE__ */ ((Events36) => {
   Events36["RequestStarted"] = "RequestStarted";
   Events36["RequestUpdated"] = "RequestUpdated";
   Events36["RequestFinished"] = "RequestFinished";
@@ -35836,7 +35851,7 @@ var Events17 = /* @__PURE__ */ ((Events36) => {
   Events36["DeviceBoundSessionsAdded"] = "DeviceBoundSessionsAdded";
   Events36["DeviceBoundSessionEventOccurred"] = "DeviceBoundSessionEventOccurred";
   return Events36;
-})(Events17 || {});
+})(Events18 || {});
 var BlockingConditions = {
   key: "BLOCKING" /* BLOCKING */,
   block: true,
@@ -36056,6 +36071,16 @@ var NetworkDispatcher = class {
   requestForURL(url) {
     return this.#requestsByURL.get(url) || null;
   }
+  requestsForURL(url) {
+    const urlWithoutHash = Common28.ParsedURL.ParsedURL.urlWithoutHash(url);
+    const result = [];
+    for (const request of this.#requestsById.values()) {
+      if (Common28.ParsedURL.ParsedURL.urlWithoutHash(request.url()) === urlWithoutHash) {
+        result.push(request);
+      }
+    }
+    return result;
+  }
   requestForLoaderId(loaderId) {
     return this.#requestsByLoaderId.get(loaderId) || this.#multitargetNetworkManager.inflightMainResourceRequests.get(loaderId) || null;
   }
@@ -36133,6 +36158,7 @@ var NetworkDispatcher = class {
         networkRequest.setRenderBlockingBehavior(renderBlockingBehavior);
       }
       requestToManagerMap.set(networkRequest, this.#manager);
+      this.#recordExecutionContext(networkRequest, frameId ?? null);
     }
     networkRequest.setCacheDisabled(
       this.#manager.target().targetManager().settings.resolve(cacheDisabledSettingDescriptor).get()
@@ -36401,6 +36427,40 @@ var NetworkDispatcher = class {
     }
     return builder;
   }
+  #recordExecutionContext(networkRequest, frameId) {
+    const target = this.#manager.target();
+    const runtimeModel = target.model(RuntimeModel);
+    if (!runtimeModel) {
+      return;
+    }
+    let context = null;
+    let hasVerifiedLoaderId = false;
+    if (frameId) {
+      const frame = target.model(ResourceTreeModel)?.frameForId(frameId);
+      if (frame?.loaderId && networkRequest.loaderId) {
+        if (frame.loaderId !== networkRequest.loaderId) {
+          return;
+        }
+        hasVerifiedLoaderId = true;
+      }
+      context = runtimeModel.executionContexts().find((ctx) => ctx.frameId === frameId && ctx.isDefault) ?? null;
+    } else if (target.type() !== "frame" /* FRAME */) {
+      context = runtimeModel.defaultExecutionContext();
+    }
+    if (!context?.uniqueId) {
+      return;
+    }
+    const requestOrigin = networkRequest.initiatorSecurityOrigin();
+    const contextOrigin = SecurityOrigin.create(context.origin);
+    if (!requestOrigin.isOpaque() && !contextOrigin.isOpaque()) {
+      if (!requestOrigin.isSameOriginWith(contextOrigin)) {
+        return;
+      }
+    } else if (frameId && !hasVerifiedLoaderId) {
+      return;
+    }
+    requestToExecutionContextMap.set(networkRequest, { uniqueId: context.uniqueId, origin: context.origin });
+  }
   appendRedirect(requestId, time, redirectURL) {
     const originalNetworkRequest = this.#requestsById.get(requestId);
     if (!originalNetworkRequest) {
@@ -36423,6 +36483,10 @@ var NetworkDispatcher = class {
       this.#manager.target().targetManager().getConsole()
     );
     requestToManagerMap.set(newNetworkRequest, this.#manager);
+    const capturedContext = requestToExecutionContextMap.get(originalNetworkRequest);
+    if (capturedContext) {
+      requestToExecutionContextMap.set(newNetworkRequest, capturedContext);
+    }
     newNetworkRequest.setRedirectSource(originalNetworkRequest);
     originalNetworkRequest.setRedirectDestination(newNetworkRequest);
     return newNetworkRequest;
@@ -36450,6 +36514,7 @@ var NetworkDispatcher = class {
       this.#requestIdToExtraInfoBuilder.set(requestId, builder);
     }
     requestToManagerMap.set(request, this.#manager);
+    requestToExecutionContextMap.delete(request);
     return request;
   }
   startNetworkRequest(networkRequest, originalRequest) {

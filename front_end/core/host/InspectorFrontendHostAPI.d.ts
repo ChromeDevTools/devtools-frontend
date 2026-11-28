@@ -436,6 +436,7 @@ export declare const enum EnumeratedHistogram {
     AiClientRequestResultCodeGenerate = "DevTools.AiClient.RequestResult.CodeGenerate",
     AiClientRequestResultConsoleInsights = "DevTools.AiClient.RequestResult.ConsoleInsights",
     AiClientRequestResultConversationSummary = "DevTools.AiClient.RequestResult.ConversationSummary",
-    AiClientRequestResultPerformanceAnnotations = "DevTools.AiClient.RequestResult.PerformanceAnnotations"
+    AiClientRequestResultPerformanceAnnotations = "DevTools.AiClient.RequestResult.PerformanceAnnotations",
+    AiAssistanceOptIn = "DevTools.AiAssistance.OptIn"
 }
 export {};

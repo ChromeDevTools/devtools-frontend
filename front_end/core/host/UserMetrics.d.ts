@@ -50,6 +50,10 @@ export declare class UserMetrics {
      * Records the outcome of an AI request to the aggregate histogram and optionally to a surface-specific slice.
      */
     aiClientRequestResult(result: AiClientRequestResult, surfaceHistogram?: AiClientSurfaceHistogram): void;
+    /**
+     * Records the surface from which the user opted in to AI assistance.
+     */
+    aiAssistanceOptIn(source: AiAssistanceOptIn): void;
 }
 export type Action = Enums.Action;
 export declare const Action: typeof Enums.Action;
@@ -99,6 +103,8 @@ export type ResendRequestType = Enums.ResendRequestType;
 export declare const ResendRequestType: typeof Enums.ResendRequestType;
 export type AiClientRequestResult = Enums.AiClientRequestResult;
 export declare const AiClientRequestResult: typeof Enums.AiClientRequestResult;
+export type AiAssistanceOptIn = Enums.AiAssistanceOptIn;
+export declare const AiAssistanceOptIn: typeof Enums.AiAssistanceOptIn;
 export type AiClientSurfaceHistogram = EnumeratedHistogram.AiClientRequestResultAiAssistance | EnumeratedHistogram.AiClientRequestResultCodeComplete | EnumeratedHistogram.AiClientRequestResultCodeGenerate | EnumeratedHistogram.AiClientRequestResultConsoleInsights | EnumeratedHistogram.AiClientRequestResultConversationSummary | EnumeratedHistogram.AiClientRequestResultPerformanceAnnotations;
 export declare const userMetrics: UserMetrics;
 export declare function resendRequestType(resourceType: Common.ResourceType.ResourceType): ResendRequestType;

@@ -183,6 +183,16 @@ export default `/*
   line-height: var(--sys-size-10);
 }
 
+button.timeline-filmstrip-preview {
+  background: none;
+  border: none;
+  padding: 0;
+
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  }
+}
+
 .timeline-filmstrip-preview > img {
   max-width: 500px;
   max-height: 300px;

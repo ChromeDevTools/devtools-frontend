@@ -12,6 +12,7 @@ __export(Automapping_exports, {
 });
 import * as Common6 from "../../core/common/common.js";
 import * as Host5 from "../../core/host/host.js";
+import * as Platform9 from "../../core/platform/platform.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as Bindings2 from "../bindings/bindings.js";
@@ -1987,9 +1988,15 @@ var Automapping = class {
       }
       const target = Bindings2.NetworkProject.NetworkProject.targetForUISourceCode(status.network);
       const isNodeTarget = target?.type() === SDK2.Target.Type.NODE;
-      const skipContentValidation = !status.fileSystem.contentType().isTextType() || status.network.contentType().isFromSourceMap() && isNodeTarget;
+      const isNonTextBinding = !status.fileSystem.contentType().isTextType() && !status.network.contentType().isTextType();
+      const skipContentValidation = isNonTextBinding || status.network.contentType().isFromSourceMap() && isNodeTarget;
       if (skipContentValidation) {
         return status;
+      }
+      const isTextDecodableFileSystemImage = status.fileSystem.contentType().isImage() && Platform9.MimeType.isTextType(status.fileSystem.mimeType());
+      if (!status.fileSystem.contentType().isTextType() && !isTextDecodableFileSystemImage) {
+        this.prevalidationFailedForTest(status);
+        return null;
       }
       if (status.fileSystem.isDirty() && (status.network.isDirty() || status.network.hasCommits())) {
         return null;
@@ -1998,7 +2005,7 @@ var Automapping = class {
         status.fileSystem.requestContentData(),
         status.network.project().requestFileContent(status.network)
       ])).map(TextUtils5.ContentData.ContentData.asDeferredContent);
-      if (fileSystemContent.content === null || networkContent === null) {
+      if (fileSystemContent.content === null || networkContent.content === null) {
         return null;
       }
       if (this.#sourceCodeToProcessingPromiseMap.get(networkSourceCode) !== createBindingPromise) {
@@ -2006,13 +2013,20 @@ var Automapping = class {
       }
       let isValid = false;
       const fileContent = fileSystemContent.content;
-      if (isNodeTarget) {
-        if (networkContent.content) {
-          const rewrappedNetworkContent = PersistenceImpl.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);
-          isValid = fileContent === rewrappedNetworkContent;
+      if (!fileSystemContent.isEncoded && !networkContent.isEncoded) {
+        if (isNodeTarget) {
+          if (networkContent.content) {
+            const rewrappedNetworkContent = PersistenceImpl.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);
+            isValid = fileContent === rewrappedNetworkContent;
+          }
+        } else {
+          const trimmedNetworkContent = networkContent.content.trimEnd();
+          if (trimmedNetworkContent) {
+            isValid = fileContent.trimEnd() === trimmedNetworkContent;
+          }
         }
-      } else if (networkContent.content) {
-        isValid = fileContent.trimEnd() === networkContent.content.trimEnd();
+      } else if (fileSystemContent.isEncoded && networkContent.isEncoded && !status.network.contentType().isTextType() && networkContent.content) {
+        isValid = fileContent === networkContent.content;
       }
       if (!isValid) {
         this.prevalidationFailedForTest(status);
@@ -2646,7 +2660,7 @@ __export(NetworkPersistenceManager_exports, {
 });
 import * as Common9 from "../../core/common/common.js";
 import * as Host8 from "../../core/host/host.js";
-import * as Platform11 from "../../core/platform/platform.js";
+import * as Platform12 from "../../core/platform/platform.js";
 import * as Root5 from "../../core/root/root.js";
 import * as SDK3 from "../../core/sdk/sdk.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
@@ -4930,6 +4944,7 @@ var Preload;
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+    PrerenderFinalStatus2["AudioOutput"] = "AudioOutput";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -5683,10 +5698,10 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   }
   rawPathFromUrl(url, ignoreInactive) {
     if (!this.#active && !ignoreInactive || !this.#project) {
-      return Platform11.DevToolsPath.EmptyRawPathString;
+      return Platform12.DevToolsPath.EmptyRawPathString;
     }
     if (_NetworkPersistenceManager.isForbiddenNetworkUrl(url)) {
-      return Platform11.DevToolsPath.EmptyRawPathString;
+      return Platform12.DevToolsPath.EmptyRawPathString;
     }
     let initialEncodedPath = Common9.ParsedURL.ParsedURL.urlWithoutHash(url.replace(/^https?:\/\//, ""));
     if (initialEncodedPath.endsWith("/") && initialEncodedPath.indexOf("?") === -1) {
@@ -5704,7 +5719,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
       encodedPathParts = [
         domain,
         "longurls",
-        shortFileName + Platform11.StringUtilities.hashCode(encodedPath).toString(16) + extensionPart
+        shortFileName + Platform12.StringUtilities.hashCode(encodedPath).toString(16) + extensionPart
       ];
     }
     return Common9.ParsedURL.ParsedURL.join(encodedPathParts, "/");
@@ -5754,11 +5769,11 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   }
   fileUrlFromNetworkUrl(url, ignoreInactive) {
     if (!this.#project) {
-      return Platform11.DevToolsPath.EmptyUrlString;
+      return Platform12.DevToolsPath.EmptyUrlString;
     }
     const encodedPath = this.encodedPathFromUrl(url, ignoreInactive);
     if (!encodedPath) {
-      return Platform11.DevToolsPath.EmptyUrlString;
+      return Platform12.DevToolsPath.EmptyUrlString;
     }
     return Common9.ParsedURL.ParsedURL.concatenate(this.#project.fileSystemPath(), "/", encodedPath);
   }
@@ -5892,7 +5907,30 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     if (Bindings3.NetworkProject.NetworkProject.isSourceURLSynthesized(uiSourceCode)) {
       return false;
     }
+    if (this.#isCrossOriginServiceWorkerResource(uiSourceCode)) {
+      return false;
+    }
     return true;
+  }
+  #isCrossOriginServiceWorkerRequest(request) {
+    if (!request?.fetchedViaServiceWorker) {
+      return false;
+    }
+    return !request.requestURLSecurityOrigin().isSameOriginWith(request.initiatorSecurityOrigin());
+  }
+  #isCrossOriginServiceWorkerResource(uiSourceCode) {
+    const urlWithoutHash = Common9.ParsedURL.ParsedURL.urlWithoutHash(uiSourceCode.url());
+    const target = Bindings3.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+    const networkManagers = target ? [target.model(SDK3.NetworkManager.NetworkManager)].filter(
+      (model) => model !== null
+    ) : this.#targetManager.models(SDK3.NetworkManager.NetworkManager);
+    for (const networkManager of networkManagers) {
+      if (networkManager.requestsForURL(urlWithoutHash).some((request) => this.#isCrossOriginServiceWorkerRequest(request))) {
+        return true;
+      }
+    }
+    const resource = target ? target.model(SDK3.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.resourceForURL(urlWithoutHash) ?? null : Bindings3.ResourceUtils.resourceForURL(urlWithoutHash);
+    return this.#isCrossOriginServiceWorkerRequest(resource?.request);
   }
   /**
    * Whether the contents of `uiSourceCode` may be written into the overrides folder.
@@ -6290,7 +6328,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     }
   }
   mergeHeaders(baseHeaders, overrideHeaders) {
-    const headerMap = new Platform11.MapUtilities.Multimap();
+    const headerMap = new Platform12.MapUtilities.Multimap();
     for (const { name, value } of overrideHeaders) {
       if (name.toLowerCase() !== "set-cookie") {
         headerMap.set(name.toLowerCase(), value);
@@ -6334,7 +6372,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     }
     let result = interceptedRequest.responseHeaders || [];
     const urlSegments = this.rawPathFromUrl(interceptedRequest.request.url).split("/");
-    let path = Platform11.DevToolsPath.EmptyEncodedPathString;
+    let path = Platform12.DevToolsPath.EmptyEncodedPathString;
     result = this.#maybeMergeHeadersForPathSegment(
       path,
       interceptedRequest.request.url,
@@ -6465,7 +6503,7 @@ function isHeaderOverride(arg) {
   );
 }
 function escapeRegex(pattern) {
-  return Platform11.StringUtilities.escapeCharacters(pattern, "[]{}()\\.^$+|-,?").replaceAll("*", ".*");
+  return Platform12.StringUtilities.escapeCharacters(pattern, "[]{}()\\.^$+|-,?").replaceAll("*", ".*");
 }
 function extractDirectoryIndex(pattern) {
   const lastSlash = pattern.lastIndexOf("/");

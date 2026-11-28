@@ -136,13 +136,13 @@ export class ListSourcesTool {
     }
 }
 /**
- * Formats a source file name for the `listSources` output.
+ * Formats a source file name for the `listSources` and `searchInSources` outputs.
  *
  * `fullDisplayName()` already strips `https?://` for network files while keeping the host,
  * and decodes URI sequences (`%0D`, `%0A`) into raw `\r` and `\n`. Re-encode carriage returns
- * and newlines so filenames cannot break the line-delimited `id;name` output.
+ * and newlines so filenames cannot break the line-delimited output.
  */
-function formatSourceName(file, establishedOrigin) {
+export function formatSourceName(file, establishedOrigin) {
     const fullName = file.fullDisplayName().replace(/\r/g, '%0D').replace(/\n/g, '%0A');
     const siteId = establishedOrigin.siteId();
     if (/^https?:\/\//.test(siteId) && file.origin().toLowerCase() === siteId) {

@@ -112,6 +112,7 @@ export var EnumeratedHistogram;
     EnumeratedHistogram["AiClientRequestResultConsoleInsights"] = "DevTools.AiClient.RequestResult.ConsoleInsights";
     EnumeratedHistogram["AiClientRequestResultConversationSummary"] = "DevTools.AiClient.RequestResult.ConversationSummary";
     EnumeratedHistogram["AiClientRequestResultPerformanceAnnotations"] = "DevTools.AiClient.RequestResult.PerformanceAnnotations";
+    EnumeratedHistogram["AiAssistanceOptIn"] = "DevTools.AiAssistance.OptIn";
     // LINT.ThenChange(/front_end/devtools_compatibility.js:EnumeratedHistogram)
 })(EnumeratedHistogram || (EnumeratedHistogram = {}));
 //# sourceMappingURL=InspectorFrontendHostAPI.js.map

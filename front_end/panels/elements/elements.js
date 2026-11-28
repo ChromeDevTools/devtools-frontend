@@ -2293,6 +2293,7 @@ var Preload;
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+    PrerenderFinalStatus2["AudioOutput"] = "AudioOutput";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -15667,16 +15668,16 @@ var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, l
   } else if (property.ownerStyle.type === SDK9.CSSStyleDeclaration.Type.Transition) {
     selector = "transitions style";
   }
-  return html12`<devtools-computed-style-trace
-        .data=${{
+  return html12`<devtools-widget
+        ${widget5(ElementsComponents5.ComputedStyleTrace.ComputedStyleTrace, {
     selector,
     active: !isPropertyOverloaded,
-    onNavigateToSource: navigateToSource.bind(null, property),
-    ruleOriginNode
-  }}
+    onNavigateToSource: getBoundNavigateToSource(navigateToSource, property)
+  })}
         @contextmenu=${onContextMenu}>
           ${valueElement}
-      </devtools-computed-style-trace>`;
+          <span slot="trace-link">${ruleOriginNode}</span>
+      </devtools-widget>`;
 };
 var ColorRenderer2 = class extends rendererBase(SDK9.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
@@ -15698,6 +15699,20 @@ var navigateToSource = (cssProperty, event) => {
   void Common7.Revealer.reveal(cssProperty);
   event?.consume(true);
 };
+var boundNavigateCallbacks = /* @__PURE__ */ new WeakMap();
+function getBoundNavigateToSource(fn, property) {
+  let byProperty = boundNavigateCallbacks.get(fn);
+  if (!byProperty) {
+    byProperty = /* @__PURE__ */ new WeakMap();
+    boundNavigateCallbacks.set(fn, byProperty);
+  }
+  let callback = byProperty.get(property);
+  if (!callback) {
+    callback = fn.bind(null, property);
+    byProperty.set(property, callback);
+  }
+  return callback;
+}
 var DEFAULT_VIEW6 = (input, output, target) => {
   render9(html12`
     <style>${computedStyleWidget_css_default}</style>
@@ -17762,6 +17777,12 @@ function formatCandidateLabel(node) {
   }
   return label;
 }
+function hasNodeIssues(issues) {
+  return Boolean(issues?.some((issue) => {
+    const details = getElementIssueDetails(issue);
+    return Boolean(details && !details.attribute);
+  }));
+}
 function renderTitle(node, input) {
   const { isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, issues } = input;
   const { onHighlightSearchResults, onExpand } = input;
@@ -17822,6 +17843,10 @@ function renderTitle(node, input) {
       return openingTag;
     }
     case Node.TEXT_NODE: {
+      const textNodeClasses = {
+        "webkit-html-text-node": true,
+        "violating-element": hasNodeIssues(issues)
+      };
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "script") {
         const text = node.nodeValue();
         const highlightNode = ref8((el) => {
@@ -17830,7 +17855,7 @@ function renderTitle(node, input) {
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/javascript").then(onHighlightSearchResults);
           }
         });
-        return html16`<span class="webkit-html-text-node webkit-html-js-node" jslog=${VisualLogging10.value("script-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
+        return html16`<span class=${classMap4({ ...textNodeClasses, "webkit-html-js-node": true })} jslog=${VisualLogging10.value("script-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
       }
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "style") {
         const text = node.nodeValue();
@@ -17840,7 +17865,7 @@ function renderTitle(node, input) {
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/css").then(onHighlightSearchResults);
           }
         });
-        return html16`<span class="webkit-html-text-node webkit-html-css-node" jslog=${VisualLogging10.value("css-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
+        return html16`<span class=${classMap4({ ...textNodeClasses, "webkit-html-css-node": true })} jslog=${VisualLogging10.value("css-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
       }
       const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
       const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
@@ -17850,7 +17875,7 @@ function renderTitle(node, input) {
           Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
         }
       });
-      return html16`"<span class="webkit-html-text-node" jslog=${VisualLogging10.value("text-node").track({
+      return html16`"<span class=${classMap4(textNodeClasses)} jslog=${VisualLogging10.value("text-node").track({
         change: true,
         dblclick: true
       })} ${animateOn(Boolean(updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>"`;
@@ -18092,10 +18117,7 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
     hasUpdates = hasUpdates || !expanded && updateRecord.hasChangedChildren();
   }
   const tagNameClass = isClosingTag ? "webkit-html-close-tag-name" : "webkit-html-tag-name";
-  const hasTagIssues = !isClosingTag && Boolean(issues?.some((issue) => {
-    const details = getElementIssueDetails(issue);
-    return Boolean(details && !details.attribute);
-  }));
+  const hasTagIssues = !isClosingTag && hasNodeIssues(issues);
   const tagNameClasses = {
     [tagNameClass]: true,
     "violating-element": hasTagIssues
@@ -21698,18 +21720,19 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
     );
     this.#issuePopoverHelper = new UI18.PopoverHelper.PopoverHelper(this.contentElement, (event) => {
       const hoveredNode = event.composedPath()[0];
-      if (!(hoveredNode instanceof Element) || !hoveredNode.matches(".violating-element")) {
+      const violatingElement = hoveredNode instanceof Element ? hoveredNode.closest(".violating-element") : null;
+      if (!violatingElement) {
         return null;
       }
-      const { node, widget: widget9 } = getElementsTreeWidgetAndNode(hoveredNode);
+      const { node, widget: widget9 } = getElementsTreeWidgetAndNode(violatingElement);
       if (!node) {
         return null;
       }
       let issues = widget9?.issues ?? [];
-      if (hoveredNode.classList.contains("webkit-html-attribute-name")) {
-        const attrName = hoveredNode.textContent;
+      if (violatingElement.classList.contains("webkit-html-attribute-name")) {
+        const attrName = violatingElement.textContent;
         issues = issues.filter((issue) => getElementIssueDetails(issue)?.attribute === attrName);
-      } else if (hoveredNode.classList.contains("webkit-html-tag-name")) {
+      } else {
         issues = issues.filter((issue) => {
           const details = getElementIssueDetails(issue);
           return Boolean(details && !details.attribute);
@@ -21719,7 +21742,7 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
         return null;
       }
       return {
-        box: hoveredNode.boxInWindow(),
+        box: violatingElement.boxInWindow(),
         show: async (popover) => {
           popover.setIgnoreLeftMargin(true);
           render13(html17`

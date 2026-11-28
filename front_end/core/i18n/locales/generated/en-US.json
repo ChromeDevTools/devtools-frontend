@@ -3912,7 +3912,7 @@
     "message": "Pages containing plugins aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentDiscarded": {
-    "message": "Undefined"
+    "message": "The page couldn’t be restored from back/forward cache because Chrome discarded the page"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
     "message": "Pages that use FileChooser API aren’t eligible for back/forward cache"
@@ -17362,9 +17362,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elements affected"
-  },
-  "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
-    "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(entry is hidden)"

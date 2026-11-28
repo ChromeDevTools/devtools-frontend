@@ -11,27 +11,19 @@ export declare class CountersGraph extends UI.Widget.VBox {
     #private;
     delegate?: TimelineModeViewDelegate;
     private readonly calculator;
-    private readonly header;
-    readonly toolbar: UI.Toolbar.Toolbar;
-    private graphsContainer;
-    canvasContainer: typeof UI.Widget.Widget.prototype.element;
-    private canvas;
-    private readonly timelineGrid;
     private readonly counters;
     private readonly counterUI;
     private readonly countersByName;
-    private readonly gpuMemoryCounter;
-    currentValuesBar?: HTMLElement;
     private markerXPosition?;
     constructor(delegate: TimelineModeViewDelegate);
     constructor(element?: HTMLElement);
+    wasShown(): void;
+    onResize(): void;
     set model(data: CountersModel);
     setModel(parsedTrace: Trace.TraceModel.ParsedTrace | null, events: Trace.Types.Events.Event[] | null): void;
-    private createCurrentValuesBar;
     private createCounter;
     resizerElement(): Element;
-    private resize;
-    performUpdate(): Promise<void> | void;
+    performUpdate(): void;
     draw(): void;
     private onClick;
     private onMouseLeave;
@@ -62,26 +54,28 @@ export declare class Counter {
 }
 export declare class CounterUI {
     #private;
-    private readonly countersPane;
     counter: Counter;
     readonly formatter: (arg0: number) => string;
-    private readonly setting;
-    private readonly filter;
-    private readonly value;
+    readonly setting: Common.Settings.Setting<boolean>;
     graphColor: string;
     limitColor: string | null | undefined;
+    filterColor: string | null | undefined;
     graphYValues: number[];
     private readonly verticalPadding;
-    private readonly counterName;
-    private readonly marker;
-    constructor(countersPane: CountersGraph, title: Common.UIString.LocalizedString, setting: Common.Settings.Setting<boolean>, graphColor: string, counter: Counter, formatter: (arg0: number) => string);
+    readonly counterName: Common.UIString.LocalizedString;
+    label: Common.UIString.LocalizedString;
+    currentValueText: string;
+    markerPosition: {
+        x: number;
+        y: number;
+    } | null;
+    constructor(title: Common.UIString.LocalizedString, setting: Common.Settings.Setting<boolean>, graphColor: string, counter: Counter, formatter: (arg0: number) => string);
     reset(): void;
     setRange(minValue: number, maxValue: number): void;
     calculateYValues(canvasHeight: number): {
         minValue: number;
         yFactor: number;
     } | null;
-    private toggleCounterGraph;
     recordIndexAt(x: number): number;
     updateCurrentValue(x: number): void;
     clearCurrentValueAndMarker(): void;

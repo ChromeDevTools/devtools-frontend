@@ -2629,6 +2629,7 @@ export var Preload;
         PrerenderFinalStatus["CrossDocumentRestart"] = "CrossDocumentRestart";
         PrerenderFinalStatus["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
         PrerenderFinalStatus["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+        PrerenderFinalStatus["AudioOutput"] = "AudioOutput";
     })(PrerenderFinalStatus = Preload.PrerenderFinalStatus || (Preload.PrerenderFinalStatus = {}));
     /**
      * Preloading status values, see also PreloadingTriggeringOutcome. This

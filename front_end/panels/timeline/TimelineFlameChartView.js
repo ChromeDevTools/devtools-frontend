@@ -1,7 +1,6 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -13,7 +12,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, render } from '../../ui/lit/lit.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { getAnnotationEntries, getAnnotationWindow } from './AnnotationHelpers.js';
 import * as TimelineInsights from './components/insights/insights.js';
@@ -61,7 +60,22 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS = {
 // on top of each other.
 const TIMESTAMP_THRESHOLD_MS = Trace.Types.Timing.Micro(10);
 const { widget, widgetRef } = UI.Widget;
-export const DEFAULT_VIEW = (input, _output, target) => {
+function configureNetworkSplit(split, resizer, output) {
+    split.hideDefaultResizer(true);
+    split.installResizer(resizer);
+    output.setNetworkSidebarSize = size => {
+        if (!split.isShowing() || !split.sidebarIsShowing()) {
+            return false;
+        }
+        split.setSidebarSize(size + resizer.clientHeight);
+        return true;
+    };
+}
+export const DEFAULT_VIEW = (input, output, target) => {
+    let detailsSplit;
+    let chartSplit;
+    let networkSplit;
+    let countersResizer;
     const container = {
         classes: ['timeline-flamechart'],
         attributes: { jslog: VisualLogging.section('timeline.flame-chart-view'), inert: input.inert },
@@ -90,19 +104,52 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     render(html `<style>${timelineFlameChartViewStyles}</style>
     <devtools-split-view class="timeline-details-split" direction="row" sidebar-position="second"
         name="timeline-panel-details-split-view-state"
-        ${widgetRef(UI.SplitWidget.SplitWidget, split => split.installResizer(input.detailsView.headerElement()))}>
+        ${widgetRef(UI.SplitWidget.SplitWidget, split => { detailsSplit = split; })}>
       <devtools-split-view slot="main" direction="row" sidebar-position="second"
           name="timeline-counters-split-view-state" show=${input.showMemoryGraph ? 'both' : 'main'}
           ${widgetRef(UI.SplitWidget.SplitWidget, split => {
+        chartSplit = split;
         split.hideDefaultResizer();
-        split.installResizer(input.countersView.resizerElement());
     })}>
-        <div slot="main" ${widget(UI.Widget.WrapperWidget, { widget: input.flameChartsContainer })}></div>
-        <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, { widget: input.countersView })}></div>
+        <div slot="main" class="flame-charts-container vbox flex-auto">
+          <devtools-split-view direction="row" sidebar-position="first"
+              name="timeline-flamechart-main-view" sidebar-initial-size="150"
+              show=${input.showNetworkChart ? 'both' : 'main'}
+              ${widgetRef(UI.SplitWidget.SplitWidget, split => { networkSplit = split; })}>
+            <div slot="main" ${widget(UI.Widget.WrapperWidget, { widget: input.mainFlameChart })}></div>
+            <div slot="sidebar" class="vbox flex-auto"
+                ${widgetRef(UI.Widget.Widget, sidebar => sidebar.setMinimumSize(23, 23))}>
+              <div ${widget(UI.Widget.WrapperWidget, { widget: input.networkFlameChart })}></div>
+              <div class="timeline-flamechart-resizer" ?hidden=${!input.isNetworkExpanded}
+                  ${Directives.ref(el => {
+        if (networkSplit && el instanceof HTMLElement) {
+            configureNetworkSplit(networkSplit, el, output);
+        }
+    })}></div>
+            </div>
+          </devtools-split-view>
+          ${input.overlaysContainer}
+          ${input.tooltipElement}
+        </div>
+        <devtools-widget slot="sidebar"
+            ${widget(CountersGraph, { delegate: input.delegate, model: input.countersModel })}
+            ${widgetRef(CountersGraph, counters => { countersResizer = counters.resizerElement(); })}></devtools-widget>
       </devtools-split-view>
-      <div slot="sidebar" ${widget(UI.Widget.WrapperWidget, { widget: input.detailsView })}></div>
+      <devtools-widget slot="sidebar"
+          ${widget(TimelineDetailsPane, { delegate: input.delegate, model: input.detailsModel })}
+          ${widgetRef(TimelineDetailsPane, details => {
+        detailsSplit?.installResizer(details.headerElement());
+        output.setDetailsSelection = selection => details.setSelection(selection);
+        output.selectDetailsTab = (tabName, node) => details.selectTab(tabName, node);
+        output.revealEventInTreeView = event => details.revealEventInTreeView(event);
+    })}
+          @TreeRowHovered=${(e) => input.onTreeRowHovered(e.detail)}
+          @TreeRowClicked=${(e) => input.onTreeRowClicked(e.detail)}></devtools-widget>
     </devtools-split-view>`, target, { container });
     // clang-format on
+    if (chartSplit && countersResizer) {
+        chartSplit.installResizer(countersResizer);
+    }
 };
 const TimelineFlameChartViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class TimelineFlameChartView extends TimelineFlameChartViewBase {
@@ -112,7 +159,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
      * Defaults to undefined which indicates the user has not searched.
      */
     #searchResults = undefined;
-    #networkSplitWidget;
     // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in legacy_test_runner.
     mainDataProvider;
     // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in legacy_test_runner.
@@ -120,12 +166,19 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     #networkDataProvider;
     // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in legacy_test_runner.
     networkFlameChart;
-    #networkPane;
-    #splitResizer;
-    #flameChartsContainer;
-    #countersView;
+    #countersModel = { parsedTrace: null, events: null };
+    #detailsModel = {
+        parsedTrace: null,
+        selectedEvents: null,
+        eventToRelatedInsightsMap: null,
+        entityMapper: null,
+    };
     // eslint-disable-next-line @devtools/prefer-private-class-members -- Accessed in Chromium web_tests.
-    detailsView;
+    get detailsView() {
+        return this.contentElement
+            .querySelector('devtools-widget.timeline-details')
+            ?.getWidget();
+    }
     #onMainAddEntryLabelAnnotation;
     #onNetworkAddEntryLabelAnnotation;
     #onMainEntriesLinkAnnotationCreated;
@@ -197,33 +250,34 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     #mainPersistedGroupConfigSetting;
     #listenersAttached = false;
     #showMemoryGraph = true;
+    #showNetworkChart = true;
+    #isNetworkExpanded = false;
     #inert = false;
     #view;
+    #viewOutput = {};
     #boundOnMainDataChanged = () => {
         this.mainFlameChart.scheduleUpdate();
+    };
+    #onTreeRowHovered = (data) => {
+        this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, data.events ?? data.node?.events ?? null);
+    };
+    #onTreeRowClicked = (data) => {
+        this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, data.events ?? data.node?.events ?? null);
     };
     constructor(delegate, commentManager, view = DEFAULT_VIEW) {
         super();
         this.#view = view;
         this.#delegate = delegate;
         this.#parsedTrace = null;
-        const flameChartsContainer = new UI.Widget.VBox();
-        this.#flameChartsContainer = flameChartsContainer;
-        flameChartsContainer.element.classList.add('flame-charts-container');
-        // Create main and network flamecharts.
-        this.#networkSplitWidget = new UI.SplitWidget.SplitWidget(false, false, 'timeline-flamechart-main-view', 150);
-        this.#networkSplitWidget.show(flameChartsContainer.element);
         this.#overlaysContainer.classList.add('timeline-overlays-container');
-        flameChartsContainer.element.appendChild(this.#overlaysContainer);
         this.#tooltipElement.classList.add('timeline-entry-tooltip-element');
-        flameChartsContainer.element.appendChild(this.#tooltipElement);
         this.#mainPersistedGroupConfigSetting =
             Common.Settings.Settings.instance().createSetting('timeline-persisted-main-flamechart-track-config', null);
         this.#networkPersistedGroupConfigSetting =
             Common.Settings.Settings.instance().createSetting('timeline-persisted-network-flamechart-track-config', null);
         this.mainDataProvider = new TimelineFlameChartDataProvider();
         this.mainDataProvider.setPersistedGroupConfigSetting(this.#mainPersistedGroupConfigSetting);
-        this.mainDataProvider.addEventListener("FlameChartItemHovered" /* TimelineFlameChartDataProviderEvents.FLAME_CHART_ITEM_HOVERED */, e => this.detailsView.revealEventInTreeView(e.data));
+        this.mainDataProvider.addEventListener("FlameChartItemHovered" /* TimelineFlameChartDataProviderEvents.FLAME_CHART_ITEM_HOVERED */, e => this.#viewOutput.revealEventInTreeView?.(e.data));
         this.mainFlameChart = new PerfUI.FlameChart.FlameChart(this.mainDataProvider, this, {
             // The TimelineOverlays are used for selected elements
             selectedElementOutline: false,
@@ -290,8 +344,14 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         });
         this.#overlays.addEventListener(Overlays.Overlays.ConsentDialogVisibilityChange.eventName, e => {
             // Prevent the performance panel from capturing tab focus while the consent dialog is visible.
-            this.#inert = e.isVisible;
-            this.requestUpdate();
+            const isVisible = e.isVisible;
+            if (this.#inert === isVisible) {
+                return;
+            }
+            this.#inert = isVisible;
+            // Flush synchronously so inert is toggled before focus shifts into the consent dialog
+            // or back to EntryLabelOverlay when it closes.
+            this.performUpdate();
         });
         this.#overlays.addEventListener(Overlays.Overlays.EntryLabelMouseClick.eventName, event => {
             const { overlay } = event;
@@ -321,16 +381,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
                 ModificationsManager.activeManager()?.updateAnnotationOverlay(overlay);
             }
         });
-        this.#networkPane = new UI.Widget.VBox();
-        this.#networkPane.setMinimumSize(23, 23);
-        this.networkFlameChart.show(this.#networkPane.element);
-        this.#splitResizer = this.#networkPane.element.createChild('div', 'timeline-flamechart-resizer');
-        this.#networkSplitWidget.hideDefaultResizer(true);
-        this.#networkSplitWidget.installResizer(this.#splitResizer);
-        this.#networkSplitWidget.setMainWidget(this.mainFlameChart);
-        this.#networkSplitWidget.setSidebarWidget(this.#networkPane);
-        this.#countersView = new CountersGraph(this.#delegate);
-        this.detailsView = new TimelineDetailsPane(delegate);
         // Event listeners for annotations.
         this.#onMainAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
         this.#onNetworkAddEntryLabelAnnotation = this.#onAddEntryLabelAnnotation.bind(this, this.#networkDataProvider);
@@ -342,22 +392,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.networkFlameChart.addEventListener("EntriesLinkAnnotationCreated" /* PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED */, this.#onNetworkEntriesLinkAnnotationCreated, this);
         this.mainFlameChart.addEventListener("TracksReorderStateChange" /* PerfUI.FlameChart.Events.TRACKS_REORDER_STATE_CHANGED */, event => {
             this.#overlays.toggleAllOverlaysDisplayed(!event.data);
-        });
-        this.detailsView.addEventListener("TreeRowHovered" /* TimelineTreeView.Events.TREE_ROW_HOVERED */, e => {
-            if (e.data.events) {
-                this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, e.data.events);
-                return;
-            }
-            const events = e?.data?.node?.events ?? null;
-            this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, events);
-        });
-        this.detailsView.addEventListener("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, e => {
-            if (e.data.events) {
-                this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, e.data.events);
-                return;
-            }
-            const events = e?.data?.node?.events ?? null;
-            this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, events);
         });
         /**
          * NOTE: ENTRY_SELECTED, ENTRY_INVOKED and ENTRY_HOVERED are not always super obvious:
@@ -802,17 +836,16 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         if (this.#linkSelectionAnnotation === null) {
             return;
         }
-        // If the link in progress in cleared, make sure it's creation is complete. If not, delete it.
+        // If the link in progress is cleared, make sure its creation is complete. If not, delete it.
         if (deleteCurrentLink || this.#linkSelectionAnnotation.state !== Trace.Types.File.EntriesLinkState.CONNECTED) {
             ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
         }
-        this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(false);
-        this.networkFlameChart.setLinkSelectionAnnotationIsInProgress(false);
-        this.#linkSelectionAnnotation = null;
+        this.#setLinkSelectionAnnotation(null);
     }
     #setLinkSelectionAnnotation(linkSelectionAnnotation) {
-        this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(true);
-        this.networkFlameChart.setLinkSelectionAnnotationIsInProgress(true);
+        const inProgress = linkSelectionAnnotation !== null;
+        this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(inProgress);
+        this.networkFlameChart.setLinkSelectionAnnotationIsInProgress(inProgress);
         this.#linkSelectionAnnotation = linkSelectionAnnotation;
     }
     #createNewTimeRangeFromKeyboard(startTime, endTime) {
@@ -1000,7 +1033,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         return this.networkFlameChart;
     }
     updateSelectedGroup(flameChart, group) {
-        if (flameChart !== this.mainFlameChart || this.#selectedGroupName === group?.name) {
+        if (flameChart !== this.mainFlameChart || this.#selectedGroupName === (group?.name || null)) {
             return;
         }
         this.#selectedGroupName = group?.name || null;
@@ -1019,16 +1052,18 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         if (data.parsedTrace === this.#parsedTrace) {
             return;
         }
+        this.#resetTraceState();
         this.#parsedTrace = data.parsedTrace;
         this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
-        for (const dimmer of this.#flameChartDimmers) {
-            dimmer.active = false;
-            dimmer.mainChartIndices = [];
-            dimmer.networkChartIndices = [];
-        }
         this.rebuildDataForTrace({ updateType: 'NEW_TRACE' });
     }
-    #reset() {
+    /**
+     * Clears all trace-scoped fields and interaction state without calling
+     * `ModificationsManager.activeManager()?.removeAnnotation(...)`, because the
+     * active manager may already be reset to `null` on Clear or switched to the
+     * incoming trace on a direct trace switch.
+     */
+    #resetTraceState() {
         this.#parsedTrace = null;
         this.#eventToRelatedInsightsMap = null;
         this.#entityMapper = null;
@@ -1038,15 +1073,35 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.#activeInsight = null;
         this.#currentInsightOverlays = [];
         this.#markers = [];
-        this.#clearLinkSelectionAnnotation(/* deleteCurrentLink= */ false);
+        this.#timeRangeSelectionAnnotation = null;
+        this.#setLinkSelectionAnnotation(null);
+        for (const dimmer of this.#flameChartDimmers) {
+            dimmer.active = false;
+            dimmer.mainChartIndices = [];
+            dimmer.networkChartIndices = [];
+        }
+        this.#delegate.set3PCheckboxDisabled(false);
+        // Clear stale result indices and cancel pending searches, but keep `#searchRegex`
+        // so `rebuildDataForTrace()` re-applies an open search bar query to the new trace.
+        this.#debouncedUpdateSearchResults.cancel();
+        this.#searchResults = undefined;
+        this.#selectedSearchResult = undefined;
+        if (this.#searchRegex) {
+            this.#searchableView?.updateSearchMatchesCount(0);
+        }
+    }
+    #reset() {
+        this.#resetTraceState();
         this.mainDataProvider.reset();
         this.#networkDataProvider.reset();
         this.mainFlameChart.enableRuler(true);
-        this.#networkSplitWidget.hideSidebar();
+        this.#showNetworkChart = false;
+        this.requestUpdate();
         this.#overlays.reset();
         this.mainFlameChart.reset();
         this.networkFlameChart.reset();
-        // Must run after clearing the trace and selection fields above, which #updateDetailViews() forwards.
+        // Must run after `#resetTraceState()`, which clears the trace and selection
+        // fields that `#updateDetailViews()` forwards.
         this.#updateDetailViews();
         this.#commentController.setParsedTrace(null);
     }
@@ -1069,15 +1124,12 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         // Populate networkDataProvider before isEmpty() and resizeToPreferredHeights() compute the split-widget layout.
         this.mainDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
         this.#networkDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
-        if (this.#networkDataProvider.isEmpty()) {
-            this.mainFlameChart.enableRuler(true);
-            this.#networkSplitWidget.hideSidebar();
-        }
-        else {
-            this.mainFlameChart.enableRuler(false);
-            this.#networkSplitWidget.showBoth();
+        this.#showNetworkChart = !this.#networkDataProvider.isEmpty();
+        this.mainFlameChart.enableRuler(!this.#showNetworkChart);
+        if (this.#showNetworkChart) {
             this.resizeToPreferredHeights();
         }
+        this.requestUpdate();
         this.#overlays.reset();
         this.mainFlameChart.reset();
         this.networkFlameChart.reset();
@@ -1130,13 +1182,20 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.mainFlameChart.scheduleUpdate();
     }
     #updateDetailViews() {
-        this.#countersView.setModel(this.#parsedTrace, this.#selectedEvents);
-        void this.detailsView.setModel({
+        if (this.#countersModel.parsedTrace !== this.#parsedTrace || this.#countersModel.events !== this.#selectedEvents) {
+            this.#countersModel = { parsedTrace: this.#parsedTrace, events: this.#selectedEvents };
+        }
+        else if (this.#detailsModel.eventToRelatedInsightsMap === this.#eventToRelatedInsightsMap &&
+            this.#detailsModel.entityMapper === this.#entityMapper) {
+            return;
+        }
+        this.#detailsModel = {
             parsedTrace: this.#parsedTrace,
             selectedEvents: this.#selectedEvents,
             eventToRelatedInsightsMap: this.#eventToRelatedInsightsMap,
             entityMapper: this.#entityMapper,
-        });
+        };
+        this.requestUpdate();
     }
     #updateFlameCharts() {
         this.mainFlameChart.scheduleUpdate();
@@ -1249,17 +1308,25 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     }
     performUpdate() {
         this.#view({
-            flameChartsContainer: this.#flameChartsContainer,
-            countersView: this.#countersView,
-            detailsView: this.detailsView,
+            mainFlameChart: this.mainFlameChart,
+            networkFlameChart: this.networkFlameChart,
+            overlaysContainer: this.#overlaysContainer,
+            tooltipElement: this.#tooltipElement,
+            delegate: this.#delegate,
+            countersModel: this.#countersModel,
+            detailsModel: this.#detailsModel,
             showMemoryGraph: this.#showMemoryGraph,
+            showNetworkChart: this.#showNetworkChart,
+            isNetworkExpanded: this.#isNetworkExpanded,
             inert: this.#inert,
             onKeyDown: this.#onKeyDown,
             onSecondaryPointerDown: this.#onSecondaryPointerDown,
             // Focus this view when link creation deletes the arrow so Escape cancels via keydown.
             onEntryLinkStartCreating: () => this.focus(),
             onEventReferenceClick: event => void this.setSelectionAndReveal(selectionFromEvent(event)),
-        }, undefined, this.contentElement);
+            onTreeRowHovered: this.#onTreeRowHovered,
+            onTreeRowClicked: this.#onTreeRowClicked,
+        }, this.#viewOutput, this.contentElement);
         if (this.#needsResizeToPreferredHeights) {
             this.resizeToPreferredHeights();
         }
@@ -1335,9 +1402,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         const networkIndex = this.#networkDataProvider.entryIndexForSelection(selection);
         this.#networkDataProvider.buildFlowForInitiator(networkIndex);
         this.networkFlameChart.setSelectedEntry(networkIndex);
-        if (this.detailsView) {
-            await this.detailsView.setSelection(selection);
-        }
+        await this.#viewOutput.setDetailsSelection?.(selection);
         // Create the entry selected overlay if the selection represents a trace event
         if (selectionIsEvent(selection)) {
             this.addOverlay({
@@ -1376,9 +1441,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     // their entry with a new UI. Because of that, their entries can no longer be "selected" in the timings track,
     // so if clicked, we only open their details view.
     async openSelectionDetailsView(selection) {
-        if (this.detailsView) {
-            await this.detailsView.setSelection(selection);
-        }
+        await this.#viewOutput.setDetailsSelection?.(selection);
     }
     /**
      * Schedules an update pass for the overlays via a microtask.
@@ -1553,14 +1616,19 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.#clearLinkSelectionAnnotation(false);
     }
     resizeToPreferredHeights() {
-        if (!this.isShowing() || !this.#networkSplitWidget.isShowing()) {
-            this.#needsResizeToPreferredHeights = true;
+        if (!this.isShowing() || this.#networkDataProvider.isEmpty()) {
+            this.#needsResizeToPreferredHeights = !this.#networkDataProvider.isEmpty();
             return;
         }
-        this.#needsResizeToPreferredHeights = false;
-        this.#networkPane.element.classList.toggle('timeline-network-resizer-disabled', !this.#networkDataProvider.isExpanded());
-        this.#networkSplitWidget.setSidebarSize(this.#networkDataProvider.preferredHeight() +
-            this.#splitResizer.clientHeight + PerfUI.FlameChart.RulerHeight + 2);
+        const expanded = this.#networkDataProvider.isExpanded();
+        if (this.#isNetworkExpanded !== expanded) {
+            this.#isNetworkExpanded = expanded;
+            this.#needsResizeToPreferredHeights = true;
+            this.requestUpdate();
+            return;
+        }
+        const size = this.#networkDataProvider.preferredHeight() + PerfUI.FlameChart.RulerHeight + 2;
+        this.#needsResizeToPreferredHeights = !this.#viewOutput.setNetworkSidebarSize?.(size);
     }
     setSearchableView(searchableView) {
         this.#searchableView = searchableView;
@@ -1702,7 +1770,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         return this.#overlays;
     }
     selectDetailsViewTab(tabName, node) {
-        this.detailsView.selectTab(tabName, node);
+        this.#viewOutput.selectDetailsTab?.(tabName, node);
     }
 }
 export class Selection {

@@ -58,7 +58,8 @@ export class GetTraceFunctionCodeTool {
         if (!params.scriptUrl) {
             return { error: 'Missing arg: scriptUrl' };
         }
-        if (!performanceTraceContext.canAccessResource(params.scriptUrl)) {
+        const url = params.scriptUrl;
+        if (!performanceTraceContext.canAccessFunctionSource(url)) {
             return { error: 'Resource not found' };
         }
         if (params.line === undefined) {
@@ -68,7 +69,6 @@ export class GetTraceFunctionCodeTool {
             return { error: 'Missing arg: column' };
         }
         const formatter = performanceTraceContext.createFormatter();
-        const url = params.scriptUrl;
         const code = await formatter.resolveFunctionCodeAtLocation(url, params.line, params.column);
         if (!code) {
             return { error: 'Could not find code' };

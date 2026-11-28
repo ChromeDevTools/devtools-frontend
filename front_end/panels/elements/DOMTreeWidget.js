@@ -1001,19 +1001,20 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         });
         this.#issuePopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
             const hoveredNode = event.composedPath()[0];
-            if (!(hoveredNode instanceof Element) || !hoveredNode.matches('.violating-element')) {
+            const violatingElement = hoveredNode instanceof Element ? hoveredNode.closest('.violating-element') : null;
+            if (!violatingElement) {
                 return null;
             }
-            const { node, widget } = getElementsTreeWidgetAndNode(hoveredNode);
+            const { node, widget } = getElementsTreeWidgetAndNode(violatingElement);
             if (!node) {
                 return null;
             }
             let issues = widget?.issues ?? [];
-            if (hoveredNode.classList.contains('webkit-html-attribute-name')) {
-                const attrName = hoveredNode.textContent;
+            if (violatingElement.classList.contains('webkit-html-attribute-name')) {
+                const attrName = violatingElement.textContent;
                 issues = issues.filter(issue => getElementIssueDetails(issue)?.attribute === attrName);
             }
-            else if (hoveredNode.classList.contains('webkit-html-tag-name')) {
+            else {
                 issues = issues.filter(issue => {
                     const details = getElementIssueDetails(issue);
                     return Boolean(details && !details.attribute);
@@ -1023,7 +1024,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                 return null;
             }
             return {
-                box: hoveredNode.boxInWindow(),
+                box: violatingElement.boxInWindow(),
                 show: async (popover) => {
                     popover.setIgnoreLeftMargin(true);
                     // The popover content is rendered imperatively into the GlassPane

@@ -22,6 +22,7 @@ import { ListStorageKeysTool } from './ListStorageKeys.js';
 import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
 import { RunLighthouseTool } from './RunLighthouse.js';
+import { SearchInSourcesTool } from './SearchInSources.js';
 import { SelectTraceEventByKeyTool } from './SelectTraceEventByKey.js';
 import { SetElementStylesTool } from './SetElementStyles.js';
 import { type AllToolsCapabilities, type Tool, type ToolArgs, ToolName } from './Tool.js';
@@ -43,6 +44,7 @@ export interface BaseToolsRegistryMap {
     [ToolName.SELECT_TRACE_EVENT_BY_KEY]: SelectTraceEventByKeyTool;
     [ToolName.LIST_SOURCES]: ListSourcesTool;
     [ToolName.GET_SOURCE_CONTENT]: GetSourceContentTool;
+    [ToolName.SEARCH_IN_SOURCES]: SearchInSourcesTool;
     [ToolName.GET_TRACE_MAIN_THREAD_SUMMARY]: GetTraceMainThreadSummaryTool;
     [ToolName.GET_TRACE_NETWORK_SUMMARY]: GetTraceNetworkSummaryTool;
     [ToolName.RUN_LIGHTHOUSE]: RunLighthouseTool;

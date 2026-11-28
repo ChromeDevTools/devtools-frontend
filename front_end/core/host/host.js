@@ -330,6 +330,7 @@ var EnumeratedHistogram = /* @__PURE__ */ ((EnumeratedHistogram2) => {
   EnumeratedHistogram2["AiClientRequestResultConsoleInsights"] = "DevTools.AiClient.RequestResult.ConsoleInsights";
   EnumeratedHistogram2["AiClientRequestResultConversationSummary"] = "DevTools.AiClient.RequestResult.ConversationSummary";
   EnumeratedHistogram2["AiClientRequestResultPerformanceAnnotations"] = "DevTools.AiClient.RequestResult.PerformanceAnnotations";
+  EnumeratedHistogram2["AiAssistanceOptIn"] = "DevTools.AiAssistance.OptIn";
   return EnumeratedHistogram2;
 })(EnumeratedHistogram || {});
 
@@ -1090,6 +1091,7 @@ globalThis.setDebugDispatchHttpRequestEnabled = setDebugDispatchHttpRequestEnabl
 var UserMetrics_exports = {};
 __export(UserMetrics_exports, {
   Action: () => Action2,
+  AiAssistanceOptIn: () => AiAssistanceOptIn2,
   AiClientRequestResult: () => AiClientRequestResult2,
   AnimationsPlaybackRate: () => AnimationsPlaybackRate2,
   BadgeType: () => BadgeType2,
@@ -1325,7 +1327,8 @@ var Action = /* @__PURE__ */ ((Action3) => {
   Action3[Action3["AiCodeCompletionFreCompletedFromSources"] = 207] = "AiCodeCompletionFreCompletedFromSources";
   Action3[Action3["AiAssistanceOpenedFromApplicationPanelFloatingButton"] = 208] = "AiAssistanceOpenedFromApplicationPanelFloatingButton";
   Action3[Action3["AiAssistanceOpenedFromApplicationPanel"] = 209] = "AiAssistanceOpenedFromApplicationPanel";
-  Action3[Action3["MAX_VALUE"] = 210] = "MAX_VALUE";
+  Action3[Action3["AiAssistanceOptedOut"] = 210] = "AiAssistanceOptedOut";
+  Action3[Action3["MAX_VALUE"] = 211] = "MAX_VALUE";
   return Action3;
 })(Action || {});
 var PanelCodes = /* @__PURE__ */ ((PanelCodes3) => {
@@ -1963,6 +1966,12 @@ var AiClientRequestResult = /* @__PURE__ */ ((AiClientRequestResult3) => {
   AiClientRequestResult3[AiClientRequestResult3["MAX_VALUE"] = 17] = "MAX_VALUE";
   return AiClientRequestResult3;
 })(AiClientRequestResult || {});
+var AiAssistanceOptIn = /* @__PURE__ */ ((AiAssistanceOptIn3) => {
+  AiAssistanceOptIn3[AiAssistanceOptIn3["SETTINGS"] = 0] = "SETTINGS";
+  AiAssistanceOptIn3[AiAssistanceOptIn3["FIRST_PROMPT_DIALOG"] = 1] = "FIRST_PROMPT_DIALOG";
+  AiAssistanceOptIn3[AiAssistanceOptIn3["MAX_VALUE"] = 2] = "MAX_VALUE";
+  return AiAssistanceOptIn3;
+})(AiAssistanceOptIn || {});
 
 // ../../front_end/core/host/UserMetrics.ts
 var UserMetrics = class {
@@ -2300,6 +2309,16 @@ var UserMetrics = class {
       );
     }
   }
+  /**
+   * Records the surface from which the user opted in to AI assistance.
+   */
+  aiAssistanceOptIn(source) {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.AiAssistance.OptIn" /* AiAssistanceOptIn */,
+      source,
+      AiAssistanceOptIn2.MAX_VALUE
+    );
+  }
 };
 function createDynamicEnumProxy(enumName2, fallbackEnum) {
   return new Proxy(fallbackEnum, {
@@ -2393,6 +2412,7 @@ var TimelineNavigationSetting2 = createDynamicEnumProxy(
 var BuiltInAiAvailability2 = createDynamicEnumProxy("BuiltInAiAvailability", BuiltInAiAvailability);
 var ResendRequestType2 = createDynamicEnumProxy("ResendRequestType", ResendRequestType);
 var AiClientRequestResult2 = createDynamicEnumProxy("AiClientRequestResult", AiClientRequestResult);
+var AiAssistanceOptIn2 = createDynamicEnumProxy("AiAssistanceOptIn", AiAssistanceOptIn);
 var userMetrics = new UserMetrics();
 var resendRequestTypeMap = /* @__PURE__ */ new Map([
   [Common4.ResourceType.resourceTypes.XHR, "XHR"],

@@ -58,12 +58,16 @@ export declare class TimelineUIUtils {
     private static generateInvalidationsForReason;
     /** Populates the passed object then returns true/false if it makes sense to show the pie chart */
     private static aggregatedStatsForTraceEvent;
-    static buildPicturePreviewContent(parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Paint, target: SDK.Target.Target): Promise<Element | null>;
+    static buildPicturePreviewContent(parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Paint, target: SDK.Target.Target): Promise<LitTemplate | null>;
+    /**
+     * PerfUI.TimelineOverviewPane positions and dims the markers imperatively,
+     * so this still returns a DOM element instead of a template.
+     */
     static createEventDivider(event: Trace.Types.Events.Event, zeroTime: number): HTMLDivElement;
     static visibleEventsFilter(): Trace.Extras.TraceFilter.TraceFilter;
-    static generatePieChart(aggregatedStats: TimeRangeCategoryStats, selfCategory?: Trace.Styles.TimelineCategory, selfTime?: Trace.Types.Timing.Micro): Element;
+    static generatePieChart(aggregatedStats: TimeRangeCategoryStats, selfCategory?: Trace.Styles.TimelineCategory, selfTime?: Trace.Types.Timing.Micro): LitTemplate;
     static generateDetailsContentForFrame(frame: Trace.Types.Events.LegacyTimelineFrame, filmStrip: Trace.Extras.FilmStrip.Data | null, filmStripFrame: Trace.Extras.FilmStrip.Frame | null): DocumentFragment;
-    static frameDuration(frame: Trace.Types.Events.LegacyTimelineFrame): Element;
+    static frameDuration(frame: Trace.Types.Events.LegacyTimelineFrame): LitTemplate;
     static quadWidth(quad: number[]): number;
     static quadHeight(quad: number[]): number;
     static eventDispatchDesciptors(): EventDispatchTypeDescriptor[];
@@ -130,7 +134,7 @@ export declare class TimelineDetailsContentHelper {
      * otherwise it does nothing.
      */
     appendSectionWithBodyIfExists(title: string, options: {
-        body: HTMLElement | LitTemplate | null;
+        body: LitTemplate | null;
         swatchColor?: string;
         event?: Trace.Types.Events.Event;
     }): void;
@@ -150,10 +154,10 @@ export declare class TimelineDetailsContentHelper {
     appendLocationRow(title: string, url: string, startLine: number, startColumn?: number, text?: string, omitOrigin?: boolean): void;
     appendLocationRange(title: string, url: Platform.DevToolsPath.UrlString, startLine: number, endLine?: number): void;
     /**
-     * Creates a stack trace element for the given trace, but checks if it
+     * Creates a stack trace template for the given trace, but checks if it
      * contains any entries, and discards it if it's empty.
      */
-    createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace, isFreshOrEnhanced?: boolean): Promise<HTMLElement | null>;
+    createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace, isFreshOrEnhanced?: boolean): Promise<LitTemplate | null>;
 }
 export interface TimelineMarkerStyle {
     title: string;

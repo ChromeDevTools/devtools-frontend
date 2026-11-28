@@ -892,7 +892,8 @@ export class PerformanceAgent extends AiAgent {
                 if (args.column === undefined) {
                     return { error: 'Missing arg: column' };
                 }
-                if (!context.canAccessResource(args.scriptUrl)) {
+                const url = args.scriptUrl;
+                if (!context.canAccessFunctionSource(url)) {
                     return { error: 'Resource not found' };
                 }
                 if (!this.#formatter) {
@@ -902,7 +903,6 @@ export class PerformanceAgent extends AiAgent {
                 if (!target) {
                     throw new Error('missing target');
                 }
-                const url = args.scriptUrl;
                 const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
                 if (!code) {
                     return { error: 'Could not find code' };

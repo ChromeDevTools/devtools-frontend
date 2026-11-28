@@ -224,7 +224,8 @@ export var Action;
     Action[Action["AiCodeCompletionFreCompletedFromSources"] = 207] = "AiCodeCompletionFreCompletedFromSources";
     Action[Action["AiAssistanceOpenedFromApplicationPanelFloatingButton"] = 208] = "AiAssistanceOpenedFromApplicationPanelFloatingButton";
     Action[Action["AiAssistanceOpenedFromApplicationPanel"] = 209] = "AiAssistanceOpenedFromApplicationPanel";
-    Action[Action["MAX_VALUE"] = 210] = "MAX_VALUE";
+    Action[Action["AiAssistanceOptedOut"] = 210] = "AiAssistanceOptedOut";
+    Action[Action["MAX_VALUE"] = 211] = "MAX_VALUE";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Action || (Action = {}));
 export var PanelCodes;
@@ -900,5 +901,15 @@ export var AiClientRequestResult;
     AiClientRequestResult[AiClientRequestResult["UNKNOWN_ERROR"] = 16] = "UNKNOWN_ERROR";
     AiClientRequestResult[AiClientRequestResult["MAX_VALUE"] = 17] = "MAX_VALUE";
 })(AiClientRequestResult || (AiClientRequestResult = {}));
+/**
+ * Maps to the `DevTools.AiAssistance.OptIn` UMA histogram.
+ * Values are persisted to logs and must remain append-only in sync with `enums.xml`.
+ */
+export var AiAssistanceOptIn;
+(function (AiAssistanceOptIn) {
+    AiAssistanceOptIn[AiAssistanceOptIn["SETTINGS"] = 0] = "SETTINGS";
+    AiAssistanceOptIn[AiAssistanceOptIn["FIRST_PROMPT_DIALOG"] = 1] = "FIRST_PROMPT_DIALOG";
+    AiAssistanceOptIn[AiAssistanceOptIn["MAX_VALUE"] = 2] = "MAX_VALUE";
+})(AiAssistanceOptIn || (AiAssistanceOptIn = {}));
 // LINT.ThenChange(/front_end/devtools_compatibility.js)
 //# sourceMappingURL=UserMetricsEnums.js.map

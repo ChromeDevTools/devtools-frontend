@@ -16,6 +16,12 @@ export declare enum Tab {
     LayerViewer = "layer-viewer",
     SelectorStats = "selector-stats"
 }
+export interface TimelineDetailsModel {
+    parsedTrace: Trace.TraceModel.ParsedTrace | null;
+    selectedEvents: Trace.Types.Events.Event[] | null;
+    eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap | null;
+    entityMapper: Trace.EntityMapper.EntityMapper | null;
+}
 interface SelectedRange {
     startTime: Trace.Types.Timing.Milli;
     endTime: Trace.Types.Timing.Milli;
@@ -68,12 +74,8 @@ export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     private selectorStatsView;
     getDetailsContentElementForTest(): HTMLElement;
     revealEventInTreeView(event: Trace.Types.Events.Event | null): void;
-    setModel(data: {
-        parsedTrace: Trace.TraceModel.ParsedTrace | null;
-        selectedEvents: Trace.Types.Events.Event[] | null;
-        eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap | null;
-        entityMapper: Trace.EntityMapper.EntityMapper | null;
-    }): Promise<void>;
+    set model(data: TimelineDetailsModel);
+    setModel(data: TimelineDetailsModel): Promise<void>;
     /**
      * Updates the UI shown in the Summary tab. If the summary tab is not
      * currently selected, the update is deferred until the tab becomes active.

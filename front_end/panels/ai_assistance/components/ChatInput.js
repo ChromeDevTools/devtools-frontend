@@ -530,8 +530,21 @@ export class ChatInput extends UI.Widget.Widget {
             this.focusTextInput();
         });
     }
+    /**
+     * Returns whether image upload via clipboard paste or drag-and-drop is
+     * currently permitted. Mirrors the enabled state of the Add image button.
+     */
+    #canUploadImage() {
+        if (!this.multimodalInputEnabled || !this.uploadImageInputEnabled) {
+            return false;
+        }
+        if (this.blockedByCrossOrigin || this.isTextInputDisabled) {
+            return false;
+        }
+        return !this.#imageInput?.isLoading;
+    }
     #handleImageDataTransferEvent(dataTransfer, event) {
-        if (this.conversationType !== "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */) {
+        if (!this.#canUploadImage()) {
             return;
         }
         const files = dataTransfer?.files;
@@ -549,7 +562,7 @@ export class ChatInput extends UI.Widget.Widget {
         this.#handleImageDataTransferEvent(event.clipboardData, event);
     };
     #handleImageDragOver = (event) => {
-        if (this.conversationType !== "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */) {
+        if (!this.#canUploadImage()) {
             return;
         }
         event.preventDefault();

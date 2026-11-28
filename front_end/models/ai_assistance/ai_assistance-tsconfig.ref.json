@@ -74,6 +74,7 @@
     "../../../../../../front_end/models/ai_assistance/tools/RecordPerformanceTrace.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ResolveDevtoolsNodePath.ts",
     "../../../../../../front_end/models/ai_assistance/tools/RunLighthouse.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/SearchInSources.ts",
     "../../../../../../front_end/models/ai_assistance/tools/SelectTraceEventByKey.ts",
     "../../../../../../front_end/models/ai_assistance/tools/SetElementStyles.ts",
     "../../../../../../front_end/models/ai_assistance/tools/Tool.ts",

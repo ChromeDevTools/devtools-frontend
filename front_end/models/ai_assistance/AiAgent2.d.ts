@@ -1,7 +1,7 @@
 import * as Host from '../../core/host/host.js';
 import type * as LHModel from '../lighthouse/lighthouse.js';
 import type * as Trace from '../trace/trace.js';
-import { AiAgent, type ContextResponse, type ConversationContext, type MultimodalInput, type MultimodalInputType, type ParsedResponse, type RequestOptions, type ResponseData } from './agents/AiAgent.js';
+import { AiAgent, type ContextResponse, type ConversationContext, type MultimodalInput, MultimodalInputType, type ParsedResponse, type RequestOptions, type ResponseData } from './agents/AiAgent.js';
 import { type ExecuteJsAgentOptions } from './agents/ExecuteJavascript.js';
 import type { SkillName } from './skills/Skill.js';
 import { type OriginLockState } from './tools/Tool.js';
@@ -40,7 +40,17 @@ export declare class AiAgent2 extends AiAgent<unknown> {
      * Promotes the completed `#runDraft` into `#committedState`.
      */
     protected onRunCommitted(): void;
-    enhanceQuery(query: string, selected?: ConversationContext<unknown> | null, _multimodalInputType?: MultimodalInputType): Promise<string>;
+    /**
+     * Builds the user-turn prompt prefix in order: auto-loaded skill instructions,
+     * deduplicated selected context with unsent facts, and turn-scoped multimodal
+     * guidance directly before `# User request`.
+     *
+     * Multimodal guidance stays outside `lastSentPromptDetails` deduplication so it
+     * applies only to turns with an attached image, and runs unconditionally when
+     * `multimodalInputType` is passed because feature-flag gating lives in
+     * `AiAssistancePanel` rather than inside `AiAgent2`.
+     */
+    enhanceQuery(query: string, selected?: ConversationContext<unknown> | null, multimodalInputType?: MultimodalInputType): Promise<string>;
     /**
      * `AiAgent2` receives follow-up suggestions from `suggestFollowUps` tool
      * calls rather than text parsing. Overrides `AiAgent#parseTextResponse()` so

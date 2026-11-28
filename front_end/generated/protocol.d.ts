@@ -2502,6 +2502,9 @@ export declare namespace Browser {
          * DevTools session. Different sessions can use the same identifier
          * without replacing each other's cameras. This is not the
          * MediaDeviceInfo.deviceId exposed to the page.
+         * An identifier that is already registered or being registered in this
+         * session is rejected. The existing camera or registration attempt is
+         * left unchanged, including any active streams.
          */
         deviceId: string;
     }
@@ -9941,6 +9944,11 @@ export declare namespace Network {
          * True when the resource request is ad-related.
          */
         isAdRelated?: boolean;
+        /**
+         * The provenance of an ad resource request, if it is ad-related and
+         * provenance is available.
+         */
+        adProvenance?: AdProvenance;
     }
     /**
      * Details of a signed certificate timestamp (SCT).
@@ -16287,7 +16295,8 @@ export declare namespace Preload {
         FormSubmitWhenPrerendering = "FormSubmitWhenPrerendering",
         CrossDocumentRestart = "CrossDocumentRestart",
         PrefetchFailedCrossOriginSubframe = "PrefetchFailedCrossOriginSubframe",
-        UnexpectedMainFrameNavigation = "UnexpectedMainFrameNavigation"
+        UnexpectedMainFrameNavigation = "UnexpectedMainFrameNavigation",
+        AudioOutput = "AudioOutput"
     }
     /**
      * Preloading status values, see also PreloadingTriggeringOutcome. This

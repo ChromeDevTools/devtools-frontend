@@ -7,7 +7,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import { JavascriptExecutor, MAX_OBSERVATION_BYTE_LENGTH } from '../agents/ExecuteJavascript.js';
 import { MAX_SERIALIZED_ELEMENT_UIDS } from '../EvaluateAction.js';
-import { isOriginAllowedByLock, } from './Tool.js';
+import { isOriginAllowedByLock, resolveOriginFromLock, } from './Tool.js';
 const lockedString = i18n.i18n.lockedString;
 const MAX_LINES = 40;
 // Deliberately higher than the 120-character soft target in
@@ -182,6 +182,48 @@ function describeSizeLimitViolations(code) {
     }
     return violations;
 }
+/**
+ * Validates the conversation's origin lock and resolves the DOM node used for
+ * JavaScript execution, returning a model-facing error with stop-retry guidance
+ * when execution is not permitted.
+ */
+function resolveExecutionNode(context) {
+    // Validate the origin lock before looking up the execution node so
+    // lock-level failures (such as navigation blocks) are reported directly
+    // instead of a missing-node error, and so `establishedOrigin` is available
+    // when no node exists.
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
+    if ('error' in originResult) {
+        return {
+            error: `Error: ${originResult.error} Do not retry executeJavaScript; ask the user to start a new chat.`,
+        };
+    }
+    const establishedOrigin = originResult.origin;
+    const executionNode = context.getExecutionContextNode();
+    if (!executionNode) {
+        return {
+            error: `Error: Could not find the context node for execution. This conversation is locked to ${establishedOrigin
+                .siteId()}; if the inspected page is on a different origin (for example from a selected cross-origin file in Sources), do not retry executeJavaScript and ask the user to start a new chat on the page's origin.`,
+        };
+    }
+    const nodeOrigin = executionNode.securityOrigin();
+    if (!nodeOrigin || nodeOrigin.isOpaque()) {
+        return {
+            error: 'Error: Cannot execute JavaScript on a target with no valid security origin (for example a detached or sandboxed node). Do not retry executeJavaScript.',
+        };
+    }
+    if (!isOriginAllowedByLock(originLock, nodeOrigin)) {
+        // Intentionally omit `nodeOrigin` from the error to avoid disclosing a
+        // cross-origin target's origin to the model; only the already-established
+        // conversation origin is surfaced.
+        return {
+            error: `Error: Cannot execute JavaScript on cross-origin target. This conversation is locked to ${establishedOrigin
+                .siteId()} (for example from a selected cross-origin item or an earlier page). Do not retry executeJavaScript; ask the user to start a new chat on the inspected page's origin (and remove any cross-origin context item if one is selected).`,
+        };
+    }
+    return { node: executionNode };
+}
 export class ExecuteJavaScriptTool {
     name = "executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */;
     permissionPrompt = "allow-once" /* PermissionPrompt.ALLOW_ONCE */;
@@ -264,13 +306,11 @@ const data = {
         };
     }
     async handler(params, context, options) {
-        const executionNode = context.getExecutionContextNode();
-        if (!executionNode) {
-            return { error: 'Error: Could not find the context node for execution.' };
+        const executionNodeResult = resolveExecutionNode(context);
+        if ('error' in executionNodeResult) {
+            return executionNodeResult;
         }
-        if (!isOriginAllowedByLock(context.getOriginLock(), executionNode.securityOrigin())) {
-            return { error: 'Error: Cannot execute JavaScript on cross-origin target.' };
-        }
+        const executionNode = executionNodeResult.node;
         const isV2Architecture = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled;
         if (isV2Architecture) {
             const validationError = ExecuteJavaScriptTool.validateCode(params.code);

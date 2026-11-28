@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Bindings from '../bindings/bindings.js';
@@ -162,12 +163,25 @@ export class Automapping {
             }
             const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(status.network);
             const isNodeTarget = target?.type() === SDK.Target.Type.NODE;
+            // Non-text files (e.g. images) cannot be compared textually, so only skip
+            // validation when both sides are non-text. A page-originated text resource
+            // (e.g. a stylesheet or script) must never be bound to a binary file
+            // without validation, as edits are mirrored back into the page.
+            const isNonTextBinding = !status.fileSystem.contentType().isTextType() && !status.network.contentType().isTextType();
             // Source-map-derived URLs and contents are controlled by the inspected page.
             // Only trust them without content validation when debugging Node.js.
-            const skipContentValidation = !status.fileSystem.contentType().isTextType() ||
-                (status.network.contentType().isFromSourceMap() && isNodeTarget);
+            const skipContentValidation = isNonTextBinding || (status.network.contentType().isFromSourceMap() && isNodeTarget);
             if (skipContentValidation) {
                 return status;
+            }
+            // A text network resource (e.g. a stylesheet or script) cannot match a
+            // non-text file unless the file is a text-decodable image such as SVG.
+            // Reject early before requesting content to avoid reading/caching large
+            // binary files or querying the renderer.
+            const isTextDecodableFileSystemImage = status.fileSystem.contentType().isImage() && Platform.MimeType.isTextType(status.fileSystem.mimeType());
+            if (!status.fileSystem.contentType().isTextType() && !isTextDecodableFileSystemImage) {
+                this.prevalidationFailedForTest(status);
+                return null;
             }
             // At the time binding comes, there are multiple user scenarios:
             // 1. Both network and fileSystem files are **not** dirty.
@@ -193,7 +207,7 @@ export class Automapping {
                 status.fileSystem.requestContentData(),
                 status.network.project().requestFileContent(status.network),
             ])).map(TextUtils.ContentData.ContentData.asDeferredContent);
-            if (fileSystemContent.content === null || networkContent === null) {
+            if (fileSystemContent.content === null || networkContent.content === null) {
                 return null;
             }
             if (this.#sourceCodeToProcessingPromiseMap.get(networkSourceCode) !== createBindingPromise) {
@@ -201,15 +215,24 @@ export class Automapping {
             }
             let isValid = false;
             const fileContent = fileSystemContent.content;
-            if (isNodeTarget) {
-                if (networkContent.content) {
-                    const rewrappedNetworkContent = PersistenceImpl.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);
-                    isValid = fileContent === rewrappedNetworkContent;
+            if (!fileSystemContent.isEncoded && !networkContent.isEncoded) {
+                if (isNodeTarget) {
+                    if (networkContent.content) {
+                        const rewrappedNetworkContent = PersistenceImpl.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);
+                        isValid = fileContent === rewrappedNetworkContent;
+                    }
+                }
+                else {
+                    // Trim trailing whitespaces because V8 adds trailing newline.
+                    const trimmedNetworkContent = networkContent.content.trimEnd();
+                    if (trimmedNetworkContent) {
+                        isValid = fileContent.trimEnd() === trimmedNetworkContent;
+                    }
                 }
             }
-            else if (networkContent.content) {
-                // Trim trailing whitespaces because V8 adds trailing newline.
-                isValid = fileContent.trimEnd() === networkContent.content.trimEnd();
+            else if (fileSystemContent.isEncoded && networkContent.isEncoded &&
+                !status.network.contentType().isTextType() && networkContent.content) {
+                isValid = fileContent === networkContent.content;
             }
             if (!isValid) {
                 this.prevalidationFailedForTest(status);

@@ -193,6 +193,7 @@ models/ai_assistance/tools/ListStorageKeys.test.js
 models/ai_assistance/tools/RecordPerformanceTrace.test.js
 models/ai_assistance/tools/ResolveDevtoolsNodePath.test.js
 models/ai_assistance/tools/RunLighthouse.test.js
+models/ai_assistance/tools/SearchInSources.test.js
 models/ai_assistance/tools/SelectTraceEventByKey.test.js
 models/ai_assistance/tools/SetElementStyles.test.js
 models/ai_assistance/tools/Tool.test.js
@@ -644,6 +645,7 @@ panels/profiler/HeapTimelineOverview.test.js
 panels/profiler/IsolateSelector.test.js
 panels/profiler/ProfileFlameChartDataProvider.test.js
 panels/profiler/ProfileSidebarTreeElement.test.js
+panels/profiler/ProfilesPanel.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js
 panels/recorder/CreateRecordingView.test.js

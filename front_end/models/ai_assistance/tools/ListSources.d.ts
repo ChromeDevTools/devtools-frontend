@@ -1,4 +1,5 @@
 import * as Host from '../../../core/host/host.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Workspace from '../../workspace/workspace.js';
 import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type OriginLockState, PermissionPrompt, ToolName } from './Tool.js';
 /**
@@ -37,3 +38,11 @@ export declare class ListSourcesTool implements DataTool<Record<string, never>, 
     };
     handler(_params: Record<string, never>, context: BaseToolCapability & OriginLockCapability): Promise<DataHandlerResult<string>>;
 }
+/**
+ * Formats a source file name for the `listSources` and `searchInSources` outputs.
+ *
+ * `fullDisplayName()` already strips `https?://` for network files while keeping the host,
+ * and decodes URI sequences (`%0D`, `%0A`) into raw `\r` and `\n`. Re-encode carriage returns
+ * and newlines so filenames cannot break the line-delimited output.
+ */
+export declare function formatSourceName(file: Workspace.UISourceCode.UISourceCode, establishedOrigin: SDK.SecurityOrigin.SecurityOrigin): string;

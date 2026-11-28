@@ -782,8 +782,12 @@ async function finalize4(options) {
       const navigationId = firstMainFrameNav.args.data.navigationId;
       const redirectedUrl = finalDisplayUrlByNavigationId.get(navigationId)?.split("#")[0];
       const sameOriginRedirectUrl = redirectedUrl && hasSameTupleOrigin(trimmedNavUrl, redirectedUrl) ? redirectedUrl : null;
+      const nextMainFrameNavTs = mainFrameNavigations.at(1)?.ts ?? Number.POSITIVE_INFINITY;
       const committedEntries = committedFramesByFrameId.get(mainFrameId) ?? [];
-      const matchingCommittedEntry = committedEntries.findLast(({ frame }) => frame.url === trimmedNavUrl || sameOriginRedirectUrl !== null && frame.url === sameOriginRedirectUrl);
+      const firstCommittedEntryForNav = committedEntries.find(({ ts }) => ts >= firstMainFrameNav.ts && ts < nextMainFrameNavTs);
+      const matchesInitialUrl = firstCommittedEntryForNav?.frame.url === trimmedNavUrl;
+      const matchesSameOriginRedirect = sameOriginRedirectUrl !== null && firstCommittedEntryForNav?.frame.url === sameOriginRedirectUrl;
+      const matchingCommittedEntry = matchesInitialUrl || matchesSameOriginRedirect ? firstCommittedEntryForNav : void 0;
       if (matchingCommittedEntry && "isOpaqueOrigin" in matchingCommittedEntry.frame) {
         mainFrameIsOpaqueOrigin = Boolean(matchingCommittedEntry.frame.isOpaqueOrigin);
         activeMainFrameTs = matchingCommittedEntry.ts;
@@ -3132,6 +3136,7 @@ var Preload;
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+    PrerenderFinalStatus2["AudioOutput"] = "AudioOutput";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {

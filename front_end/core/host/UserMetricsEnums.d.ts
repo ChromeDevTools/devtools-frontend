@@ -218,7 +218,8 @@ export declare enum Action {
     AiCodeCompletionFreCompletedFromSources = 207,
     AiAssistanceOpenedFromApplicationPanelFloatingButton = 208,
     AiAssistanceOpenedFromApplicationPanel = 209,
-    MAX_VALUE = 210
+    AiAssistanceOptedOut = 210,
+    MAX_VALUE = 211
 }
 export declare enum PanelCodes {
     elements = 1,
@@ -845,4 +846,13 @@ export declare enum AiClientRequestResult {
     BLOCKED_BY_SAFETY_OR_RECITATION = 15,
     UNKNOWN_ERROR = 16,
     MAX_VALUE = 17
+}
+/**
+ * Maps to the `DevTools.AiAssistance.OptIn` UMA histogram.
+ * Values are persisted to logs and must remain append-only in sync with `enums.xml`.
+ */
+export declare enum AiAssistanceOptIn {
+    SETTINGS = 0,
+    FIRST_PROMPT_DIALOG = 1,
+    MAX_VALUE = 2
 }

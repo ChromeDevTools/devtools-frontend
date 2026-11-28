@@ -1,9 +1,12 @@
 import '../../ui/legacy/legacy.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import { ConsoleFilter, type LevelsMask } from './ConsoleFilter.js';
 import { ConsolePinPane } from './ConsolePinPane.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';
@@ -28,8 +31,24 @@ export interface ProgressViewInput {
     totalWork: number;
     onCancel: () => void;
 }
-export type ProgressView = (input: ProgressViewInput | null, output: undefined, target: HTMLElement) => void;
-export declare const PROGRESS_VIEW: ProgressView;
+export declare function renderProgress(progressInput: ProgressViewInput | null): LitTemplate;
+export interface ToolbarViewInput {
+    isSidebarOpen: boolean;
+    onToggleSidebar: () => void;
+    allCollapsed: boolean;
+    onToggleCollapseAll: () => void;
+    contextSelectorToolbarItem: UI.Toolbar.ToolbarItem;
+    textFilterUI: UI.Toolbar.ToolbarInput;
+    levelMenuButton: UI.Toolbar.ToolbarMenuButton;
+    progress: ProgressViewInput | null;
+    issueCounterData: IssueCounter.IssueCounter.IssueCounterData;
+    issueCounterTitle: string;
+    hiddenByFilterCount: number;
+    showSettingsPaneSetting: Common.Settings.Setting<boolean>;
+    filteredMessagesCount: number;
+}
+export type ToolbarView = (input: ToolbarViewInput, output: undefined, target: HTMLElement) => void;
+export declare const TOOLBAR_VIEW: ToolbarView;
 export declare class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Searchable, ConsoleViewportProvider, SDK.TargetManager.SDKModelObserver<SDK.ConsoleModel.ConsoleModel> {
     #private;
     private readonly sidebar;
@@ -49,10 +68,7 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     private readonly shortcuts;
     private regexMatchRanges;
     private readonly consoleContextSelector;
-    private readonly filterStatusText;
     private readonly showSettingsPaneSetting;
-    private readonly showSettingsPaneButton;
-    private readonly progressToolbarItem;
     private readonly groupSimilarSetting;
     private readonly showCorsErrorsSetting;
     private readonly timestampsSetting;
@@ -61,7 +77,6 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     readonly pinPane: ConsolePinPane;
     private viewport;
     private messagesElement;
-    private messagesCountElement;
     private viewportThrottler;
     private pendingBatchResize;
     private readonly onMessageResizedBound;
@@ -79,7 +94,6 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     private searchProgressIndicator?;
     private muteViewportUpdates?;
     private waitForScrollTimeout?;
-    private issueCounter;
     private pendingSidebarMessages;
     private userHasOpenedSidebarAtLeastOnce;
     private issueToolbarThrottle;
@@ -88,7 +102,7 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
     private aiCodeCompletionSummaryToolbarContainer?;
     private aiCodeCompletionSummaryToolbar?;
-    constructor(viewportThrottlerTimeout: number, settingsPaneView?: SettingsPaneView, progressView?: ProgressView);
+    constructor(viewportThrottlerTimeout: number, settingsPaneView?: SettingsPaneView, toolbarView?: ToolbarView);
     performUpdate(): void;
     static clearConsoleViewInstanceForTest(): void;
     static instance(opts?: {
@@ -198,7 +212,6 @@ export declare class ConsoleViewFilter {
     currentFilter: ConsoleFilter;
     private levelLabels;
     readonly levelMenuButton: UI.Toolbar.ToolbarMenuButton;
-    readonly levelMenuButtonInfo: UI.Toolbar.ToolbarItem;
     constructor(filterChangedCallback: () => void);
     onMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void;
     setLevelMenuOverridden(overridden: boolean): void;

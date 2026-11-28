@@ -5870,6 +5870,7 @@ var Preload;
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+    PrerenderFinalStatus2["AudioOutput"] = "AudioOutput";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -7439,8 +7440,21 @@ var ChatInput = class extends UI4.Widget.Widget {
       this.focusTextInput();
     });
   }
+  /**
+   * Returns whether image upload via clipboard paste or drag-and-drop is
+   * currently permitted. Mirrors the enabled state of the Add image button.
+   */
+  #canUploadImage() {
+    if (!this.multimodalInputEnabled || !this.uploadImageInputEnabled) {
+      return false;
+    }
+    if (this.blockedByCrossOrigin || this.isTextInputDisabled) {
+      return false;
+    }
+    return !this.#imageInput?.isLoading;
+  }
   #handleImageDataTransferEvent(dataTransfer, event) {
-    if (this.conversationType !== AiAssistanceModel5.AiHistoryStorage.ConversationType.STYLING) {
+    if (!this.#canUploadImage()) {
       return;
     }
     const files = dataTransfer?.files;
@@ -7458,7 +7472,7 @@ var ChatInput = class extends UI4.Widget.Widget {
     this.#handleImageDataTransferEvent(event.clipboardData, event);
   };
   #handleImageDragOver = (event) => {
-    if (this.conversationType !== AiAssistanceModel5.AiHistoryStorage.ConversationType.STYLING) {
+    if (!this.#canUploadImage()) {
       return;
     }
     event.preventDefault();
@@ -9839,6 +9853,27 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       }
     };
   }
+  /**
+   * Checks whether multimodal input is enabled for the active conversation.
+   *
+   * Requires the shared `devToolsFreestyler.multimodal` flag and a supported
+   * conversation (any conversation type in V2, or `ConversationType.STYLING`
+   * in V1). When `inputType` is `MultimodalInputType.UPLOADED_IMAGE`,
+   * `devToolsFreestyler.multimodalUploadInput` must also be enabled.
+   */
+  #isMultimodalInputEnabled(inputType) {
+    if (!this.#conversation || !Root4.Runtime.hostConfig.devToolsFreestyler?.multimodal) {
+      return false;
+    }
+    const conversationSupported = AiAssistanceModel8.AiUtils.isAiV2Enabled() || this.#conversation.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING;
+    if (!conversationSupported) {
+      return false;
+    }
+    if (inputType === AiAssistanceModel8.AiAgent.MultimodalInputType.UPLOADED_IMAGE) {
+      return Boolean(Root4.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
+    }
+    return true;
+  }
   async #getPanelViewInput() {
     const blockedByAge = Root4.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#aidaAvailability !== Host5.AidaClient.AidaAccessPreconditions.AVAILABLE || !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
@@ -9877,7 +9912,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
           inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
           // TODO(b/587704208): Re-enable the written feedback form once supported.
           canShowFreeFormFeedback: false,
-          multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() && this.#conversation.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING,
+          multimodalInputEnabled: this.#isMultimodalInputEnabled(),
           isTextInputDisabled: this.#isTextInputDisabled(),
           emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
@@ -9887,7 +9922,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             this.#textInputValue = text;
           },
           onExportConversation: this.#onExportConversationClick.bind(this),
-          uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() && this.#conversation.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING,
+          uploadImageInputEnabled: this.#isMultimodalInputEnabled(AiAssistanceModel8.AiAgent.MultimodalInputType.UPLOADED_IMAGE),
           markdownRenderer,
           conversationMarkdown: conversation.getConversationMarkdown(),
           generateConversationSummary: async (markdown) => {
@@ -10825,7 +10860,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       void VisualLogging9.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
     }
     let multimodalInput;
-    if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
+    if (imageInput && multimodalInputType && this.#isMultimodalInputEnabled(multimodalInputType)) {
       multimodalInput = {
         input: imageInput,
         id: crypto.randomUUID(),
@@ -11195,12 +11230,6 @@ var ActionDelegate = class {
     return false;
   }
 };
-function isAiAssistanceMultimodalUploadInputEnabled() {
-  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root4.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
-}
-function isAiAssistanceMultimodalInputEnabled() {
-  return Boolean(Root4.Runtime.hostConfig.devToolsFreestyler?.multimodal);
-}
 
 // ../../front_end/panels/ai_assistance/ExternalHandler.ts
 var ExternalHandler_exports = {};

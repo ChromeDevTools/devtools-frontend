@@ -4,13 +4,14 @@ import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as TimelineComponents from './components/components.js';
-import { CountersGraph } from './CountersGraph.js';
+import { type CountersModel } from './CountersGraph.js';
 import * as Overlays from './overlays/overlays.js';
-import { type Tab, TimelineDetailsPane } from './TimelineDetailsView.js';
+import { type Tab, type TimelineDetailsModel } from './TimelineDetailsView.js';
 import { TimelineFlameChartDataProvider } from './TimelineFlameChartDataProvider.js';
 import { TimelineFlameChartNetworkDataProvider } from './TimelineFlameChartNetworkDataProvider.js';
 import type { TimelineModeViewDelegate } from './TimelinePanel.js';
 import { type TimelineSelection } from './TimelineSelection.js';
+import { type TimelineTreeView } from './TimelineTreeView.js';
 import type { TimelineMarkerStyle } from './TimelineUIUtils.js';
 /**
  * This defines the order these markers will be rendered if they are at the
@@ -19,11 +20,18 @@ import type { TimelineMarkerStyle } from './TimelineUIUtils.js';
  * will render [Nav][FCP][DCL][LCP] everytime.
  */
 export declare const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>>;
+type TreeRowEvent = TimelineTreeView.EventTypes[TimelineTreeView.Events.TREE_ROW_HOVERED];
 export interface ViewInput {
-    flameChartsContainer: UI.Widget.VBox;
-    countersView: CountersGraph;
-    detailsView: TimelineDetailsPane;
+    mainFlameChart: PerfUI.FlameChart.FlameChart;
+    networkFlameChart: PerfUI.FlameChart.FlameChart;
+    overlaysContainer: HTMLElement;
+    tooltipElement: HTMLElement;
+    delegate: TimelineModeViewDelegate;
+    countersModel: CountersModel;
+    detailsModel: TimelineDetailsModel;
     showMemoryGraph: boolean;
+    showNetworkChart: boolean;
+    isNetworkExpanded: boolean;
     inert: boolean;
     onKeyDown: (keyInfo: {
         key: string;
@@ -32,8 +40,16 @@ export interface ViewInput {
     onSecondaryPointerDown: () => boolean;
     onEntryLinkStartCreating: () => void;
     onEventReferenceClick: (event: Trace.Types.Events.Event) => void;
+    onTreeRowHovered: (data: TreeRowEvent) => void;
+    onTreeRowClicked: (data: TreeRowEvent) => void;
 }
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export interface ViewOutput {
+    setDetailsSelection?: (selection: TimelineSelection | null) => Promise<void>;
+    selectDetailsTab?: (tabName: Tab, node: Trace.Extras.TraceTree.Node | null) => void;
+    revealEventInTreeView?: (event: Trace.Types.Events.Event | null) => void;
+    setNetworkSidebarSize?: (size: number) => boolean;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 declare const TimelineFlameChartViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class TimelineFlameChartView extends TimelineFlameChartViewBase implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
@@ -41,7 +57,7 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     private mainDataProvider;
     private readonly mainFlameChart;
     private readonly networkFlameChart;
-    private readonly detailsView;
+    private get detailsView();
     constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager, view?: View);
     containingElement(): HTMLElement;
     dimThirdPartiesIfRequired(): void;

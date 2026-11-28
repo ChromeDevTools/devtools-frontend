@@ -46,6 +46,7 @@ export declare class NetworkManager extends SDKModel<EventTypes> {
     static connectionType(conditions: Conditions): Protocol.Network.ConnectionType;
     static lowercaseHeaders(headers: Protocol.Network.Headers): Protocol.Network.Headers;
     requestForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest | null;
+    requestsForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest[];
     requestForId(id: string): NetworkRequest | null;
     requestForLoaderId(loaderId: Protocol.Network.LoaderId): NetworkRequest | null;
     private cacheDisabledSettingChanged;
@@ -127,6 +128,7 @@ export declare class NetworkDispatcher implements ProtocolProxyApi.NetworkDispat
     private updateNetworkRequestWithResponse;
     requestForId(id: string): NetworkRequest | null;
     requestForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest | null;
+    requestsForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest[];
     requestForLoaderId(loaderId: Protocol.Network.LoaderId): NetworkRequest | null;
     resourceChangedPriority({ requestId, newPriority }: Protocol.Network.ResourceChangedPriorityEvent): void;
     signedExchangeReceived({ requestId, info }: Protocol.Network.SignedExchangeReceivedEvent): void;

@@ -2713,6 +2713,7 @@ var Preload;
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+    PrerenderFinalStatus2["AudioOutput"] = "AudioOutput";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -3747,6 +3748,8 @@ __export(ConsoleViewMessage_exports, {
   setLongStringVisibleLength: () => setLongStringVisibleLength,
   setMaxTokenizableStringLength: () => setMaxTokenizableStringLength
 });
+import "../../ui/components/issue_counter/issue_counter.js";
+import "../../ui/components/request_link_icon/request_link_icon.js";
 import * as Common2 from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
 import * as i18n3 from "../../core/i18n/i18n.js";
@@ -3759,8 +3762,6 @@ import * as Logs from "../../models/logs/logs.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as CodeHighlighter from "../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting from "../../ui/components/highlighting/highlighting.js";
-import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
-import * as RequestLinkIcon from "../../ui/components/request_link_icon/request_link_icon.js";
 import { createIcon, Icon } from "../../ui/kit/kit.js";
 import * as DataGrid from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as ObjectUI3 from "../../ui/legacy/components/object_ui/object_ui.js";
@@ -5405,6 +5406,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   issueResolver;
   #adjacentUserCommandResult = false;
   #teaser = void 0;
+  #anchorLinkElement = void 0;
   /** Formatting Error#stack is asynchronous. Allow tests to wait for the result */
   #formatErrorStackPromiseForTest = Promise.resolve();
   constructor(consoleMessage, linkifier, requestResolver, issueResolver, onResize) {
@@ -5510,38 +5512,31 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return this.#formatErrorStackPromiseForTest;
   }
   buildMessage() {
-    let messageElement;
-    let formattedContent;
+    let messageBody;
     let messageText = this.message.messageText;
     if (this.message.source === Common2.Console.FrontendMessageSource.ConsoleAPI) {
       switch (this.message.type) {
         case Runtime.ConsoleAPICalledEventType.Trace:
-          formattedContent = this.format(this.message.parameters || ["console.trace"]);
+          messageBody = renderMessageText(this.format(this.message.parameters || ["console.trace"]));
           break;
-        case Runtime.ConsoleAPICalledEventType.Clear:
-          messageElement = document.createElement("span");
-          messageElement.classList.add("console-info");
-          if (Common2.Settings.Settings.instance().resolve(SDK3.SDKSettings.preserveConsoleLogSettingDescriptor).get()) {
-            messageElement.textContent = i18nString2(UIStrings2.consoleclearWasPreventedDueTo);
-          } else {
-            messageElement.textContent = i18nString2(UIStrings2.consoleWasCleared);
-          }
-          UI3.Tooltip.Tooltip.install(
-            messageElement,
-            i18nString2(UIStrings2.clearAllMessagesWithS, {
-              PH1: String(UI3.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("console.clear"))
-            })
-          );
+        case Runtime.ConsoleAPICalledEventType.Clear: {
+          const keepLog = Common2.Settings.Settings.instance().resolve(SDK3.SDKSettings.preserveConsoleLogSettingDescriptor).get();
+          const clearText = keepLog ? i18nString2(UIStrings2.consoleclearWasPreventedDueTo) : i18nString2(UIStrings2.consoleWasCleared);
+          const clearTooltip = i18nString2(UIStrings2.clearAllMessagesWithS, {
+            PH1: String(UI3.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("console.clear"))
+          });
+          messageBody = renderMessageText(html3`${clearText}`, "console-info", clearTooltip);
           break;
+        }
         case Runtime.ConsoleAPICalledEventType.Dir: {
           const obj = this.message.parameters ? this.message.parameters[0] : void 0;
           const args = ["%O", obj];
-          formattedContent = this.format(args);
+          messageBody = renderMessageText(this.format(args));
           break;
         }
         case Runtime.ConsoleAPICalledEventType.Profile:
         case Runtime.ConsoleAPICalledEventType.ProfileEnd:
-          formattedContent = this.format([messageText]);
+          messageBody = renderMessageText(this.format([messageText]));
           break;
         default: {
           if (this.message.type === Runtime.ConsoleAPICalledEventType.Assert) {
@@ -5554,21 +5549,18 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
               const runtimeModel = this.message.runtimeModel();
               if (runtimeModel && Bindings2.SymbolizedError.isErrorLike(value)) {
                 const remoteObj = this.#parameterToRemoteObject(parameter);
-                formattedContent = this.renderSymbolizedError(remoteObj);
+                messageBody = renderMessageText(this.renderSymbolizedError(remoteObj));
               }
             }
           }
-          if (!formattedContent) {
+          if (!messageBody) {
             const args = this.message.parameters || [messageText];
-            formattedContent = this.format(args);
+            messageBody = renderMessageText(this.format(args));
           }
         }
       }
     } else if (this.message.source === Log.LogEntrySource.Network) {
-      messageElement = this.formatAsNetworkRequest() ?? void 0;
-      if (!messageElement) {
-        formattedContent = this.format([messageText]);
-      }
+      messageBody = renderMessageText(this.formatAsNetworkRequest() ?? this.format([messageText]));
     } else {
       const messageInParameters = this.message.parameters && messageText === this.message.parameters[0];
       if (this.message.source === Log.LogEntrySource.Violation) {
@@ -5582,100 +5574,62 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       if (messageInParameters) {
         args[0] = messageText;
       }
-      formattedContent = this.format(args);
+      messageBody = renderMessageText(this.format(args));
     }
-    messageElement?.classList.add("console-message-text");
-    const formattedMessage = document.createElement("span");
-    this.anchorElement = this.buildMessageAnchor();
-    render3(
-      html3`${this.anchorElement ?? nothing3}${formattedContent ? renderMessageText(formattedContent) : messageElement ?? nothing3}`,
-      formattedMessage,
-      { container: { classes: ["source-code"] } }
-    );
-    return formattedMessage;
+    const anchorTemplate = this.buildMessageAnchor();
+    return html3`<span class="source-code">${anchorTemplate ?? nothing3}${messageBody}</span>`;
   }
   formatAsNetworkRequest() {
     const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(this.message);
     if (!request) {
       return null;
     }
-    const messageElement = document.createElement("span");
+    const renderRequestLink = () => Components2.Linkifier.Linkifier.renderRevealable(
+      request,
+      request.url(),
+      request.url(),
+      { jslogContext: "network-request", onRef: (link) => link.setAttribute(SELECTABLE_ATTRIBUTE, "") }
+    );
     if (this.message.level === Log.LogEntryLevel.Error) {
-      UI3.UIUtils.createTextChild(messageElement, request.requestMethod + " ");
-      const linkElement = Components2.Linkifier.Linkifier.linkifyRevealable(
-        request,
-        request.url(),
-        request.url(),
-        void 0,
-        void 0,
-        "network-request"
-      );
-      linkElement.tabIndex = -1;
-      linkElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
-      messageElement.appendChild(linkElement);
-      if (request.failed) {
-        UI3.UIUtils.createTextChildren(messageElement, " ", request.localizedFailDescription || "");
-      }
-      if (request.statusCode !== 0) {
-        UI3.UIUtils.createTextChildren(messageElement, " ", String(request.statusCode));
-      }
       const statusText = request.getInferredStatusText();
-      if (statusText) {
-        UI3.UIUtils.createTextChildren(messageElement, " (", statusText, ")");
-      }
-    } else {
-      const messageText = this.message.messageText;
-      const initiatorId = () => this.initiatorId();
-      const fragment = _ConsoleViewMessage.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
-        const linkElement = url === request.url() ? Components2.Linkifier.Linkifier.linkifyRevealable(
-          request,
-          url,
-          request.url(),
-          void 0,
-          void 0,
-          "network-request"
-        ) : Components2.Linkifier.Linkifier.linkifyURL(
-          url,
-          { text, lineNumber, columnNumber, initiatorId }
-        );
-        linkElement.tabIndex = -1;
-        linkElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
-        return linkElement;
-      });
-      if (fragment instanceof UI3.Widget.Widget) {
-        fragment.show(
-          messageElement,
-          null,
-          /* suppressOrphanWidgetError=*/
-          true
-        );
-      } else {
-        messageElement.appendChild(fragment);
-      }
+      return html3`${request.requestMethod} ${renderRequestLink()}${request.failed ? ` ${request.localizedFailDescription || ""}` : nothing3}${request.statusCode !== 0 ? ` ${request.statusCode}` : nothing3}${statusText ? ` (${statusText})` : nothing3}`;
     }
-    return messageElement;
+    const messageText = this.message.messageText;
+    if (messageText.length > getMaxTokenizableStringLength()) {
+      return this.linkifyStringAsFragment(messageText);
+    }
+    const initiatorId = () => this.initiatorId();
+    const parts = tokenizeAndLinkify(
+      messageText,
+      (text, url, lineNumber, columnNumber) => url === request.url() ? renderRequestLink() : Components2.Linkifier.Linkifier.renderLinkifiedUrl(url, {
+        text,
+        lineNumber,
+        columnNumber,
+        initiatorId,
+        onRef: (link) => link.setAttribute(SELECTABLE_ATTRIBUTE, "")
+      })
+    );
+    return html3`${parts}`;
   }
   createAffectedResourceLinks() {
-    const elements = [];
-    const requestId = this.message.getAffectedResources()?.requestId;
-    if (requestId) {
-      const icon = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
-      icon.classList.add("resource-links");
-      icon.data = {
-        affectedRequest: { requestId },
+    const links = [];
+    const affectedResources = this.message.getAffectedResources();
+    if (affectedResources?.requestId) {
+      const data = {
+        affectedRequest: { requestId: affectedResources.requestId },
         requestResolver: this.requestResolver,
         displayURL: false
       };
-      elements.push(icon);
+      links.push(html3`<devtools-request-link-icon class="resource-links" .data=${data}></devtools-request-link-icon>`);
     }
-    const issueId = this.message.getAffectedResources()?.issueId;
-    if (issueId) {
-      const icon = new IssueCounter.IssueLinkIcon.IssueLinkIcon();
-      icon.classList.add("resource-links");
-      icon.data = { issueId, issueResolver: this.issueResolver };
-      elements.push(icon);
+    if (affectedResources?.issueId) {
+      const data = {
+        issueId: affectedResources.issueId,
+        issueResolver: this.issueResolver
+      };
+      links.push(html3`<devtools-issue-link-icon class="resource-links" .data=${data}></devtools-issue-link-icon>`);
     }
-    return elements;
+    return links;
   }
   #getLinkifierMetric() {
     const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(this.message);
@@ -5685,67 +5639,62 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return void 0;
   }
   buildMessageAnchor() {
+    const anchorLink = this.#anchorLink();
+    const affectedResourceLinks = this.createAffectedResourceLinks();
+    if (anchorLink) {
+      return html3`<span class="console-message-anchor">${anchorLink}${affectedResourceLinks.map((link) => html3` ${link}`)} </span>`;
+    }
+    if (affectedResourceLinks.length) {
+      return html3`<span class="console-message-anchor">${affectedResourceLinks} </span>`;
+    }
+    return null;
+  }
+  /**
+   * The link to the message's source location. It is created once per message, because the
+   * `Linkifier` keeps it up to date as the location changes (e.g. when a source map loads).
+   */
+  #anchorLink() {
+    if (this.#anchorLinkElement !== void 0) {
+      return this.#anchorLinkElement;
+    }
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
     }
-    const linkify = ({ stackFrameWithBreakpoint, scriptId, stackTrace, url, line, column }) => {
-      const userMetric = this.#getLinkifierMetric();
-      if (stackFrameWithBreakpoint) {
-        return this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), stackFrameWithBreakpoint, {
-          revealBreakpoint: true,
-          userMetric
-        });
-      }
-      if (scriptId) {
-        return this.linkifier.linkifyScriptLocation(
-          runtimeModel.target(),
-          scriptId,
-          url || Platform2.DevToolsPath.EmptyUrlString,
-          line,
-          { columnNumber: column, userMetric }
-        );
-      }
-      if (stackTrace?.callFrames.length) {
-        return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
-      }
-      if (url && url !== "undefined") {
-        return this.linkifier.linkifyScriptLocation(
-          runtimeModel.target(),
-          /* scriptId */
-          null,
-          url,
-          line,
-          { columnNumber: column, userMetric }
-        );
-      }
-      return null;
-    };
-    const anchorElement = linkify(this.message);
-    if (anchorElement) {
-      anchorElement.tabIndex = -1;
-      anchorElement.setAttribute(SELECTABLE_ATTRIBUTE, "");
-      const anchorWrapperElement = document.createElement("span");
-      anchorWrapperElement.classList.add("console-message-anchor");
-      anchorWrapperElement.appendChild(anchorElement);
-      for (const element of this.createAffectedResourceLinks()) {
-        UI3.UIUtils.createTextChild(anchorWrapperElement, " ");
-        anchorWrapperElement.append(element);
-      }
-      UI3.UIUtils.createTextChild(anchorWrapperElement, " ");
-      return anchorWrapperElement;
+    const { stackFrameWithBreakpoint, scriptId, stackTrace, url, line, column } = this.message;
+    const userMetric = this.#getLinkifierMetric();
+    let anchorLink = null;
+    if (stackFrameWithBreakpoint) {
+      anchorLink = this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), stackFrameWithBreakpoint, {
+        revealBreakpoint: true,
+        userMetric
+      });
+    } else if (scriptId) {
+      anchorLink = this.linkifier.linkifyScriptLocation(
+        runtimeModel.target(),
+        scriptId,
+        url || Platform2.DevToolsPath.EmptyUrlString,
+        line,
+        { columnNumber: column, userMetric }
+      );
+    } else if (stackTrace?.callFrames.length) {
+      anchorLink = this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
+    } else if (url && url !== "undefined") {
+      anchorLink = this.linkifier.linkifyScriptLocation(
+        runtimeModel.target(),
+        /* scriptId */
+        null,
+        url,
+        line,
+        { columnNumber: column, userMetric }
+      );
     }
-    const affectedResourceElements = this.createAffectedResourceLinks();
-    if (affectedResourceElements.length) {
-      const anchorWrapperElement = document.createElement("span");
-      anchorWrapperElement.classList.add("console-message-anchor");
-      for (const element of affectedResourceElements) {
-        anchorWrapperElement.append(element);
-      }
-      UI3.UIUtils.createTextChild(anchorWrapperElement, " ");
-      return anchorWrapperElement;
+    if (anchorLink) {
+      anchorLink.tabIndex = -1;
+      anchorLink.setAttribute(SELECTABLE_ATTRIBUTE, "");
     }
-    return null;
+    this.#anchorLinkElement = anchorLink;
+    return anchorLink;
   }
   buildMessageWithStackTrace(runtimeModel) {
     const icon = createIcon("triangle-right", "console-message-expand-icon");
@@ -5791,16 +5740,14 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const toggleElement = document.createElement("div");
     toggleElement.classList.add("console-message-stack-trace-toggle");
     const contentElement = toggleElement.createChild("div", "console-message-stack-trace-wrapper");
-    const messageElement = this.buildMessage();
     const clickableElement = contentElement.createChild("div");
     UI3.ARIAUtils.setExpanded(clickableElement, false);
-    if (icon) {
-      clickableElement.appendChild(icon);
-    }
     if (stackTrace) {
       clickableElement.tabIndex = -1;
     }
-    clickableElement.appendChild(messageElement);
+    render3(html3`${icon ?? nothing3}${this.buildMessage()}`, clickableElement);
+    const messageElement = clickableElement.querySelector(".source-code") ?? clickableElement;
+    this.anchorElement = clickableElement.querySelector(".console-message-anchor");
     const stackTraceElement = contentElement.createChild("div", "hidden-stack-trace");
     const targetManager = SDK3.TargetManager.TargetManager.instance();
     const stackTraceTarget = target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
@@ -6960,21 +6907,13 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
     }
     const newContentElement = document.createElement("div");
     newContentElement.classList.add("console-message");
-    if (this.messageIcon) {
-      newContentElement.appendChild(this.messageIcon);
-    }
     this.setContentElement(newContentElement);
-    newContentElement.appendChild(this.buildTableMessage());
+    render3(html3`${this.messageIcon ?? nothing3}${this.buildTableMessage()}`, newContentElement);
+    this.anchorElement = newContentElement.querySelector(".console-message-anchor");
     this.updateTimestamp();
     return newContentElement;
   }
   buildTableMessage() {
-    const formattedMessage = document.createElement("span");
-    formattedMessage.classList.add("source-code");
-    this.anchorElement = this.buildMessageAnchor();
-    if (this.anchorElement) {
-      formattedMessage.appendChild(this.anchorElement);
-    }
     const table = this.message.parameters?.length ? this.message.parameters[0] : null;
     if (!table) {
       return this.buildMessage();
@@ -6983,6 +6922,7 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
     if (!actualTable?.preview) {
       return this.buildMessage();
     }
+    const anchorTemplate = this.buildMessageAnchor();
     const rawValueColumnSymbol = /* @__PURE__ */ Symbol("rawValueColumn");
     const columnNames = [];
     const preview = actualTable.preview;
@@ -7030,6 +6970,7 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
     }
     columnNames.unshift(i18nString2(UIStrings2.index));
     const columnDisplayNames = columnNames.map((name) => name === rawValueColumnSymbol ? i18nString2(UIStrings2.value) : name.toString());
+    let formattedResult;
     if (flatValues.length) {
       this.dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(
         columnDisplayNames,
@@ -7040,7 +6981,7 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
         this.dataGrid.setStriped(true);
         this.dataGrid.setFocusable(false);
         this.dataGrid.setTableContextMenuCallback(this.populateTableContextMenu.bind(this));
-        const formattedResult = document.createElement("span");
+        formattedResult = document.createElement("span");
         formattedResult.classList.add("console-message-text");
         const tableElement = formattedResult.createChild("div", "console-message-formatted-table");
         const dataGridContainer = document.createElement("span");
@@ -7050,11 +6991,10 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
         dataGridWidget.markAsRoot();
         dataGridWidget.show(shadowRoot);
         dataGridWidget.registerRequiredCSS(consoleView_css_default, objectValue_css_default);
-        formattedMessage.appendChild(formattedResult);
         this.dataGrid.renderInline();
       }
     }
-    return formattedMessage;
+    return html3`<span class="source-code">${anchorTemplate ?? nothing3}${formattedResult ?? nothing3}</span>`;
   }
   approximateFastHeight() {
     const table = this.message.parameters?.[0];
@@ -9725,10 +9665,12 @@ __export(ConsoleView_exports, {
   ActionDelegate: () => ActionDelegate,
   ConsoleView: () => ConsoleView,
   ConsoleViewFilter: () => ConsoleViewFilter,
-  PROGRESS_VIEW: () => PROGRESS_VIEW,
-  SETTINGS_PANE_VIEW: () => SETTINGS_PANE_VIEW
+  SETTINGS_PANE_VIEW: () => SETTINGS_PANE_VIEW,
+  TOOLBAR_VIEW: () => TOOLBAR_VIEW,
+  renderProgress: () => renderProgress
 });
 import "../../ui/legacy/legacy.js";
+import "../../ui/kit/kit.js";
 import * as Common6 from "../../core/common/common.js";
 import * as Host4 from "../../core/host/host.js";
 import * as i18n11 from "../../core/i18n/i18n.js";
@@ -9742,10 +9684,10 @@ import * as Bindings4 from "../../models/bindings/bindings.js";
 import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
 import * as Logs3 from "../../models/logs/logs.js";
 import * as Workspace2 from "../../models/workspace/workspace.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter3 from "../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "../../ui/components/highlighting/highlighting.js";
-import * as IssueCounter2 from "../../ui/components/issue_counter/issue_counter.js";
-import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
+import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
 import { html as html8, nothing as nothing7, render as render8 } from "../../ui/lit/lit.js";
@@ -10027,7 +9969,7 @@ var MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
 var DISCLAIMER_TOOLTIP_ID = "console-ai-code-completion-disclaimer-tooltip";
 var SPINNER_TOOLTIP_ID = "console-ai-code-completion-spinner-tooltip";
 var CITATIONS_TOOLTIP_ID = "console-ai-code-completion-citations-tooltip";
-var { bindToSetting } = UI9.UIUtils;
+var { bindToAction, bindToSetting } = UI9.UIUtils;
 function renderSettingsPane(input) {
   return html8`<div
       class="console-settings-pane"
@@ -10084,14 +10026,88 @@ function renderSettingsPane(input) {
 var SETTINGS_PANE_VIEW = (input, _output, target) => {
   render8(renderSettingsPane(input), target);
 };
-var PROGRESS_VIEW = (progressInput, _output, target) => {
-  render8(progressInput ? html8`
+function renderProgress(progressInput) {
+  return progressInput ? html8`
     <devtools-progress
         .title=${progressInput.title}
         .worked=${progressInput.worked}
         .totalWork=${progressInput.totalWork}
         @canceled=${progressInput.onCancel}>
-    </devtools-progress>` : nothing7, target);
+    </devtools-progress>` : nothing7;
+}
+function renderToolbar(input) {
+  return html8`<div class="console-toolbar-container" role="toolbar">
+    <devtools-toolbar class="console-main-toolbar" role="presentation" wrappable jslog=${VisualLogging5.toolbar()}>
+      <devtools-button
+          class="toolbar-button"
+          .iconName=${input.isSidebarOpen ? "left-panel-close" : "left-panel-open"}
+          .variant=${Buttons3.Button.Variant.ICON}
+          .title=${input.isSidebarOpen ? i18nString5(UIStrings5.hideConsoleSidebar) : i18nString5(UIStrings5.showConsoleSidebar)}
+          .accessibleLabel=${input.isSidebarOpen ? i18nString5(UIStrings5.hideConsoleSidebar) : i18nString5(UIStrings5.showConsoleSidebar)}
+          .accessibleExpanded=${input.isSidebarOpen}
+          jslog=${VisualLogging5.toggleSubpane("console-sidebar").track({ click: true })}
+          @click=${input.onToggleSidebar}>
+      </devtools-button>
+      <devtools-button class="toolbar-button" ${bindToAction("console.clear")}></devtools-button>
+      <devtools-button
+          class="toolbar-button"
+          .iconName=${input.allCollapsed ? "expand" : "compress"}
+          .variant=${Buttons3.Button.Variant.ICON}
+          .title=${input.allCollapsed ? i18nString5(UIStrings5.expandAll) : i18nString5(UIStrings5.collapseAll)}
+          .accessibleLabel=${input.allCollapsed ? i18nString5(UIStrings5.expandAll) : i18nString5(UIStrings5.collapseAll)}
+          .jslogContext=${"console.collapse-all"}
+          @click=${input.onToggleCollapseAll}>
+      </devtools-button>
+      <div class="toolbar-divider"></div>
+      ${input.contextSelectorToolbarItem.element}
+      <div class="toolbar-divider"></div>
+      <devtools-button class="toolbar-button" ${bindToAction("console.create-pin")}></devtools-button>
+      <div class="toolbar-divider"></div>
+      ${input.textFilterUI.element}
+      ${input.levelMenuButton.element}
+      <devtools-icon
+          name="info"
+          class="console-sidebar-levels-info"
+          ?hidden=${!input.isSidebarOpen}
+          title=${i18nString5(UIStrings5.overriddenByFilterSidebar)}>
+      </devtools-icon>
+      <div>
+        ${renderProgress(input.progress)}
+      </div>
+      <div class="toolbar-divider"></div>
+      <devtools-issue-counter
+          id="console-issues-counter"
+          title=${input.issueCounterTitle}
+          jslog=${VisualLogging5.counter("issues").track({ click: true })}
+          .data=${input.issueCounterData}>
+      </devtools-issue-counter>
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-text dimmed" ?hidden=${!input.hiddenByFilterCount}>
+        ${i18nString5(UIStrings5.sHidden, { n: input.hiddenByFilterCount })}
+      </div>
+      <devtools-button
+          class="toolbar-button"
+          .iconName=${"gear"}
+          .toggledIconName=${"gear-filled"}
+          .toggleType=${Buttons3.Button.ToggleType.PRIMARY}
+          .variant=${Buttons3.Button.Variant.ICON_TOGGLE}
+          .title=${i18nString5(UIStrings5.consoleSettings)}
+          .accessibleLabel=${i18nString5(UIStrings5.consoleSettings)}
+          .accessibleExpanded=${input.showSettingsPaneSetting.get()}
+          jslog=${VisualLogging5.toggleSubpane("console-settings").track({ click: true })}
+          ${bindToSetting(input.showSettingsPaneSetting, { jslog: false })}>
+      </devtools-button>
+    </devtools-toolbar>
+    <div
+        class="message-count"
+        aria-live="polite"
+        aria-atomic="false"
+        aria-label=${i18nString5(UIStrings5.filteredMessagesInConsole, { PH1: input.filteredMessagesCount })}>
+    </div>
+  </div>`;
+}
+var TOOLBAR_VIEW = (input, _output, target) => {
+  render8(renderToolbar(input), target);
 };
 var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   #searchableView;
@@ -10112,10 +10128,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   shortcuts;
   regexMatchRanges;
   consoleContextSelector;
-  filterStatusText;
   showSettingsPaneSetting;
-  showSettingsPaneButton;
-  progressToolbarItem;
   groupSimilarSetting;
   showCorsErrorsSetting;
   timestampsSetting;
@@ -10129,7 +10142,6 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   pinPane;
   viewport;
   messagesElement;
-  messagesCountElement;
   viewportThrottler;
   pendingBatchResize;
   onMessageResizedBound;
@@ -10149,7 +10161,8 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   #searchTimeoutId;
   muteViewportUpdates;
   waitForScrollTimeout;
-  issueCounter;
+  #issueCounterData;
+  #issueCounterTitle = "";
   pendingSidebarMessages = [];
   userHasOpenedSidebarAtLeastOnce = false;
   issueToolbarThrottle;
@@ -10165,17 +10178,16 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   #onSinkMessageAdded = ({ data: message }) => {
     this.addSinkMessage(message);
   };
-  #collapseAllButton;
   #allCollapsed = false;
   aiCodeCompletionConfig;
   aiCodeCompletionSummaryToolbarContainer;
   aiCodeCompletionSummaryToolbar;
   #settingsPaneView;
-  #progressView;
-  constructor(viewportThrottlerTimeout, settingsPaneView = SETTINGS_PANE_VIEW, progressView = PROGRESS_VIEW) {
+  #toolbarView;
+  constructor(viewportThrottlerTimeout, settingsPaneView = SETTINGS_PANE_VIEW, toolbarView = TOOLBAR_VIEW) {
     super();
     this.#settingsPaneView = settingsPaneView;
-    this.#progressView = progressView;
+    this.#toolbarView = toolbarView;
     this.setMinimumSize(0, 35);
     this.registerRequiredCSS(
       consoleView_css_default,
@@ -10191,8 +10203,8 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     this.sidebar.addEventListener("FilterSelected" /* FILTER_SELECTED */, this.onFilterChanged.bind(this));
     this.isSidebarOpen = false;
     this.filter = new ConsoleViewFilter(this.onFilterChanged.bind(this));
-    this.consoleToolbarContainer = this.element.createChild("div", "console-toolbar-container");
-    this.consoleToolbarContainer.role = "toolbar";
+    this.consoleToolbarContainer = this.element.createChild("div");
+    this.consoleToolbarContainer.style.display = "contents";
     this.splitWidget = new UI9.SplitWidget.SplitWidget(
       true,
       false,
@@ -10220,6 +10232,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       }
       this.filter.setLevelMenuOverridden(this.isSidebarOpen);
       this.onFilterChanged();
+      this.requestUpdate();
     });
     this.contentsElement = this.#searchableView.element;
     this.element.classList.add("console-view");
@@ -10231,67 +10244,20 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     this.shortcuts = /* @__PURE__ */ new Map();
     this.regexMatchRanges = [];
     this.consoleContextSelector = new ConsoleContextSelector();
-    this.filterStatusText = new UI9.Toolbar.ToolbarText();
-    this.filterStatusText.element.classList.add("dimmed");
     this.showSettingsPaneSetting = Common6.Settings.Settings.instance().createSetting("console-show-settings-toolbar", false);
-    this.showSettingsPaneButton = new UI9.Toolbar.ToolbarSettingToggle(
-      this.showSettingsPaneSetting,
-      "gear",
-      i18nString5(UIStrings5.consoleSettings),
-      "gear-filled"
-    );
-    this.showSettingsPaneButton.element.setAttribute(
-      "jslog",
-      `${VisualLogging5.toggleSubpane("console-settings").track({ click: true })}`
-    );
-    this.progressToolbarItem = new UI9.Toolbar.ToolbarItem(document.createElement("div"));
     this.groupSimilarSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
     this.groupSimilarSetting.addChangeListener(this.#onUpdateMessageListSettingChanged);
     this.showCorsErrorsSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor);
     this.showCorsErrorsSetting.addChangeListener(this.#onUpdateMessageListSettingChanged);
-    const toolbar2 = this.consoleToolbarContainer.createChild("devtools-toolbar", "console-main-toolbar");
-    toolbar2.setAttribute("jslog", `${VisualLogging5.toolbar()}`);
-    toolbar2.role = "presentation";
-    toolbar2.wrappable = true;
-    toolbar2.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(
-      i18nString5(UIStrings5.showConsoleSidebar),
-      i18nString5(UIStrings5.hideConsoleSidebar),
-      i18nString5(UIStrings5.consoleSidebarShown),
-      i18nString5(UIStrings5.consoleSidebarHidden),
-      "console-sidebar"
-    ));
-    toolbar2.appendToolbarItem(UI9.Toolbar.Toolbar.createActionButton("console.clear"));
-    this.#collapseAllButton = new UI9.Toolbar.ToolbarButton(i18nString5(UIStrings5.collapseAll), "compress", void 0, "console.collapse-all");
-    this.#collapseAllButton.addEventListener(UI9.Toolbar.ToolbarButton.Events.CLICK, this.#toggleCollapseAll, this);
-    toolbar2.appendToolbarItem(this.#collapseAllButton);
-    toolbar2.appendSeparator();
-    toolbar2.appendToolbarItem(this.consoleContextSelector.toolbarItem());
-    toolbar2.appendSeparator();
-    const liveExpressionButton = UI9.Toolbar.Toolbar.createActionButton("console.create-pin");
-    toolbar2.appendToolbarItem(liveExpressionButton);
-    toolbar2.appendSeparator();
-    toolbar2.appendToolbarItem(this.filter.textFilterUI);
-    toolbar2.appendToolbarItem(this.filter.levelMenuButton);
-    toolbar2.appendToolbarItem(this.filter.levelMenuButtonInfo);
-    toolbar2.appendToolbarItem(this.progressToolbarItem);
-    toolbar2.appendSeparator();
-    this.issueCounter = new IssueCounter2.IssueCounter.IssueCounter();
-    this.issueCounter.id = "console-issues-counter";
-    this.issueCounter.setAttribute("jslog", `${VisualLogging5.counter("issues").track({ click: true })}`);
-    const issuesToolbarItem = new UI9.Toolbar.ToolbarItem(this.issueCounter);
-    this.issueCounter.data = {
+    this.#issueCounterData = {
       clickHandler: () => {
         Host4.userMetrics.issuesPanelOpenedFrom(Host4.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER);
         void UI9.ViewManager.ViewManager.instance().showView("issues-pane");
       },
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
       accessibleName: i18nString5(UIStrings5.issueToolbarTooltipGeneral),
-      displayMode: IssueCounter2.IssueCounter.DisplayMode.OMIT_EMPTY
+      displayMode: IssueCounter.IssueCounter.DisplayMode.OMIT_EMPTY
     };
-    toolbar2.appendToolbarItem(issuesToolbarItem);
-    toolbar2.appendSeparator();
-    toolbar2.appendToolbarItem(this.filterStatusText);
-    toolbar2.appendToolbarItem(this.showSettingsPaneButton);
     this.#monitoringXHREnabledSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.monitoringXHREnabledSettingDescriptor);
     this.timestampsSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
     this.consoleHistoryAutocompleteSetting = Common6.Settings.Settings.instance().resolve(
@@ -10323,8 +10289,6 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     ["paste", "clipboard-paste", "drop"].forEach((type) => {
       this.messagesElement.addEventListener(type, this.messagesPasted.bind(this), true);
     });
-    this.messagesCountElement = this.consoleToolbarContainer.createChild("div", "message-count");
-    UI9.ARIAUtils.markAsPoliteLiveRegion(this.messagesCountElement, false);
     this.viewportThrottler = new Common6.Throttler.Throttler(viewportThrottlerTimeout);
     this.pendingBatchResize = false;
     this.onMessageResizedBound = (e) => {
@@ -10460,6 +10424,9 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     };
   }
   performUpdate() {
+    if (this.#disposed) {
+      return;
+    }
     this.#settingsPaneView(
       {
         showSettingsPane: this.showSettingsPaneSetting.get(),
@@ -10476,8 +10443,30 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       void 0,
       this.#settingsPaneContainer
     );
-    this.#progressView(this.#createProgressViewInput(), void 0, this.progressToolbarItem.element);
+    this.#toolbarView(
+      {
+        isSidebarOpen: this.isSidebarOpen,
+        onToggleSidebar: this.#onToggleSidebar,
+        allCollapsed: this.#allCollapsed,
+        onToggleCollapseAll: () => this.#toggleCollapseAll(),
+        contextSelectorToolbarItem: this.consoleContextSelector.toolbarItem(),
+        textFilterUI: this.filter.textFilterUI,
+        levelMenuButton: this.filter.levelMenuButton,
+        progress: this.#createProgressViewInput(),
+        issueCounterData: this.#issueCounterData,
+        issueCounterTitle: this.#issueCounterTitle,
+        hiddenByFilterCount: this.hiddenByFilterCount,
+        showSettingsPaneSetting: this.showSettingsPaneSetting,
+        filteredMessagesCount: this.visibleViewMessages.length
+      },
+      void 0,
+      this.consoleToolbarContainer
+    );
   }
+  #onToggleSidebar = () => {
+    const isShown = this.splitWidget.toggleSidebar();
+    UI9.ARIAUtils.LiveAnnouncer.alert(isShown ? i18nString5(UIStrings5.consoleSidebarShown) : i18nString5(UIStrings5.consoleSidebarHidden));
+  };
   static clearConsoleViewInstanceForTest() {
     consoleViewInstance = null;
   }
@@ -10543,6 +10532,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     }
     this.#allCollapsed = !this.#allCollapsed;
     this.#updateCollapseAllButton();
+    this.requestUpdate();
   }
   #updateCollapseAllButton() {
     let hasExpandedMessages = false;
@@ -10561,13 +10551,6 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       }
     }
     this.#allCollapsed = !hasExpandedMessages && hasCollapsedMessages;
-    if (this.#allCollapsed) {
-      this.#collapseAllButton.setGlyph("expand");
-      this.#collapseAllButton.setTitle(i18nString5(UIStrings5.expandAll));
-    } else {
-      this.#collapseAllButton.setGlyph("compress");
-      this.#collapseAllButton.setTitle(i18nString5(UIStrings5.collapseAll));
-    }
   }
   #onIssuesCountUpdate() {
     void this.issueToolbarThrottle.schedule(async () => this.updateIssuesToolbarItem());
@@ -10812,16 +10795,21 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       return;
     }
     const manager = IssuesManager.IssuesManager.IssuesManager.instance();
-    const issueEnumeration = IssueCounter2.IssueCounter.getIssueCountsEnumeration(manager);
+    const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(manager);
     const issuesTitleGotoIssues = manager.numberOfIssues() === 0 ? i18nString5(UIStrings5.issueToolbarClickToGoToTheIssuesTab) : i18nString5(UIStrings5.issueToolbarClickToView, { issueEnumeration });
     const issuesTitleGeneral = i18nString5(UIStrings5.issueToolbarTooltipGeneral);
     const issuesTitle = `${issuesTitleGeneral} ${issuesTitleGotoIssues}`;
-    UI9.Tooltip.Tooltip.install(this.issueCounter, issuesTitle);
-    this.issueCounter.data = {
-      ...this.issueCounter.data,
-      leadingText: i18nString5(UIStrings5.issuesWithColon, { n: manager.numberOfIssues() }),
+    const leadingText = i18nString5(UIStrings5.issuesWithColon, { n: manager.numberOfIssues() });
+    if (this.#issueCounterTitle === issuesTitle && this.#issueCounterData.leadingText === leadingText) {
+      return;
+    }
+    this.#issueCounterTitle = issuesTitle;
+    this.#issueCounterData = {
+      ...this.#issueCounterData,
+      leadingText,
       accessibleName: issuesTitle
     };
+    this.requestUpdate();
   }
   scheduleViewportRefresh() {
     if (this.muteViewportUpdates) {
@@ -10841,9 +10829,8 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     if (this.hiddenByFilterCount === this.lastShownHiddenByFilterCount) {
       return;
     }
-    this.filterStatusText.setText(i18nString5(UIStrings5.sHidden, { n: this.hiddenByFilterCount }));
-    this.filterStatusText.setVisible(Boolean(this.hiddenByFilterCount));
     this.lastShownHiddenByFilterCount = this.hiddenByFilterCount;
+    this.requestUpdate();
   }
   onConsoleMessageAdded(event) {
     const message = event.data;
@@ -11290,10 +11277,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     this.highlightMatch(this.currentMatchRangeIndex, false);
     this.#updateCollapseAllButton();
     this.viewport.invalidate();
-    this.messagesCountElement.setAttribute(
-      "aria-label",
-      i18nString5(UIStrings5.filteredMessagesInConsole, { PH1: this.visibleViewMessages.length })
-    );
+    this.requestUpdate();
   }
   addGroupableMessagesToEnd() {
     const alreadyAdded = /* @__PURE__ */ new Set();
@@ -11629,7 +11613,6 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
   currentFilter;
   levelLabels;
   levelMenuButton;
-  levelMenuButtonInfo;
   constructor(filterChangedCallback) {
     this.filterChanged = filterChangedCallback;
     this.messageLevelFiltersSetting = _ConsoleViewFilter.levelFilterSetting();
@@ -11673,10 +11656,6 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
       [Log.LogEntryLevel.Error, i18nString5(UIStrings5.errors)]
     ]);
     this.levelMenuButton = new UI9.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), void 0, void 0, "log-level");
-    const levelMenuButtonInfoIcon = createIcon2("info", "console-sidebar-levels-info");
-    levelMenuButtonInfoIcon.title = i18nString5(UIStrings5.overriddenByFilterSidebar);
-    this.levelMenuButtonInfo = new UI9.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
-    this.levelMenuButtonInfo.setVisible(false);
     this.updateLevelMenuButtonText();
     this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText, this);
   }
@@ -11696,7 +11675,6 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
   }
   setLevelMenuOverridden(overridden) {
     this.levelMenuButton.setEnabled(!overridden);
-    this.levelMenuButtonInfo.setVisible(overridden);
     if (overridden) {
       this.levelMenuButton.setText(i18nString5(UIStrings5.customLevels));
     } else {

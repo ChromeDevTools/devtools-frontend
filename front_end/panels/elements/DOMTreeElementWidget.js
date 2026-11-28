@@ -373,6 +373,12 @@ function formatCandidateLabel(node) {
     }
     return label;
 }
+function hasNodeIssues(issues) {
+    return Boolean(issues?.some(issue => {
+        const details = getElementIssueDetails(issue);
+        return Boolean(details && !details.attribute);
+    }));
+}
 function renderTitle(node, input) {
     const { isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, issues } = input;
     const { onHighlightSearchResults, onExpand } = input;
@@ -425,6 +431,10 @@ function renderTitle(node, input) {
             return openingTag;
         }
         case Node.TEXT_NODE: {
+            const textNodeClasses = {
+                'webkit-html-text-node': true,
+                'violating-element': hasNodeIssues(issues),
+            };
             if (node.parentNode && node.parentNode.nodeName().toLowerCase() === 'script') {
                 const text = node.nodeValue();
                 const highlightNode = ref(el => {
@@ -433,7 +443,7 @@ function renderTitle(node, input) {
                         void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/javascript').then(onHighlightSearchResults);
                     }
                 });
-                return html `<span class="webkit-html-text-node webkit-html-js-node" jslog=${VisualLogging.value('script-text-node').track({ change: true, dblclick: true })} ${highlightNode}></span>`;
+                return html `<span class=${classMap({ ...textNodeClasses, 'webkit-html-js-node': true })} jslog=${VisualLogging.value('script-text-node').track({ change: true, dblclick: true })} ${highlightNode}></span>`;
             }
             if (node.parentNode && node.parentNode.nodeName().toLowerCase() === 'style') {
                 const text = node.nodeValue();
@@ -443,7 +453,7 @@ function renderTitle(node, input) {
                         void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/css').then(onHighlightSearchResults);
                     }
                 });
-                return html `<span class="webkit-html-text-node webkit-html-css-node" jslog=${VisualLogging.value('css-text-node').track({ change: true, dblclick: true })} ${highlightNode}></span>`;
+                return html `<span class=${classMap({ ...textNodeClasses, 'webkit-html-css-node': true })} jslog=${VisualLogging.value('css-text-node').track({ change: true, dblclick: true })} ${highlightNode}></span>`;
             }
             const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
             const textContent = Platform.StringUtilities.collapseWhitespace(result.text);
@@ -453,7 +463,7 @@ function renderTitle(node, input) {
                     Highlighting.highlightRangesWithStyleClass(el, result.entityRanges, 'webkit-html-entity-value');
                 }
             });
-            return html `"<span class="webkit-html-text-node" jslog=${VisualLogging.value('text-node').track({
+            return html `"<span class=${classMap(textNodeClasses)} jslog=${VisualLogging.value('text-node').track({
                 change: true,
                 dblclick: true,
             })} ${animateOn(Boolean(updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>"`;
@@ -706,10 +716,7 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
         hasUpdates = hasUpdates || (!expanded && updateRecord.hasChangedChildren());
     }
     const tagNameClass = isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name';
-    const hasTagIssues = !isClosingTag && Boolean(issues?.some(issue => {
-        const details = getElementIssueDetails(issue);
-        return Boolean(details && !details.attribute);
-    }));
+    const hasTagIssues = !isClosingTag && hasNodeIssues(issues);
     const tagNameClasses = {
         [tagNameClass]: true,
         'violating-element': hasTagIssues,

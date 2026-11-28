@@ -53,6 +53,13 @@ export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventT
      */
     static linkifyURL(url: Platform.DevToolsPath.UrlString, options?: LinkifyURLOptions): HTMLElement;
     static linkifyRevealable(revealable: Object, text: string | HTMLElement, fallbackHref?: Platform.DevToolsPath.UrlString, title?: string, className?: string, jslogContext?: string): HTMLElement;
+    /** Renders a link that reveals `revealable` when clicked. */
+    static renderRevealable(revealable: Object, text: string, fallbackHref?: Platform.DevToolsPath.UrlString, options?: {
+        title?: string;
+        className?: string;
+        jslogContext?: string;
+        onRef?: (el: HTMLElement) => void;
+    }): TemplateResult;
     private static renderLink;
     /**
      * @deprecated use renderLink.

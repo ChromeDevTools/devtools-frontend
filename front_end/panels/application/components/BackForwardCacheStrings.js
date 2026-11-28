@@ -341,11 +341,10 @@ const UIStrings = {
      * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
      */
     injectedStyleSheet: 'Pages that a `StyleSheet` is injected into by extensions aren’t currently eligible for back/forward cache',
-    // TODO(tluk): Please provide meaningful description.
     /**
      * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
      */
-    contentDiscarded: 'Undefined',
+    contentDiscarded: 'The page couldn’t be restored from back/forward cache because Chrome discarded the page',
     /**
      * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
      */

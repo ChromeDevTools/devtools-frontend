@@ -39,7 +39,10 @@ function titleFromArgs(args) {
 export class GetSourceContentTool {
     name = "getSourceContent" /* ToolName.GET_SOURCE_CONTENT */;
     permissionPrompt = "never" /* PermissionPrompt.NEVER */;
-    description = 'Retrieves the formatted content and metadata of a source file by its numeric ID (from listSources or the File ID in # Selected file). Long files are returned in parts. If the result ends with a "Content truncated" notice, call this function again with the same id and the offset given in the notice to read the next part.';
+    description = 'Retrieves the formatted content and metadata of a source file by its numeric ID (from listSources, ' +
+        'searchInSources, or the File ID in # Selected file). Long files are returned in parts. If the result ends ' +
+        'with a "Content truncated" notice, call this function again with the same id and the offset given in the ' +
+        'notice to read the next part.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: '',

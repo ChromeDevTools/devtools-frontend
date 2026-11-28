@@ -190,6 +190,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     #debouncedUpdateContentsFromWindow = Common.Debouncer.debounce(() => this.updateContentsFromWindow(), 100);
     lazySelectorStatsView;
     #parsedTrace = null;
+    #modelInput;
     #eventToRelatedInsightsMap = null;
     #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
     #boundsStateWhenHidden;
@@ -399,7 +400,17 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
             }
         }
     }
+    set model(data) {
+        if (this.#modelInput && this.#modelInput.parsedTrace === data.parsedTrace &&
+            this.#modelInput.selectedEvents === data.selectedEvents &&
+            this.#modelInput.eventToRelatedInsightsMap === data.eventToRelatedInsightsMap &&
+            this.#modelInput.entityMapper === data.entityMapper) {
+            return;
+        }
+        void this.setModel(data);
+    }
     async setModel(data) {
+        this.#modelInput = data;
         if (this.#parsedTrace !== data.parsedTrace) {
             // Clear the selector stats view, so the next time the user views it we
             // reconstruct it with the new trace data.

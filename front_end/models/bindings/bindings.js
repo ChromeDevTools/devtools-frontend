@@ -100,6 +100,13 @@ var ContentProviderBasedProject = class extends Workspace.Workspace.ProjectStore
     const { contentProvider } = this.#uiSourceCodeToData.get(uiSourceCode);
     return contentProvider.searchInContent(query, caseSensitive, isRegex);
   }
+  /**
+   * Returns the backing `ContentProvider` for `uiSourceCode` without triggering content loads,
+   * or `undefined` if `uiSourceCode` is not registered with a provider in this project.
+   */
+  contentProviderForUISourceCode(uiSourceCode) {
+    return this.#uiSourceCodeToData.get(uiSourceCode)?.contentProvider;
+  }
   async findFilesMatchingSearchRequest(searchConfig, filesMatchingFileQuery, progress) {
     const result = /* @__PURE__ */ new Map();
     progress.totalWork = filesMatchingFileQuery.length;
@@ -4056,6 +4063,7 @@ var Preload;
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+    PrerenderFinalStatus2["AudioOutput"] = "AudioOutput";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {

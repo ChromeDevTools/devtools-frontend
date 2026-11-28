@@ -96,7 +96,7 @@ export default `/*
   right: var(--sys-size-6);
 }
 
-:has(+ .chart-viewport-v-scroll:not(.hidden)) > .flame-chart-edit-confirm {
+:has(+ .chart-viewport-v-scroll:not([hidden])) > .flame-chart-edit-confirm {
   /* 12px margin (--sys-size-6) + 16px scrollbar gutter (--sys-size-8) = 28px (--sys-size-12). */
   right: var(--sys-size-12);
 }

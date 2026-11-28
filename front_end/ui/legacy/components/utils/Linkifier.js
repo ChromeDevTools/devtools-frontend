@@ -557,6 +557,17 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         linkInfo.revealable = revealable;
         return link;
     }
+    /** Renders a link that reveals `revealable` when clicked. */
+    static renderRevealable(revealable, text, fallbackHref, options = {}) {
+        return Linkifier.renderLink(text, options.className || '', {
+            maxLength: UI.UIUtils.MaxLengthForDisplayedURLs,
+            href: fallbackHref,
+            title: options.title,
+            jslogContext: options.jslogContext,
+            onRef: options.onRef,
+            revealable,
+        });
+    }
     static renderLink(text, className, options = {}) {
         const { maxLength, title, href, preventClick, tabStop, bypassURLTrimming, jslogContext } = options;
         const classes = {
@@ -603,6 +614,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
                     userMetric: options.userMetric,
                     allowPrivileged: options.allowPrivileged,
                     initiatorId: options.initiatorId,
+                    revealable: options.revealable,
                 };
                 infoByAnchor.set(link, linkInfo);
             });

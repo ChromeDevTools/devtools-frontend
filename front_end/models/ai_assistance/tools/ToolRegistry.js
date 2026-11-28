@@ -25,6 +25,7 @@ import { ListStorageKeysTool } from './ListStorageKeys.js';
 import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
 import { RunLighthouseTool } from './RunLighthouse.js';
+import { SearchInSourcesTool } from './SearchInSources.js';
 import { SelectTraceEventByKeyTool } from './SelectTraceEventByKey.js';
 import { SetElementStylesTool } from './SetElementStyles.js';
 /**
@@ -48,6 +49,7 @@ export const TOOLS = {
     ["selectTraceEventByKey" /* ToolName.SELECT_TRACE_EVENT_BY_KEY */]: new SelectTraceEventByKeyTool(),
     ["listSources" /* ToolName.LIST_SOURCES */]: new ListSourcesTool(),
     ["getSourceContent" /* ToolName.GET_SOURCE_CONTENT */]: new GetSourceContentTool(),
+    ["searchInSources" /* ToolName.SEARCH_IN_SOURCES */]: new SearchInSourcesTool(),
     ["getTraceMainThreadSummary" /* ToolName.GET_TRACE_MAIN_THREAD_SUMMARY */]: new GetTraceMainThreadSummaryTool(),
     ["getTraceNetworkSummary" /* ToolName.GET_TRACE_NETWORK_SUMMARY */]: new GetTraceNetworkSummaryTool(),
     ["runLighthouse" /* ToolName.RUN_LIGHTHOUSE */]: new RunLighthouseTool(),

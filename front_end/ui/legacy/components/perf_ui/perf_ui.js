@@ -227,7 +227,7 @@ var flameChart_css_default = `/*
   right: var(--sys-size-6);
 }
 
-:has(+ .chart-viewport-v-scroll:not(.hidden)) > .flame-chart-edit-confirm {
+:has(+ .chart-viewport-v-scroll:not([hidden])) > .flame-chart-edit-confirm {
   /* 12px margin (--sys-size-6) + 16px scrollbar gutter (--sys-size-8) = 28px (--sys-size-12). */
   right: var(--sys-size-12);
 }
@@ -3868,6 +3868,13 @@ var FlameChart = class extends FlameChartBase {
     this.highlightedEntryIndex = -1;
     this.selectedEntryIndex = -1;
     this.selectedGroupIndex = -1;
+    this.#searchResultEntryIndex = null;
+    this.#renderPopover(nothing);
+    this.lastPopoverState = {
+      entryIndex: -1,
+      groupIndex: -1,
+      hiddenEntriesPopover: false
+    };
     this.#persistedGroupConfig = null;
   }
   scheduleUpdate() {
@@ -7483,6 +7490,7 @@ var Preload;
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
+    PrerenderFinalStatus2["AudioOutput"] = "AudioOutput";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {

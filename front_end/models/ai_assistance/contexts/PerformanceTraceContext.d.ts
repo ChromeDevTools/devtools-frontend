@@ -1,3 +1,4 @@
+import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Bindings from '../../bindings/bindings.js';
@@ -6,6 +7,7 @@ import { type AiWidget, type ContextDetail, ConversationContext, type Conversati
 import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
 import type { AICallTree } from '../performance/AICallTree.js';
 import { AgentFocus } from '../performance/AIContext.js';
+type UrlString = Platform.DevToolsPath.UrlString;
 /**
  * Labels used to identify specific periods or categories in the trace for getting main thread summary.
  * Supports hardcoded phases, dynamic navigation IDs (`NAVIGATION_X`), and insight models.
@@ -29,7 +31,7 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
      *
      * Note: Function code resolution from source maps is only supported for fresh
      * recordings (recorded in the current session on the active target page) and
-     * same-origin resources permitted by `canAccessResource()`. For imported traces
+     * same-origin or mapped sources permitted by `canAccessFunctionSource()`. For imported traces
      * or inaccessible origins, it returns null.
      */
     createFormatter(): PerformanceTraceFormatter;
@@ -47,6 +49,15 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
      * @returns `true` if the resource is same-origin with the trace and not a `file://` URL; otherwise `false`.
      */
     canAccessResource(url: string): boolean;
+    /**
+     * Checks whether the AI can resolve function source code at the specified URL.
+     *
+     * Allows URLs that pass `canAccessResource(url)` as well as authored source-map
+     * URLs (such as `webpack:///src/app.ts`) backed by a `Network` project
+     * `UISourceCode` on the active `primaryPageTarget()` whose `securityOrigin()`
+     * matches the trace origin on a fresh, non-opaque, non-`file:` recording.
+     */
+    canAccessFunctionSource(url: UrlString): boolean;
     /**
      * Returns the security origin for the performance trace.
      *
@@ -108,3 +119,4 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
     getLabelName(label: MainThreadSectionLabel): string;
     createBounds(min?: number, max?: number): Trace.Types.Timing.TraceWindowMicro | null;
 }
+export {};

@@ -418,11 +418,12 @@ var ComputedStyleProperty = class extends UI2.Widget.Widget {
 // ../../front_end/panels/elements/components/ComputedStyleTrace.ts
 var ComputedStyleTrace_exports = {};
 __export(ComputedStyleTrace_exports, {
-  ComputedStyleTrace: () => ComputedStyleTrace
+  ComputedStyleTrace: () => ComputedStyleTrace,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
-import * as Buttons from "../../../ui/components/buttons/buttons.js";
 import * as UI3 from "../../../ui/legacy/legacy.js";
-import { html as html3, render as render3 } from "../../../ui/lit/lit.js";
+import { Directives as Directives2, html as html3, render as render3 } from "../../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/computedStyleTrace.css.js
 var computedStyleTrace_css_default = `/*
@@ -460,17 +461,12 @@ var computedStyleTrace_css_default = `/*
   margin: calc(-1 * var(--sys-size-1)) 0 0 calc(-1 * var(--size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-primary-bright);
+  border: none;
+  padding: 0;
 }
 
 .computed-style-trace:hover .goto {
   display: inline-block;
-}
-
-.devtools-link {
-  color: var(--sys-color-on-surface);
-  text-decoration-color: var(--sys-color-token-subtle);
-  text-decoration-line: underline;
-  cursor: pointer;
 }
 
 .trace-value {
@@ -489,6 +485,8 @@ var computedStyleTrace_css_default = `/*
 }
 
 .trace-link {
+  --text-link: var(--sys-color-on-surface);
+
   user-select: none;
   float: right;
   padding-left: 1em;
@@ -513,51 +511,84 @@ var computedStyleTrace_css_default = `/*
   .computed-style-trace:hover .trace-selector {
     --override-trace-selector-color: HighlightText;
   }
+
+  .computed-style-trace:hover .trace-link {
+    --text-link: HighlightText;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./computedStyleTrace.css")} */`;
 
 // ../../front_end/panels/elements/components/ComputedStyleTrace.ts
-var ComputedStyleTrace = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var { classMap: classMap2 } = Directives2;
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  const onNavigateToSource = (event) => {
+    event.consume(true);
+    input.onNavigateToSource();
+  };
+  render3(html3`
+    <style>${computedStyleTrace_css_default}</style>
+    <div class=${classMap2({ "computed-style-trace": true, active: input.active, inactive: !input.active })}>
+      <button class="goto" @click=${onNavigateToSource} jslog=${VisualLogging2.action("elements.jump-to-style").track({ click: true })}></button>
+      <slot name="trace-value" @click=${onNavigateToSource}></slot>
+      <span class="trace-selector">${input.selector}</span>
+      <span class="trace-link"><slot name="trace-link"></slot></span>
+    </div>
+  `, target, { container: { classes: ["computed-style-trace"] } });
+};
+var ComputedStyleTrace = class extends UI3.Widget.Widget {
   #selector = "";
   #active = false;
   #onNavigateToSource = () => {
   };
-  #ruleOriginNode;
-  connectedCallback() {
-    this.#render();
+  #view;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element, { useShadowDom: "pure" });
+    this.#view = view;
   }
-  set data(data) {
-    this.#selector = data.selector;
-    this.#active = data.active;
-    this.#onNavigateToSource = data.onNavigateToSource;
-    this.#ruleOriginNode = data.ruleOriginNode;
-    this.#render();
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
-  #render() {
-    render3(html3`
-      <style>${Buttons.textButtonStyles}</style>
-      <style>${UI3.inspectorCommonStyles}</style>
-      <style>${computedStyleTrace_css_default}</style>
-      <div class="computed-style-trace ${this.#active ? "active" : "inactive"}">
-        <span class="goto" @click=${this.#onNavigateToSource}></span>
-        <slot name="trace-value" @click=${this.#onNavigateToSource}></slot>
-        <span class="trace-selector">${this.#selector}</span>
-        <span class="trace-link">${this.#ruleOriginNode}</span>
-      </div>
-    `, this.#shadow, {
-      host: this
-    });
+  set selector(selector) {
+    if (selector === this.#selector) {
+      return;
+    }
+    this.#selector = selector;
+    this.requestUpdate();
+  }
+  set active(active) {
+    if (active === this.#active) {
+      return;
+    }
+    this.#active = active;
+    this.requestUpdate();
+  }
+  set onNavigateToSource(onNavigateToSource) {
+    if (onNavigateToSource === this.#onNavigateToSource) {
+      return;
+    }
+    this.#onNavigateToSource = onNavigateToSource;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view(
+      {
+        selector: this.#selector,
+        active: this.#active,
+        onNavigateToSource: this.#onNavigateToSource
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
-customElements.define("devtools-computed-style-trace", ComputedStyleTrace);
 
 // ../../front_end/panels/elements/components/CSSHintDetailsView.ts
 var CSSHintDetailsView_exports = {};
 __export(CSSHintDetailsView_exports, {
   CSSHintDetailsView: () => CSSHintDetailsView,
-  DEFAULT_VIEW: () => DEFAULT_VIEW3
+  DEFAULT_VIEW: () => DEFAULT_VIEW4
 });
 import "../../../ui/kit/kit.js";
 import * as i18n3 from "../../../core/i18n/i18n.js";
@@ -613,7 +644,7 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/elements/components/CSSHintDetailsView.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var DEFAULT_VIEW3 = (input, _output, target) => {
+var DEFAULT_VIEW4 = (input, _output, target) => {
   if (!input.authoringHint) {
     return;
   }
@@ -642,7 +673,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
 var CSSHintDetailsView = class extends UI4.Widget.Widget {
   #authoringHint;
   #view;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element);
     this.#view = view;
   }
@@ -670,7 +701,7 @@ var CSSPropertyDocsView_exports = {};
 __export(CSSPropertyDocsView_exports, {
   BaselineStatus: () => BaselineStatus,
   CSSPropertyDocsView: () => CSSPropertyDocsView,
-  DEFAULT_VIEW: () => DEFAULT_VIEW4
+  DEFAULT_VIEW: () => DEFAULT_VIEW5
 });
 import "../../../ui/kit/kit.js";
 import * as Common from "../../../core/common/common.js";
@@ -678,7 +709,7 @@ import * as i18n5 from "../../../core/i18n/i18n.js";
 import * as UI5 from "../../../ui/legacy/legacy.js";
 import { html as html5, nothing as nothing3, render as render5 } from "../../../ui/lit/lit.js";
 import * as SettingsUI from "../../../ui/settings/settings.js";
-import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/cssPropertyDocsView.css.js
 var cssPropertyDocsView_css_default = `/*
@@ -855,7 +886,7 @@ var BaselineStatus = /* @__PURE__ */ ((BaselineStatus2) => {
   BaselineStatus2["HIGH"] = "high";
   return BaselineStatus2;
 })(BaselineStatus || {});
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   const { description, references, baseline, browsers } = input.cssProperty;
   const link = references?.[0].url;
   render5(html5`
@@ -892,7 +923,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     const showDocumentation = !e.target.checked;
     input.onDontShowChanged(showDocumentation);
   }}
-            jslog=${VisualLogging2.toggle("css-property-doc").track({ change: true })}>
+            jslog=${VisualLogging3.toggle("css-property-doc").track({ change: true })}>
             ${i18nString3(UIStrings3.dontShow)}
           </devtools-checkbox>
         </div>
@@ -903,7 +934,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
 var CSSPropertyDocsView = class extends UI5.Widget.Widget {
   #cssProperty;
   #view;
-  constructor(cssProperty, element, view = DEFAULT_VIEW4) {
+  constructor(cssProperty, element, view = DEFAULT_VIEW5) {
     super(element);
     this.#cssProperty = cssProperty;
     this.#view = view;
@@ -1376,14 +1407,14 @@ function findGridItemIcon(text, parentComputedStyles) {
 var CSSQuery_exports = {};
 __export(CSSQuery_exports, {
   CSSQuery: () => CSSQuery,
-  DEFAULT_VIEW: () => DEFAULT_VIEW6
+  DEFAULT_VIEW: () => DEFAULT_VIEW7
 });
 import "../../../ui/components/tooltips/tooltips.js";
 import "../../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as SDK2 from "../../../core/sdk/sdk.js";
 import * as UI7 from "../../../ui/legacy/legacy.js";
 import * as Lit2 from "../../../ui/lit/lit.js";
-import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/cssQuery.css.js
 var cssQuery_css_default = `/*
@@ -1417,7 +1448,7 @@ __export(CSSVariableValueView_exports, {
   CSSVariableParserError: () => CSSVariableParserError,
   CSSVariableValueView: () => CSSVariableValueView,
   DEFAULT_PARSER_ERROR_VIEW: () => DEFAULT_PARSER_ERROR_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW5
+  DEFAULT_VIEW: () => DEFAULT_VIEW6
 });
 import * as i18n7 from "../../../core/i18n/i18n.js";
 import * as UI6 from "../../../ui/legacy/legacy.js";
@@ -1549,7 +1580,7 @@ var CSSVariableParserError = class extends UI6.Widget.Widget {
     this.#view({ details: this.#details }, void 0, this.contentElement);
   }
 };
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW6 = (input, _output, target) => {
   const initialValue = input.details?.registration.initialValue();
   const registrationView = input.details ? html6`
       <hr class=divider />
@@ -1578,7 +1609,7 @@ var CSSVariableValueView = class extends UI6.Widget.Widget {
   #variableName = "";
   #value;
   #details;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
   }
@@ -1632,7 +1663,7 @@ var CSSVariableValueView = class extends UI6.Widget.Widget {
 // ../../front_end/panels/elements/components/CSSQuery.ts
 var { render: render7, html: html7 } = Lit2;
 var { widget } = UI7.Widget;
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   const queryClasses = Lit2.Directives.classMap({
     query: true,
     editable: Boolean(input.onQueryTextClick)
@@ -1678,7 +1709,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     html7`
       <style>${cssQuery_css_default}</style>
       <style>${UI7.inspectorCommonStyles}</style>
-      <div class=${queryClasses} jslog=${VisualLogging3.cssRuleHeader(input.jslogContext).track({ click: true, change: true })}>
+      <div class=${queryClasses} jslog=${VisualLogging4.cssRuleHeader(input.jslogContext).track({ click: true, change: true })}>
         <slot name="indent"></slot>
         ${input.queryPrefix ? html7`<span>${input.queryPrefix + " "}</span>` : Lit2.nothing}
         ${input.queryName ? html7`<span>${input.queryName + " "}</span>` : Lit2.nothing}
@@ -1703,7 +1734,7 @@ var CSSQuery = class extends UI7.Widget.Widget {
   #style;
   #containerNode;
   #tooltipPrefix;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
@@ -1820,7 +1851,7 @@ var CSSQuery = class extends UI7.Widget.Widget {
 // ../../front_end/panels/elements/components/ElementsBreadcrumbs.ts
 var ElementsBreadcrumbs_exports = {};
 __export(ElementsBreadcrumbs_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   ElementsBreadcrumbs: () => ElementsBreadcrumbs,
   NodeSelectedEvent: () => NodeSelectedEvent
 });
@@ -1829,8 +1860,8 @@ import "../../../ui/components/node_text/node_text.js";
 import * as i18n11 from "../../../core/i18n/i18n.js";
 import * as SDK3 from "../../../core/sdk/sdk.js";
 import * as UI8 from "../../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html8, render as render8 } from "../../../ui/lit/lit.js";
-import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives4, html as html8, render as render8 } from "../../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/elementsBreadcrumbs.css.js
 var elementsBreadcrumbs_css_default = `/*
@@ -2002,7 +2033,7 @@ var determineElementTitle = (domNode) => {
 };
 
 // ../../front_end/panels/elements/components/ElementsBreadcrumbs.ts
-var { classMap: classMap2 } = Directives3;
+var { classMap: classMap3 } = Directives4;
 var UIStrings6 = {
   /**
    * @description Accessible name for DOM tree breadcrumb navigation.
@@ -2050,7 +2081,7 @@ function renderOverflowButton(direction, disabled, overflowing, target) {
   };
   return html8`
     <button
-      class=${classMap2({ overflow: true, [direction]: true, hidden: !overflowing })}
+      class=${classMap3({ overflow: true, [direction]: true, hidden: !overflowing })}
       @click=${onClick}
       ?disabled=${disabled}
       aria-label=${tooltipString}
@@ -2060,10 +2091,10 @@ function renderOverflowButton(direction, disabled, overflowing, target) {
     </button>
   `;
 }
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   render8(html8`
     <style>${elementsBreadcrumbs_css_default}</style>
-    <nav class="crumbs" aria-label=${i18nString6(UIStrings6.breadcrumbs)} jslog=${VisualLogging4.elementsBreadcrumbs()}>
+    <nav class="crumbs" aria-label=${i18nString6(UIStrings6.breadcrumbs)} jslog=${VisualLogging5.elementsBreadcrumbs()}>
       ${renderOverflowButton("left", !input.canScrollLeft, input.overflowing, target)}
 
       <div class="crumbs-window"
@@ -2076,12 +2107,12 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         <ul class="crumbs-scroll-container">
           ${input.crumbs.map((crumb) => {
     return html8`
-              <li class=${classMap2({ crumb: true, selected: crumb.selected })}
+              <li class=${classMap3({ crumb: true, selected: crumb.selected })}
                 data-node-id=${crumb.node.id}
                 data-crumb="true"
               >
                 <a href="#" draggable=false class="crumb-link"
-                  jslog=${VisualLogging4.item().track({ click: true, resize: true })}
+                  jslog=${VisualLogging5.item().track({ click: true, resize: true })}
                   @click=${(event) => {
       event.preventDefault();
       input.onCrumbClick(crumb.node);
@@ -2133,7 +2164,7 @@ var ElementsBreadcrumbs = class extends UI8.Widget.Widget {
   // Only auto-scroll when the selection changes or the crumbs start to overflow,
   // so that DOM tree updates never override a manual scroll by the user.
   #scrollSelectedCrumbIntoView = false;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element);
     this.#view = view;
   }
@@ -2217,14 +2248,14 @@ var ElementsBreadcrumbs = class extends UI8.Widget.Widget {
 // ../../front_end/panels/elements/components/ElementsTreeExpandButton.ts
 var ElementsTreeExpandButton_exports = {};
 __export(ElementsTreeExpandButton_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   ElementsTreeExpandButton: () => ElementsTreeExpandButton
 });
 import "../../../ui/kit/kit.js";
 import * as i18n13 from "../../../core/i18n/i18n.js";
 import * as UI9 from "../../../ui/legacy/legacy.js";
 import { html as html9, render as render9 } from "../../../ui/lit/lit.js";
-import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/elementsTreeExpandButton.css.js
 var elementsTreeExpandButton_css_default = `/*
@@ -2297,7 +2328,7 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/elements/components/ElementsTreeExpandButton.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   render9(
     html9`
       <style>${elementsTreeExpandButton_css_default}</style>
@@ -2305,7 +2336,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
         class="expand-button"
         tabindex="-1"
         aria-label=${i18nString7(UIStrings7.expand)}
-        jslog=${VisualLogging5.action("expand").track({ click: true })}
+        jslog=${VisualLogging6.action("expand").track({ click: true })}
         @click=${() => input.clickHandler()}><devtools-icon name="dots-horizontal"></devtools-icon></button>`,
     target,
     { container: { classes: ["elements-tree-expand-button"] } }
@@ -2315,7 +2346,7 @@ var ElementsTreeExpandButton = class extends UI9.Widget.Widget {
   #clickHandler = () => {
   };
   #view;
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW9) {
     super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
@@ -2338,7 +2369,7 @@ var ElementsTreeExpandButton = class extends UI9.Widget.Widget {
 // ../../front_end/panels/elements/components/QueryContainer.ts
 var QueryContainer_exports = {};
 __export(QueryContainer_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   QueriedSizeRequestedEvent: () => QueriedSizeRequestedEvent,
   QueryContainer: () => QueryContainer
 });
@@ -2347,7 +2378,7 @@ import "../../../ui/components/node_text/node_text.js";
 import * as SDK4 from "../../../core/sdk/sdk.js";
 import * as UI10 from "../../../ui/legacy/legacy.js";
 import * as Lit3 from "../../../ui/lit/lit.js";
-import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging7 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/queryContainer.css.js
 var queryContainer_css_default = `/*
@@ -2397,7 +2428,7 @@ var QueriedSizeRequestedEvent = class _QueriedSizeRequestedEvent extends Event {
     super(_QueriedSizeRequestedEvent.eventName, {});
   }
 };
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW10 = (input, _output, target) => {
   const renderQueriedSizeDetails = () => {
     if (!input.queriedSizeDetails || input.queriedSizeDetails.queryAxis === QueryAxis.NONE) {
       return Lit3.nothing;
@@ -2424,7 +2455,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
     <style>${queryContainer_css_default}</style>
     \u2192
     <a href="#" draggable=false class="container-link"
-       jslog=${VisualLogging6.cssRuleHeader("container-query").track({ click: true })}
+       jslog=${VisualLogging7.cssRuleHeader("container-query").track({ click: true })}
        @click=${(event) => {
     event.preventDefault();
     input.onContainerLinkClick?.();
@@ -2448,7 +2479,7 @@ var QueryContainer = class extends UI10.Widget.Widget {
   #onContainerLinkClick;
   #isContainerLinkHovered = false;
   #queriedSizeDetails;
-  constructor(element, view = DEFAULT_VIEW9) {
+  constructor(element, view = DEFAULT_VIEW10) {
     super(element);
     this.#view = view;
   }
@@ -2506,7 +2537,7 @@ var QueryContainer = class extends UI10.Widget.Widget {
 // ../../front_end/panels/elements/components/StylePropertyEditor.ts
 var StylePropertyEditor_exports = {};
 __export(StylePropertyEditor_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   FlexboxEditableProperties: () => FlexboxEditableProperties,
   FlexboxEditor: () => FlexboxEditor,
   GridEditableProperties: () => GridEditableProperties,
@@ -2520,8 +2551,8 @@ __export(StylePropertyEditor_exports, {
 import "../../../ui/kit/kit.js";
 import * as i18n15 from "../../../core/i18n/i18n.js";
 import * as UI11 from "../../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html11, render as render11 } from "../../../ui/lit/lit.js";
-import * as VisualLogging7 from "../../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives6, html as html11, render as render11 } from "../../../ui/lit/lit.js";
+import * as VisualLogging8 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/stylePropertyEditor.css.js
 var stylePropertyEditor_css_default = `/*
@@ -2628,7 +2659,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/elements/components/StylePropertyEditor.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { classMap: classMap3 } = Directives5;
+var { classMap: classMap4 } = Directives6;
 var PropertySelectedEvent = class _PropertySelectedEvent extends Event {
   static eventName = "propertyselected";
   data;
@@ -2652,7 +2683,7 @@ function renderButton(input, propertyValue, propertyName, selected = false) {
     throw new Error(`Icon for ${query} is not found`);
   }
   const transform = `transform: rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX}, ${iconInfo.scaleY})`;
-  const classes = classMap3({
+  const classes = classMap4({
     button: true,
     selected
   });
@@ -2661,7 +2692,7 @@ function renderButton(input, propertyValue, propertyName, selected = false) {
   return html11`
     <button title=${title}
             class=${classes}
-            jslog=${VisualLogging7.item().track({ click: true, resize: true }).context(`${propertyName}-${propertyValue}`)}
+            jslog=${VisualLogging8.item().track({ click: true, resize: true }).context(`${propertyName}-${propertyValue}`)}
             @click=${() => input.onButtonClick(propertyName, propertyValue, selected)}>
       <devtools-icon style=${transform} name=${iconInfo.iconName}>
       </devtools-icon>
@@ -2693,7 +2724,7 @@ function renderProperty(input, prop) {
   const authoredValue = input.authoredProperties.get(prop.propertyName);
   const notAuthored = !authoredValue;
   const shownValue = authoredValue || input.computedProperties.get(prop.propertyName);
-  const classes = classMap3({
+  const classes = classMap4({
     "property-value": true,
     "not-authored": notAuthored
   });
@@ -2709,7 +2740,7 @@ function renderProperty(input, prop) {
     </div>
   </div>`;
 }
-var DEFAULT_VIEW10 = (input, _output, target) => {
+var DEFAULT_VIEW11 = (input, _output, target) => {
   render11(html11`
     <style>${stylePropertyEditor_css_default}</style>
     <div class="container">
@@ -2725,7 +2756,7 @@ var StylePropertyEditor = class extends UI11.Widget.VBox {
   #view;
   #authoredProperties = /* @__PURE__ */ new Map();
   #computedProperties = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW10) {
+  constructor(element, view = DEFAULT_VIEW11) {
     super(element);
     this.#view = view;
   }

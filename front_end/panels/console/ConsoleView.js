@@ -31,6 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import '../../ui/legacy/legacy.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -44,10 +45,10 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
-import { createIcon } from '../../ui/kit/kit.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -285,7 +286,7 @@ const MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
 const DISCLAIMER_TOOLTIP_ID = 'console-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'console-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'console-ai-code-completion-citations-tooltip';
-const { bindToSetting } = UI.UIUtils;
+const { bindToAction, bindToSetting } = UI.UIUtils;
 function renderSettingsPane(input) {
     // clang-format off
     return html `<div
@@ -344,16 +345,94 @@ function renderSettingsPane(input) {
 export const SETTINGS_PANE_VIEW = (input, _output, target) => {
     render(renderSettingsPane(input), target);
 };
-export const PROGRESS_VIEW = (progressInput, _output, target) => {
+export function renderProgress(progressInput) {
     // clang-format off
-    render(progressInput ? html `
+    return progressInput ? html `
     <devtools-progress
         .title=${progressInput.title}
         .worked=${progressInput.worked}
         .totalWork=${progressInput.totalWork}
         @canceled=${progressInput.onCancel}>
-    </devtools-progress>` : nothing, target);
+    </devtools-progress>` : nothing;
     // clang-format on
+}
+function renderToolbar(input) {
+    // clang-format off
+    return html `<div class="console-toolbar-container" role="toolbar">
+    <devtools-toolbar class="console-main-toolbar" role="presentation" wrappable jslog=${VisualLogging.toolbar()}>
+      <devtools-button
+          class="toolbar-button"
+          .iconName=${input.isSidebarOpen ? 'left-panel-close' : 'left-panel-open'}
+          .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+          .title=${input.isSidebarOpen ? i18nString(UIStrings.hideConsoleSidebar)
+        : i18nString(UIStrings.showConsoleSidebar)}
+          .accessibleLabel=${input.isSidebarOpen ? i18nString(UIStrings.hideConsoleSidebar)
+        : i18nString(UIStrings.showConsoleSidebar)}
+          .accessibleExpanded=${input.isSidebarOpen}
+          jslog=${VisualLogging.toggleSubpane('console-sidebar').track({ click: true })}
+          @click=${input.onToggleSidebar}>
+      </devtools-button>
+      <devtools-button class="toolbar-button" ${bindToAction('console.clear')}></devtools-button>
+      <devtools-button
+          class="toolbar-button"
+          .iconName=${input.allCollapsed ? 'expand' : 'compress'}
+          .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+          .title=${input.allCollapsed ? i18nString(UIStrings.expandAll) : i18nString(UIStrings.collapseAll)}
+          .accessibleLabel=${input.allCollapsed ? i18nString(UIStrings.expandAll) : i18nString(UIStrings.collapseAll)}
+          .jslogContext=${'console.collapse-all'}
+          @click=${input.onToggleCollapseAll}>
+      </devtools-button>
+      <div class="toolbar-divider"></div>
+      ${input.contextSelectorToolbarItem.element}
+      <div class="toolbar-divider"></div>
+      <devtools-button class="toolbar-button" ${bindToAction('console.create-pin')}></devtools-button>
+      <div class="toolbar-divider"></div>
+      ${input.textFilterUI.element}
+      ${input.levelMenuButton.element}
+      <devtools-icon
+          name="info"
+          class="console-sidebar-levels-info"
+          ?hidden=${!input.isSidebarOpen}
+          title=${i18nString(UIStrings.overriddenByFilterSidebar)}>
+      </devtools-icon>
+      <div>
+        ${renderProgress(input.progress)}
+      </div>
+      <div class="toolbar-divider"></div>
+      <devtools-issue-counter
+          id="console-issues-counter"
+          title=${input.issueCounterTitle}
+          jslog=${VisualLogging.counter('issues').track({ click: true })}
+          .data=${input.issueCounterData}>
+      </devtools-issue-counter>
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-text dimmed" ?hidden=${!input.hiddenByFilterCount}>
+        ${i18nString(UIStrings.sHidden, { n: input.hiddenByFilterCount })}
+      </div>
+      <devtools-button
+          class="toolbar-button"
+          .iconName=${'gear'}
+          .toggledIconName=${'gear-filled'}
+          .toggleType=${"primary-toggle" /* Buttons.Button.ToggleType.PRIMARY */}
+          .variant=${"icon_toggle" /* Buttons.Button.Variant.ICON_TOGGLE */}
+          .title=${i18nString(UIStrings.consoleSettings)}
+          .accessibleLabel=${i18nString(UIStrings.consoleSettings)}
+          .accessibleExpanded=${input.showSettingsPaneSetting.get()}
+          jslog=${VisualLogging.toggleSubpane('console-settings').track({ click: true })}
+          ${bindToSetting(input.showSettingsPaneSetting, { jslog: false })}>
+      </devtools-button>
+    </devtools-toolbar>
+    <div
+        class="message-count"
+        aria-live="polite"
+        aria-atomic="false"
+        aria-label=${i18nString(UIStrings.filteredMessagesInConsole, { PH1: input.filteredMessagesCount })}>
+    </div>
+  </div>`;
+    // clang-format on
+}
+export const TOOLBAR_VIEW = (input, _output, target) => {
+    render(renderToolbar(input), target);
 };
 export class ConsoleView extends UI.Widget.VBox {
     #searchableView;
@@ -374,10 +453,7 @@ export class ConsoleView extends UI.Widget.VBox {
     shortcuts;
     regexMatchRanges;
     consoleContextSelector;
-    filterStatusText;
     showSettingsPaneSetting;
-    showSettingsPaneButton;
-    progressToolbarItem;
     groupSimilarSetting;
     showCorsErrorsSetting;
     timestampsSetting;
@@ -391,7 +467,6 @@ export class ConsoleView extends UI.Widget.VBox {
     pinPane;
     viewport;
     messagesElement;
-    messagesCountElement;
     viewportThrottler;
     pendingBatchResize;
     onMessageResizedBound;
@@ -411,7 +486,8 @@ export class ConsoleView extends UI.Widget.VBox {
     #searchTimeoutId;
     muteViewportUpdates;
     waitForScrollTimeout;
-    issueCounter;
+    #issueCounterData;
+    #issueCounterTitle = '';
     pendingSidebarMessages = [];
     userHasOpenedSidebarAtLeastOnce = false;
     issueToolbarThrottle;
@@ -427,17 +503,16 @@ export class ConsoleView extends UI.Widget.VBox {
     #onSinkMessageAdded = ({ data: message }) => {
         this.addSinkMessage(message);
     };
-    #collapseAllButton;
     #allCollapsed = false;
     aiCodeCompletionConfig;
     aiCodeCompletionSummaryToolbarContainer;
     aiCodeCompletionSummaryToolbar;
     #settingsPaneView;
-    #progressView;
-    constructor(viewportThrottlerTimeout, settingsPaneView = SETTINGS_PANE_VIEW, progressView = PROGRESS_VIEW) {
+    #toolbarView;
+    constructor(viewportThrottlerTimeout, settingsPaneView = SETTINGS_PANE_VIEW, toolbarView = TOOLBAR_VIEW) {
         super();
         this.#settingsPaneView = settingsPaneView;
-        this.#progressView = progressView;
+        this.#toolbarView = toolbarView;
         this.setMinimumSize(0, 35);
         // We register the SymbolizedErrorWidget styles here because many web and e2e
         // tests use `deepTextContent`, which would also include <style> tags if they
@@ -451,8 +526,8 @@ export class ConsoleView extends UI.Widget.VBox {
         this.sidebar.addEventListener("FilterSelected" /* Events.FILTER_SELECTED */, this.onFilterChanged.bind(this));
         this.isSidebarOpen = false;
         this.filter = new ConsoleViewFilter(this.onFilterChanged.bind(this));
-        this.consoleToolbarContainer = this.element.createChild('div', 'console-toolbar-container');
-        this.consoleToolbarContainer.role = 'toolbar';
+        this.consoleToolbarContainer = this.element.createChild('div');
+        this.consoleToolbarContainer.style.display = 'contents';
         this.splitWidget = new UI.SplitWidget.SplitWidget(true /* isVertical */, false /* secondIsSidebar */, 'console.sidebar.width', 100);
         this.splitWidget.setMainWidget(this.#searchableView);
         this.splitWidget.setSidebarWidget(this.sidebar);
@@ -482,6 +557,7 @@ export class ConsoleView extends UI.Widget.VBox {
             }
             this.filter.setLevelMenuOverridden(this.isSidebarOpen);
             this.onFilterChanged();
+            this.requestUpdate();
         });
         this.contentsElement = this.#searchableView.element;
         this.element.classList.add('console-view');
@@ -493,45 +569,15 @@ export class ConsoleView extends UI.Widget.VBox {
         this.shortcuts = new Map();
         this.regexMatchRanges = [];
         this.consoleContextSelector = new ConsoleContextSelector();
-        this.filterStatusText = new UI.Toolbar.ToolbarText();
-        this.filterStatusText.element.classList.add('dimmed');
         this.showSettingsPaneSetting =
             Common.Settings.Settings.instance().createSetting('console-show-settings-toolbar', false);
-        this.showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.consoleSettings), 'gear-filled');
-        this.showSettingsPaneButton.element.setAttribute('jslog', `${VisualLogging.toggleSubpane('console-settings').track({ click: true })}`);
-        this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
         this.groupSimilarSetting =
             Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
         this.groupSimilarSetting.addChangeListener(this.#onUpdateMessageListSettingChanged);
         this.showCorsErrorsSetting =
             Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor);
         this.showCorsErrorsSetting.addChangeListener(this.#onUpdateMessageListSettingChanged);
-        const toolbar = this.consoleToolbarContainer.createChild('devtools-toolbar', 'console-main-toolbar');
-        toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-        toolbar.role = 'presentation';
-        toolbar.wrappable = true;
-        toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar), i18nString(UIStrings.consoleSidebarShown), i18nString(UIStrings.consoleSidebarHidden), 'console-sidebar'));
-        toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('console.clear'));
-        this.#collapseAllButton =
-            new UI.Toolbar.ToolbarButton(i18nString(UIStrings.collapseAll), 'compress', undefined, 'console.collapse-all');
-        this.#collapseAllButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, this.#toggleCollapseAll, this);
-        toolbar.appendToolbarItem(this.#collapseAllButton);
-        toolbar.appendSeparator();
-        toolbar.appendToolbarItem(this.consoleContextSelector.toolbarItem());
-        toolbar.appendSeparator();
-        const liveExpressionButton = UI.Toolbar.Toolbar.createActionButton('console.create-pin');
-        toolbar.appendToolbarItem(liveExpressionButton);
-        toolbar.appendSeparator();
-        toolbar.appendToolbarItem(this.filter.textFilterUI);
-        toolbar.appendToolbarItem(this.filter.levelMenuButton);
-        toolbar.appendToolbarItem(this.filter.levelMenuButtonInfo);
-        toolbar.appendToolbarItem(this.progressToolbarItem);
-        toolbar.appendSeparator();
-        this.issueCounter = new IssueCounter.IssueCounter.IssueCounter();
-        this.issueCounter.id = 'console-issues-counter';
-        this.issueCounter.setAttribute('jslog', `${VisualLogging.counter('issues').track({ click: true })}`);
-        const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this.issueCounter);
-        this.issueCounter.data = {
+        this.#issueCounterData = {
             clickHandler: () => {
                 Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER);
                 void UI.ViewManager.ViewManager.instance().showView('issues-pane');
@@ -540,10 +586,6 @@ export class ConsoleView extends UI.Widget.VBox {
             accessibleName: i18nString(UIStrings.issueToolbarTooltipGeneral),
             displayMode: "OmitEmpty" /* IssueCounter.IssueCounter.DisplayMode.OMIT_EMPTY */,
         };
-        toolbar.appendToolbarItem(issuesToolbarItem);
-        toolbar.appendSeparator();
-        toolbar.appendToolbarItem(this.filterStatusText);
-        toolbar.appendToolbarItem(this.showSettingsPaneButton);
         this.#monitoringXHREnabledSetting =
             Common.Settings.Settings.instance().resolve(SDK.SDKSettings.monitoringXHREnabledSettingDescriptor);
         this.timestampsSetting =
@@ -574,8 +616,6 @@ export class ConsoleView extends UI.Widget.VBox {
         ['paste', 'clipboard-paste', 'drop'].forEach(type => {
             this.messagesElement.addEventListener(type, this.messagesPasted.bind(this), true);
         });
-        this.messagesCountElement = this.consoleToolbarContainer.createChild('div', 'message-count');
-        UI.ARIAUtils.markAsPoliteLiveRegion(this.messagesCountElement, false);
         this.viewportThrottler = new Common.Throttler.Throttler(viewportThrottlerTimeout);
         this.pendingBatchResize = false;
         this.onMessageResizedBound = (e) => {
@@ -682,6 +722,9 @@ export class ConsoleView extends UI.Widget.VBox {
         };
     }
     performUpdate() {
+        if (this.#disposed) {
+            return;
+        }
         this.#settingsPaneView({
             showSettingsPane: this.showSettingsPaneSetting.get(),
             networkMessagesSetting: this.filter.networkMessagesSetting,
@@ -694,8 +737,27 @@ export class ConsoleView extends UI.Widget.VBox {
             userActivationEvalSetting: this.#userActivationEvalSetting,
             showCorsErrorsSetting: this.showCorsErrorsSetting,
         }, undefined, this.#settingsPaneContainer);
-        this.#progressView(this.#createProgressViewInput(), undefined, this.progressToolbarItem.element);
+        this.#toolbarView({
+            isSidebarOpen: this.isSidebarOpen,
+            onToggleSidebar: this.#onToggleSidebar,
+            allCollapsed: this.#allCollapsed,
+            onToggleCollapseAll: () => this.#toggleCollapseAll(),
+            contextSelectorToolbarItem: this.consoleContextSelector.toolbarItem(),
+            textFilterUI: this.filter.textFilterUI,
+            levelMenuButton: this.filter.levelMenuButton,
+            progress: this.#createProgressViewInput(),
+            issueCounterData: this.#issueCounterData,
+            issueCounterTitle: this.#issueCounterTitle,
+            hiddenByFilterCount: this.hiddenByFilterCount,
+            showSettingsPaneSetting: this.showSettingsPaneSetting,
+            filteredMessagesCount: this.visibleViewMessages.length,
+        }, undefined, this.consoleToolbarContainer);
     }
+    #onToggleSidebar = () => {
+        const isShown = this.splitWidget.toggleSidebar();
+        UI.ARIAUtils.LiveAnnouncer.alert(isShown ? i18nString(UIStrings.consoleSidebarShown) :
+            i18nString(UIStrings.consoleSidebarHidden));
+    };
     static clearConsoleViewInstanceForTest() {
         consoleViewInstance = null;
     }
@@ -763,6 +825,7 @@ export class ConsoleView extends UI.Widget.VBox {
         }
         this.#allCollapsed = !this.#allCollapsed;
         this.#updateCollapseAllButton();
+        this.requestUpdate();
     }
     #updateCollapseAllButton() {
         let hasExpandedMessages = false;
@@ -781,14 +844,6 @@ export class ConsoleView extends UI.Widget.VBox {
             }
         }
         this.#allCollapsed = !hasExpandedMessages && hasCollapsedMessages;
-        if (this.#allCollapsed) {
-            this.#collapseAllButton.setGlyph('expand');
-            this.#collapseAllButton.setTitle(i18nString(UIStrings.expandAll));
-        }
-        else {
-            this.#collapseAllButton.setGlyph('compress');
-            this.#collapseAllButton.setTitle(i18nString(UIStrings.collapseAll));
-        }
     }
     #onIssuesCountUpdate() {
         void this.issueToolbarThrottle.schedule(async () => this.updateIssuesToolbarItem());
@@ -1002,12 +1057,17 @@ export class ConsoleView extends UI.Widget.VBox {
             i18nString(UIStrings.issueToolbarClickToView, { issueEnumeration });
         const issuesTitleGeneral = i18nString(UIStrings.issueToolbarTooltipGeneral);
         const issuesTitle = `${issuesTitleGeneral} ${issuesTitleGotoIssues}`;
-        UI.Tooltip.Tooltip.install(this.issueCounter, issuesTitle);
-        this.issueCounter.data = {
-            ...this.issueCounter.data,
-            leadingText: i18nString(UIStrings.issuesWithColon, { n: manager.numberOfIssues() }),
+        const leadingText = i18nString(UIStrings.issuesWithColon, { n: manager.numberOfIssues() });
+        if (this.#issueCounterTitle === issuesTitle && this.#issueCounterData.leadingText === leadingText) {
+            return;
+        }
+        this.#issueCounterTitle = issuesTitle;
+        this.#issueCounterData = {
+            ...this.#issueCounterData,
+            leadingText,
             accessibleName: issuesTitle,
         };
+        this.requestUpdate();
     }
     scheduleViewportRefresh() {
         if (this.muteViewportUpdates) {
@@ -1028,9 +1088,8 @@ export class ConsoleView extends UI.Widget.VBox {
         if (this.hiddenByFilterCount === this.lastShownHiddenByFilterCount) {
             return;
         }
-        this.filterStatusText.setText(i18nString(UIStrings.sHidden, { n: this.hiddenByFilterCount }));
-        this.filterStatusText.setVisible(Boolean(this.hiddenByFilterCount));
         this.lastShownHiddenByFilterCount = this.hiddenByFilterCount;
+        this.requestUpdate();
     }
     onConsoleMessageAdded(event) {
         const message = event.data;
@@ -1443,7 +1502,7 @@ export class ConsoleView extends UI.Widget.VBox {
         this.highlightMatch(this.currentMatchRangeIndex, false); // Re-highlight current match without scrolling.
         this.#updateCollapseAllButton();
         this.viewport.invalidate();
-        this.messagesCountElement.setAttribute('aria-label', i18nString(UIStrings.filteredMessagesInConsole, { PH1: this.visibleViewMessages.length }));
+        this.requestUpdate();
     }
     addGroupableMessagesToEnd() {
         const alreadyAdded = new Set();
@@ -1765,7 +1824,6 @@ export class ConsoleViewFilter {
     currentFilter;
     levelLabels;
     levelMenuButton;
-    levelMenuButtonInfo;
     constructor(filterChangedCallback) {
         this.filterChanged = filterChangedCallback;
         this.messageLevelFiltersSetting = ConsoleViewFilter.levelFilterSetting();
@@ -1799,10 +1857,6 @@ export class ConsoleViewFilter {
         ]));
         this.levelMenuButton =
             new UI.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), undefined, undefined, 'log-level');
-        const levelMenuButtonInfoIcon = createIcon('info', 'console-sidebar-levels-info');
-        levelMenuButtonInfoIcon.title = i18nString(UIStrings.overriddenByFilterSidebar);
-        this.levelMenuButtonInfo = new UI.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
-        this.levelMenuButtonInfo.setVisible(false);
         this.updateLevelMenuButtonText();
         this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText, this);
     }
@@ -1823,7 +1877,6 @@ export class ConsoleViewFilter {
     }
     setLevelMenuOverridden(overridden) {
         this.levelMenuButton.setEnabled(!overridden);
-        this.levelMenuButtonInfo.setVisible(overridden);
         if (overridden) {
             this.levelMenuButton.setText(i18nString(UIStrings.customLevels));
         }

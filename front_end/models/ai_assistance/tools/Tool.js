@@ -58,6 +58,7 @@ export var ToolName;
     ToolName["SELECT_TRACE_EVENT_BY_KEY"] = "selectTraceEventByKey";
     ToolName["LIST_SOURCES"] = "listSources";
     ToolName["GET_SOURCE_CONTENT"] = "getSourceContent";
+    ToolName["SEARCH_IN_SOURCES"] = "searchInSources";
     ToolName["GET_TRACE_MAIN_THREAD_SUMMARY"] = "getTraceMainThreadSummary";
     ToolName["GET_TRACE_NETWORK_SUMMARY"] = "getTraceNetworkSummary";
     ToolName["RUN_LIGHTHOUSE"] = "runLighthouse";

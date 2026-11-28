@@ -4117,12 +4117,12 @@
                 },
                 {
                     "name": "addMockCamera",
-                    "description": "Adds or updates a mock camera in the shared video capture device list for\ntest automation. The mock camera is not scoped to a particular page or\nframe and is removed when the DevTools session that created it disconnects.",
+                    "description": "Adds a mock camera in the shared video capture device list for\ntest automation. The mock camera is not scoped to a particular page or\nframe and is removed when the DevTools session that created it disconnects.\nReturns success after the video capture service confirms registration.\nDoes not wait for device-list updates or devicechange events in pages.\nRegistration failures are reported as errors.",
                     "experimental": true,
                     "parameters": [
                         {
                             "name": "deviceId",
-                            "description": "Required non-empty identifier for the mock camera within the current\nDevTools session. Different sessions can use the same identifier\nwithout replacing each other's cameras. This is not the\nMediaDeviceInfo.deviceId exposed to the page.",
+                            "description": "Required non-empty identifier for the mock camera within the current\nDevTools session. Different sessions can use the same identifier\nwithout replacing each other's cameras. This is not the\nMediaDeviceInfo.deviceId exposed to the page.\nAn identifier that is already registered or being registered in this\nsession is rejected. The existing camera or registration attempt is\nleft unchanged, including any active streams.",
                             "type": "string"
                         }
                     ]
@@ -16335,6 +16335,13 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "adProvenance",
+                            "description": "The provenance of an ad resource request, if it is ad-related and\nprovenance is available.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "AdProvenance"
                         }
                     ]
                 },
@@ -26166,7 +26173,8 @@
                         "FormSubmitWhenPrerendering",
                         "CrossDocumentRestart",
                         "PrefetchFailedCrossOriginSubframe",
-                        "UnexpectedMainFrameNavigation"
+                        "UnexpectedMainFrameNavigation",
+                        "AudioOutput"
                     ]
                 },
                 {

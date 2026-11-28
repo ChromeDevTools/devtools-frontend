@@ -10,9 +10,12 @@ import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import { Cookie } from './Cookie.js';
 import { DirectSocketChunkType, DirectSocketStatus, DirectSocketType, Events as NetworkRequestEvents, NetworkRequest, } from './NetworkRequest.js';
+import { ResourceTreeModel } from './ResourceTreeModel.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { cacheDisabledSettingDescriptor, customNetworkConditionsSettingDescriptor, monitoringXHREnabledSettingDescriptor, preserveNetworkLogSettingDescriptor, requestBlockingEnabledSettingDescriptor, } from './SDKSettings.js';
+import { SecurityOrigin } from './SecurityOrigin.js';
+import { Type } from './Target.js';
 import { TargetManager } from './TargetManager.js';
 const UIStrings = {
     /**
@@ -101,6 +104,7 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkManager.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const requestToManagerMap = new WeakMap();
+const requestToExecutionContextMap = new WeakMap();
 /** Resource types eligible for resend with full fidelity. */
 const FULL_FIDELITY_RESEND_TYPES = new Set([
     Common.ResourceType.resourceTypes.XHR,
@@ -217,21 +221,28 @@ export class NetworkManager extends SDKModel {
         if (!runtimeModel) {
             return;
         }
-        // Resolve execution context: prefer the frame's default context.
+        // Resolve execution context: require the exact issuing execution context on frame targets
+        // (mirroring Network.replayXHR). For non-frame targets (e.g. workers), fall back to the
+        // default context only when its origin matches the non-opaque initiator origin.
         let executionContext = null;
-        const frameId = request.frameId;
-        if (frameId) {
-            executionContext = runtimeModel.executionContexts().find(ctx => ctx.frameId === frameId && ctx.isDefault) ?? null;
+        const capturedContext = requestToExecutionContextMap.get(request);
+        if (capturedContext) {
+            executionContext = runtimeModel.executionContexts().find(ctx => ctx.uniqueId === capturedContext.uniqueId &&
+                ctx.origin === capturedContext.origin) ??
+                null;
         }
-        const usesFallbackContext = !executionContext;
-        if (!executionContext) {
-            executionContext = runtimeModel.defaultExecutionContext();
+        else if (target.type() !== Type.FRAME) {
+            const requestOrigin = request.initiatorSecurityOrigin();
+            if (!requestOrigin.isOpaque()) {
+                const defaultContext = runtimeModel.defaultExecutionContext();
+                if (defaultContext && requestOrigin.isSameOriginWith(SecurityOrigin.create(defaultContext.origin))) {
+                    executionContext = defaultContext;
+                }
+            }
         }
         if (!executionContext) {
+            runtimeModel.target().targetManager().getConsole().error(`Resend failed for ${request.url()}: the original execution context is no longer available.`);
             return;
-        }
-        if (usesFallbackContext) {
-            runtimeModel.target().targetManager().getConsole().warn('Resend: original execution context unavailable, using top-level context.');
         }
         // Build the fetch expression.
         const method = request.requestMethod;
@@ -251,6 +262,10 @@ export class NetworkManager extends SDKModel {
             headers.push([name, value]);
         }
         const body = await request.requestFormData();
+        if (runtimeModel.executionContext(executionContext.id) !== executionContext) {
+            runtimeModel.target().targetManager().getConsole().error(`Resend failed for ${url}: the original execution context is no longer available.`);
+            return;
+        }
         const fetchOptions = {
             method,
             headers,
@@ -461,6 +476,9 @@ export class NetworkManager extends SDKModel {
     }
     requestForURL(url) {
         return this.dispatcher.requestForURL(url);
+    }
+    requestsForURL(url) {
+        return this.dispatcher.requestsForURL(url);
     }
     requestForId(id) {
         return this.dispatcher.requestForId(id);
@@ -762,6 +780,16 @@ export class NetworkDispatcher {
     requestForURL(url) {
         return this.#requestsByURL.get(url) || null;
     }
+    requestsForURL(url) {
+        const urlWithoutHash = Common.ParsedURL.ParsedURL.urlWithoutHash(url);
+        const result = [];
+        for (const request of this.#requestsById.values()) {
+            if (Common.ParsedURL.ParsedURL.urlWithoutHash(request.url()) === urlWithoutHash) {
+                result.push(request);
+            }
+        }
+        return result;
+    }
     requestForLoaderId(loaderId) {
         return this.#requestsByLoaderId.get(loaderId) ||
             this.#multitargetNetworkManager.inflightMainResourceRequests.get(loaderId) || null;
@@ -835,6 +863,7 @@ export class NetworkDispatcher {
                 networkRequest.setRenderBlockingBehavior(renderBlockingBehavior);
             }
             requestToManagerMap.set(networkRequest, this.#manager);
+            this.#recordExecutionContext(networkRequest, frameId ?? null);
         }
         networkRequest.setCacheDisabled(this.#manager.target().targetManager().settings.resolve(cacheDisabledSettingDescriptor).get());
         networkRequest.hasNetworkData = true;
@@ -1067,6 +1096,44 @@ export class NetworkDispatcher {
         }
         return builder;
     }
+    #recordExecutionContext(networkRequest, frameId) {
+        const target = this.#manager.target();
+        const runtimeModel = target.model(RuntimeModel);
+        if (!runtimeModel) {
+            return;
+        }
+        let context = null;
+        let hasVerifiedLoaderId = false;
+        if (frameId) {
+            const frame = target.model(ResourceTreeModel)?.frameForId(frameId);
+            if (frame?.loaderId && networkRequest.loaderId) {
+                if (frame.loaderId !== networkRequest.loaderId) {
+                    return;
+                }
+                hasVerifiedLoaderId = true;
+            }
+            context = runtimeModel.executionContexts().find(ctx => ctx.frameId === frameId && ctx.isDefault) ?? null;
+        }
+        else if (target.type() !== Type.FRAME) {
+            context = runtimeModel.defaultExecutionContext();
+        }
+        if (!context?.uniqueId) {
+            return;
+        }
+        const requestOrigin = networkRequest.initiatorSecurityOrigin();
+        const contextOrigin = SecurityOrigin.create(context.origin);
+        if (!requestOrigin.isOpaque() && !contextOrigin.isOpaque()) {
+            if (!requestOrigin.isSameOriginWith(contextOrigin)) {
+                return;
+            }
+        }
+        else if (frameId && !hasVerifiedLoaderId) {
+            // When either origin is opaque (e.g. sandboxed iframe or about:blank/srcdoc),
+            // require loaderId to confirm the request and context belong to the same load.
+            return;
+        }
+        requestToExecutionContextMap.set(networkRequest, { uniqueId: context.uniqueId, origin: context.origin });
+    }
     appendRedirect(requestId, time, redirectURL) {
         const originalNetworkRequest = this.#requestsById.get(requestId);
         if (!originalNetworkRequest) {
@@ -1080,6 +1147,10 @@ export class NetworkDispatcher {
         this.finishNetworkRequest(originalNetworkRequest, time, -1);
         const newNetworkRequest = NetworkRequest.create(requestId, redirectURL, originalNetworkRequest.documentURL, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, originalNetworkRequest.initiator(), originalNetworkRequest.hasUserGesture() ?? undefined, this.#manager.target().targetManager().getConsole());
         requestToManagerMap.set(newNetworkRequest, this.#manager);
+        const capturedContext = requestToExecutionContextMap.get(originalNetworkRequest);
+        if (capturedContext) {
+            requestToExecutionContextMap.set(newNetworkRequest, capturedContext);
+        }
         newNetworkRequest.setRedirectSource(originalNetworkRequest);
         originalNetworkRequest.setRedirectDestination(newNetworkRequest);
         return newNetworkRequest;
@@ -1107,6 +1178,7 @@ export class NetworkDispatcher {
             this.#requestIdToExtraInfoBuilder.set(requestId, builder);
         }
         requestToManagerMap.set(request, this.#manager);
+        requestToExecutionContextMap.delete(request);
         return request;
     }
     startNetworkRequest(networkRequest, originalRequest) {

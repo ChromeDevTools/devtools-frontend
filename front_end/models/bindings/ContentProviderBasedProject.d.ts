@@ -22,6 +22,11 @@ export declare class ContentProviderBasedProject extends Workspace.Workspace.Pro
     deleteFile(_uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     remove(): void;
     searchInFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode, query: string, caseSensitive: boolean, isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]>;
+    /**
+     * Returns the backing `ContentProvider` for `uiSourceCode` without triggering content loads,
+     * or `undefined` if `uiSourceCode` is not registered with a provider in this project.
+     */
+    contentProviderForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): TextUtils.ContentProvider.ContentProvider | undefined;
     findFilesMatchingSearchRequest(searchConfig: Workspace.SearchConfig.SearchConfig, filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[], progress: Common.Progress.Progress): Promise<Map<Workspace.UISourceCode.UISourceCode, TextUtils.ContentProvider.SearchMatch[] | null>>;
     indexContent(progress: Common.Progress.Progress): void;
     addUISourceCodeWithProvider(uiSourceCode: Workspace.UISourceCode.UISourceCode, contentProvider: TextUtils.ContentProvider.ContentProvider, metadata: Workspace.UISourceCode.UISourceCodeMetadata | null, mimeType: string): void;

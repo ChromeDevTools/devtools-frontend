@@ -148,17 +148,19 @@ const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles,
     else if (property.ownerStyle.type === SDK.CSSStyleDeclaration.Type.Transition) {
         selector = 'transitions style';
     }
+    // The view adds the `computed-style-trace` class to the host when it
+    // renders, so selectors only match traces whose shadow DOM is ready.
     // clang-format off
-    return html `<devtools-computed-style-trace
-        .data=${{
+    return html `<devtools-widget
+        ${widget(ElementsComponents.ComputedStyleTrace.ComputedStyleTrace, {
         selector,
         active: !isPropertyOverloaded,
-        onNavigateToSource: navigateToSource.bind(null, property),
-        ruleOriginNode,
-    }}
+        onNavigateToSource: getBoundNavigateToSource(navigateToSource, property),
+    })}
         @contextmenu=${onContextMenu}>
           ${valueElement}
-      </devtools-computed-style-trace>`;
+          <span slot="trace-link">${ruleOriginNode}</span>
+      </devtools-widget>`;
     // clang-format on
 };
 // clang-format off
@@ -184,6 +186,20 @@ const navigateToSource = (cssProperty, event) => {
     void Common.Revealer.reveal(cssProperty);
     event?.consume(true);
 };
+const boundNavigateCallbacks = new WeakMap();
+function getBoundNavigateToSource(fn, property) {
+    let byProperty = boundNavigateCallbacks.get(fn);
+    if (!byProperty) {
+        byProperty = new WeakMap();
+        boundNavigateCallbacks.set(fn, byProperty);
+    }
+    let callback = byProperty.get(property);
+    if (!callback) {
+        callback = fn.bind(null, property);
+        byProperty.set(property, callback);
+    }
+    return callback;
+}
 export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `

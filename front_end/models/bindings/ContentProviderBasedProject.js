@@ -83,6 +83,13 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
         const { contentProvider } = this.#uiSourceCodeToData.get(uiSourceCode);
         return contentProvider.searchInContent(query, caseSensitive, isRegex);
     }
+    /**
+     * Returns the backing `ContentProvider` for `uiSourceCode` without triggering content loads,
+     * or `undefined` if `uiSourceCode` is not registered with a provider in this project.
+     */
+    contentProviderForUISourceCode(uiSourceCode) {
+        return this.#uiSourceCodeToData.get(uiSourceCode)?.contentProvider;
+    }
     async findFilesMatchingSearchRequest(searchConfig, filesMatchingFileQuery, progress) {
         const result = new Map();
         progress.totalWork = filesMatchingFileQuery.length;

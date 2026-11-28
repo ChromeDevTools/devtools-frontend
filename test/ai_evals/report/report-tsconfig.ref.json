@@ -15,12 +15,10 @@
   "files": [
     "../../../../../../test/ai_evals/report/eval-logger.ts",
     "../../../../../../test/ai_evals/report/eval-task-recorder.ts",
-    "../../../../../../test/ai_evals/report/evaluators.ts",
     "../../../../../../test/ai_evals/report/gcs-upload.ts",
     "../../../../../../test/ai_evals/report/gemini.ts",
     "../../../../../../test/ai_evals/report/grading-judge.ts",
     "../../../../../../test/ai_evals/report/grading-loader.ts",
-    "../../../../../../test/ai_evals/report/instructions.ts",
     "../../../../../../test/ai_evals/report/report-helpers.ts",
     "../../../../../../test/ai_evals/report/scorer.ts",
     "../../../../../../test/ai_evals/report/trajectory-builder.ts",
@@ -30,8 +28,6 @@
     "../../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
-    {
-      "path": "../../conductor/core-tsconfig.ref.json"
-    }
+
   ]
 }

@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 /*
  * Copyright (C) 2013 Google Inc. All rights reserved.
  * Copyright (C) 2012 Intel Inc. All rights reserved.
@@ -46,7 +45,6 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
-import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
@@ -65,11 +63,6 @@ import { TimelinePanel } from './TimelinePanel.js';
 import { selectionFromEvent } from './TimelineSelection.js';
 import * as Utils from './utils/utils.js';
 const UIStrings = {
-    /**
-     * @description Format string that only contains a single placeholder value.
-     * @example {100ms (at 200ms)} PH1
-     */
-    emptyPlaceholder: '{PH1}', // eslint-disable-line @devtools/l10n-uistrings-text-style
     /**
      * @description Label for the timestamp field in the details view of the Performance panel.
      */
@@ -492,6 +485,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { classMap, styleMap, until } = Directives;
+const { widget } = UI.Widget;
 /** Look for scheme:// plus text and exclude any punctuation at the end. **/
 export const URL_REGEX = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
 const ALWAYS_LINKIFIED_SCHEMES = new Set(['http', 'https']);
@@ -898,8 +892,7 @@ export class TimelineUIUtils {
                     preview = previewElement ? html `${previewElement}` : null;
                 }
                 else if (Trace.Types.Events.isPaint(event)) {
-                    const previewElement = await TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
-                    preview = previewElement ? html `${previewElement}` : null;
+                    preview = await TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
                 }
                 previewElementCache.set(event, preview);
             }
@@ -1657,28 +1650,28 @@ export class TimelineUIUtils {
         if (!imageURL) {
             return null;
         }
-        const stylesContainer = document.createElement('div');
-        const shadowRoot = stylesContainer.attachShadow({ mode: 'open' });
-        shadowRoot.createChild('style').textContent = imagePreviewStyles;
-        const container = shadowRoot.createChild('div');
-        container.classList.add('image-preview-container', 'vbox', 'link');
-        const img = container.createChild('img');
-        img.src = imageURL;
-        img.alt = LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(imageURL);
-        const paintProfilerButton = container.createChild('a');
-        paintProfilerButton.textContent = i18nString(UIStrings.paintProfiler);
-        UI.ARIAUtils.markAsLink(container);
-        container.tabIndex = 0;
-        container.addEventListener('click', () => TimelinePanel.instance().select(selectionFromEvent(event)), false);
-        container.addEventListener('keydown', keyEvent => {
-            if (keyEvent.key === Platform.KeyboardUtilities.ENTER_KEY) {
-                TimelinePanel.instance().select(selectionFromEvent(event));
-                keyEvent.consume(true);
-            }
-        });
-        return stylesContainer;
+        const selectPaintEvent = () => {
+            TimelinePanel.instance().select(selectionFromEvent(event));
+        };
+        // clang-format off
+        return html `
+      <div>
+        <style>@scope to (devtools-widget > *) { ${imagePreviewStyles} }</style>
+        <button type="button" class="image-preview-container vbox link link-style"
+            jslog=${VisualLogging.action('paint-profiler').track({ click: true })}
+            @click=${selectPaintEvent}>
+          <img src=${imageURL} alt=${LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(imageURL)}>
+          <span>${i18nString(UIStrings.paintProfiler)}</span>
+        </button>
+      </div>`;
+        // clang-format on
     }
+    /**
+     * PerfUI.TimelineOverviewPane positions and dims the markers imperatively,
+     * so this still returns a DOM element instead of a template.
+     */
     static createEventDivider(event, zeroTime) {
+        // eslint-disable-next-line @devtools/no-imperative-dom-api
         const eventDivider = document.createElement('div');
         eventDivider.classList.add('resources-event-divider');
         const { startTime: eventStartTime } = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
@@ -1698,10 +1691,6 @@ export class TimelineUIUtils {
         for (const categoryName in aggregatedStats) {
             total += aggregatedStats[categoryName];
         }
-        const element = document.createElement('div');
-        element.classList.add('timeline-details-view-pie-chart-wrapper');
-        element.classList.add('hbox');
-        const pieChart = new PerfUI.PieChart.PieChart();
         const slices = [];
         function appendLegendRow(title, value, color) {
             if (!value) {
@@ -1733,7 +1722,7 @@ export class TimelineUIUtils {
             }
             appendLegendRow(category.title, aggregatedStats[category.name], category.getCSSValue());
         }
-        pieChart.data = {
+        const pieChartData = {
             chartName: i18nString(UIStrings.timeSpentInRendering),
             size: 110,
             formatter: (value) => i18n.TimeUtilities.preciseMillisToString(value),
@@ -1741,9 +1730,14 @@ export class TimelineUIUtils {
             total,
             slices,
         };
-        const pieChartContainer = element.createChild('div', 'vbox');
-        pieChartContainer.appendChild(pieChart);
-        return element;
+        // clang-format off
+        return html `
+      <div class="timeline-details-view-pie-chart-wrapper hbox">
+        <div class="vbox">
+          <devtools-perf-piechart .data=${pieChartData}></devtools-perf-piechart>
+        </div>
+      </div>`;
+        // clang-format on
     }
     static generateDetailsContentForFrame(frame, filmStrip, filmStripFrame) {
         const contentHelper = new TimelineDetailsContentHelper(null, null);
@@ -1751,13 +1745,17 @@ export class TimelineUIUtils {
         const duration = TimelineUIUtils.frameDuration(frame);
         contentHelper.appendElementRow(i18nString(UIStrings.duration), duration);
         if (filmStrip && filmStripFrame) {
-            const filmStripPreview = document.createElement('div');
-            filmStripPreview.classList.add('timeline-filmstrip-preview');
             // TODO(paulirish): Adopt Util.ImageCache
             const uri = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(filmStripFrame.screenshotEvent);
-            void UI.UIUtils.loadImage(uri).then(image => image && filmStripPreview.appendChild(image));
+            const screenshot = UI.UIUtils.loadImage(uri).then(image => image ? html `<img src=${uri} alt="">` : nothing);
+            // clang-format off
+            const filmStripPreview = html `
+        <button type="button" class="timeline-filmstrip-preview"
+            aria-label=${i18nString(UIStrings.preview)}
+            jslog=${VisualLogging.action('preview').track({ click: true })}
+            @click=${frameClicked.bind(null, filmStrip, filmStripFrame)}>${until(screenshot, nothing)}</button>`;
+            // clang-format on
             contentHelper.appendElementRow('', filmStripPreview);
-            filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStrip, filmStripFrame), false);
         }
         function frameClicked(filmStrip, filmStripFrame) {
             PerfUI.FilmStripView.Dialog.fromFilmStrip(filmStrip, filmStripFrame.index);
@@ -1771,7 +1769,7 @@ export class TimelineUIUtils {
             PH1: i18n.TimeUtilities.millisToString(durationMilli, true),
             PH2: i18n.TimeUtilities.millisToString(offsetMilli, true),
         });
-        return uiI18n.getFormatLocalizedString(str_, UIStrings.emptyPlaceholder, { PH1: durationText });
+        return html `<span>${durationText}</span>`;
     }
     static quadWidth(quad) {
         return Math.round(Math.sqrt(Math.pow(quad[0] - quad[2], 2) + Math.pow(quad[1] - quad[3], 2)));
@@ -1978,6 +1976,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     </div>`)}`, target);
     // clang-format on
 };
+const STACK_TRACE_PREVIEW_OPTIONS = {
+    tabStops: true,
+    showColumnNumber: true,
+};
 /**
  * Collects the sections and rows of the details of a trace event, and renders
  * them with the view into a new fragment when `fragment` is read.
@@ -2024,7 +2026,7 @@ export class TimelineDetailsContentHelper {
             return;
         }
         this.addSection(title, options.swatchColor, options.event);
-        this.#currentSection.rows.push({ type: 'body', body: options.body instanceof Node ? html `${options.body}` : options.body });
+        this.#currentSection.rows.push({ type: 'body', body: options.body });
     }
     /**
      * Generates a stack trace for the given event. If there is no stack data,
@@ -2075,17 +2077,15 @@ export class TimelineDetailsContentHelper {
         if (!this.#linkifier || !this.#target) {
             return;
         }
-        const locationContent = document.createElement('span');
         const link = this.#linkifier.maybeLinkifyScriptLocation(this.#target, null, url, startLine, { tabStop: true });
         if (!link) {
             return;
         }
-        locationContent.appendChild(link);
-        UI.UIUtils.createTextChild(locationContent, Platform.StringUtilities.sprintf(' [%s…%s]', startLine + 1, (endLine || 0) + 1 || ''));
-        this.appendElementRow(title, locationContent);
+        const range = Platform.StringUtilities.sprintf(' [%s…%s]', startLine + 1, (endLine || 0) + 1 || '');
+        this.appendElementRow(title, html `<span>${link}${range}</span>`);
     }
     /**
-     * Creates a stack trace element for the given trace, but checks if it
+     * Creates a stack trace template for the given trace, but checks if it
      * contains any entries, and discards it if it's empty.
      */
     async createChildStackTraceElement(runtimeStackTrace, isFreshOrEnhanced) {
@@ -2101,30 +2101,19 @@ export class TimelineDetailsContentHelper {
         // use them.
         const stackTraceToUse = isFreshOrEnhanced ? runtimeStackTrace : stripScriptIds(runtimeStackTrace);
         const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(stackTraceToUse, target);
-        const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent();
-        callFrameContents.options = { tabStops: true, showColumnNumber: true };
-        callFrameContents.stackTrace = stackTrace;
-        await callFrameContents.updateComplete;
-        if (!callFrameContents.hasContent()) {
+        const { syncFragment, asyncFragments } = stackTrace;
+        if (!syncFragment.frames.length && !asyncFragments.some(fragment => fragment.frames.length)) {
             return null;
         }
-        const stackTraceElement = document.createElement('div');
-        stackTraceElement.classList.add('timeline-details-view-row', 'timeline-details-stack-values');
-        stackTraceElement.setAttribute('jslog', `${VisualLogging.item('detail-row')}`);
-        callFrameContents.markAsRoot();
-        callFrameContents.markAsExternallyManaged();
-        callFrameContents.show(stackTraceElement);
-        callFrameContents.willHide();
-        const tracker = document.createElement('devtools-widget');
-        tracker.style.display = 'none';
-        tracker.onConnect = () => {
-            callFrameContents.wasShown();
-        };
-        tracker.onDisconnect = () => {
-            callFrameContents.willHide();
-        };
-        stackTraceElement.appendChild(tracker);
-        return stackTraceElement;
+        // clang-format off
+        return html `
+      <div class="timeline-details-view-row timeline-details-stack-values" jslog=${VisualLogging.item('detail-row')}>
+        ${widget(LegacyComponents.JSPresentationUtils.StackTracePreviewContent, {
+            options: STACK_TRACE_PREVIEW_OPTIONS,
+            stackTrace,
+        })}
+      </div>`;
+        // clang-format on
     }
 }
 /**

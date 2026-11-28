@@ -1,3 +1,5 @@
+import '../../ui/components/issue_counter/issue_counter.js';
+import '../../ui/components/request_link_icon/request_link_icon.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -120,10 +122,10 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     approximateFastHeight(): number;
     consoleMessage(): SDK.ConsoleModel.ConsoleMessage;
     formatErrorStackPromiseForTest(): Promise<void>;
-    protected buildMessage(): HTMLElement;
+    protected buildMessage(): LitTemplate;
     private formatAsNetworkRequest;
     private createAffectedResourceLinks;
-    protected buildMessageAnchor(): HTMLElement | null;
+    protected buildMessageAnchor(): LitTemplate | null;
     private buildMessageWithStackTrace;
     private buildMessageWithIgnoreLinks;
     private buildMessageHelper;

@@ -241,7 +241,7 @@ export default `/*
     justify-content: center;
   }
 
-  .timeline-network-resizer-disabled > .timeline-flamechart-resizer {
+  .timeline-flamechart-resizer[hidden] {
     display: none;
   }
 

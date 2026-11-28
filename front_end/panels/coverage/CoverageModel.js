@@ -167,7 +167,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
             return;
         }
         if (this.suspensionState === "Active" /* SuspensionState.ACTIVE */ || this.performanceTraceRecording) {
-            this.pollTimer = window.setTimeout(() => this.pollLoop(), COVERAGE_POLLING_PERIOD_MS);
+            this.pollTimer = globalThis.setTimeout(() => this.pollLoop(), COVERAGE_POLLING_PERIOD_MS);
         }
     }
     async stopPolling() {
@@ -192,7 +192,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     }
     clearTimer() {
         if (this.pollTimer) {
-            clearTimeout(this.pollTimer);
+            globalThis.clearTimeout(this.pollTimer);
             this.pollTimer = null;
         }
     }

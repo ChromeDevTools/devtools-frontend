@@ -516,6 +516,28 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             },
         };
     }
+    /**
+     * Checks whether multimodal input is enabled for the active conversation.
+     *
+     * Requires the shared `devToolsFreestyler.multimodal` flag and a supported
+     * conversation (any conversation type in V2, or `ConversationType.STYLING`
+     * in V1). When `inputType` is `MultimodalInputType.UPLOADED_IMAGE`,
+     * `devToolsFreestyler.multimodalUploadInput` must also be enabled.
+     */
+    #isMultimodalInputEnabled(inputType) {
+        if (!this.#conversation || !Root.Runtime.hostConfig.devToolsFreestyler?.multimodal) {
+            return false;
+        }
+        const conversationSupported = AiAssistanceModel.AiUtils.isAiV2Enabled() ||
+            this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */;
+        if (!conversationSupported) {
+            return false;
+        }
+        if (inputType === "uploaded-image" /* AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE */) {
+            return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
+        }
+        return true;
+    }
     async #getPanelViewInput() {
         const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
         if (this.#aidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */ ||
@@ -558,8 +580,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
                     // TODO(b/587704208): Re-enable the written feedback form once supported.
                     canShowFreeFormFeedback: false,
-                    multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
-                        this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
+                    multimodalInputEnabled: this.#isMultimodalInputEnabled(),
                     isTextInputDisabled: this.#isTextInputDisabled(),
                     emptyStateSuggestions,
                     inputPlaceholder: this.#getChatInputPlaceholder(),
@@ -569,8 +590,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         this.#textInputValue = text;
                     },
                     onExportConversation: this.#onExportConversationClick.bind(this),
-                    uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
-                        this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
+                    uploadImageInputEnabled: this.#isMultimodalInputEnabled("uploaded-image" /* AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE */),
                     markdownRenderer,
                     conversationMarkdown: conversation.getConversationMarkdown(),
                     generateConversationSummary: async (markdown) => {
@@ -1463,7 +1483,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
         }
         let multimodalInput;
-        if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
+        if (imageInput && multimodalInputType && this.#isMultimodalInputEnabled(multimodalInputType)) {
             multimodalInput = {
                 input: imageInput,
                 id: crypto.randomUUID(),
@@ -1873,12 +1893,5 @@ export class ActionDelegate {
         }
         return false;
     }
-}
-function isAiAssistanceMultimodalUploadInputEnabled() {
-    return isAiAssistanceMultimodalInputEnabled() &&
-        Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
-}
-function isAiAssistanceMultimodalInputEnabled() {
-    return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
 }
 //# sourceMappingURL=AiAssistancePanel.js.map
